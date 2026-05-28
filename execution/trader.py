@@ -25,11 +25,14 @@ def calc_stop_prices(ticker: str, entry_price: float) -> dict:
     """Calculate ATR stop and hard blocker stop. Use the tighter (higher) one."""
     atr14 = fetcher.get_atr14(ticker)
     stop_atr  = entry_price - (atr14 * config.ATR_MULTIPLIER) if atr14 > 0 else 0
-    stop_hard = entry_price * (1 - config.HARD_BLOCKER_PCT)
-    stop_price = max(stop_atr, stop_hard)  # higher = tighter = fires first
+    qty         = calc_qty(entry_price)
+    stop_pct    = entry_price * (1 - config.HARD_BLOCKER_PCT)
+    stop_dollar = entry_price - (config.MAX_LOSS_PER_TRADE_USD / qty) if qty > 0 else stop_pct
+    stop_price  = max(stop_atr, stop_pct, stop_dollar)  # più alto = più stretto
     return {
         "stop_atr": round(stop_atr, 4),
-        "stop_hard": round(stop_hard, 4),
+        "stop_pct": round(stop_pct, 4),
+        "stop_dollar": round(stop_dollar, 4),
         "stop_price": round(stop_price, 4),
         "atr14": round(atr14, 4),
     }
@@ -121,8 +124,10 @@ def close_position(ticker: str, qty: int, reason: str) -> Optional[dict]:
 def check_stop_triggered(position: dict, current_price: float) -> Optional[str]:
     """Return exit reason if any stop is triggered, else None."""
     if current_price <= position["stop_price"]:
-        pnl_pct = (current_price - position["entry_price"]) / position["entry_price"]
-        if pnl_pct <= -config.HARD_BLOCKER_PCT:
+        entry = position["entry_price"]
+        if current_price <= position.get("stop_dollar", 0):
+            return "dollar_stop"
+        if (entry - current_price) / entry >= config.HARD_BLOCKER_PCT:
             return "hard_blocker"
         return "atr_stop"
     return None
@@ -130,11 +135,12 @@ def check_stop_triggered(position: dict, current_price: float) -> Optional[str]:
 
 def check_vwap_exit(ticker: str, position: dict, current_price: float) -> bool:
     """
-    Return True if price crossed below intraday VWAP while in profit.
-    Only triggers if position is currently profitable.
+    Return True if price crossed below intraday VWAP with profit >= 0.8%.
+    Minimum profit threshold prevents exiting on tiny gains.
     """
-    if current_price <= position["entry_price"]:
-        return False  # not in profit — let hard/ATR stop handle it
+    profit_pct = (current_price - position["entry_price"]) / position["entry_price"]
+    if profit_pct < config.VWAP_EXIT_MIN_PROFIT_PCT:
+        return False  # not enough profit to trigger VWAP exit
     try:
         bars = fetcher.get_intraday_bars(ticker, minutes=1)
         if bars.empty:

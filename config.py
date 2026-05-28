@@ -40,12 +40,16 @@ CATALYST_TIER3 = 0.55
 CATALYST_NONE  = 0.30
 
 # === RISK MANAGEMENT ===
-POSITION_SIZE_USD    = 500       # $500 per position (paper uses USD)
-MAX_POSITIONS        = 2
-HARD_BLOCKER_PCT     = 0.045     # -4.5%
-ATR_MULTIPLIER       = 1.5
-ATR_LOOKBACK         = 14        # days
-MAX_DAILY_LOSS_USD   = 50        # system stops for the day
+POSITION_SIZE_USD        = 500    # $500 per position
+MAX_POSITIONS            = 2
+HARD_BLOCKER_PCT         = 0.045  # -4.5% dal prezzo di entrata
+MAX_LOSS_PER_TRADE_USD   = 25     # hard stop in $ assoluti — cappella titoli costosi (GS, LLY, ecc.)
+ATR_MULTIPLIER           = 1.5
+ATR_LOOKBACK             = 14     # days
+MAX_DAILY_LOSS_USD       = 50     # sistema si ferma per il giorno
+
+# === EXIT RULES ===
+VWAP_EXIT_MIN_PROFIT_PCT = 0.008  # VWAP exit scatta solo se in profitto >= 0.8%
 
 # === TIMING (ET) ===
 WATCHLIST_TIME       = "09:25"

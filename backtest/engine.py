@@ -35,6 +35,8 @@ ET = pytz.timezone("America/New_York")
 class BacktestParams:
     confidence_threshold:    float = 0.65
     hard_blocker_pct:        float = 0.045
+    max_loss_usd:            float = 25.0    # hard cap in $ assoluti per trade
+    vwap_exit_min_profit:    float = 0.008   # VWAP exit solo se profit >= 0.8%
     atr_multiplier:          float = 1.5
     or_position_threshold:   float = 0.66
     gap_retention_threshold: float = 0.70
@@ -324,11 +326,12 @@ def _simulate_day(
     entry_price = price_945
     qty = max(1, int(params.position_size_usd / entry_price))
 
-    # Stops
-    atr14      = _calc_atr14(daily, session_date)
-    stop_atr   = entry_price - (atr14 * params.atr_multiplier) if atr14 > 0 else 0
-    stop_hard  = entry_price * (1 - params.hard_blocker_pct)
-    stop_price = max(stop_atr, stop_hard)
+    # Stops — tightest of: ATR, % hard blocker, $ hard cap
+    atr14       = _calc_atr14(daily, session_date)
+    stop_atr    = entry_price - (atr14 * params.atr_multiplier) if atr14 > 0 else 0
+    stop_pct    = entry_price * (1 - params.hard_blocker_pct)          # -4.5%
+    stop_dollar = entry_price - (params.max_loss_usd / qty)            # max -$25 totale
+    stop_price  = max(stop_atr, stop_pct, stop_dollar)                 # più alto = più stretto
 
     # Replay bars from 9:45 to 15:45
     post_bars = day_bars[
@@ -350,8 +353,13 @@ def _simulate_day(
         price = float(bar["close"])
 
         if price <= stop_price:
-            exit_price  = max(price, stop_hard)
-            exit_reason = "hard_blocker" if price <= stop_hard else "atr_stop"
+            exit_price = max(price, stop_price)
+            if price <= stop_dollar and stop_dollar >= stop_pct:
+                exit_reason = "dollar_stop"
+            elif price <= stop_pct:
+                exit_reason = "hard_blocker"
+            else:
+                exit_reason = "atr_stop"
             break
 
         tp = (float(bar["high"]) + float(bar["low"]) + price) / 3
@@ -359,7 +367,9 @@ def _simulate_day(
         cumtpvol += tp * float(bar["volume"])
         vwap_now  = cumtpvol / cumvol if cumvol > 0 else price
 
-        if price < vwap_now and price > entry_price:
+        # Fix: VWAP exit scatta solo se in profitto >= 0.8%
+        profit_pct = (price - entry_price) / entry_price
+        if price < vwap_now and profit_pct >= params.vwap_exit_min_profit:
             exit_price  = price
             exit_reason = "vwap_exit"
             break
