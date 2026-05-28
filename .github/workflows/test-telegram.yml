@@ -1,0 +1,25 @@
+name: Test Telegram
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send test message
+        run: |
+          curl -s -X POST \
+            "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d text="✅ Trading System — test connessione OK%0A%0ASe vedi questo messaggio, Telegram funziona correttamente." \
+            | python3 -c "
+          import sys, json
+          r = json.load(sys.stdin)
+          if r.get('ok'):
+              print('Messaggio inviato correttamente!')
+              print(f'Message ID: {r[\"result\"][\"message_id\"]}')
+          else:
+              print(f'ERRORE: {r}')
+              sys.exit(1)
+          "
