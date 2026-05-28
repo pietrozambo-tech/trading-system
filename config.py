@@ -40,16 +40,19 @@ CATALYST_TIER3 = 0.55
 CATALYST_NONE  = 0.30
 
 # === RISK MANAGEMENT ===
-POSITION_SIZE_USD        = 500    # $500 per position
+# Paper account: $100k — scala 20:1 vs real ($5k previsti)
+# $45k/trade × 2 = $90k max deployed (90% del conto)
+# Equivalente real: $2,250/trade (45% di $5k)
+POSITION_SIZE_USD        = 45_000  # $45k per trade (paper $100k)
 MAX_POSITIONS            = 2
-HARD_BLOCKER_PCT         = 0.045  # -4.5% dal prezzo di entrata
-MAX_LOSS_PER_TRADE_USD   = 25     # hard stop in $ assoluti — cappella titoli costosi (GS, LLY, ecc.)
+HARD_BLOCKER_PCT         = 0.045   # -4.5% dal prezzo → max -$2,025/trade
+MAX_LOSS_PER_TRADE_USD   = 2_025   # hard cap in $ = 4.5% × $45k (coerente con hard blocker)
 ATR_MULTIPLIER           = 1.5
-ATR_LOOKBACK             = 14     # days
-MAX_DAILY_LOSS_USD       = 50     # sistema si ferma per il giorno
+ATR_LOOKBACK             = 14      # days
+MAX_DAILY_LOSS_USD       = 1_000   # 1% del conto — sistema si ferma per il giorno
 
 # === EXIT RULES ===
-VWAP_EXIT_MIN_PROFIT_PCT = 0.008  # VWAP exit scatta solo se in profitto >= 0.8%
+VWAP_EXIT_MIN_PROFIT_PCT = 0.025   # VWAP exit solo se profit >= 2.5% (da sensitivity analysis)
 
 # === TIMING (ET) ===
 WATCHLIST_TIME       = "09:25"
