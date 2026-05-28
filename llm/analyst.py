@@ -173,8 +173,13 @@ def generate_eod_recap(
     account_equity: float,
     daily_pnl: float,
 ) -> str:
-    """Generate the EOD Telegram message via LLM."""
+    """Generate the EOD Telegram message via LLM. Returns empty string if no meaningful data."""
     import json as _json
+
+    # Se non ci sono dati reali, lascia che il fallback template gestisca il messaggio
+    has_real_data = any(t.get("ticker") for t in trade_data)
+    if not has_real_data:
+        return ""
 
     total_pnl = account_equity - config.PAPER_INITIAL_EQUITY
 

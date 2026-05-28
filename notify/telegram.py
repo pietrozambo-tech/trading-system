@@ -67,8 +67,10 @@ def _fallback_message(
     executed = [t for t in trade_data if t.get("exit_price")]
     skipped  = [t for t in trade_data if not t.get("exit_price")]
 
-    if not executed:
-        reason = skipped[0].get("reason", "nessun segnale sufficiente") if skipped else "nessun segnale"
+    if not executed and not skipped:
+        lines += ["Nessun trade oggi — mercato chiuso o nessun segnale rilevato.", ""]
+    elif not executed:
+        reason = skipped[0].get("reason", "nessun segnale sufficiente")
         lines += ["Nessun trade oggi.", f"Motivo: {reason}", ""]
     else:
         for i, t in enumerate(executed, 1):
