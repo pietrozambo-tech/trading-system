@@ -155,7 +155,7 @@ def _fetch_daily_bars(client, ticker: str, start: date, end: date) -> pd.DataFra
         timeframe=TimeFrame.Day,
         start=datetime.combine(start - timedelta(days=30), datetime.min.time()),
         end=datetime.combine(end, datetime.min.time()),
-        feed="sip",
+        feed="iex",
     )
     try:
         df = client.get_stock_bars(req).df
@@ -180,7 +180,7 @@ def _fetch_intraday_bars(client, ticker: str, start: date, end: date) -> dict[da
         timeframe=TimeFrame.Minute,
         start=start_dt,
         end=end_dt,
-        feed="sip",
+        feed="iex",
     )
     try:
         df = client.get_stock_bars(req).df

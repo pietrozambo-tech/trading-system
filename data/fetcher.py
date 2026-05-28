@@ -59,7 +59,7 @@ def get_daily_bars(ticker: str, lookback_days: int = 25) -> pd.DataFrame:
         timeframe=TimeFrame.Day,
         start=start,
         end=end,
-        feed="sip",
+        feed="iex",
     )
     bars = client.get_stock_bars(req).df
     if isinstance(bars.index, pd.MultiIndex):
@@ -79,7 +79,7 @@ def get_intraday_bars(ticker: str, minutes: int = 1, session_date: Optional[date
         timeframe=TimeFrame.Minute if minutes == 1 else TimeFrame(minutes, "Min"),
         start=start,
         end=end,
-        feed="sip",
+        feed="iex",
     )
     bars = client.get_stock_bars(req).df
     if isinstance(bars.index, pd.MultiIndex):
@@ -165,7 +165,7 @@ def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict
         timeframe=TimeFrame.Minute,
         start=start,
         end=end,
-        feed="sip",
+        feed="iex",
     )
     try:
         bars = client.get_stock_bars(req).df
@@ -205,7 +205,7 @@ def get_historical_premarket_volume_avg(ticker: str, lookback_days: int = 10, se
             timeframe=TimeFrame.Minute,
             start=start,
             end=end,
-            feed="sip",
+            feed="iex",
         )
         try:
             bars = client.get_stock_bars(req).df
@@ -314,7 +314,7 @@ def get_historical_15min_volume(ticker: str, lookback_days: int = 20, session_da
             timeframe=TimeFrame.Minute,
             start=start,
             end=end,
-            feed="sip",
+            feed="iex",
         )
         try:
             bars = client.get_stock_bars(req).df
