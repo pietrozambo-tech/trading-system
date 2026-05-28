@@ -1,7 +1,8 @@
 """
 Daily trading orchestrator — entry point for Railway cron job.
 
-Schedule: 30 13 * * 1-5  (9:25 ET = 13:25 UTC, weekdays only)
+Schedule: 0 13 * * 1-5  (UTC — sempre prima delle 9:25 ET estate/inverno)
+Il cron parte presto, wait_until() gestisce il timing esatto via pytz.
 
 Timeline (all times ET):
   09:25  Build pre-market watchlist
@@ -11,7 +12,9 @@ Timeline (all times ET):
   15:45  Force-close all positions
   16:05  Send Telegram EOD recap
 """
+import json
 import logging
+import os
 import time
 from datetime import datetime
 
@@ -32,9 +35,6 @@ logger = logging.getLogger(__name__)
 
 ET = pytz.timezone("America/New_York")
 
-# ---------------------------------------------------------------------------
-# Universe — replace with your actual screener output or a broader list
-# ---------------------------------------------------------------------------
 UNIVERSE = [
     "AAPL", "MSFT", "NVDA", "AMZN", "META", "GOOGL", "TSLA", "AMD", "NFLX",
     "CRM", "ORCL", "ADBE", "INTC", "QCOM", "MU", "AVGO", "TXN", "AMAT",
@@ -45,8 +45,88 @@ UNIVERSE = [
 ]
 
 
+# ---------------------------------------------------------------------------
+# Pipeline logger — traccia i ticker ad ogni stadio del filtro
+# ---------------------------------------------------------------------------
+
+class PipelineLog:
+    """Accumula un log strutturato dell'intera sessione di trading."""
+
+    def __init__(self, date: str):
+        self.date = date
+        self.stages: list[dict] = []
+        self.signals: list[dict] = []
+        self.llm_input: list[str] = []
+        self.llm_output: dict = {}
+        self.trades: list[dict] = []
+        self.spy_pct: float = 0.0
+        self.blocked: str | None = None
+
+    def log_stage(self, name: str, tickers: list[str], note: str = "") -> None:
+        entry = {"stage": name, "count": len(tickers), "tickers": tickers}
+        if note:
+            entry["note"] = note
+        self.stages.append(entry)
+        logger.info(f"[PIPELINE] {name}: {len(tickers)} ticker {tickers}")
+
+    def log_signals(self, signals: dict) -> None:
+        self.signals.append({
+            "ticker":           signals.get("ticker"),
+            "confidence":       signals.get("confidence"),
+            "above_vwap":       signals.get("above_vwap"),
+            "or_position":      signals.get("or_position"),
+            "gap_retention":    signals.get("gap_retention"),
+            "vol_boost":        signals.get("vol_boost"),
+            "catalyst_mult":    signals.get("catalyst_multiplier"),
+            "gap_pct":          signals.get("gap_pct"),
+        })
+
+    def log_llm(self, candidates: list[dict], result: dict) -> None:
+        self.llm_input  = [c["ticker"] for c in candidates]
+        self.llm_output = result
+
+    def log_trade(self, trade: dict) -> None:
+        self.trades.append(trade)
+
+    def save(self) -> None:
+        os.makedirs("logs", exist_ok=True)
+        path = f"logs/{self.date}.json"
+        payload = {
+            "date":       self.date,
+            "spy_pct":    self.spy_pct,
+            "blocked":    self.blocked,
+            "pipeline":   self.stages,
+            "signals":    self.signals,
+            "llm_input":  self.llm_input,
+            "llm_output": self.llm_output,
+            "trades":     self.trades,
+        }
+        with open(path, "w") as f:
+            json.dump(payload, f, indent=2, default=str)
+        logger.info(f"[PIPELINE] Log salvato in {path}")
+
+    def summary_text(self) -> str:
+        lines = [f"📋 Pipeline {self.date}"]
+        for s in self.stages:
+            lines.append(f"  {s['stage']}: {s['count']} → {s['tickers']}")
+        if self.signals:
+            lines.append("Segnali L2:")
+            for sig in sorted(self.signals, key=lambda x: -(x["confidence"] or 0)):
+                lines.append(
+                    f"  {sig['ticker']}: conf={sig['confidence']:.2f} "
+                    f"vwap={'✓' if sig['above_vwap'] else '✗'} "
+                    f"OR={sig['or_position']:.2f} GR={sig['gap_retention']:.2f}"
+                )
+        if self.blocked:
+            lines.append(f"⛔ Bloccato: {self.blocked}")
+        return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
 def wait_until(target_time_str: str, session_now: datetime) -> None:
-    """Block until the target ET time (HH:MM)."""
     h, m = map(int, target_time_str.split(":"))
     target = session_now.replace(hour=h, minute=m, second=0, microsecond=0)
     delta = (target - datetime.now(ET)).total_seconds()
@@ -59,11 +139,16 @@ def current_et_str() -> str:
     return datetime.now(ET).strftime("%H:%M")
 
 
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
 def run() -> None:
-    now_et = datetime.now(ET)
+    now_et    = datetime.now(ET)
     today_str = now_et.strftime("%Y-%m-%d")
     logger.info(f"=== Trading session start: {today_str} ===")
 
+    pl           = PipelineLog(today_str)
     daily_pnl    = 0.0
     open_positions: list[dict] = []
     all_trades:    list[dict]  = []
@@ -72,52 +157,60 @@ def run() -> None:
     # 09:25 — Pre-market watchlist
     # ------------------------------------------------------------------
     wait_until(config.WATCHLIST_TIME, now_et)
-    logger.info("Building pre-market watchlist …")
+    pl.log_stage("universe", UNIVERSE)
+
     watchlist = eligibility.build_premarket_watchlist(UNIVERSE)
-    logger.info(f"Watchlist: {[c['ticker'] for c in watchlist]}")
+    pl.log_stage("premarket_scan", [c["ticker"] for c in watchlist],
+                 f"gap>+{config.MIN_PREMARKET_GAP:.1%} + vol>{config.MIN_PREMARKET_VOL_RATIO:.0f}x avg")
 
     # ------------------------------------------------------------------
-    # 09:45 — Binary L1 filters + L2 signals + LLM
+    # 09:45 — Binary L1 filters + SPY check + L2 signals + LLM
     # ------------------------------------------------------------------
     wait_until(config.ENTRY_TIME, now_et)
+    spy_pct  = fetcher.get_spy_change()
+    pl.spy_pct = spy_pct
 
-    # SPY macro block check
     if eligibility.check_spy_block():
-        logger.warning("SPY block triggered — no trades today")
-        _send_eod(all_trades, daily_pnl, today_str)
+        pl.blocked = f"SPY {spy_pct:+.2%} < {config.SPY_BLOCK_THRESHOLD:.1%}"
+        logger.warning(f"SPY block triggered ({spy_pct:+.2%}) — no trades today")
+        pl.save()
+        _send_eod(all_trades, daily_pnl, today_str, spy_pct, pl)
         return
 
-    # Apply binary filters
     candidates = eligibility.apply_binary_filters(watchlist)
     candidates = eligibility.filter_earnings_tonight(candidates)
-    logger.info(f"Candidates after L1: {[c['ticker'] for c in candidates]}")
+    pl.log_stage("binary_filters_L1", [c["ticker"] for c in candidates])
 
     if not candidates:
-        logger.info("No candidates after filtering — no trades today")
-        _send_eod(all_trades, daily_pnl, today_str)
+        pl.blocked = "nessun candidato dopo L1"
+        pl.save()
+        _send_eod(all_trades, daily_pnl, today_str, spy_pct, pl)
         return
 
-    # Compute L2 signals for each candidate
+    # L2 signals
     candidates_with_signals = []
     for c in candidates:
-        ticker = c["ticker"]
-        news = fetcher.get_news(ticker, limit=5)
+        ticker        = c["ticker"]
+        news          = fetcher.get_news(ticker, limit=5)
         catalyst_mult = analyst.classify_catalyst_from_news(news)
-        signals = triggers.compute_signals(ticker, c["prev_close"], catalyst_mult)
-        if signals and signals.get("passes_threshold"):
-            merged = {**c, **signals}
-            candidates_with_signals.append(merged)
+        signals       = triggers.compute_signals(ticker, c["prev_close"], catalyst_mult)
+        if signals:
+            pl.log_signals({**signals, "gap_pct": c.get("gap_pct")})
+            if signals.get("passes_threshold"):
+                candidates_with_signals.append({**c, **signals})
 
-    logger.info(f"Above confidence threshold: {[c['ticker'] for c in candidates_with_signals]}")
+    pl.log_stage("L2_signals_passed", [c["ticker"] for c in candidates_with_signals],
+                 f"confidence>={config.CONFIDENCE_THRESHOLD}")
 
     if not candidates_with_signals:
-        logger.info("No candidates passed L2 — no trades today")
-        _send_eod(all_trades, daily_pnl, today_str)
+        pl.blocked = "nessun candidato sopra soglia confidence"
+        pl.save()
+        _send_eod(all_trades, daily_pnl, today_str, spy_pct, pl)
         return
 
-    # LLM analysis
-    spy_pct = fetcher.get_spy_change()
+    # LLM
     llm_result = analyst.analyze_candidates(candidates_with_signals, spy_pct, today_str)
+    pl.log_llm(candidates_with_signals, llm_result)
     logger.info(f"LLM decision: {llm_result}")
 
     # ------------------------------------------------------------------
@@ -137,9 +230,10 @@ def run() -> None:
         if position:
             open_positions.append(position)
             all_trades.append(position)
+            pl.log_trade(position)
 
     # ------------------------------------------------------------------
-    # Intraday monitoring loop (every 5 min until 15:45 ET)
+    # Intraday monitoring loop
     # ------------------------------------------------------------------
     logger.info("Starting monitoring loop …")
     while current_et_str() < config.EOD_CLOSE_TIME:
@@ -150,8 +244,9 @@ def run() -> None:
             break
         time.sleep(config.MONITORING_INTERVAL)
         open_positions, just_closed, daily_pnl = trader.monitor_positions(open_positions, daily_pnl)
-        for closed_pos in just_closed:
-            logger.info(f"Closed: {closed_pos['ticker']} {closed_pos['exit_reason']} P&L=${closed_pos['pnl_usd']:.2f}")
+        for pos in just_closed:
+            logger.info(f"Closed: {pos['ticker']} {pos['exit_reason']} P&L=${pos['pnl_usd']:.2f}")
+            pl.log_trade(pos)
 
     # ------------------------------------------------------------------
     # 15:45 — EOD hard close
@@ -159,26 +254,30 @@ def run() -> None:
     if open_positions:
         logger.info("EOD close — forcing all positions")
         closed_eod, daily_pnl = trader.close_all_positions_eod(open_positions, daily_pnl)
+        for pos in closed_eod:
+            pl.log_trade(pos)
         open_positions = []
 
     logger.info(f"Day P&L: ${daily_pnl:.2f}")
+    pl.save()
 
     # ------------------------------------------------------------------
     # 16:05 — Telegram EOD recap
     # ------------------------------------------------------------------
     wait_until(config.TELEGRAM_NOTIFY_TIME, now_et)
-    _send_eod(all_trades, daily_pnl, today_str, spy_pct)
+    _send_eod(all_trades, daily_pnl, today_str, spy_pct, pl)
 
 
 def _send_eod(
     all_trades: list[dict],
-    daily_pnl: float,
-    today_str: str,
-    spy_pct: float = 0.0,
+    daily_pnl:  float,
+    today_str:  str,
+    spy_pct:    float = 0.0,
+    pl:         PipelineLog | None = None,
 ) -> None:
     try:
         account = fetcher.get_account()
-        equity = account["equity"]
+        equity  = account["equity"]
     except Exception:
         equity = 0.0
 
@@ -187,6 +286,11 @@ def _send_eod(
     except Exception as e:
         logger.warning(f"LLM EOD recap failed: {e}")
         llm_text = ""
+
+    # Aggiungi pipeline summary al messaggio Telegram
+    if pl:
+        pipeline_summary = "\n\n" + pl.summary_text()
+        llm_text = (llm_text or "") + pipeline_summary
 
     telegram.send_eod_recap(
         trade_data=all_trades,
