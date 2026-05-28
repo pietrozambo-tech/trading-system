@@ -1,4 +1,5 @@
 import logging
+import time
 from datetime import datetime, timedelta, date
 from typing import Optional
 
@@ -15,13 +16,30 @@ from alpaca.data.timeframe import TimeFrame
 from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import GetAssetsRequest
 from alpaca.trading.enums import AssetClass, AssetStatus
-from alpaca.broker.client import BrokerClient
 
 import config
 
 logger = logging.getLogger(__name__)
 
 ET = pytz.timezone("America/New_York")
+
+
+def _with_retry(fn, *args, retries: int = 3, **kwargs):
+    """Esegue fn con retry automatico su rate limit (429) o errori temporanei."""
+    wait = 5
+    for attempt in range(retries):
+        try:
+            return fn(*args, **kwargs)
+        except Exception as e:
+            msg = str(e)
+            is_rate_limit = "429" in msg or "too many requests" in msg.lower()
+            is_last = attempt == retries - 1
+            if is_last:
+                raise
+            sleep_time = wait * (2 ** attempt) if is_rate_limit else wait
+            logger.warning(f"API error (attempt {attempt+1}/{retries}): {msg[:80]} — retry in {sleep_time}s")
+            time.sleep(sleep_time)
+
 
 _data_client: Optional[StockHistoricalDataClient] = None
 _trading_client: Optional[TradingClient] = None
@@ -61,7 +79,7 @@ def get_daily_bars(ticker: str, lookback_days: int = 25) -> pd.DataFrame:
         end=end,
         feed="iex",
     )
-    bars = client.get_stock_bars(req).df
+    bars = _with_retry(client.get_stock_bars, req).df
     if isinstance(bars.index, pd.MultiIndex):
         bars = bars.xs(ticker, level="symbol")
     return bars.tail(lookback_days)
@@ -81,7 +99,7 @@ def get_intraday_bars(ticker: str, minutes: int = 1, session_date: Optional[date
         end=end,
         feed="iex",
     )
-    bars = client.get_stock_bars(req).df
+    bars = _with_retry(client.get_stock_bars, req).df
     if isinstance(bars.index, pd.MultiIndex):
         bars = bars.xs(ticker, level="symbol")
     return bars
@@ -104,7 +122,7 @@ def get_latest_quote(ticker: str) -> dict:
     """Latest bid/ask for spread calculation."""
     client = get_data_client()
     req = StockLatestQuoteRequest(symbol_or_symbols=ticker)
-    quote = client.get_stock_latest_quote(req)[ticker]
+    quote = _with_retry(client.get_stock_latest_quote, req)[ticker]
     return {
         "bid": float(quote.bid_price),
         "ask": float(quote.ask_price),
@@ -117,7 +135,7 @@ def get_snapshot(ticker: str) -> dict:
     """Full snapshot: latest trade, quote, daily + minute bars."""
     client = get_data_client()
     req = StockSnapshotRequest(symbol_or_symbols=ticker)
-    snap = client.get_stock_snapshot(req)[ticker]
+    snap = _with_retry(client.get_stock_snapshot, req)[ticker]
     return snap
 
 
@@ -125,7 +143,7 @@ def get_latest_bar(ticker: str) -> dict:
     """Most recent 1-min bar."""
     client = get_data_client()
     req = StockLatestBarRequest(symbol_or_symbols=ticker)
-    bar = client.get_stock_latest_bar(req)[ticker]
+    bar = _with_retry(client.get_stock_latest_bar, req)[ticker]
     return {"open": bar.open, "high": bar.high, "low": bar.low, "close": bar.close, "volume": bar.volume}
 
 
@@ -168,7 +186,7 @@ def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict
         feed="iex",
     )
     try:
-        bars = client.get_stock_bars(req).df
+        bars = _with_retry(client.get_stock_bars, req).df
         if isinstance(bars.index, pd.MultiIndex):
             bars = bars.xs(ticker, level="symbol")
         if bars.empty:
@@ -208,7 +226,7 @@ def get_historical_premarket_volume_avg(ticker: str, lookback_days: int = 10, se
             feed="iex",
         )
         try:
-            bars = client.get_stock_bars(req).df
+            bars = _with_retry(client.get_stock_bars, req).df
             if isinstance(bars.index, pd.MultiIndex):
                 bars = bars.xs(ticker, level="symbol")
             if not bars.empty:
@@ -317,7 +335,7 @@ def get_historical_15min_volume(ticker: str, lookback_days: int = 20, session_da
             feed="iex",
         )
         try:
-            bars = client.get_stock_bars(req).df
+            bars = _with_retry(client.get_stock_bars, req).df
             if isinstance(bars.index, pd.MultiIndex):
                 bars = bars.xs(ticker, level="symbol")
             if not bars.empty:
