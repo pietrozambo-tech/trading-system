@@ -1,81 +1,83 @@
 """
-Backtesting engine.
+Backtesting engine v2 — bulk fetch + in-memory simulation.
 
-Simulates the daily trading loop on historical data.
-- No LLM calls: catalyst multiplier is proxied from earnings data.
-- Confidence score computed on S1/S2/S3/S4 signals only.
-- All parameters configurable for sensitivity analysis.
+Strategy:
+  - Fetch all daily bars per ticker ONCE for the full period
+  - Fetch all 1-min bars per ticker ONCE for the full period
+  - Split intraday data by date in memory
+  - Simulate each trading day from cached DataFrames
+
+This reduces API calls from O(tickers × days × calls) → O(tickers × 2).
 """
 import logging
 from dataclasses import dataclass, field
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import Optional
 
 import pandas as pd
 import pytz
+from alpaca.data import StockHistoricalDataClient
+from alpaca.data.requests import StockBarsRequest
+from alpaca.data.timeframe import TimeFrame
 
-from data import fetcher
-from signals.triggers import (
-    s1_above_vwap,
-    s2_or_position,
-    s3_gap_retention,
-    calc_confidence,
-)
+import config
 
 logger = logging.getLogger(__name__)
 
 ET = pytz.timezone("America/New_York")
 
 
+# ---------------------------------------------------------------------------
+# Parameters
+# ---------------------------------------------------------------------------
+
 @dataclass
 class BacktestParams:
-    confidence_threshold: float = 0.65
-    hard_blocker_pct: float = 0.045
-    atr_multiplier: float = 1.5
-    or_position_threshold: float = 0.66
+    confidence_threshold:    float = 0.65
+    hard_blocker_pct:        float = 0.045
+    atr_multiplier:          float = 1.5
+    or_position_threshold:   float = 0.66
     gap_retention_threshold: float = 0.70
-    position_size_usd: float = 500.0
-    max_positions: int = 2
-    catalyst_earnings: float = 1.0   # proxy: had earnings yesterday
-    catalyst_default: float = 0.80   # all others assumed Tier 2
+    min_gap_pct:             float = 0.002   # +0.2% long-only
+    position_size_usd:       float = 500.0
+    max_positions:           int   = 2
+    catalyst_earnings:       float = 1.00    # proxy: earnings yesterday → Tier 1
+    catalyst_default:        float = 0.80    # all others → Tier 2
 
+
+# ---------------------------------------------------------------------------
+# Results
+# ---------------------------------------------------------------------------
 
 @dataclass
 class TradeResult:
-    ticker: str
-    date: str
-    entry_price: float
-    exit_price: float
-    exit_reason: str
-    qty: int
-    pnl_usd: float
-    pnl_pct: float
-    confidence: float
-    above_vwap: bool
-    or_position: float
+    ticker:       str
+    date:         str
+    entry_price:  float
+    exit_price:   float
+    exit_reason:  str
+    qty:          int
+    pnl_usd:      float
+    pnl_pct:      float
+    confidence:   float
+    above_vwap:   bool
+    or_position:  float
     gap_retention: float
 
 
 @dataclass
 class BacktestResults:
-    trades: list[TradeResult] = field(default_factory=list)
-    daily_pnl: dict = field(default_factory=dict)
+    trades:    list[TradeResult] = field(default_factory=list)
+    daily_pnl: dict              = field(default_factory=dict)
 
     @property
     def total_trades(self) -> int:
         return len(self.trades)
 
     @property
-    def winning_trades(self) -> int:
-        return sum(1 for t in self.trades if t.pnl_usd > 0)
-
-    @property
     def win_rate(self) -> float:
-        return self.winning_trades / self.total_trades if self.total_trades else 0
-
-    @property
-    def total_pnl(self) -> float:
-        return sum(t.pnl_usd for t in self.trades)
+        wins = sum(1 for t in self.trades if t.pnl_usd > 0)
+        return wins / self.total_trades if self.total_trades else 0
 
     @property
     def profit_factor(self) -> float:
@@ -99,158 +101,299 @@ class BacktestResults:
 
     @property
     def max_drawdown(self) -> float:
-        equity = [0.0]
-        for pnl in [t.pnl_usd for t in self.trades]:
-            equity.append(equity[-1] + pnl)
-        peak = equity[0]
-        max_dd = 0.0
-        for v in equity:
-            if v > peak:
-                peak = v
-            dd = peak - v
-            if dd > max_dd:
-                max_dd = dd
+        equity, peak, max_dd = 0.0, 0.0, 0.0
+        for t in self.trades:
+            equity += t.pnl_usd
+            peak = max(peak, equity)
+            max_dd = max(max_dd, peak - equity)
         return max_dd
+
+    @property
+    def trades_per_month(self) -> float:
+        if not self.trades:
+            return 0
+        dates = sorted(set(t.date for t in self.trades))
+        months = max(1, (pd.to_datetime(dates[-1]) - pd.to_datetime(dates[0])).days / 30)
+        return self.total_trades / months
 
     def summary(self) -> dict:
         return {
-            "total_trades": self.total_trades,
-            "win_rate": round(self.win_rate, 4),
-            "profit_factor": round(self.profit_factor, 4),
-            "avg_win_loss_ratio": round(self.avg_win_loss_ratio, 4),
-            "total_pnl_usd": round(self.total_pnl, 2),
-            "avg_win_usd": round(self.avg_win, 2),
-            "avg_loss_usd": round(self.avg_loss, 2),
-            "max_drawdown_usd": round(self.max_drawdown, 2),
+            "total_trades":        self.total_trades,
+            "win_rate":            round(self.win_rate, 4),
+            "profit_factor":       round(self.profit_factor, 4),
+            "avg_win_loss_ratio":  round(self.avg_win_loss_ratio, 4),
+            "total_pnl_usd":       round(sum(t.pnl_usd for t in self.trades), 2),
+            "avg_win_usd":         round(self.avg_win, 2),
+            "avg_loss_usd":        round(self.avg_loss, 2),
+            "max_drawdown_usd":    round(self.max_drawdown, 2),
+            "trades_per_month":    round(self.trades_per_month, 1),
         }
 
+    def to_dataframe(self) -> pd.DataFrame:
+        if not self.trades:
+            return pd.DataFrame()
+        return pd.DataFrame([t.__dict__ for t in self.trades])
 
-def _get_trading_days(start: date, end: date) -> list[date]:
-    days = []
-    d = start
+
+# ---------------------------------------------------------------------------
+# Bulk data fetching
+# ---------------------------------------------------------------------------
+
+def _get_client() -> StockHistoricalDataClient:
+    return StockHistoricalDataClient(
+        api_key=config.ALPACA_API_KEY,
+        secret_key=config.ALPACA_SECRET_KEY,
+    )
+
+
+def _fetch_daily_bars(client, ticker: str, start: date, end: date) -> pd.DataFrame:
+    """All daily bars for a ticker in one API call."""
+    req = StockBarsRequest(
+        symbol_or_symbols=ticker,
+        timeframe=TimeFrame.Day,
+        start=datetime.combine(start - timedelta(days=30), datetime.min.time()),
+        end=datetime.combine(end, datetime.min.time()),
+        feed="sip",
+    )
+    try:
+        df = client.get_stock_bars(req).df
+        if isinstance(df.index, pd.MultiIndex):
+            df = df.xs(ticker, level="symbol")
+        df.index = pd.to_datetime(df.index).tz_localize(None)
+        return df
+    except Exception as e:
+        logger.warning(f"Daily bars fetch failed for {ticker}: {e}")
+        return pd.DataFrame()
+
+
+def _fetch_intraday_bars(client, ticker: str, start: date, end: date) -> dict[date, pd.DataFrame]:
+    """
+    All 1-min bars for a ticker for the full period in one API call.
+    Returns dict keyed by session date.
+    """
+    start_dt = ET.localize(datetime.combine(start, datetime.strptime("09:28", "%H:%M").time()))
+    end_dt   = ET.localize(datetime.combine(end,   datetime.strptime("16:01", "%H:%M").time()))
+    req = StockBarsRequest(
+        symbol_or_symbols=ticker,
+        timeframe=TimeFrame.Minute,
+        start=start_dt,
+        end=end_dt,
+        feed="sip",
+    )
+    try:
+        df = client.get_stock_bars(req).df
+        if isinstance(df.index, pd.MultiIndex):
+            df = df.xs(ticker, level="symbol")
+        df.index = df.index.tz_convert(ET)
+        by_date: dict[date, pd.DataFrame] = {}
+        for d, group in df.groupby(df.index.date):
+            by_date[d] = group
+        return by_date
+    except Exception as e:
+        logger.warning(f"Intraday bars fetch failed for {ticker}: {e}")
+        return {}
+
+
+def prefetch_universe(
+    universe: list[str],
+    start: date,
+    end: date,
+) -> dict[str, dict]:
+    """
+    Pre-fetch all data for all tickers. Returns cache dict.
+    Total API calls: len(universe) × 2.
+    """
+    client = _get_client()
+    cache = {}
+    for i, ticker in enumerate(universe, 1):
+        logger.info(f"Fetching {ticker} ({i}/{len(universe)}) …")
+        daily    = _fetch_daily_bars(client, ticker, start, end)
+        intraday = _fetch_intraday_bars(client, ticker, start, end)
+        cache[ticker] = {"daily": daily, "intraday": intraday}
+    logger.info(f"Prefetch complete: {len(cache)} tickers")
+    return cache
+
+
+# ---------------------------------------------------------------------------
+# Signal computation (from cached DataFrames)
+# ---------------------------------------------------------------------------
+
+def _calc_vwap(bars: pd.DataFrame) -> float:
+    bars = bars.copy()
+    bars["tp"] = (bars["high"] + bars["low"] + bars["close"]) / 3
+    bars["tpv"] = bars["tp"] * bars["volume"]
+    return float((bars["tpv"].cumsum() / bars["volume"].cumsum()).iloc[-1])
+
+
+def _calc_atr14(daily: pd.DataFrame, as_of: date) -> float:
+    hist = daily[daily.index.date < as_of].tail(15)
+    if len(hist) < 2:
+        return 0.0
+    h, l, c = hist["high"], hist["low"], hist["close"]
+    tr = pd.concat([h - l, (h - c.shift()).abs(), (l - c.shift()).abs()], axis=1).max(axis=1)
+    val = tr.rolling(14).mean().iloc[-1]
+    return float(val) if pd.notna(val) else 0.0
+
+
+def _calc_hist_15min_vol(intraday_by_date: dict, as_of: date, lookback: int = 20) -> float:
+    """Compute rolling average of 9:30–9:45 volume from cached intraday data."""
+    totals = []
+    sorted_dates = sorted(d for d in intraday_by_date if d < as_of)
+    for d in sorted_dates[-lookback:]:
+        bars = intraday_by_date[d]
+        or_bars = bars[(bars.index.hour == 9) & (bars.index.minute < 45) & (bars.index.minute >= 30)]
+        if not or_bars.empty:
+            totals.append(float(or_bars["volume"].sum()))
+    return sum(totals) / len(totals) if totals else 0.0
+
+
+# ---------------------------------------------------------------------------
+# Single-day simulation
+# ---------------------------------------------------------------------------
+
+def _simulate_day(
+    ticker: str,
+    session_date: date,
+    cache: dict,
+    params: BacktestParams,
+) -> Optional[TradeResult]:
+    daily          = cache["daily"]
+    intraday_cache = cache["intraday"]
+
+    if session_date not in intraday_cache:
+        return None
+
+    # Previous close
+    prev_daily = daily[daily.index.date < session_date]
+    if len(prev_daily) < 2:
+        return None
+    prev_close = float(prev_daily["close"].iloc[-1])
+
+    # Opening range bars (9:30–9:45)
+    day_bars = intraday_cache[session_date]
+    or_bars  = day_bars[
+        (day_bars.index.hour == 9) &
+        (day_bars.index.minute >= 30) &
+        (day_bars.index.minute < 45)
+    ]
+    if len(or_bars) < 3:
+        return None
+
+    open_930   = float(or_bars["open"].iloc[0])
+    price_945  = float(or_bars["close"].iloc[-1])
+
+    # L1 gap filter — long only, min +0.2%
+    gap_pct = (open_930 - prev_close) / prev_close
+    if gap_pct < params.min_gap_pct:
+        return None
+
+    # S1 — VWAP
+    vwap      = _calc_vwap(or_bars)
+    above_vwap = price_945 > vwap
+
+    # S2 — Opening Range position
+    or_high = float(or_bars["high"].max())
+    or_low  = float(or_bars["low"].min())
+    or_pos  = (price_945 - or_low) / (or_high - or_low) if or_high != or_low else 0.5
+
+    # S3 — Gap retention
+    gap_size  = open_930 - prev_close
+    gap_eaten = open_930 - float(or_bars["low"].min())
+    gap_ret   = 1.0 - (gap_eaten / gap_size) if abs(gap_size) > 0.001 else 1.0
+
+    # S4 — Volume boost from cached historical 15min volume
+    vol_today = float(or_bars["volume"].sum())
+    vol_avg   = _calc_hist_15min_vol(intraday_cache, session_date, lookback=20)
+    vol_ratio = vol_today / vol_avg if vol_avg > 0 else 0
+    vol_boost = 0.10 if vol_ratio > 3 else (0.05 if vol_ratio > 2 else 0.0)
+
+    # Catalyst proxy (no LLM in backtest)
+    catalyst_mult = params.catalyst_earnings  # conservative: assume Tier 2 for all
+
+    direction_score = sum([
+        above_vwap,
+        or_pos > params.or_position_threshold,
+        gap_ret > params.gap_retention_threshold,
+    ])
+    confidence = min((direction_score / 3 * catalyst_mult) + vol_boost, 1.0)
+
+    if confidence < params.confidence_threshold:
+        return None
+
+    # Entry
+    entry_price = price_945
+    qty = max(1, int(params.position_size_usd / entry_price))
+
+    # Stops
+    atr14      = _calc_atr14(daily, session_date)
+    stop_atr   = entry_price - (atr14 * params.atr_multiplier) if atr14 > 0 else 0
+    stop_hard  = entry_price * (1 - params.hard_blocker_pct)
+    stop_price = max(stop_atr, stop_hard)
+
+    # Replay bars from 9:45 to 15:45
+    post_bars = day_bars[
+        ((day_bars.index.hour == 9)  & (day_bars.index.minute >= 45)) |
+        ((day_bars.index.hour > 9)   & (day_bars.index.hour < 15))    |
+        ((day_bars.index.hour == 15) & (day_bars.index.minute <= 45))
+    ]
+
+    exit_price  = entry_price
+    exit_reason = "eod_close"
+    cumvol, cumtpvol = 0.0, 0.0
+
+    for ts, bar in post_bars.iterrows():
+        if ts.hour == 15 and ts.minute >= 45:
+            exit_price  = float(bar["close"])
+            exit_reason = "eod_close"
+            break
+
+        price = float(bar["close"])
+
+        if price <= stop_price:
+            exit_price  = max(price, stop_hard)
+            exit_reason = "hard_blocker" if price <= stop_hard else "atr_stop"
+            break
+
+        tp = (float(bar["high"]) + float(bar["low"]) + price) / 3
+        cumvol   += float(bar["volume"])
+        cumtpvol += tp * float(bar["volume"])
+        vwap_now  = cumtpvol / cumvol if cumvol > 0 else price
+
+        if price < vwap_now and price > entry_price:
+            exit_price  = price
+            exit_reason = "vwap_exit"
+            break
+
+    pnl_usd = (exit_price - entry_price) * qty
+    pnl_pct = (exit_price - entry_price) / entry_price
+
+    return TradeResult(
+        ticker=ticker,
+        date=str(session_date),
+        entry_price=round(entry_price, 4),
+        exit_price=round(exit_price, 4),
+        exit_reason=exit_reason,
+        qty=qty,
+        pnl_usd=round(pnl_usd, 2),
+        pnl_pct=round(pnl_pct, 4),
+        confidence=round(confidence, 4),
+        above_vwap=above_vwap,
+        or_position=round(or_pos, 4),
+        gap_retention=round(gap_ret, 4),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Main backtest runner
+# ---------------------------------------------------------------------------
+
+def _trading_days(start: date, end: date) -> list[date]:
+    days, d = [], start
     while d <= end:
         if d.weekday() < 5:
             days.append(d)
         d += timedelta(days=1)
     return days
-
-
-def _simulate_day(
-    ticker: str,
-    session_date: date,
-    params: BacktestParams,
-    had_earnings_yesterday: bool = False,
-) -> Optional[TradeResult]:
-    """
-    Simulate one ticker on one day.
-    Returns TradeResult if a trade was taken, else None.
-    """
-    try:
-        daily = fetcher.get_daily_bars(ticker, lookback_days=25)
-        if len(daily) < 2:
-            return None
-
-        daily.index = pd.to_datetime(daily.index)
-        daily_before = daily[daily.index.date < session_date]
-        if len(daily_before) < 2:
-            return None
-
-        prev_close = float(daily_before["close"].iloc[-1])
-
-        bars_or = fetcher.get_opening_range_bars(ticker, session_date)
-        if bars_or.empty or len(bars_or) < 2:
-            return None
-
-        open_930  = float(bars_or["open"].iloc[0])
-        price_945 = float(bars_or["close"].iloc[-1])
-
-        if abs(open_930 - prev_close) / prev_close < 0.015:
-            return None  # no meaningful gap
-
-        catalyst_mult = params.catalyst_earnings if had_earnings_yesterday else params.catalyst_default
-
-        above_vwap  = s1_above_vwap(bars_or, price_945)
-        or_pos      = s2_or_position(bars_or, price_945)
-        gap_ret     = s3_gap_retention(bars_or, open_930, prev_close)
-
-        # No historical 15-min volume in backtest — use neutral boost
-        vol_boost = 0.05
-        confidence = calc_confidence(above_vwap, or_pos, gap_ret, catalyst_mult, vol_boost)
-
-        if confidence < params.confidence_threshold:
-            return None
-
-        # Simulate entry
-        entry_price = price_945
-        qty = max(1, int(params.position_size_usd / entry_price))
-
-        # Stops
-        atr14 = fetcher.get_atr14(ticker)
-        stop_atr  = entry_price - (atr14 * params.atr_multiplier) if atr14 > 0 else 0
-        stop_hard = entry_price * (1 - params.hard_blocker_pct)
-        stop_price = max(stop_atr, stop_hard)
-
-        # Replay intraday bars after 9:45
-        intraday = fetcher.get_intraday_bars(ticker, minutes=1, session_date=session_date)
-        if intraday.empty:
-            return None
-        intraday.index = intraday.index.tz_convert(ET)
-
-        eod_cutoff_hour, eod_cutoff_min = 15, 45
-        exit_price  = entry_price
-        exit_reason = "eod_close"
-
-        cumvol = 0.0
-        cumtpvol = 0.0
-
-        for ts, bar in intraday.iterrows():
-            if ts.hour < 9 or (ts.hour == 9 and ts.minute < 45):
-                continue
-            if ts.hour > eod_cutoff_hour or (ts.hour == eod_cutoff_hour and ts.minute >= eod_cutoff_min):
-                exit_reason = "eod_close"
-                exit_price  = float(bar["close"])
-                break
-
-            price = float(bar["close"])
-
-            # Hard stop / ATR stop
-            if price <= stop_price:
-                exit_price  = stop_price
-                exit_reason = "hard_blocker" if price <= entry_price * (1 - params.hard_blocker_pct) else "atr_stop"
-                break
-
-            # VWAP trailing exit (simplified: use cumulative VWAP from open)
-            tp = (float(bar["high"]) + float(bar["low"]) + price) / 3
-            cumvol   += float(bar["volume"])
-            cumtpvol += tp * float(bar["volume"])
-            vwap_now = cumtpvol / cumvol if cumvol > 0 else price
-
-            if price < vwap_now and price > entry_price:
-                exit_price  = price
-                exit_reason = "vwap_exit"
-                break
-
-        pnl_usd = (exit_price - entry_price) * qty
-        pnl_pct = (exit_price - entry_price) / entry_price
-
-        return TradeResult(
-            ticker=ticker,
-            date=str(session_date),
-            entry_price=round(entry_price, 4),
-            exit_price=round(exit_price, 4),
-            exit_reason=exit_reason,
-            qty=qty,
-            pnl_usd=round(pnl_usd, 2),
-            pnl_pct=round(pnl_pct, 4),
-            confidence=round(confidence, 4),
-            above_vwap=above_vwap,
-            or_position=round(or_pos, 4),
-            gap_retention=round(gap_ret, 4),
-        )
-
-    except Exception as e:
-        logger.warning(f"Backtest error {ticker} {session_date}: {e}")
-        return None
 
 
 def run_backtest(
@@ -259,23 +402,25 @@ def run_backtest(
     end_date: date,
     params: Optional[BacktestParams] = None,
 ) -> BacktestResults:
-    """
-    Run backtest over date range for a universe of tickers.
-    """
     if params is None:
         params = BacktestParams()
 
-    results = BacktestResults()
-    trading_days = _get_trading_days(start_date, end_date)
+    logger.info(f"Backtest: {start_date} → {end_date} | {len(universe)} tickers")
 
-    for day in trading_days:
-        day_pnl = 0.0
+    # Bulk fetch — O(tickers × 2) API calls
+    all_cache = prefetch_universe(universe, start_date, end_date)
+
+    results = BacktestResults()
+    for day in _trading_days(start_date, end_date):
+        day_pnl    = 0.0
         day_trades = 0
 
         for ticker in universe:
             if day_trades >= params.max_positions:
                 break
-            trade = _simulate_day(ticker, day, params)
+            if ticker not in all_cache:
+                continue
+            trade = _simulate_day(ticker, day, all_cache[ticker], params)
             if trade:
                 results.trades.append(trade)
                 day_pnl += trade.pnl_usd
@@ -283,39 +428,49 @@ def run_backtest(
 
         results.daily_pnl[str(day)] = round(day_pnl, 2)
 
-    logger.info(f"Backtest complete: {results.total_trades} trades | {results.summary()}")
+    logger.info(f"Done: {results.total_trades} trades | {results.summary()}")
     return results
 
+
+# ---------------------------------------------------------------------------
+# Sensitivity analysis
+# ---------------------------------------------------------------------------
 
 def sensitivity_analysis(
     universe: list[str],
     start_date: date,
     end_date: date,
 ) -> pd.DataFrame:
-    """
-    Run backtest across a grid of parameter combinations.
-    Returns a DataFrame ranked by profit factor.
-    """
     import itertools
 
-    confidence_thresholds = [0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85]
-    hard_blocker_pcts     = [0.03, 0.035, 0.04, 0.045, 0.05, 0.055, 0.06]
-    atr_multipliers       = [1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5]
+    logger.info("Pre-fetching data for sensitivity analysis …")
+    all_cache = prefetch_universe(universe, start_date, end_date)
+    days      = _trading_days(start_date, end_date)
+
+    conf_thresholds  = [0.55, 0.60, 0.65, 0.70, 0.75, 0.80]
+    hard_blockers    = [0.030, 0.035, 0.040, 0.045, 0.050, 0.055, 0.060]
+    atr_multipliers  = [1.0, 1.25, 1.5, 1.75, 2.0, 2.5]
+
+    combos = list(itertools.product(conf_thresholds, hard_blockers, atr_multipliers))
+    logger.info(f"Sensitivity: {len(combos)} parameter combinations")
 
     rows = []
-    combos = list(itertools.product(confidence_thresholds, hard_blocker_pcts, atr_multipliers))
-    logger.info(f"Sensitivity: {len(combos)} combinations")
-
     for conf, hb, atr in combos:
-        p = BacktestParams(
-            confidence_threshold=conf,
-            hard_blocker_pct=hb,
-            atr_multiplier=atr,
-        )
-        res = run_backtest(universe, start_date, end_date, p)
+        p   = BacktestParams(confidence_threshold=conf, hard_blocker_pct=hb, atr_multiplier=atr)
+        res = BacktestResults()
+
+        for day in days:
+            day_trades = 0
+            for ticker in universe:
+                if day_trades >= p.max_positions or ticker not in all_cache:
+                    continue
+                trade = _simulate_day(ticker, day, all_cache[ticker], p)
+                if trade:
+                    res.trades.append(trade)
+                    day_trades += 1
+
         row = {"confidence_threshold": conf, "hard_blocker_pct": hb, "atr_multiplier": atr}
         row.update(res.summary())
         rows.append(row)
 
-    df = pd.DataFrame(rows).sort_values("profit_factor", ascending=False)
-    return df
+    return pd.DataFrame(rows).sort_values("profit_factor", ascending=False)
