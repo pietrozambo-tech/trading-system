@@ -182,6 +182,43 @@ def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict
         return {"premarket_volume": 0, "premarket_price": None}
 
 
+def get_historical_premarket_volume_avg(ticker: str, lookback_days: int = 10, session_date: Optional[date] = None) -> float:
+    """
+    Average pre-market volume (04:00–09:25 ET) over last N trading days.
+    Apple-to-apple comparison for the pre-market scan.
+    """
+    client = get_data_client()
+    if session_date is None:
+        session_date = datetime.now(ET).date()
+    totals = []
+    check_date = session_date - timedelta(days=1)
+    attempts = 0
+    while len(totals) < lookback_days and attempts < lookback_days * 3:
+        attempts += 1
+        if check_date.weekday() >= 5:
+            check_date -= timedelta(days=1)
+            continue
+        start = ET.localize(datetime.combine(check_date, datetime.strptime("04:00", "%H:%M").time()))
+        end   = ET.localize(datetime.combine(check_date, datetime.strptime("09:26", "%H:%M").time()))
+        req = StockBarsRequest(
+            symbol_or_symbols=ticker,
+            timeframe=TimeFrame.Minute,
+            start=start,
+            end=end,
+            feed="sip",
+        )
+        try:
+            bars = client.get_stock_bars(req).df
+            if isinstance(bars.index, pd.MultiIndex):
+                bars = bars.xs(ticker, level="symbol")
+            if not bars.empty:
+                totals.append(int(bars["volume"].sum()))
+        except Exception:
+            pass
+        check_date -= timedelta(days=1)
+    return float(sum(totals) / len(totals)) if totals else 0.0
+
+
 def get_news(ticker: str, start: Optional[datetime] = None, limit: int = 10) -> list[dict]:
     """Recent news via Alpaca News API (Benzinga)."""
     import requests

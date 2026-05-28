@@ -40,23 +40,35 @@ def build_premarket_watchlist(universe: list[str], session_date: Optional[date] 
                 continue
 
             gap_pct = (pm_price - prev_close) / prev_close
-            vol_vs_adv = pm_volume / adv if adv > 0 else 0
 
-            if abs(gap_pct) >= config.MIN_PREMARKET_GAP and vol_vs_adv >= config.MIN_PREMARKET_VOL_ADV:
+            # Solo gap positivi (long only)
+            if gap_pct < config.MIN_PREMARKET_GAP:
+                continue
+
+            # Volume pre-market vs media pre-market ultimi 10gg (apple-to-apple)
+            pm_vol_avg = fetcher.get_historical_premarket_volume_avg(
+                ticker,
+                lookback_days=config.PREMARKET_VOL_LOOKBACK,
+                session_date=session_date,
+            )
+            vol_ratio = pm_volume / pm_vol_avg if pm_vol_avg > 0 else 0
+
+            if vol_ratio >= config.MIN_PREMARKET_VOL_RATIO:
                 candidates.append({
                     "ticker": ticker,
                     "prev_close": prev_close,
                     "premarket_price": pm_price,
                     "premarket_volume": pm_volume,
+                    "premarket_vol_avg": pm_vol_avg,
                     "gap_pct": gap_pct,
-                    "vol_vs_adv": vol_vs_adv,
+                    "premarket_vol_ratio": vol_ratio,
                     "adv": adv,
                 })
-                logger.info(f"Watchlist: {ticker} gap={gap_pct:.2%} vol_adv={vol_vs_adv:.1f}x")
+                logger.info(f"Watchlist: {ticker} gap={gap_pct:.2%} pm_vol_ratio={vol_ratio:.1f}x")
         except Exception as e:
             logger.warning(f"Watchlist error for {ticker}: {e}")
 
-    candidates.sort(key=lambda x: abs(x["gap_pct"]), reverse=True)
+    candidates.sort(key=lambda x: x["gap_pct"], reverse=True)
     return candidates
 
 
