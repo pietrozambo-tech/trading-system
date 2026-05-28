@@ -35,7 +35,9 @@ def main():
     check(".env loaded / ALPACA_SECRET_KEY set",  bool(config.ALPACA_SECRET_KEY),  "***" if config.ALPACA_SECRET_KEY else "MISSING")
     check("ALPACA_BASE_URL is paper",             "paper-api" in (config.ALPACA_BASE_URL or ""), config.ALPACA_BASE_URL)
     check("ANTHROPIC_API_KEY set",                bool(config.ANTHROPIC_API_KEY),  "***" if config.ANTHROPIC_API_KEY else "MISSING")
-    check("TELEGRAM_BOT_TOKEN set",               bool(config.TELEGRAM_BOT_TOKEN), "set" if config.TELEGRAM_BOT_TOKEN else "MISSING (optional for now)")
+    # Telegram is optional — warn but don't exit
+    icon = "✓" if config.TELEGRAM_BOT_TOKEN else "⚠"
+    print(f"  {icon}  TELEGRAM_BOT_TOKEN  →  {'set' if config.TELEGRAM_BOT_TOKEN else 'non configurato (opzionale per ora)'}")
 
     # ------------------------------------------------------------------ #
     # 2. Trading client — account
