@@ -1,0 +1,53 @@
+name: Run Backtest
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Modalità: 'standard' oppure 'sensitivity'"
+        required: false
+        default: "standard"
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Create .env from secrets
+        run: |
+          cat <<EOF > .env
+          ALPACA_API_KEY=${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY=${{ secrets.ALPACA_SECRET_KEY }}
+          ALPACA_BASE_URL=https://paper-api.alpaca.markets
+          ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN=
+          TELEGRAM_CHAT_ID=
+          EOF
+
+      - name: Run backtest (standard)
+        if: ${{ github.event.inputs.mode != 'sensitivity' }}
+        run: python run_backtest.py
+
+      - name: Run backtest (sensitivity)
+        if: ${{ github.event.inputs.mode == 'sensitivity' }}
+        run: python run_backtest.py --sensitivity
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backtest-results
+          path: backtest/results/
+          retention-days: 30
