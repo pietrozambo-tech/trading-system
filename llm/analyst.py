@@ -167,28 +167,61 @@ def analyze_candidates(
     return result
 
 
-def generate_eod_recap(trade_data: list[dict], spy_pct: float, account_equity: float) -> str:
+def generate_eod_recap(
+    trade_data: list[dict],
+    spy_pct: float,
+    account_equity: float,
+    daily_pnl: float,
+) -> str:
     """Generate the EOD Telegram message via LLM."""
     import json as _json
 
-    prompt = f"""
-Genera un messaggio Telegram informale e diretto per un trader retail.
-Deve essere leggibile in 30 secondi.
-Tono: amichevole, diretto, no jargon eccessivo.
-NO messaggi intraday — solo questo recap EOD.
+    total_pnl = account_equity - config.PAPER_INITIAL_EQUITY
 
-Struttura:
-1. Header con data e condizione SPY ({spy_pct:+.2f}%)
-2. Per ogni trade: ticker, entry/exit con orario ET, P&L in $ e %, motivo in max 2 frasi
-3. Per trade scartati (confidence < soglia): una riga sola
-4. Footer con P&L giornaliero e saldo conto (${account_equity:,.0f})
+    exit_labels = {
+        "eod_close":    "Fine giornata",
+        "hard_blocker": "Stop loss",
+        "dollar_stop":  "Stop loss",
+        "atr_stop":     "Stop loss (ATR)",
+        "vwap_exit":    "Profit taker",
+    }
 
-Dati del giorno: {_json.dumps(trade_data, indent=2)}
+    # Traduci exit_reason in label user-friendly
+    clean_trades = []
+    for t in trade_data:
+        ct = dict(t)
+        raw_reason = ct.get("exit_reason", "")
+        ct["modalita_uscita"] = exit_labels.get(raw_reason, raw_reason)
+        clean_trades.append(ct)
+
+    prompt = f"""Sei un assistente di trading. Scrivi un messaggio Telegram EOD in italiano.
+
+REGOLE:
+- Tono: diretto, amichevole, niente gergo tecnico
+- Lunghezza: max 20 righe, leggibile in 20 secondi sul telefono
+- Usa emoji ma poche (max 5 in tutto)
+- Scrivi in italiano
+
+STRUTTURA OBBLIGATORIA (esattamente in questo ordine):
+1. Data e giorno della settimana
+2. Mercato: una frase sul contesto generale (SPY {spy_pct:+.2f}% oggi — commenta brevemente)
+3. Per ogni trade eseguito:
+   - Ticker e direzione (long)
+   - Prezzo entrata
+   - Prezzo uscita + modalità (usa il campo "modalita_uscita": Fine giornata / Stop loss / Profit taker)
+   - P&L del trade in $ e %
+4. Se nessun trade: una riga con il motivo
+5. P&L giornata: {daily_pnl:+.2f}$
+6. P&L totale conto dall'inizio: {total_pnl:+.2f}$
+7. Saldo disponibile: {account_equity:,.2f}$
+
+DATI:
+{_json.dumps(clean_trades, indent=2, default=str)}
 """
     client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
     message = client.messages.create(
         model=config.LLM_MODEL,
-        max_tokens=800,
+        max_tokens=600,
         messages=[{"role": "user", "content": prompt}],
     )
     return message.content[0].text.strip()

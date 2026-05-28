@@ -63,5 +63,6 @@ EOD_CLOSE_TIME       = "15:45"
 TELEGRAM_NOTIFY_TIME = "16:05"
 
 # === GENERAL ===
-MAX_CANDIDATES_TO_LLM = 15
-TIMEZONE = "America/New_York"
+MAX_CANDIDATES_TO_LLM  = 15
+TIMEZONE               = "America/New_York"
+PAPER_INITIAL_EQUITY   = 100_000   # saldo iniziale paper — per calcolo P&L cumulativo

@@ -273,7 +273,7 @@ def _send_eod(
     daily_pnl:  float,
     today_str:  str,
     spy_pct:    float = 0.0,
-    pl:         PipelineLog | None = None,
+    pl:         "PipelineLog | None" = None,
 ) -> None:
     try:
         account = fetcher.get_account()
@@ -282,15 +282,10 @@ def _send_eod(
         equity = 0.0
 
     try:
-        llm_text = analyst.generate_eod_recap(all_trades, spy_pct, equity)
+        llm_text = analyst.generate_eod_recap(all_trades, spy_pct, equity, daily_pnl)
     except Exception as e:
         logger.warning(f"LLM EOD recap failed: {e}")
         llm_text = ""
-
-    # Aggiungi pipeline summary al messaggio Telegram
-    if pl:
-        pipeline_summary = "\n\n" + pl.summary_text()
-        llm_text = (llm_text or "") + pipeline_summary
 
     telegram.send_eod_recap(
         trade_data=all_trades,
