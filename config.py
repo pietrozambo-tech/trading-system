@@ -49,7 +49,7 @@ HARD_BLOCKER_PCT         = 0.045   # -4.5% dal prezzo → max -$2,025/trade
 MAX_LOSS_PER_TRADE_USD   = 2_025   # hard cap in $ = 4.5% × $45k (coerente con hard blocker)
 ATR_MULTIPLIER           = 1.5
 ATR_LOOKBACK             = 14      # days
-MAX_DAILY_LOSS_USD       = 1_000   # 1% del conto — sistema si ferma per il giorno
+MAX_DAILY_LOSS_USD       = None    # disabilitato — ogni trade ha il proprio hard stop (-4.5%)
 
 # === EXIT RULES ===
 VWAP_EXIT_MIN_PROFIT_PCT = 0.025   # VWAP exit solo se profit >= 2.5% (da sensitivity analysis)
