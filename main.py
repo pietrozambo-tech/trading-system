@@ -36,11 +36,24 @@ logger = logging.getLogger(__name__)
 ET = pytz.timezone("America/New_York")
 
 UNIVERSE = [
+    # Tech / Growth
     "AAPL", "MSFT", "NVDA", "AMZN", "META", "GOOGL", "TSLA", "AMD", "NFLX",
     "CRM", "ORCL", "ADBE", "INTC", "QCOM", "MU", "AVGO", "TXN", "AMAT",
+    # Finance
     "JPM", "BAC", "GS", "MS", "C", "WFC", "BLK", "SCHW",
-    "UNH", "JNJ", "LLY", "PFE", "ABBV", "MRK", "BMY",
+    # Healthcare
+    "UNH", "JNJ", "PFE", "ABBV", "MRK", "BMY",
+    # Energy
     "XOM", "CVX", "SLB", "HAL", "OXY",
+    # Airlines / Crociere
+    "DAL", "AAL", "NCLH", "CCL",
+    # Space
+    "RKLB", "ASTS", "BKSY", "RDW", "LUNR",
+    # Nucleare / Uranio
+    "UUUU", "CCJ", "NNE", "SMR",
+    # Quantum Computing
+    "IONQ", "QBTS", "QUBT", "RGTI",
+    # ETF
     "SPY", "QQQ", "IWM",
 ]
 
