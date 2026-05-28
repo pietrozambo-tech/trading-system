@@ -484,3 +484,63 @@ def sensitivity_analysis(
         rows.append(row)
 
     return pd.DataFrame(rows).sort_values("profit_factor", ascending=False)
+
+
+def vwap_sensitivity_analysis(
+    universe: list[str],
+    start_date: date,
+    end_date: date,
+    thresholds: list[float] = None,
+) -> pd.DataFrame:
+    """
+    Focused sensitivity analysis on vwap_exit_min_profit only.
+    All other params fixed at default. Fast: N_thresholds runs total.
+    """
+    if thresholds is None:
+        thresholds = [0.010, 0.015, 0.020, 0.025, 0.030]
+
+    logger.info(f"VWAP sensitivity: {thresholds} — pre-fetching data …")
+    all_cache = prefetch_universe(universe, start_date, end_date)
+    days      = _trading_days(start_date, end_date)
+
+    rows = []
+    for threshold in thresholds:
+        p   = BacktestParams(vwap_exit_min_profit=threshold)
+        res = BacktestResults()
+
+        for day in days:
+            day_trades = 0
+            for ticker in universe:
+                if day_trades >= p.max_positions or ticker not in all_cache:
+                    continue
+                trade = _simulate_day(ticker, day, all_cache[ticker], p)
+                if trade:
+                    res.trades.append(trade)
+                    day_trades += 1
+
+        s = res.summary()
+        # Exit reason breakdown
+        if res.trades:
+            import collections
+            df_t = res.to_dataframe()
+            exit_counts = df_t["exit_reason"].value_counts().to_dict()
+        else:
+            exit_counts = {}
+
+        rows.append({
+            "vwap_min_profit": f"{threshold:.1%}",
+            "total_trades":    s["total_trades"],
+            "win_rate":        f"{s['win_rate']:.1%}",
+            "profit_factor":   s["profit_factor"],
+            "avg_win_loss":    s["avg_win_loss_ratio"],
+            "total_pnl_usd":   s["total_pnl_usd"],
+            "avg_win_usd":     s["avg_win_usd"],
+            "avg_loss_usd":    s["avg_loss_usd"],
+            "max_dd_usd":      s["max_drawdown_usd"],
+            "vwap_exits":      exit_counts.get("vwap_exit", 0),
+            "eod_exits":       exit_counts.get("eod_close", 0),
+            "stop_exits":      sum(v for k, v in exit_counts.items() if "stop" in k or "blocker" in k),
+        })
+        logger.info(f"  {threshold:.1%} → PF={s['profit_factor']:.2f} WR={s['win_rate']:.1%} PnL=${s['total_pnl_usd']:+.2f}")
+
+    return pd.DataFrame(rows)

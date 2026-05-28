@@ -2,8 +2,9 @@
 Standalone backtest runner.
 
 Usage:
-  python run_backtest.py              # 6 mesi, parametri di default
-  python run_backtest.py --sensitivity # griglia completa di parametri
+  python run_backtest.py                # 6 mesi, parametri di default
+  python run_backtest.py --sensitivity  # griglia completa di parametri
+  python run_backtest.py --vwap         # sensitivity solo su VWAP exit threshold
 """
 import argparse
 import logging
@@ -20,7 +21,7 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s",
 )
 
-from backtest.engine import BacktestParams, run_backtest, sensitivity_analysis
+from backtest.engine import BacktestParams, run_backtest, sensitivity_analysis, vwap_sensitivity_analysis
 
 # ---------------------------------------------------------------------------
 # Universe — 15 ticker liquidi, diversificati per settore
@@ -102,15 +103,34 @@ def save_results(results, sensitivity_df=None) -> None:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--sensitivity", action="store_true", help="Run sensitivity analysis")
+    parser.add_argument("--sensitivity", action="store_true", help="Griglia completa parametri")
+    parser.add_argument("--vwap",        action="store_true", help="Sensitivity solo VWAP exit threshold")
     args = parser.parse_args()
 
-    if args.sensitivity:
+    if args.vwap:
+        thresholds = [0.010, 0.015, 0.020, 0.025, 0.030]
+        print(f"VWAP sensitivity: {[f'{t:.1%}' for t in thresholds]}")
+        print(f"Periodo: {START_DATE} → {END_DATE} | {len(BACKTEST_UNIVERSE)} ticker\n")
+        vwap_df = vwap_sensitivity_analysis(BACKTEST_UNIVERSE, START_DATE, END_DATE, thresholds)
+
+        print("\n" + "=" * 90)
+        print("VWAP EXIT MIN PROFIT — SENSITIVITY RESULTS")
+        print("=" * 90)
+        print(vwap_df.to_string(index=False))
+        print("=" * 90)
+
+        os.makedirs("backtest/results", exist_ok=True)
+        path = "backtest/results/vwap_sensitivity.csv"
+        vwap_df.to_csv(path, index=False)
+        print(f"\nRisultati salvati in: {path}")
+
+    elif args.sensitivity:
         print(f"Avvio sensitivity analysis su {len(BACKTEST_UNIVERSE)} ticker × {START_DATE} → {END_DATE} …")
         sens_df = sensitivity_analysis(BACKTEST_UNIVERSE, START_DATE, END_DATE)
         print("\nTop 10 combinazioni parametri (per profit factor):")
         print(sens_df.head(10).to_string(index=False))
         save_results(run_backtest(BACKTEST_UNIVERSE, START_DATE, END_DATE), sens_df)
+
     else:
         params = BacktestParams()
         print(f"Avvio backtest su {len(BACKTEST_UNIVERSE)} ticker × {START_DATE} → {END_DATE} …")
