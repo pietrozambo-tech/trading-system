@@ -235,4 +235,6 @@ def close_all_positions_eod(open_positions: list[dict], daily_pnl: float) -> tup
 
 
 def daily_loss_limit_reached(daily_pnl: float) -> bool:
+    if config.MAX_DAILY_LOSS_USD is None:
+        return False
     return daily_pnl <= -config.MAX_DAILY_LOSS_USD
