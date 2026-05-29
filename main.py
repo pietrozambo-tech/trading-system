@@ -15,6 +15,7 @@ Timeline (all times ET):
 import json
 import logging
 import os
+import signal
 import time
 from datetime import datetime
 
@@ -34,6 +35,18 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 ET = pytz.timezone("America/New_York")
+
+# Graceful shutdown — set to True when Railway sends SIGTERM so the monitoring
+# loop exits cleanly, closes positions, and sends the Telegram recap before dying.
+_shutdown = False
+
+def _handle_signal(signum, frame):
+    global _shutdown
+    logger.warning("Shutdown signal received — closing positions before exit …")
+    _shutdown = True
+
+signal.signal(signal.SIGTERM, _handle_signal)
+signal.signal(signal.SIGINT,  _handle_signal)
 
 UNIVERSE = [
     # Tech / Growth
@@ -208,7 +221,7 @@ def run() -> None:
             spy_pct        = fetcher.get_spy_change()
             # Jump directly to monitoring loop — skip pre-market, filters, LLM, orders
             logger.info("Starting monitoring loop (recovered) …")
-            while current_et_str() < config.EOD_CLOSE_TIME:
+            while current_et_str() < config.EOD_CLOSE_TIME and not _shutdown:
                 if not open_positions:
                     break
                 time.sleep(config.MONITORING_INTERVAL)
@@ -325,7 +338,7 @@ def run() -> None:
     # Intraday monitoring loop
     # ------------------------------------------------------------------
     logger.info("Starting monitoring loop …")
-    while current_et_str() < config.EOD_CLOSE_TIME:
+    while current_et_str() < config.EOD_CLOSE_TIME and not _shutdown:
         if not open_positions:
             break
         if trader.daily_loss_limit_reached(daily_pnl):
@@ -336,6 +349,8 @@ def run() -> None:
         for pos in just_closed:
             logger.info(f"Closed: {pos['ticker']} {pos['exit_reason']} P&L=${pos['pnl_usd']:.2f}")
             pl.log_trade(pos)
+    if _shutdown:
+        logger.warning("Shutdown flag set — forcing EOD close immediately")
 
     # ------------------------------------------------------------------
     # 15:45 — EOD hard close
