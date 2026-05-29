@@ -35,8 +35,7 @@ ET = pytz.timezone("America/New_York")
 class BacktestParams:
     confidence_threshold:    float = 0.65
     hard_blocker_pct:        float = 0.020   # -2.0%
-    vwap_exit_min_profit:    float = 0.025   # VWAP exit solo se profit >= 2.5%
-    atr_multiplier:          float = 1.2
+    vwap_exit_min_profit:    float = 0.015   # VWAP exit solo se profit >= 1.5%
     or_position_threshold:   float = 0.66
     gap_retention_threshold: float = 0.70
     min_gap_pct:             float = 0.005   # +0.5% long-only
@@ -324,7 +323,7 @@ def _simulate_day(
 
     # Stops — tightest of ATR stop and hard blocker pct
     atr14      = _calc_atr14(daily, session_date)
-    stop_atr   = entry_price - (atr14 * params.atr_multiplier) if atr14 > 0 else 0
+    stop_atr   = entry_price - atr14 if atr14 > 0 else 0
     stop_pct   = entry_price * (1 - params.hard_blocker_pct)
     stop_price = max(stop_atr, stop_pct)
 
@@ -357,7 +356,6 @@ def _simulate_day(
         cumtpvol += tp * float(bar["volume"])
         vwap_now  = cumtpvol / cumvol if cumvol > 0 else price
 
-        # Fix: VWAP exit scatta solo se in profitto >= 0.8%
         profit_pct = (price - entry_price) / entry_price
         if price < vwap_now and profit_pct >= params.vwap_exit_min_profit:
             exit_price  = price
@@ -449,14 +447,13 @@ def sensitivity_analysis(
 
     conf_thresholds  = [0.55, 0.60, 0.65, 0.70, 0.75, 0.80]
     hard_blockers    = [0.015, 0.020, 0.025, 0.030, 0.035, 0.040]
-    atr_multipliers  = [0.8, 1.0, 1.2, 1.5, 1.75, 2.0]
 
-    combos = list(itertools.product(conf_thresholds, hard_blockers, atr_multipliers))
+    combos = list(itertools.product(conf_thresholds, hard_blockers))
     logger.info(f"Sensitivity: {len(combos)} parameter combinations")
 
     rows = []
-    for conf, hb, atr in combos:
-        p   = BacktestParams(confidence_threshold=conf, hard_blocker_pct=hb, atr_multiplier=atr)
+    for conf, hb in combos:
+        p   = BacktestParams(confidence_threshold=conf, hard_blocker_pct=hb)
         res = BacktestResults()
 
         for day in days:
@@ -469,7 +466,7 @@ def sensitivity_analysis(
                     res.trades.append(trade)
                     day_trades += 1
 
-        row = {"confidence_threshold": conf, "hard_blocker_pct": hb, "atr_multiplier": atr}
+        row = {"confidence_threshold": conf, "hard_blocker_pct": hb}
         row.update(res.summary())
         rows.append(row)
 

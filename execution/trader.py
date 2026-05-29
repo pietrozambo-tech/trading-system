@@ -24,7 +24,7 @@ def _trading_client() -> TradingClient:
 def calc_stop_prices(ticker: str, entry_price: float) -> dict:
     """ATR stop and hard blocker stop — use the tighter (higher) one."""
     atr14 = fetcher.get_atr14(ticker)
-    stop_atr   = entry_price - (atr14 * config.ATR_MULTIPLIER) if atr14 > 0 else 0
+    stop_atr   = entry_price - atr14 if atr14 > 0 else 0
     stop_pct   = entry_price * (1 - config.HARD_BLOCKER_PCT)
     stop_price = max(stop_atr, stop_pct)
     return {
@@ -133,10 +133,7 @@ def check_stop_triggered(position: dict, current_price: float) -> Optional[str]:
 
 
 def check_vwap_exit(ticker: str, position: dict, current_price: float) -> bool:
-    """
-    Return True if price crossed below intraday VWAP with profit >= 0.8%.
-    Minimum profit threshold prevents exiting on tiny gains.
-    """
+    """Return True if price crossed below intraday VWAP with profit >= 1.5%."""
     profit_pct = (current_price - position["entry_price"]) / position["entry_price"]
     if profit_pct < config.VWAP_EXIT_MIN_PROFIT_PCT:
         return False  # not enough profit to trigger VWAP exit
