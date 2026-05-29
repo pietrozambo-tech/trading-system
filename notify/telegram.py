@@ -47,14 +47,14 @@ def _no_trade_reason(pipeline: dict) -> str:
     l2       = pipeline.get("l2_count")
 
     if "SPY" in blocked:
-        return f"Mercato bloccato — SPY troppo negativo."
+        return "Mercato bloccato — SPY troppo negativo. Riproviamo domani."
     if pre == 0 or pre is None:
-        return f"Nessun titolo con gap ≥0.5% stamattina."
+        return "Nessun titolo con gap ≥0.5% stamattina. Giornata piatta, capita."
     if l1 == 0:
-        return f"{pre} titoli in pre-market, 0 passati i filtri qualità (prezzo, liquidità, spread)."
+        return f"{pre} titoli in pre-market, nessuno ha passato i filtri qualità (prezzo, liquidità, spread). Riproviamo domani."
     if l2 == 0:
-        return f"{l1} titoli ai filtri, 0 con segnali tecnici sufficienti."
-    return "LLM ha scartato tutti i candidati — segnali non convincenti."
+        return f"{l1} titoli ai filtri, nessuno con segnali tecnici sufficienti. Meglio aspettare un setup pulito."
+    return "Candidati trovati ma LLM non era convinto. Nessuna entry forzata."
 
 
 def _fallback_message(
