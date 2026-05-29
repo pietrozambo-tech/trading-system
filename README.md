@@ -69,7 +69,13 @@ The top candidates (with all their signals and recent headlines) are sent to Cla
 
 ### 5. Execution — 9:47 AM
 
-Orders are placed via Alpaca (paper trading account). Position size is calculated live at order time as **45% of the current account equity**, so it always reflects the real balance — whether the account has grown to $120k or shrunk to $80k.
+Orders are placed via Alpaca (paper trading account). Position size is calculated live at order time using the formula:
+
+```
+position size = (current equity − $2,000) ÷ 2
+```
+
+The $2,000 is a permanent cash cushion that never gets invested — it covers fees, slippage, and acts as a last resort. Everything else is split equally between the two possible trades. The number of shares is always rounded down to whole shares. So on a $100k account: ($100,000 − $2,000) ÷ 2 = **$49,000 per trade**. If the account grows to $120k, each trade becomes $59,000 automatically.
 
 ### 6. Intraday monitoring
 
@@ -95,11 +101,12 @@ A Telegram message with a human-readable summary: market context, each trade's e
 | Parameter | Value |
 |-----------|-------|
 | Paper account size | $100,000 |
-| Position size per trade | 45% of current equity (recalculated live each day) |
-| Max 2 trades = max deployed | ~90% of equity, ~10% cushion for fees |
+| Cash cushion (never invested) | $2,000 |
+| Position size per trade | (equity − $2,000) ÷ 2, recalculated live each day |
+| Example on $100k | ($100,000 − $2,000) ÷ 2 = $49,000/trade |
 | Hard stop per trade | -4.5% from entry |
 | VWAP take-profit threshold | 2.5% profit minimum |
-| Real money equivalent (20:1 scale) | ~$2,250 per trade on $5k account |
+| Real money equivalent (20:1 scale) | ~$2,450 per trade on $5k account |
 
 ---
 

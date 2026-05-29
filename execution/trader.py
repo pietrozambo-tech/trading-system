@@ -36,11 +36,12 @@ def calc_stop_prices(ticker: str, entry_price: float) -> dict:
 
 
 def calc_qty(entry_price: float, equity: float) -> int:
-    """Shares to buy: POSITION_SIZE_PCT % of current account equity."""
+    """Shares to buy: split investable capital (equity minus $2k cushion) across max positions."""
     if entry_price <= 0:
         return 0
-    position_usd = equity * config.POSITION_SIZE_PCT
-    return max(1, int(position_usd / entry_price))
+    investable = max(0, equity - config.CASH_CUSHION_USD)
+    position_usd = investable / config.MAX_POSITIONS
+    return max(1, int(position_usd / entry_price))  # floor division → whole shares
 
 
 def place_market_order(ticker: str, qty: int, side: OrderSide = OrderSide.BUY) -> Optional[dict]:
