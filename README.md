@@ -46,9 +46,9 @@ The confidence score also factors in a **catalyst multiplier** — how strong is
 | News quality | Multiplier |
 |-------------|-----------|
 | Major catalyst (FDA approval, confirmed acquisition, strong earnings beat >5%) | ×1.00 |
-| Real but moderate news (earnings beat, analyst upgrade, insider buying) | ×0.80 |
-| Rumour or speculative article | ×0.55 |
-| No news found | ×0.30 |
+| Real but moderate news (earnings beat, analyst upgrade, insider buying) | ×0.90 |
+| Rumour or speculative article | ×0.80 |
+| No news — pure technical setup | ×0.70 |
 
 **The formula:**
 

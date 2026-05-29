@@ -26,9 +26,9 @@ REGOLE ASSOLUTE:
 
 TASSONOMIA CATALYST:
 - Tier 1 (×1.0): earnings beat >5%, upgrade broker primario >10% target, FDA approval, acquisizione confermata
-- Tier 2 (×0.80): earnings beat modesto, Fed speak direzionale, Trump tweet/White House su settore specifico, upgrade target price, partnership confermata, insider buying
-- Tier 3 (×0.55): rumor non confermati, articoli speculativi, sentiment settoriale
-- Nessuno (×0.30): nessuna news identificabile
+- Tier 2 (×0.90): earnings beat modesto, Fed speak direzionale, Trump tweet/White House su settore specifico, upgrade target price, partnership confermata, insider buying
+- Tier 3 (×0.80): rumor non confermati, articoli speculativi, sentiment settoriale
+- Nessuno (×0.70): nessuna news identificabile — segnale puramente tecnico
 
 FORMULA CONFIDENCE:
 confidence = (direction_score/3 × catalyst_multiplier) + volume_boost
