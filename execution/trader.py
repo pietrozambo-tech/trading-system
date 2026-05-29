@@ -22,27 +22,25 @@ def _trading_client() -> TradingClient:
 
 
 def calc_stop_prices(ticker: str, entry_price: float) -> dict:
-    """Calculate ATR stop and hard blocker stop. Use the tighter (higher) one."""
+    """ATR stop and hard blocker stop — use the tighter (higher) one."""
     atr14 = fetcher.get_atr14(ticker)
-    stop_atr  = entry_price - (atr14 * config.ATR_MULTIPLIER) if atr14 > 0 else 0
-    qty         = calc_qty(entry_price)
-    stop_pct    = entry_price * (1 - config.HARD_BLOCKER_PCT)
-    stop_dollar = entry_price - (config.MAX_LOSS_PER_TRADE_USD / qty) if qty > 0 else stop_pct
-    stop_price  = max(stop_atr, stop_pct, stop_dollar)  # più alto = più stretto
+    stop_atr   = entry_price - (atr14 * config.ATR_MULTIPLIER) if atr14 > 0 else 0
+    stop_pct   = entry_price * (1 - config.HARD_BLOCKER_PCT)
+    stop_price = max(stop_atr, stop_pct)
     return {
-        "stop_atr": round(stop_atr, 4),
-        "stop_pct": round(stop_pct, 4),
-        "stop_dollar": round(stop_dollar, 4),
+        "stop_atr":   round(stop_atr, 4),
+        "stop_pct":   round(stop_pct, 4),
         "stop_price": round(stop_price, 4),
-        "atr14": round(atr14, 4),
+        "atr14":      round(atr14, 4),
     }
 
 
-def calc_qty(entry_price: float) -> int:
-    """Shares to buy for target position size."""
+def calc_qty(entry_price: float, equity: float) -> int:
+    """Shares to buy: POSITION_SIZE_PCT % of current account equity."""
     if entry_price <= 0:
         return 0
-    return max(1, int(config.POSITION_SIZE_USD / entry_price))
+    position_usd = equity * config.POSITION_SIZE_PCT
+    return max(1, int(position_usd / entry_price))
 
 
 def place_market_order(ticker: str, qty: int, side: OrderSide = OrderSide.BUY) -> Optional[dict]:
@@ -74,9 +72,11 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
     Open a long position based on LLM decision.
     Returns position metadata including stop prices.
     """
+    account = fetcher.get_account()
+    equity = account["equity"]
     quote = fetcher.get_latest_quote(ticker)
     entry_price = quote["ask"]
-    qty = calc_qty(entry_price)
+    qty = calc_qty(entry_price, equity)
     if qty == 0:
         logger.error(f"Cannot compute qty for {ticker} at ${entry_price}")
         return None
@@ -125,8 +125,6 @@ def check_stop_triggered(position: dict, current_price: float) -> Optional[str]:
     """Return exit reason if any stop is triggered, else None."""
     if current_price <= position["stop_price"]:
         entry = position["entry_price"]
-        if current_price <= position.get("stop_dollar", 0):
-            return "dollar_stop"
         if (entry - current_price) / entry >= config.HARD_BLOCKER_PCT:
             return "hard_blocker"
         return "atr_stop"

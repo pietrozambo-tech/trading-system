@@ -67,7 +67,7 @@ The top candidates (with all their signals and recent headlines) are sent to Cla
 
 ### 5. Execution — 9:47 AM
 
-Orders are placed via Alpaca (paper trading account, $45,000 per trade).
+Orders are placed via Alpaca (paper trading account). Position size is calculated live at order time as **45% of the current account equity**, so it always reflects the real balance — whether the account has grown to $120k or shrunk to $80k.
 
 ### 6. Intraday monitoring
 
@@ -75,11 +75,10 @@ Every 5 minutes the bot checks each open position. It closes a trade if any of t
 
 | Priority | Rule | Detail |
 |----------|------|--------|
-| 1 | Dollar stop | Close if loss reaches $2,025 |
-| 2 | Hard stop | Close if price falls 4.5% from entry |
-| 3 | ATR stop | Close if price falls more than 1.5× the stock's average true range |
-| 4 | VWAP take-profit | Close if price drops below VWAP *and* we're already up 2.5%+ |
-| 5 | End-of-day close | Everything closes hard at 3:45 PM regardless |
+| 1 | Hard stop | Close if price falls 4.5% from entry |
+| 2 | ATR stop | Close if price falls more than 1.5× the stock's average true range |
+| 3 | VWAP take-profit | Close if price drops below VWAP *and* we're already up 2.5%+ |
+| 4 | End-of-day close | Everything closes hard at 3:45 PM regardless |
 
 The 2.5% minimum for the VWAP take-profit was chosen after testing different thresholds on 6 months of historical data — below that, it was cutting winners too early.
 
@@ -94,11 +93,11 @@ A Telegram message with a human-readable summary: market context, each trade's e
 | Parameter | Value |
 |-----------|-------|
 | Paper account size | $100,000 |
-| Position size per trade | $45,000 |
-| Max 2 trades = max deployed | $90,000 (90%) |
-| Hard stop per trade | $2,025 (4.5%) |
+| Position size per trade | 45% of current equity (recalculated live each day) |
+| Max 2 trades = max deployed | ~90% of equity, ~10% cushion for fees |
+| Hard stop per trade | -4.5% from entry |
 | VWAP take-profit threshold | 2.5% profit minimum |
-| Real money equivalent (20:1 scale) | $2,250 per trade on $5k account |
+| Real money equivalent (20:1 scale) | ~$2,250 per trade on $5k account |
 
 ---
 
