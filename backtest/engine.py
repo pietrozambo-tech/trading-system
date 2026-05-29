@@ -34,17 +34,15 @@ ET = pytz.timezone("America/New_York")
 @dataclass
 class BacktestParams:
     confidence_threshold:    float = 0.65
-    hard_blocker_pct:        float = 0.045
-    max_loss_usd:            float = 25.0    # hard cap in $ assoluti per trade
-    vwap_exit_min_profit:    float = 0.008   # VWAP exit solo se profit >= 0.8%
-    atr_multiplier:          float = 1.5
+    hard_blocker_pct:        float = 0.020   # -2.0%
+    vwap_exit_min_profit:    float = 0.025   # VWAP exit solo se profit >= 2.5%
+    atr_multiplier:          float = 1.2
     or_position_threshold:   float = 0.66
     gap_retention_threshold: float = 0.70
-    min_gap_pct:             float = 0.002   # +0.2% long-only
-    position_size_usd:       float = 500.0
+    min_gap_pct:             float = 0.005   # +0.5% long-only
+    position_size_usd:       float = 49_000.0  # (100k - 2k cushion) / 2 trades
     max_positions:           int   = 2
-    catalyst_earnings:       float = 1.00    # proxy: earnings yesterday → Tier 1
-    catalyst_default:        float = 0.80    # all others → Tier 2
+    catalyst_bonus:          float = 0.10   # conservative proxy (Tier 3) — no real news in backtest
 
 
 # ---------------------------------------------------------------------------
@@ -238,12 +236,12 @@ def _calc_atr14(daily: pd.DataFrame, as_of: date) -> float:
 
 
 def _calc_hist_15min_vol(intraday_by_date: dict, as_of: date, lookback: int = 20) -> float:
-    """Compute rolling average of 9:30–9:45 volume from cached intraday data."""
+    """Compute rolling average of 9:30–9:40 volume from cached intraday data."""
     totals = []
     sorted_dates = sorted(d for d in intraday_by_date if d < as_of)
     for d in sorted_dates[-lookback:]:
         bars = intraday_by_date[d]
-        or_bars = bars[(bars.index.hour == 9) & (bars.index.minute < 45) & (bars.index.minute >= 30)]
+        or_bars = bars[(bars.index.hour == 9) & (bars.index.minute >= 30) & (bars.index.minute < 40)]
         if not or_bars.empty:
             totals.append(float(or_bars["volume"].sum()))
     return sum(totals) / len(totals) if totals else 0.0
@@ -271,14 +269,14 @@ def _simulate_day(
         return None
     prev_close = float(prev_daily["close"].iloc[-1])
 
-    # Opening range bars (9:30–9:45)
+    # Opening range bars (9:30–9:40)
     day_bars = intraday_cache[session_date]
     or_bars  = day_bars[
         (day_bars.index.hour == 9) &
         (day_bars.index.minute >= 30) &
-        (day_bars.index.minute < 45)
+        (day_bars.index.minute < 40)
     ]
-    if len(or_bars) < 3:
+    if len(or_bars) < 2:
         return None
 
     open_930   = float(or_bars["open"].iloc[0])
@@ -309,15 +307,13 @@ def _simulate_day(
     vol_ratio = vol_today / vol_avg if vol_avg > 0 else 0
     vol_boost = 0.10 if vol_ratio > 3 else (0.05 if vol_ratio > 2 else 0.0)
 
-    # Catalyst proxy (no LLM in backtest)
-    catalyst_mult = params.catalyst_earnings  # conservative: assume Tier 2 for all
-
+    # Catalyst proxy (no real news in backtest — use conservative Tier 3 bonus)
     direction_score = sum([
         above_vwap,
         or_pos > params.or_position_threshold,
         gap_ret > params.gap_retention_threshold,
     ])
-    confidence = min((direction_score / 3 * catalyst_mult) + vol_boost, 1.0)
+    confidence = min((direction_score / 3) + params.catalyst_bonus + vol_boost, 1.0)
 
     if confidence < params.confidence_threshold:
         return None
@@ -326,16 +322,15 @@ def _simulate_day(
     entry_price = price_945
     qty = max(1, int(params.position_size_usd / entry_price))
 
-    # Stops — tightest of: ATR, % hard blocker, $ hard cap
-    atr14       = _calc_atr14(daily, session_date)
-    stop_atr    = entry_price - (atr14 * params.atr_multiplier) if atr14 > 0 else 0
-    stop_pct    = entry_price * (1 - params.hard_blocker_pct)          # -4.5%
-    stop_dollar = entry_price - (params.max_loss_usd / qty)            # max -$25 totale
-    stop_price  = max(stop_atr, stop_pct, stop_dollar)                 # più alto = più stretto
+    # Stops — tightest of ATR stop and hard blocker pct
+    atr14      = _calc_atr14(daily, session_date)
+    stop_atr   = entry_price - (atr14 * params.atr_multiplier) if atr14 > 0 else 0
+    stop_pct   = entry_price * (1 - params.hard_blocker_pct)
+    stop_price = max(stop_atr, stop_pct)
 
-    # Replay bars from 9:45 to 15:45
+    # Replay bars from 9:40 to 15:45
     post_bars = day_bars[
-        ((day_bars.index.hour == 9)  & (day_bars.index.minute >= 45)) |
+        ((day_bars.index.hour == 9)  & (day_bars.index.minute >= 40)) |
         ((day_bars.index.hour > 9)   & (day_bars.index.hour < 15))    |
         ((day_bars.index.hour == 15) & (day_bars.index.minute <= 45))
     ]
@@ -354,12 +349,7 @@ def _simulate_day(
 
         if price <= stop_price:
             exit_price = max(price, stop_price)
-            if price <= stop_dollar and stop_dollar >= stop_pct:
-                exit_reason = "dollar_stop"
-            elif price <= stop_pct:
-                exit_reason = "hard_blocker"
-            else:
-                exit_reason = "atr_stop"
+            exit_reason = "hard_blocker" if stop_pct >= stop_atr else "atr_stop"
             break
 
         tp = (float(bar["high"]) + float(bar["low"]) + price) / 3
@@ -458,8 +448,8 @@ def sensitivity_analysis(
     days      = _trading_days(start_date, end_date)
 
     conf_thresholds  = [0.55, 0.60, 0.65, 0.70, 0.75, 0.80]
-    hard_blockers    = [0.030, 0.035, 0.040, 0.045, 0.050, 0.055, 0.060]
-    atr_multipliers  = [1.0, 1.25, 1.5, 1.75, 2.0, 2.5]
+    hard_blockers    = [0.015, 0.020, 0.025, 0.030, 0.035, 0.040]
+    atr_multipliers  = [0.8, 1.0, 1.2, 1.5, 1.75, 2.0]
 
     combos = list(itertools.product(conf_thresholds, hard_blockers, atr_multipliers))
     logger.info(f"Sensitivity: {len(combos)} parameter combinations")
