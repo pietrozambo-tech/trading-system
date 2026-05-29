@@ -161,6 +161,16 @@ def run() -> None:
     today_str = now_et.strftime("%Y-%m-%d")
     logger.info(f"=== Trading session start: {today_str} ===")
 
+    # Guard: if started after the entry window, the session is over — abort.
+    # Scheduled Railway runs land at 09:00; anything past 10:00 is a manual/late start.
+    cutoff_dt = ET.localize(datetime.combine(now_et.date(), datetime.strptime("10:00", "%H:%M").time()))
+    if now_et >= cutoff_dt:
+        logger.warning(
+            f"Bot started at {now_et.strftime('%H:%M')} ET — past entry window (cut-off 10:00). "
+            "No orders will be placed. Use the scheduled Railway run for live trading."
+        )
+        return
+
     pl           = PipelineLog(today_str)
     daily_pnl    = 0.0
     open_positions: list[dict] = []
