@@ -227,9 +227,18 @@ def run() -> None:
     logger.info(f"LLM decision: {llm_result}")
 
     # ------------------------------------------------------------------
-    # 09:47 — Place orders
+    # 09:47 — Place orders (skip if already past EOD cut-off)
     # ------------------------------------------------------------------
     wait_until(config.ORDER_TIME, now_et)
+
+    eod_dt = ET.localize(datetime.combine(datetime.now(ET).date(),
+                          datetime.strptime(config.EOD_CLOSE_TIME, "%H:%M").time()))
+    if datetime.now(ET) >= eod_dt:
+        logger.warning("Skipping order placement — already past EOD close time")
+        pl.blocked = "ordini saltati: orario di entrata superato"
+        pl.save()
+        _send_eod(all_trades, daily_pnl, today_str, spy_pct, pl)
+        return
 
     for key in ("trade_1", "trade_2"):
         decision = llm_result.get(key)
