@@ -82,6 +82,7 @@ class PipelineLog:
         self.date = date
         self.stages: list[dict] = []
         self.signals: list[dict] = []
+        self.l1_rejects: list[dict] = []
         self.llm_input: list[str] = []
         self.llm_output: dict = {}
         self.trades: list[dict] = []
@@ -97,15 +98,19 @@ class PipelineLog:
 
     def log_signals(self, signals: dict) -> None:
         self.signals.append({
-            "ticker":           signals.get("ticker"),
-            "confidence":       signals.get("confidence"),
-            "above_vwap":       signals.get("above_vwap"),
-            "or_position":      signals.get("or_position"),
-            "gap_retention":    signals.get("gap_retention"),
-            "vol_boost":        signals.get("vol_boost"),
-            "catalyst_mult":    signals.get("catalyst_bonus"),
-            "gap_pct":          signals.get("gap_pct"),
+            "ticker":            signals.get("ticker"),
+            "confidence":        signals.get("confidence"),
+            "passes_threshold":  signals.get("passes_threshold"),
+            "above_vwap":        signals.get("above_vwap"),
+            "or_position":       signals.get("or_position"),
+            "gap_retention":     signals.get("gap_retention"),
+            "vol_boost":         signals.get("vol_boost"),
+            "catalyst_bonus":    signals.get("catalyst_bonus"),
+            "gap_pct":           signals.get("gap_pct"),
         })
+
+    def log_l1_rejects(self, rejects: list[dict]) -> None:
+        self.l1_rejects.extend(rejects)
 
     def log_llm(self, candidates: list[dict], result: dict) -> None:
         self.llm_input  = [c["ticker"] for c in candidates]
@@ -118,14 +123,15 @@ class PipelineLog:
         os.makedirs("logs", exist_ok=True)
         path = f"logs/{self.date}.json"
         payload = {
-            "date":       self.date,
-            "spy_pct":    self.spy_pct,
-            "blocked":    self.blocked,
-            "pipeline":   self.stages,
-            "signals":    self.signals,
-            "llm_input":  self.llm_input,
-            "llm_output": self.llm_output,
-            "trades":     self.trades,
+            "date":        self.date,
+            "spy_pct":     self.spy_pct,
+            "blocked":     self.blocked,
+            "pipeline":    self.stages,
+            "l1_rejects":  self.l1_rejects,
+            "signals":     self.signals,
+            "llm_input":   self.llm_input,
+            "llm_output":  self.llm_output,
+            "trades":      self.trades,
         }
         with open(path, "w") as f:
             json.dump(payload, f, indent=2, default=str)
@@ -270,8 +276,10 @@ def run() -> None:
         _send_eod(all_trades, daily_pnl, today_str, spy_pct, pl)
         return
 
-    candidates = eligibility.apply_binary_filters(watchlist)
-    candidates = eligibility.filter_earnings_tonight(candidates)
+    candidates, l1_rejects = eligibility.apply_binary_filters(watchlist)
+    safe_candidates, earnings_rejects = eligibility.filter_earnings_tonight(candidates)
+    candidates = safe_candidates
+    pl.log_l1_rejects(l1_rejects + earnings_rejects)
     pl.log_stage("binary_filters_L1", [c["ticker"] for c in candidates])
 
     if not candidates:

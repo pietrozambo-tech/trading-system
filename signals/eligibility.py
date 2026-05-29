@@ -65,12 +65,16 @@ def build_premarket_watchlist(universe: list[str], session_date: Optional[date] 
     return candidates
 
 
-def apply_binary_filters(candidates: list[dict], session_date: Optional[date] = None) -> list[dict]:
+def apply_binary_filters(
+    candidates: list[dict], session_date: Optional[date] = None
+) -> tuple[list[dict], list[dict]]:
     """
     Phase 2 — 9:45 ET binary filters. Applied cheapest first.
     All must pass (fail = discard).
+    Returns (passed, rejects) where rejects = [{"ticker": ..., "reason": ...}].
     """
-    passed = []
+    passed  = []
+    rejects = []
     for c in candidates:
         ticker = c["ticker"]
         try:
@@ -78,27 +82,32 @@ def apply_binary_filters(candidates: list[dict], session_date: Optional[date] = 
             daily = fetcher.get_daily_bars(ticker, lookback_days=5)
             if daily.empty:
                 logger.debug(f"{ticker}: no daily data — skip")
+                rejects.append({"ticker": ticker, "reason": "no_daily_data"})
                 continue
             price = float(daily["close"].iloc[-1])
             if price < config.MIN_PRICE:
                 logger.info(f"L1 REJECT {ticker}: price ${price:.2f} < ${config.MIN_PRICE} min")
+                rejects.append({"ticker": ticker, "reason": f"price_${price:.2f}<min_${config.MIN_PRICE}"})
                 continue
 
             # 2. ADV > 1M
             adv = c.get("adv") or fetcher.get_adv(ticker)
             if adv < config.MIN_ADV:
                 logger.info(f"L1 REJECT {ticker}: ADV {adv:,.0f} < {config.MIN_ADV:,} min")
+                rejects.append({"ticker": ticker, "reason": f"adv_{adv:,.0f}<min_{config.MIN_ADV:,}"})
                 continue
 
             # 3. Tradable (no halt)
             if not fetcher.is_asset_tradable(ticker):
                 logger.info(f"L1 REJECT {ticker}: not tradable on Alpaca")
+                rejects.append({"ticker": ticker, "reason": "not_tradable"})
                 continue
 
             # 4. Bid-ask spread < 0.6% (real-time)
             quote = fetcher.get_latest_quote(ticker)
             if quote["spread_pct"] >= config.MAX_BID_ASK_SPREAD:
                 logger.info(f"L1 REJECT {ticker}: spread {quote['spread_pct']:.3%} >= {config.MAX_BID_ASK_SPREAD:.3%} max")
+                rejects.append({"ticker": ticker, "reason": f"spread_{quote['spread_pct']:.3%}>={config.MAX_BID_ASK_SPREAD:.3%}"})
                 continue
 
             c["current_price"] = quote["ask"]
@@ -108,17 +117,21 @@ def apply_binary_filters(candidates: list[dict], session_date: Optional[date] = 
 
         except Exception as e:
             logger.warning(f"Binary filter error for {ticker}: {e}")
+            rejects.append({"ticker": ticker, "reason": f"error_{e}"})
 
-    return passed
+    return passed, rejects
 
 
-def filter_earnings_tonight(candidates: list[dict], session_date: Optional[date] = None) -> list[dict]:
+def filter_earnings_tonight(
+    candidates: list[dict], session_date: Optional[date] = None
+) -> tuple[list[dict], list[dict]]:
     """
     Remove tickers with earnings scheduled after close TODAY.
     Tickers that already reported yesterday are KEPT — that's the catalyst we want.
 
     Logic: only block if the article (a) is from today, and (b) does not contain
     past-tense result words — distinguishes "reports tonight" from "reported last night".
+    Returns (safe, rejects) where rejects = [{"ticker": ..., "reason": ...}].
     """
     if session_date is None:
         session_date = datetime.now(ET).date()
@@ -126,7 +139,8 @@ def filter_earnings_tonight(candidates: list[dict], session_date: Optional[date]
     # Words that indicate earnings already happened (past tense)
     past_tense = ["beat", "miss", "reported", "exceeded", "results", "fell short", "topped", "surpassed"]
 
-    safe = []
+    safe    = []
+    rejects = []
     for c in candidates:
         ticker = c["ticker"]
         news = fetcher.get_news(ticker, limit=5)
@@ -156,6 +170,7 @@ def filter_earnings_tonight(candidates: list[dict], session_date: Optional[date]
 
         if earnings_tonight:
             logger.info(f"L1 REJECT {ticker}: earnings scheduled tonight — skip")
+            rejects.append({"ticker": ticker, "reason": "earnings_tonight"})
         else:
             safe.append(c)
-    return safe
+    return safe, rejects
