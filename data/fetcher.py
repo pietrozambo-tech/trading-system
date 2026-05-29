@@ -266,7 +266,7 @@ def get_spy_change(session_date: Optional[date] = None) -> float:
     """SPY % change vs previous close at current time."""
     try:
         snap = get_snapshot("SPY")
-        prev_close = float(snap.prev_day.close)
+        prev_close = float(snap.previous_daily_bar.close)
         current_price = float(snap.latest_trade.price)
         if prev_close == 0:
             return 0.0

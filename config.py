@@ -19,7 +19,7 @@ TELEGRAM_CHAT_ID   = os.getenv("TELEGRAM_CHAT_ID")
 # === UNIVERSE FILTERS (L1) ===
 MIN_MARKET_CAP        = 2_000_000_000   # $2B
 MIN_PRICE             = 5.0
-MIN_ADV               = 1_000_000       # 1M shares/day
+MIN_ADV               = 200_000          # 200k shares/day on IEX (~4–5M real ADV — IEX captures ~3–5% of total volume)
 MAX_BID_ASK_SPREAD    = 0.006           # 0.6%
 MIN_PREMARKET_GAP          = 0.005   # +0.5% — gap meaningfully above yesterday's close
 SPY_BLOCK_THRESHOLD   = -0.020          # -2.0%

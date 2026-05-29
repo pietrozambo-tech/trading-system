@@ -21,7 +21,7 @@ Once the market opens and the first 10 minutes settle, the bot applies a set of 
 | Check | Requirement | Why |
 |-------|-------------|-----|
 | Price | At least $5 | Avoid erratic penny stocks |
-| Daily volume | >1 million shares on average | Makes sure we can buy and sell without moving the price |
+| Daily volume | >200k shares/day on IEX (≈4–5M real ADV) | IEX captures ~3–5% of total market volume — 200k on IEX corresponds to roughly 4–5M real shares/day, enough to absorb a $49k position without issue |
 | Bid-ask spread | <0.6% | Entry cost too high otherwise |
 | Earnings tonight | Excluded | Overnight risk is unpredictable — but stocks that *already* reported earnings yesterday are kept, as that's the catalyst we want |
 | Market mood | SPY not down >2.0% | Circuit breaker for real panic days only — strong individual setups still trade in a mildly negative market |
