@@ -21,9 +21,7 @@ MIN_MARKET_CAP        = 2_000_000_000   # $2B
 MIN_PRICE             = 5.0
 MIN_ADV               = 1_000_000       # 1M shares/day
 MAX_BID_ASK_SPREAD    = 0.006           # 0.6%
-MIN_PREMARKET_GAP          = 0.002   # +0.2% — solo gap positivi (long only)
-MIN_PREMARKET_VOL_RATIO    = 1.2     # 120% della media pre-market ultimi 10gg
-PREMARKET_VOL_LOOKBACK     = 10      # giorni per la media pre-market
+MIN_PREMARKET_GAP          = 0.005   # +0.5% — gap meaningfully above yesterday's close
 SPY_BLOCK_THRESHOLD   = -0.018          # -1.8%
 
 # === SIGNAL THRESHOLDS (L2) ===
