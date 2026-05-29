@@ -109,6 +109,65 @@ The 1.5% minimum for the VWAP take-profit gives the condition room to fire: duri
 
 A Telegram message with a human-readable summary: market context, each trade's entry/exit/P&L, and the running account total.
 
+The message is sent **immediately** when all positions close naturally during the day (stop or VWAP exit). If the bot has to force-close at 3:45 PM, it waits until 4:05 PM so prices settle first. SPY performance is always measured at the exact moment the message is sent.
+
+**Example — 1 trade closed early via profit-taker:**
+```
+📈 Venerdì 29/5/2026
+
+Mercato: SPY +0.42% — seduta tranquilla, indici in leggero rialzo.
+
+Trade 1 — NVDA long [Score: 1.07]
+Earnings beat Q1, gap ben difeso con volumi 3× la media.
+  Entrata: $135.20
+  Uscita:  $137.85 (Profit taker)
+  P&L: +$959.30 (+1.96%)
+
+Trade 2 — nessun secondo segnale valido.
+
+Giornata:    +$959.30$
+P&L totale:  +$959.30$
+Saldo:       $100,959.30
+```
+
+**Example — 2 trades closed at end of day:**
+```
+📊 Venerdì 29/5/2026
+
+Mercato: SPY +0.28% — chiusura piatta, nessuna direzionalità.
+
+Trade 1 — NVDA long [Score: 1.07]
+Gap retention all'82%, volumi forti, catalyst earnings.
+  Entrata: $135.40
+  Uscita:  $137.90 (Fine giornata)
+  P&L: +$905.00 (+1.84%)
+
+Trade 2 — TSLA long [Score: 0.87]
+Setup tecnico pulito, prezzo sopra VWAP in apertura.
+  Entrata: $318.50
+  Uscita:  $315.80 (Fine giornata)
+  P&L: -$413.10 (-0.85%)
+
+Giornata:    +$491.90$
+P&L totale:  +$491.90$
+Saldo:       $100,491.90
+```
+
+**Example — no trade (SPY too negative):**
+```
+📊 Venerdì 29/5/2026
+
+Mercato: SPY -2.31% — giornata negativa.
+
+Nessun trade. Mercato bloccato — SPY troppo negativo. Riproviamo domani.
+
+Giornata:    +$0.00$
+P&L totale:  +$0.00$
+Saldo:       $100,000.00
+```
+
+The trade header (`Trade N — TICKER long [Score: X.XX]`) is **bold** in Telegram. The score is the algorithmic confidence from signal scoring, uncapped — a score of 1.07 means all 3 technical signals passed (1.0) plus a Tier 3 catalyst bonus (+0.10) with no volume boost. Maximum theoretical score is 1.43.
+
 ---
 
 ## The numbers
