@@ -266,7 +266,7 @@ def run() -> None:
                  f"gap>+{config.MIN_PREMARKET_GAP:.1%}")
 
     # ------------------------------------------------------------------
-    # 09:45 — Binary L1 filters + SPY check + L2 signals + LLM
+    # 09:40 — Binary L1 filters + SPY check + L2 signals + LLM
     # ------------------------------------------------------------------
     wait_until(config.ENTRY_TIME, now_et)
     spy_pct  = fetcher.get_spy_change()
@@ -318,7 +318,7 @@ def run() -> None:
     logger.info(f"LLM decision: {llm_result}")
 
     # ------------------------------------------------------------------
-    # 09:47 — Place orders (skip if already past EOD cut-off)
+    # 09:42 — Place orders (skip if already past EOD cut-off)
     # ------------------------------------------------------------------
     wait_until(config.ORDER_TIME, now_et)
 
