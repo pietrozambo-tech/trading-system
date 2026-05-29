@@ -78,7 +78,7 @@ def apply_binary_filters(
     for c in candidates:
         ticker = c["ticker"]
         try:
-            # 1. Price >= $5 and market cap > $2B (use ADV as proxy if no cap data)
+            # 1. Price >= $5
             daily = fetcher.get_daily_bars(ticker, lookback_days=5)
             if daily.empty:
                 logger.debug(f"{ticker}: no daily data — skip")

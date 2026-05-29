@@ -118,7 +118,7 @@ def build_candidate_payload(candidates_with_signals: list[dict]) -> list[dict]:
             "gap_retention": c.get("gap_retention"),
             "vol_boost": c.get("vol_boost"),
             "confidence_algo": c.get("confidence"),
-            "catalyst_multiplier": c.get("catalyst_bonus"),
+            "catalyst_bonus": c.get("catalyst_bonus"),
             "recent_headlines": headlines,
         })
     return payload

@@ -6,8 +6,8 @@ Il cron parte presto, wait_until() gestisce il timing esatto via pytz.
 
 Timeline (all times ET):
   09:25  Build pre-market watchlist
-  09:45  Apply binary L1 filters + compute L2 signals → LLM decision
-  09:47  Place orders
+  09:40  Apply binary L1 filters + compute L2 signals → LLM decision
+  09:42  Place orders
   intra  Monitor every 5 min
   15:45  Force-close all positions
   16:05  Send Telegram EOD recap
@@ -242,7 +242,7 @@ def run() -> None:
                     pl.log_trade(pos)
             pl.save()
             wait_until(config.TELEGRAM_NOTIFY_TIME, now_et)
-            _send_eod(all_trades, daily_pnl, today_str, spy_pct, pl)
+            _send_eod(pl.trades, daily_pnl, today_str, spy_pct, pl)
             return
     except Exception as e:
         logger.warning(f"Could not check open positions at startup: {e}")
