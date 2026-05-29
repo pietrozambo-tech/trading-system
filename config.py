@@ -33,11 +33,11 @@ VOL_RATIO_HIGH          = 3.0    # boost +0.10
 VOL_RATIO_MID           = 2.0    # boost +0.05
 CONFIDENCE_THRESHOLD    = 0.65
 
-# === CATALYST MULTIPLIERS ===
-CATALYST_TIER1 = 1.00
-CATALYST_TIER2 = 0.90
-CATALYST_TIER3 = 0.80
-CATALYST_NONE  = 0.70
+# === CATALYST BONUSES (additive, not multiplicative) ===
+CATALYST_TIER1 = 0.30   # +0.30 — major catalyst
+CATALYST_TIER2 = 0.20   # +0.20 — real but moderate news
+CATALYST_TIER3 = 0.10   # +0.10 — rumour / speculative
+CATALYST_NONE  = 0.00   # +0.00 — pure technical setup
 
 # === RISK MANAGEMENT ===
 # Paper account: $100k — scala 20:1 vs real ($5k previsti)
