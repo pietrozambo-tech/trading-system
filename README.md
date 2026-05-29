@@ -37,7 +37,24 @@ For each stock that passes the quality check, the bot scores 4 signals based on 
 | **Gap retention** | Is the pre-market gap holding, or is it already being sold off? | Compare the size of the gap at open (today's open minus yesterday's close) with how much of it has been "eaten" by sellers during the first 10 minutes (measured by how far the price dipped from the open). We require ≥70% of the gap still intact. |
 | **Volume boost** | Is today unusually active in the first 10 minutes? | Total shares traded 9:30–9:40 today, divided by the average of the same 9:30–9:40 window over the past 20 trading days. >3× average = +0.10 bonus, 2–3× = +0.05, below 2× = no bonus. |
 
+The first three signals (VWAP, Opening Range, Gap Retention) are **binary and equally weighted** — each one is either true or false, and each contributes exactly 1/3 to the base score. Volume boost and catalyst are additive bonuses on top.
+
 These combine into a **confidence score** between 0 and 1. Only stocks scoring 0.65 or above go to the next step.
+
+```
+confidence = (signals_passed / 3) + catalyst_bonus + volume_boost
+```
+
+| Component | Max contribution | Example |
+|-----------|-----------------|---------|
+| VWAP ✓ | +0.333 | Price above VWAP |
+| Opening range ✓ | +0.333 | Price in top third |
+| Gap retention ✓ | +0.333 | Gap still 70%+ intact |
+| Catalyst bonus | +0.30 | Major earnings beat |
+| Volume boost | +0.10 | Volume >3× average |
+| **Total max** | **1.0** (capped) | |
+
+Minimum to pass: **2 out of 3 signals** (0.667) with no news and no volume boost is already above the 0.65 threshold.
 
 The confidence score also factors in a **catalyst bonus** — an additive bump based on how strong the underlying news is.
 
