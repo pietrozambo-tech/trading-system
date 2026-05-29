@@ -113,7 +113,7 @@ def get_opening_range_bars(ticker: str, session_date: Optional[date] = None) -> 
     bars.index = bars.index.tz_convert(ET)
     cutoff = ET.localize(datetime.combine(
         session_date or datetime.now(ET).date(),
-        datetime.strptime("09:45", "%H:%M").time()
+        datetime.strptime("09:40", "%H:%M").time()
     ))
     return bars[bars.index <= cutoff]
 

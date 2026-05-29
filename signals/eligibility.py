@@ -1,9 +1,13 @@
 import logging
-from datetime import date
+from datetime import date, datetime
 from typing import Optional
+
+import pytz
 
 import config
 from data import fetcher
+
+ET = pytz.timezone("America/New_York")
 
 logger = logging.getLogger(__name__)
 
@@ -88,24 +92,24 @@ def apply_binary_filters(candidates: list[dict], session_date: Optional[date] = 
                 continue
             price = float(daily["close"].iloc[-1])
             if price < config.MIN_PRICE:
-                logger.debug(f"{ticker}: price ${price} < ${config.MIN_PRICE} — skip")
+                logger.info(f"L1 REJECT {ticker}: price ${price:.2f} < ${config.MIN_PRICE} min")
                 continue
 
             # 2. ADV > 1M
             adv = c.get("adv") or fetcher.get_adv(ticker)
             if adv < config.MIN_ADV:
-                logger.debug(f"{ticker}: ADV {adv:.0f} < {config.MIN_ADV} — skip")
+                logger.info(f"L1 REJECT {ticker}: ADV {adv:,.0f} < {config.MIN_ADV:,} min")
                 continue
 
             # 3. Tradable (no halt)
             if not fetcher.is_asset_tradable(ticker):
-                logger.debug(f"{ticker}: not tradable — skip")
+                logger.info(f"L1 REJECT {ticker}: not tradable on Alpaca")
                 continue
 
             # 4. Bid-ask spread < 0.6% (real-time)
             quote = fetcher.get_latest_quote(ticker)
             if quote["spread_pct"] >= config.MAX_BID_ASK_SPREAD:
-                logger.debug(f"{ticker}: spread {quote['spread_pct']:.3%} >= {config.MAX_BID_ASK_SPREAD:.3%} — skip")
+                logger.info(f"L1 REJECT {ticker}: spread {quote['spread_pct']:.3%} >= {config.MAX_BID_ASK_SPREAD:.3%} max")
                 continue
 
             c["current_price"] = quote["ask"]
@@ -119,24 +123,50 @@ def apply_binary_filters(candidates: list[dict], session_date: Optional[date] = 
     return passed
 
 
-def filter_earnings_tonight(candidates: list[dict]) -> list[dict]:
+def filter_earnings_tonight(candidates: list[dict], session_date: Optional[date] = None) -> list[dict]:
     """
-    Remove tickers with earnings scheduled after close today.
-    Alpaca does not expose earnings calendar directly — we rely on news heuristics.
-    Tickers with earnings yesterday are KEPT (good catalyst).
+    Remove tickers with earnings scheduled after close TODAY.
+    Tickers that already reported yesterday are KEPT — that's the catalyst we want.
+
+    Logic: only block if the article (a) is from today, and (b) does not contain
+    past-tense result words — distinguishes "reports tonight" from "reported last night".
     """
+    if session_date is None:
+        session_date = datetime.now(ET).date()
+
+    # Words that indicate earnings already happened (past tense)
+    past_tense = ["beat", "miss", "reported", "exceeded", "results", "fell short", "topped", "surpassed"]
+
     safe = []
     for c in candidates:
         ticker = c["ticker"]
         news = fetcher.get_news(ticker, limit=5)
-        earnings_tonight = any(
-            "earnings" in (n.get("headline", "") + n.get("summary", "")).lower()
-            and "after" in (n.get("headline", "") + n.get("summary", "")).lower()
-            and "close" in (n.get("headline", "") + n.get("summary", "")).lower()
-            for n in news
-        )
+        earnings_tonight = False
+        for n in news:
+            text = (n.get("headline", "") + " " + n.get("summary", "")).lower()
+
+            if not ("earnings" in text and "after" in text and "close" in text):
+                continue
+
+            # If the article talks about results already out, it's past earnings — keep the stock
+            if any(w in text for w in past_tense):
+                continue
+
+            # Only block if the article was published today (future earnings)
+            created_at = n.get("created_at", "")
+            if created_at:
+                try:
+                    article_date = datetime.fromisoformat(created_at.replace("Z", "+00:00")).date()
+                    if article_date < session_date:
+                        continue  # article from yesterday — earnings already happened
+                except Exception:
+                    pass
+
+            earnings_tonight = True
+            break
+
         if earnings_tonight:
-            logger.info(f"{ticker}: earnings tonight — skip")
+            logger.info(f"L1 REJECT {ticker}: earnings scheduled tonight — skip")
         else:
             safe.append(c)
     return safe
