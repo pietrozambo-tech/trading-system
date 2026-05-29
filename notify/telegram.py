@@ -39,14 +39,32 @@ def send_message(text: str, parse_mode: str = "HTML") -> bool:
         return False
 
 
+def _no_trade_reason(pipeline: dict) -> str:
+    """One-liner explaining why no trade was placed today."""
+    blocked  = pipeline.get("blocked") or ""
+    pre      = pipeline.get("premarket_count")
+    l1       = pipeline.get("l1_count")
+    l2       = pipeline.get("l2_count")
+
+    if "SPY" in blocked:
+        return f"Mercato bloccato — SPY troppo negativo."
+    if pre == 0 or pre is None:
+        return f"Nessun titolo con gap ≥0.5% stamattina."
+    if l1 == 0:
+        return f"{pre} titoli in pre-market, 0 passati i filtri qualità (prezzo, liquidità, spread)."
+    if l2 == 0:
+        return f"{l1} titoli ai filtri, 0 con segnali tecnici sufficienti."
+    return "LLM ha scartato tutti i candidati — segnali non convincenti."
+
+
 def _fallback_message(
     trade_data: list[dict],
     spy_pct: float,
     daily_pnl: float,
     account_equity: float,
     date_str: str,
+    pipeline_summary: dict | None = None,
 ) -> str:
-    """Fallback template se LLM non è disponibile."""
     total_pnl = account_equity - config.PAPER_INITIAL_EQUITY
     try:
         d = datetime.strptime(date_str, "%Y-%m-%d")
@@ -67,11 +85,9 @@ def _fallback_message(
     executed = [t for t in trade_data if t.get("exit_price")]
     skipped  = [t for t in trade_data if not t.get("exit_price")]
 
-    if not executed and not skipped:
-        lines += ["Nessun trade oggi — mercato chiuso o nessun segnale rilevato.", ""]
-    elif not executed:
-        reason = skipped[0].get("reason", "nessun segnale sufficiente")
-        lines += ["Nessun trade oggi.", f"Motivo: {reason}", ""]
+    if not executed:
+        reason = _no_trade_reason(pipeline_summary or {})
+        lines += [f"Nessun trade. {reason}", ""]
     else:
         for i, t in enumerate(executed, 1):
             modalita = EXIT_LABELS.get(t.get("exit_reason", ""), t.get("exit_reason", ""))
@@ -86,7 +102,7 @@ def _fallback_message(
                 "",
             ]
         if skipped:
-            lines += [f"Trade 2 — non eseguito ({skipped[0].get('reason','nessun segnale')})", ""]
+            lines += [f"Trade 2 — non eseguito. Nessun secondo segnale.", ""]
 
     sign_day = "+" if daily_pnl >= 0 else ""
     sign_tot = "+" if total_pnl >= 0 else ""
@@ -105,8 +121,9 @@ def send_eod_recap(
     account_equity: float,
     date_str: str,
     llm_text: str = "",
+    pipeline_summary: dict | None = None,
 ) -> None:
     text = llm_text if llm_text else _fallback_message(
-        trade_data, spy_pct, daily_pnl, account_equity, date_str
+        trade_data, spy_pct, daily_pnl, account_equity, date_str, pipeline_summary
     )
     send_message(text)
