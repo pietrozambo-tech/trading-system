@@ -165,10 +165,12 @@ def run() -> None:
     # Scheduled Railway runs land at 09:00; anything past 10:00 is a manual/late start.
     cutoff_dt = ET.localize(datetime.combine(now_et.date(), datetime.strptime("10:00", "%H:%M").time()))
     if now_et >= cutoff_dt:
+        triggered_at = now_et.strftime("%H:%M")
         logger.warning(
-            f"Bot started at {now_et.strftime('%H:%M')} ET — past entry window (cut-off 10:00). "
+            f"Bot started at {triggered_at} ET — past entry window (cut-off 10:00). "
             "No orders will be placed. Use the scheduled Railway run for live trading."
         )
+        telegram.send_late_start_warning(triggered_at, today_str)
         return
 
     pl           = PipelineLog(today_str)

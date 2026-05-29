@@ -114,6 +114,21 @@ def _fallback_message(
     return "\n".join(lines)
 
 
+def send_late_start_warning(triggered_at: str, date_str: str) -> None:
+    """Notify when the bot is triggered manually after the entry window."""
+    try:
+        d = datetime.strptime(date_str, "%Y-%m-%d")
+        header = f"{DAYS_IT[d.weekday()]} {d.day}/{d.month}/{d.year}"
+    except Exception:
+        header = date_str
+    text = (
+        f"⚠️ {header}\n\n"
+        f"Algoritmo avviato manualmente alle {triggered_at} ET — "
+        f"post apertura mercato. Nessun ordine inserito."
+    )
+    send_message(text)
+
+
 def send_eod_recap(
     trade_data: list[dict],
     spy_pct: float,
