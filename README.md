@@ -99,11 +99,11 @@ Every 5 minutes the bot checks each open position. It closes a trade if any of t
 | Priority | Rule | Trigger | Why this rule exists |
 |----------|------|---------|----------------------|
 | 1 | **Hard stop** | Price falls ≥2.0% from entry | The absolute floor — simple, predictable, immune to data issues. On a ~$49k position, 2% = ~$980 max loss per trade. Always checked first. |
-| 2 | **ATR stop** | Price falls ≥1.2× ATR14 from entry | ATR (Average True Range) measures how much a stock typically moves in a day over the past 14 days. Multiplying by 1.2 sets a stop just above normal daily noise — you only exit if the move against you is meaningfully larger than usual. On calm stocks (ATR ~1%) this fires around -1.2%, tighter than the hard stop. On volatile stocks the hard stop at -2% acts as the backstop. Whichever is tighter (higher price) between rule 1 and rule 2 wins. |
-| 3 | **VWAP take-profit** | Price drops below VWAP *and* profit ≥2.5% | This is a profit-protecting exit, not a stop loss. The idea: if the stock was running but has now fallen back below the average price of the day, momentum has likely shifted. The 2.5% minimum is there so we don't exit a trade that barely moved — we only lock in profit when there's real gain to protect. Calibrated via backtesting. |
+| 2 | **ATR stop** | Price falls ≥1× ATR14 from entry | ATR (Average True Range) measures how much a stock typically moves in a day over the past 14 days. Setting the stop exactly at ATR14 below entry means you exit if the move against you exceeds the stock's typical daily range — a signal that something is genuinely wrong, not just noise. On calm stocks (ATR ~1%) this fires at -1%, tighter than the hard stop. On volatile stocks (ATR >2%) the hard stop at -2% fires first. Whichever is tighter (higher price) wins. |
+| 3 | **VWAP take-profit** | Price drops below VWAP *and* profit ≥1.5% | This is a profit-protecting exit, not a stop loss. If the stock was running but has now fallen back below the average price of the day, momentum has likely shifted. The 1.5% minimum is there so we don't exit a trade that barely moved — we only lock in profit when there's real gain to protect. |
 | 4 | **End-of-day close** | 3:45 PM ET, no exceptions | We never hold overnight. Gaps at open, earnings after hours, macro news — too much can happen. Everything is flat before the close, every single day. |
 
-The 2.5% minimum for the VWAP take-profit was chosen after testing different thresholds on 6 months of historical data — below that, it was cutting winners too early.
+The 1.5% minimum for the VWAP take-profit gives the condition room to fire: during a reversal VWAP lags the current price, so by the time price crosses below VWAP the profit has often already eroded — a 2.5% threshold was too tight and never fired in backtesting.
 
 ### 7. End-of-day recap — 4:05 PM
 
@@ -120,7 +120,8 @@ A Telegram message with a human-readable summary: market context, each trade's e
 | Position size per trade | (equity − $2,000) ÷ 2, recalculated live each day |
 | Example on $100k | ($100,000 − $2,000) ÷ 2 = $49,000/trade |
 | Hard stop per trade | -2.0% from entry (~$980 on $49k position) |
-| VWAP take-profit threshold | 2.5% profit minimum |
+| ATR stop per trade | -1× ATR14 from entry (tighter than hard stop on low-vol stocks) |
+| VWAP take-profit threshold | 1.5% profit minimum |
 | Real money equivalent (20:1 scale) | ~$2,450 per trade on $5k account |
 
 ---

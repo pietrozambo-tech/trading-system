@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "Modalità: 'standard', 'sensitivity', 'vwap'"
+        description: "Modalità: 'standard', 'sensitivity', 'vwap', 'hardstop'"
         required: false
         default: "standard"
 
@@ -47,6 +47,10 @@ jobs:
       - name: Run backtest (vwap sensitivity)
         if: ${{ github.event.inputs.mode == 'vwap' }}
         run: python run_backtest.py --vwap
+
+      - name: Run backtest (hard stop sensitivity)
+        if: ${{ github.event.inputs.mode == 'hardstop' }}
+        run: python run_backtest.py --hardstop
 
       - name: Upload results
         uses: actions/upload-artifact@v4

@@ -43,12 +43,11 @@ CATALYST_NONE  = 0.00   # +0.00 — pure technical setup
 CASH_CUSHION_USD         = 2_000   # sempre disponibile, mai investito
 MAX_POSITIONS            = 2
 HARD_BLOCKER_PCT         = 0.020   # -2.0% dal prezzo di entrata
-ATR_MULTIPLIER           = 1.2
 ATR_LOOKBACK             = 14      # days
 MAX_DAILY_LOSS_USD       = None    # disabilitato — ogni trade ha il proprio hard stop
 
 # === EXIT RULES ===
-VWAP_EXIT_MIN_PROFIT_PCT = 0.025   # VWAP exit solo se profit >= 2.5% (da sensitivity analysis)
+VWAP_EXIT_MIN_PROFIT_PCT = 0.015   # VWAP exit solo se profit >= 1.5%
 
 # === TIMING (ET) ===
 WATCHLIST_TIME       = "09:25"
