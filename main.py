@@ -161,7 +161,7 @@ def run() -> None:
     today_str = now_et.strftime("%Y-%m-%d")
     logger.info(f"=== Trading session start: {today_str} ===")
 
-    # Guard: if started after the entry window, the session is over — abort.
+    # Guard 1: if started after the entry window, the session is over — abort.
     # Scheduled Railway runs land at 09:00; anything past 10:00 is a manual/late start.
     cutoff_dt = ET.localize(datetime.combine(now_et.date(), datetime.strptime("10:00", "%H:%M").time()))
     if now_et >= cutoff_dt:
@@ -172,6 +172,20 @@ def run() -> None:
         )
         telegram.send_late_start_warning(triggered_at, today_str)
         return
+
+    # Guard 2: never open new positions if MAX_POSITIONS are already open on the account.
+    try:
+        existing = fetcher.get_open_positions()
+        if len(existing) >= config.MAX_POSITIONS:
+            tickers = [p["ticker"] for p in existing]
+            logger.warning(f"Already {len(existing)} open position(s) {tickers} — aborting to avoid exceeding MAX_POSITIONS.")
+            telegram.send_message(
+                f"⚠️ Sessione bloccata: {len(existing)} posizioni già aperte "
+                f"({', '.join(tickers)}). Nessun nuovo ordine inserito."
+            )
+            return
+    except Exception as e:
+        logger.warning(f"Could not check open positions at startup: {e}")
 
     pl           = PipelineLog(today_str)
     daily_pnl    = 0.0
