@@ -24,7 +24,7 @@ Once the market opens and the first 10 minutes settle, the bot applies a set of 
 | Daily volume | >1 million shares on average | Makes sure we can buy and sell without moving the price |
 | Bid-ask spread | <0.6% | Entry cost too high otherwise |
 | Earnings tonight | Excluded | Overnight risk is unpredictable — but stocks that *already* reported earnings yesterday are kept, as that's the catalyst we want |
-| Market mood | SPY not down >1.8% | Don't trade against a falling market |
+| Market mood | SPY not down >2.0% | Circuit breaker for real panic days only — strong individual setups still trade in a mildly negative market |
 
 ### 3. Signal scoring
 

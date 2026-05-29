@@ -22,7 +22,7 @@ MIN_PRICE             = 5.0
 MIN_ADV               = 1_000_000       # 1M shares/day
 MAX_BID_ASK_SPREAD    = 0.006           # 0.6%
 MIN_PREMARKET_GAP          = 0.005   # +0.5% — gap meaningfully above yesterday's close
-SPY_BLOCK_THRESHOLD   = -0.018          # -1.8%
+SPY_BLOCK_THRESHOLD   = -0.020          # -2.0%
 
 # === SIGNAL THRESHOLDS (L2) ===
 OR_POSITION_THRESHOLD   = 0.66
