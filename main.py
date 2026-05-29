@@ -173,16 +173,57 @@ def run() -> None:
         telegram.send_late_start_warning(triggered_at, today_str)
         return
 
-    # Guard 2: never open new positions if MAX_POSITIONS are already open on the account.
+    # Guard 2: if positions are already open, skip the pipeline and jump straight
+    # to the monitoring loop — handles crash-and-restart without leaving positions unmonitored.
     try:
         existing = fetcher.get_open_positions()
         if len(existing) >= config.MAX_POSITIONS:
             tickers = [p["ticker"] for p in existing]
-            logger.warning(f"Already {len(existing)} open position(s) {tickers} — aborting to avoid exceeding MAX_POSITIONS.")
+            logger.warning(f"Already {len(existing)} open position(s) {tickers} — skipping pipeline, resuming monitoring.")
             telegram.send_message(
-                f"⚠️ Sessione bloccata: {len(existing)} posizioni già aperte "
-                f"({', '.join(tickers)}). Nessun nuovo ordine inserito."
+                f"⚠️ Riavvio rilevato: {len(existing)} posizioni già aperte "
+                f"({', '.join(tickers)}). Pipeline saltata, monitoring ripreso."
             )
+            # Reconstruct position dicts with fresh stop prices so the monitor loop works correctly
+            recovered: list[dict] = []
+            for p in existing:
+                stops = trader.calc_stop_prices(p["ticker"], p["entry_price"])
+                recovered.append({
+                    **p,
+                    **stops,
+                    "direction": "long",
+                    "confidence": None,
+                    "reason": "recovered after restart",
+                    "order_id": None,
+                    "exit_price": None,
+                    "exit_time": None,
+                    "exit_reason": None,
+                    "pnl_usd": None,
+                    "pnl_pct": None,
+                })
+            pl        = PipelineLog(today_str)
+            daily_pnl = 0.0
+            open_positions = recovered
+            all_trades     = []
+            spy_pct        = fetcher.get_spy_change()
+            # Jump directly to monitoring loop — skip pre-market, filters, LLM, orders
+            logger.info("Starting monitoring loop (recovered) …")
+            while current_et_str() < config.EOD_CLOSE_TIME:
+                if not open_positions:
+                    break
+                time.sleep(config.MONITORING_INTERVAL)
+                open_positions, just_closed, daily_pnl = trader.monitor_positions(open_positions, daily_pnl)
+                for pos in just_closed:
+                    logger.info(f"Closed: {pos['ticker']} {pos['exit_reason']} P&L=${pos['pnl_usd']:.2f}")
+                    pl.log_trade(pos)
+            if open_positions:
+                logger.info("EOD close — forcing all positions (recovered)")
+                closed_eod, daily_pnl = trader.close_all_positions_eod(open_positions, daily_pnl)
+                for pos in closed_eod:
+                    pl.log_trade(pos)
+            pl.save()
+            wait_until(config.TELEGRAM_NOTIFY_TIME, now_et)
+            _send_eod(all_trades, daily_pnl, today_str, spy_pct, pl)
             return
     except Exception as e:
         logger.warning(f"Could not check open positions at startup: {e}")
