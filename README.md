@@ -32,12 +32,12 @@ Once the market opens and the first 15 minutes settle, the bot applies a set of 
 
 For each stock that passes the quality check, the bot scores 4 signals based on what happened in the first 15 minutes of trading:
 
-| Signal | What it measures |
-|--------|-----------------|
-| **VWAP position** | Is the price above the average price of the day so far? (buyers in control) |
-| **Opening range position** | Is the price in the top third of the 9:30–9:45 range? (momentum holding) |
-| **Gap retention** | Is the stock still holding at least 70% of its pre-market gap? (not fading) |
-| **Volume boost** | Is volume in the first 15 min unusually high vs historical average? |
+| Signal | What it means | How it's calculated |
+|--------|--------------|---------------------|
+| **VWAP position** | Are buyers in control right now? | VWAP (Volume Weighted Average Price) is the average price of every trade so far, weighted by how many shares were traded at each price. If the current price is above it, most people who traded today are sitting on a profit — a sign of strength. Computed from all 1-minute bars since 9:30. |
+| **Opening range position** | Is the stock pushing toward the top of its early range, not the bottom? | Take the highest and lowest price between 9:30 and 9:45. Calculate where the current price sits within that range as a percentage (0% = at the low, 100% = at the high). We require ≥66% — meaning the stock is in the upper third. |
+| **Gap retention** | Is the pre-market gap holding, or is it already being sold off? | Compare the size of the gap at open (today's open minus yesterday's close) with how much of it has been "eaten" by sellers during the first 15 minutes (measured by how far the price dipped from the open). We require ≥70% of the gap still intact. |
+| **Volume boost** | Is today unusually active in the first 15 minutes? | Total shares traded 9:30–9:45 today, divided by the average of the same 9:30–9:45 window over the past 20 trading days. >3× average = +0.10 bonus, 2–3× = +0.05, below 2× = no bonus. |
 
 These combine into a **confidence score** between 0 and 1. Only stocks scoring 0.65 or above go to the next step.
 
