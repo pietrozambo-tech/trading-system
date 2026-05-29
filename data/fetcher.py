@@ -264,16 +264,16 @@ def get_news(ticker: str, start: Optional[datetime] = None, limit: int = 10) -> 
 
 def get_spy_change(session_date: Optional[date] = None) -> float:
     """SPY % change vs previous close at current time."""
-    client = get_data_client()
-    if session_date is None:
-        session_date = datetime.now(ET).date()
-    daily = get_daily_bars("SPY", lookback_days=5)
-    if len(daily) < 2:
+    try:
+        snap = get_snapshot("SPY")
+        prev_close = float(snap.prev_day.close)
+        current_price = float(snap.latest_trade.price)
+        if prev_close == 0:
+            return 0.0
+        return (current_price - prev_close) / prev_close
+    except Exception as e:
+        logger.warning(f"SPY change error: {e}")
         return 0.0
-    prev_close = float(daily["close"].iloc[-2])
-    snap = get_snapshot("SPY")
-    current_price = float(snap.latest_trade.price)
-    return (current_price - prev_close) / prev_close
 
 
 def get_account() -> dict:
