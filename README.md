@@ -75,12 +75,12 @@ Orders are placed via Alpaca (paper trading account). Position size is calculate
 
 Every 5 minutes the bot checks each open position. It closes a trade if any of these triggers fires, checked in this exact order:
 
-| Priority | Rule | Detail |
-|----------|------|--------|
-| 1 | Hard stop | Close if price falls 4.5% from entry |
-| 2 | ATR stop | Close if price falls more than 1.5× the stock's average true range |
-| 3 | VWAP take-profit | Close if price drops below VWAP *and* we're already up 2.5%+ |
-| 4 | End-of-day close | Everything closes hard at 3:45 PM regardless |
+| Priority | Rule | Trigger | Why this rule exists |
+|----------|------|---------|----------------------|
+| 1 | **Hard stop** | Price falls ≥4.5% from entry | A fixed percentage floor. Simple, predictable, immune to data issues. With a $45k position, 4.5% = ~$2,025 max loss per trade. Always checked first. |
+| 2 | **ATR stop** | Price falls ≥1.5× ATR14 from entry | ATR (Average True Range) measures how much a stock typically moves in a day over the past 14 days. Multiplying by 1.5 sets a stop that's "wider than normal noise" — so you don't get shaken out by ordinary volatility, only by a real move against you. On a calm stock (ATR = 1%) this stop is tighter than 4.5%; on a volatile one it might be looser. Whichever is higher (tighter) between rule 1 and rule 2 wins. |
+| 3 | **VWAP take-profit** | Price drops below VWAP *and* profit ≥2.5% | This is a profit-protecting exit, not a stop loss. The idea: if the stock was running but has now fallen back below the average price of the day, momentum has likely shifted. The 2.5% minimum is there so we don't exit a trade that barely moved — we only lock in profit when there's real gain to protect. Calibrated via backtesting. |
+| 4 | **End-of-day close** | 3:45 PM ET, no exceptions | We never hold overnight. Gaps at open, earnings after hours, macro news — too much can happen. Everything is flat before the close, every single day. |
 
 The 2.5% minimum for the VWAP take-profit was chosen after testing different thresholds on 6 months of historical data — below that, it was cutting winners too early.
 
