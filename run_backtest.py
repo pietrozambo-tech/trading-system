@@ -5,6 +5,7 @@ Usage:
   python run_backtest.py                # 6 mesi, parametri di default
   python run_backtest.py --sensitivity  # griglia completa di parametri
   python run_backtest.py --vwap         # sensitivity solo su VWAP exit threshold
+  python run_backtest.py --hardstop     # sensitivity solo su hard stop (1.0%–2.5%)
 """
 import argparse
 import logging
@@ -21,7 +22,7 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s",
 )
 
-from backtest.engine import BacktestParams, run_backtest, sensitivity_analysis, vwap_sensitivity_analysis
+from backtest.engine import BacktestParams, BacktestResults, run_backtest, sensitivity_analysis, vwap_sensitivity_analysis, prefetch_universe, _trading_days, _simulate_day
 
 # ---------------------------------------------------------------------------
 # Universe — 15 ticker liquidi, diversificati per settore
@@ -101,13 +102,62 @@ def save_results(results, sensitivity_df=None) -> None:
         print(f"Sensitivity analysis salvata in: {sens_path}")
 
 
+def hardstop_sensitivity() -> None:
+    """Focused sensitivity on hard_blocker_pct only. All other params at current defaults."""
+    hard_stops = [0.010, 0.015, 0.020, 0.025]
+
+    print(f"Hard-stop sensitivity: {[f'{h:.1%}' for h in hard_stops]}")
+    print(f"Periodo: {START_DATE} → {END_DATE} | {len(BACKTEST_UNIVERSE)} ticker")
+    print(f"VWAP exit min: 1.5% | ATR stop: 1× ATR14\n")
+
+    all_cache = prefetch_universe(BACKTEST_UNIVERSE, START_DATE, END_DATE)
+    days      = _trading_days(START_DATE, END_DATE)
+
+    hdr = f"{'Stop':>6}  {'Trades':>7}  {'Win%':>6}  {'PF':>5}  {'W/L':>5}  {'PnL $':>10}  {'AvgWin':>8}  {'AvgLoss':>9}  {'MaxDD':>9}  {'VWAP':>5}  {'EOD':>5}  {'STOP':>5}"
+    print(hdr)
+    print("-" * len(hdr))
+
+    rows = []
+    for hb in hard_stops:
+        p   = BacktestParams(hard_blocker_pct=hb)
+        res = BacktestResults()
+        for day in days:
+            day_trades = 0
+            for ticker in BACKTEST_UNIVERSE:
+                if day_trades >= p.max_positions or ticker not in all_cache:
+                    continue
+                trade = _simulate_day(ticker, day, all_cache[ticker], p)
+                if trade:
+                    res.trades.append(trade)
+                    day_trades += 1
+
+        s  = res.summary()
+        df = res.to_dataframe() if res.trades else pd.DataFrame()
+        ec = df["exit_reason"].value_counts().to_dict() if not df.empty else {}
+        vwap_x = ec.get("vwap_exit", 0)
+        eod_x  = ec.get("eod_close", 0)
+        stop_x = sum(v for k, v in ec.items() if "stop" in k or "blocker" in k)
+
+        print(f"{hb:>5.1%}  {s['total_trades']:>7}  {s['win_rate']:>6.1%}  {s['profit_factor']:>5.2f}  {s['avg_win_loss_ratio']:>5.2f}  {s['total_pnl_usd']:>+10,.0f}  {s['avg_win_usd']:>+8.0f}  {s['avg_loss_usd']:>+9.0f}  {s['max_drawdown_usd']:>9,.0f}  {vwap_x:>5}  {eod_x:>5}  {stop_x:>5}")
+        rows.append({"hard_stop_pct": hb, **s, "vwap_exits": vwap_x, "eod_exits": eod_x, "stop_exits": stop_x})
+
+    os.makedirs("backtest/results", exist_ok=True)
+    path = "backtest/results/hardstop_sensitivity.csv"
+    pd.DataFrame(rows).to_csv(path, index=False)
+    print(f"\nRisultati salvati in: {path}")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--sensitivity", action="store_true", help="Griglia completa parametri")
     parser.add_argument("--vwap",        action="store_true", help="Sensitivity solo VWAP exit threshold")
+    parser.add_argument("--hardstop",    action="store_true", help="Sensitivity solo hard stop (1.0%–2.5%)")
     args = parser.parse_args()
 
-    if args.vwap:
+    if args.hardstop:
+        hardstop_sensitivity()
+
+    elif args.vwap:
         thresholds = [0.010, 0.015, 0.020, 0.025, 0.030]
         print(f"VWAP sensitivity: {[f'{t:.1%}' for t in thresholds]}")
         print(f"Periodo: {START_DATE} → {END_DATE} | {len(BACKTEST_UNIVERSE)} ticker\n")
