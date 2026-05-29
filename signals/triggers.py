@@ -97,6 +97,19 @@ def compute_signals(
     vol_boost    = s4_volume_boost(ticker, bars_or, session_date)
     confidence   = calc_confidence(above_vwap, or_pos, gap_ret, catalyst_multiplier, vol_boost)
 
+    passes = confidence >= config.CONFIDENCE_THRESHOLD
+    vwap_str = f"VWAP={'✓' if above_vwap else f'✗(below)'}"
+    or_str   = f"OR={or_pos:.2f}{'✓' if or_pos > config.OR_POSITION_THRESHOLD else f'✗(need>{config.OR_POSITION_THRESHOLD})'}"
+    gr_str   = f"GR={gap_ret:.2f}{'✓' if gap_ret > config.GAP_RETENTION_THRESHOLD else f'✗(need>{config.GAP_RETENTION_THRESHOLD})'}"
+    vol_str  = f"vol=+{vol_boost:.2f}"
+    cat_str  = f"catalyst=+{catalyst_multiplier:.2f}"
+    conf_str = f"confidence={confidence:.3f}{'✓' if passes else f'✗(need≥{config.CONFIDENCE_THRESHOLD})'}"
+
+    if passes:
+        logger.info(f"L2 PASS  {ticker}: {vwap_str} {or_str} {gr_str} {vol_str} {cat_str} → {conf_str}")
+    else:
+        logger.info(f"L2 REJECT {ticker}: {vwap_str} {or_str} {gr_str} {vol_str} {cat_str} → {conf_str}")
+
     signals = {
         "ticker": ticker,
         "price_945": price_945,
@@ -108,10 +121,6 @@ def compute_signals(
         "vol_boost": vol_boost,
         "catalyst_bonus": catalyst_multiplier,
         "confidence": round(confidence, 4),
-        "passes_threshold": confidence >= config.CONFIDENCE_THRESHOLD,
+        "passes_threshold": passes,
     }
-    logger.info(
-        f"{ticker}: VWAP={above_vwap} OR={or_pos:.2f} GR={gap_ret:.2f} "
-        f"boost={vol_boost} conf={confidence:.3f}"
-    )
     return signals
