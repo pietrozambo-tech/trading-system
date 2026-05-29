@@ -312,7 +312,7 @@ def _simulate_day(
         or_pos > params.or_position_threshold,
         gap_ret > params.gap_retention_threshold,
     ])
-    confidence = min((direction_score / 3) + params.catalyst_bonus + vol_boost, 1.0)
+    confidence = (direction_score / 3) + params.catalyst_bonus + vol_boost
 
     if confidence < params.confidence_threshold:
         return None

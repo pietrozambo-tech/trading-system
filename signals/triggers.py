@@ -69,8 +69,7 @@ def calc_confidence(
         or_position > config.OR_POSITION_THRESHOLD,
         gap_retention > config.GAP_RETENTION_THRESHOLD,
     ])
-    confidence = (direction_score / 3) + catalyst_bonus + vol_boost
-    return min(confidence, 1.0)
+    return (direction_score / 3) + catalyst_bonus + vol_boost
 
 
 def compute_signals(

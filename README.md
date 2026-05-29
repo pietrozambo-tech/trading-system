@@ -52,9 +52,9 @@ confidence = (signals_passed / 3) + catalyst_bonus + volume_boost
 | Gap retention ✓ | +0.333 | Gap still 70%+ intact |
 | Catalyst bonus | +0.30 | Major earnings beat |
 | Volume boost | +0.10 | Volume >3× average |
-| **Total max** | **1.0** (capped) | |
+| **Theoretical max** | **1.43** (3/3 + 0.30 + 0.10) | Not capped — higher scores help LLM prioritise between multiple candidates |
 
-Minimum to pass: **2 out of 3 signals** (0.667) with no news and no volume boost is already above the 0.65 threshold.
+Minimum to pass: **2 out of 3 signals** (0.667) with no news and no volume boost is already above the 0.65 threshold. Scores above 1.0 are valid and meaningful — a 1.3 beats a 1.0 when the LLM has to choose.
 
 The confidence score also factors in a **catalyst bonus** — an additive bump based on how strong the underlying news is.
 
