@@ -202,25 +202,32 @@ def generate_eod_recap(
         clean_trades.append(ct)
 
     prompt = f"""Sei un assistente di trading. Scrivi un messaggio Telegram EOD in italiano.
+Il messaggio usa HTML di Telegram: usa <b>...</b> per il grassetto dove indicato, nessun altro tag HTML.
 
 REGOLE:
 - Tono: diretto, amichevole, niente gergo tecnico
-- Lunghezza: max 20 righe, leggibile in 20 secondi sul telefono
-- Usa emoji ma poche (max 5 in tutto)
+- Lunghezza: max 25 righe, leggibile in 20 secondi sul telefono
+- Usa emoji ma poche (max 4 in tutto)
 - Scrivi in italiano
 
-STRUTTURA OBBLIGATORIA (esattamente in questo ordine):
-1. Data e giorno della settimana
-2. Mercato: una frase sul contesto generale (SPY {spy_pct:+.2f}% oggi — commenta brevemente)
-3. Per ogni trade eseguito:
-   - Ticker e direzione (long)
-   - Prezzo entrata
-   - Prezzo uscita + modalità (usa il campo "modalita_uscita": Fine giornata / Stop loss / Profit taker)
-   - P&L del trade in $ e %
-4. Se nessun trade: una riga con il motivo
-5. P&L giornata: {daily_pnl:+.2f}$
-6. P&L totale conto dall'inizio: {total_pnl:+.2f}$
-7. Saldo disponibile: {account_equity:,.2f}$
+STRUTTURA OBBLIGATORIA (esattamente in questo ordine, con le righe vuote indicate):
+
+[Data e giorno della settimana]
+[riga vuota]
+Mercato: [una frase — SPY {spy_pct:+.2f}% oggi, commenta in max 6 parole]
+[riga vuota]
+Per ogni trade (con riga vuota tra un trade e l'altro):
+  <b>Trade N — TICKER long [Score: X.XX]</b>
+  [UNA riga di contesto: riassumi in max 8 parole il catalyst o segnale chiave dal campo "reason". Usa SOLO fatti già presenti in "reason" — non inventare nulla.]
+  Entrata: $X.XX
+  Uscita: $X.XX (modalita_uscita)
+  P&L: ±$XXX (±X.XX%)
+[riga vuota]
+Se nessun trade: una riga con il motivo
+[riga vuota]
+Giornata: {daily_pnl:+.2f}$
+P&L totale: {total_pnl:+.2f}$
+Saldo: ${account_equity:,.2f}
 
 DATI:
 {_json.dumps(clean_trades, indent=2, default=str)}
@@ -228,7 +235,7 @@ DATI:
     client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
     message = client.messages.create(
         model=config.LLM_MODEL,
-        max_tokens=600,
+        max_tokens=800,
         messages=[{"role": "user", "content": prompt}],
     )
     return message.content[0].text.strip()

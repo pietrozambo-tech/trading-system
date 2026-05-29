@@ -1,3 +1,4 @@
+import html
 import logging
 import requests
 from datetime import datetime
@@ -90,12 +91,18 @@ def _fallback_message(
         lines += [f"Nessun trade. {reason}", ""]
     else:
         for i, t in enumerate(executed, 1):
-            modalita = EXIT_LABELS.get(t.get("exit_reason", ""), t.get("exit_reason", ""))
-            pnl_usd  = t.get("pnl_usd", 0)
-            pnl_pct  = t.get("pnl_pct", 0)
-            sign     = "+" if pnl_usd >= 0 else ""
+            modalita   = EXIT_LABELS.get(t.get("exit_reason", ""), t.get("exit_reason", ""))
+            pnl_usd    = t.get("pnl_usd", 0)
+            pnl_pct    = t.get("pnl_pct", 0)
+            sign       = "+" if pnl_usd >= 0 else ""
+            confidence = t.get("confidence")
+            score_str  = f" [Score: {confidence:.2f}]" if confidence is not None else ""
+            trade_reason = t.get("reason") or ""
+
+            lines.append(f"<b>Trade {i} — {t['ticker']} long{score_str}</b>")
+            if trade_reason and trade_reason != "recovered after restart":
+                lines.append(html.escape(trade_reason))
             lines += [
-                f"Trade {i} — {t['ticker']} long",
                 f"  Entrata: ${t['entry_price']:.2f}",
                 f"  Uscita:  ${t['exit_price']:.2f} ({modalita})",
                 f"  P&L: {sign}{pnl_usd:.2f}$ ({sign}{pnl_pct:.2%})",
