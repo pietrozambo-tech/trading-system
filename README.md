@@ -16,28 +16,28 @@ The bot scans a watchlist of 57 US stocks looking for ones that are:
 
 The idea: if a stock is up pre-market *and* more people than usual are trading it, something is probably happening — news, earnings, an upgrade, etc.
 
-### 2. Quality check — 9:45 AM
+### 2. Quality check — 9:40 AM
 
-Once the market opens and the first 15 minutes settle, the bot applies a set of hard filters to remove anything that doesn't meet the bar:
+Once the market opens and the first 10 minutes settle, the bot applies a set of hard filters to remove anything that doesn't meet the bar:
 
 | Check | Requirement | Why |
 |-------|-------------|-----|
 | Price | At least $5 | Avoid erratic penny stocks |
 | Daily volume | >1 million shares on average | Makes sure we can buy and sell without moving the price |
 | Bid-ask spread | <0.6% | Entry cost too high otherwise |
-| Earnings tonight | Excluded | Overnight risk is unpredictable |
+| Earnings tonight | Excluded | Overnight risk is unpredictable — but stocks that *already* reported earnings yesterday are kept, as that's the catalyst we want |
 | Market mood | SPY not down >1.8% | Don't trade against a falling market |
 
 ### 3. Signal scoring
 
-For each stock that passes the quality check, the bot scores 4 signals based on what happened in the first 15 minutes of trading:
+For each stock that passes the quality check, the bot scores 4 signals based on what happened in the first 10 minutes of trading:
 
 | Signal | What it means | How it's calculated |
 |--------|--------------|---------------------|
 | **VWAP position** | Are buyers in control right now? | VWAP (Volume Weighted Average Price) is the average price of every trade so far, weighted by how many shares were traded at each price. If the current price is above it, most people who traded today are sitting on a profit — a sign of strength. Computed from all 1-minute bars since 9:30. |
-| **Opening range position** | Is the stock pushing toward the top of its early range, not the bottom? | Take the highest and lowest price between 9:30 and 9:45. Calculate where the current price sits within that range as a percentage (0% = at the low, 100% = at the high). We require ≥66% — meaning the stock is in the upper third. |
-| **Gap retention** | Is the pre-market gap holding, or is it already being sold off? | Compare the size of the gap at open (today's open minus yesterday's close) with how much of it has been "eaten" by sellers during the first 15 minutes (measured by how far the price dipped from the open). We require ≥70% of the gap still intact. |
-| **Volume boost** | Is today unusually active in the first 15 minutes? | Total shares traded 9:30–9:45 today, divided by the average of the same 9:30–9:45 window over the past 20 trading days. >3× average = +0.10 bonus, 2–3× = +0.05, below 2× = no bonus. |
+| **Opening range position** | Is the stock pushing toward the top of its early range, not the bottom? | Take the highest and lowest price between 9:30 and 9:40. Calculate where the current price sits within that range as a percentage (0% = at the low, 100% = at the high). We require ≥66% — meaning the stock is in the upper third. |
+| **Gap retention** | Is the pre-market gap holding, or is it already being sold off? | Compare the size of the gap at open (today's open minus yesterday's close) with how much of it has been "eaten" by sellers during the first 10 minutes (measured by how far the price dipped from the open). We require ≥70% of the gap still intact. |
+| **Volume boost** | Is today unusually active in the first 10 minutes? | Total shares traded 9:30–9:40 today, divided by the average of the same 9:30–9:40 window over the past 20 trading days. >3× average = +0.10 bonus, 2–3× = +0.05, below 2× = no bonus. |
 
 These combine into a **confidence score** between 0 and 1. Only stocks scoring 0.65 or above go to the next step.
 
@@ -67,7 +67,7 @@ The top candidates (with all their signals and recent headlines) are sent to Cla
 - Skip the trade if it's not convinced — no forced trades
 - Avoid picking two stocks from the same sector
 
-### 5. Execution — 9:47 AM
+### 5. Execution — 9:42 AM
 
 Orders are placed via Alpaca (paper trading account). Position size is calculated live at order time using the formula:
 
