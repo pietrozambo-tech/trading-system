@@ -235,14 +235,17 @@ def run() -> None:
                 for pos in just_closed:
                     logger.info(f"Closed: {pos['ticker']} {pos['exit_reason']} P&L=${pos['pnl_usd']:.2f}")
                     pl.log_trade(pos)
+            eod_forced = bool(open_positions) and not _shutdown
             if open_positions:
                 logger.info("EOD close — forcing all positions (recovered)")
                 closed_eod, daily_pnl = trader.close_all_positions_eod(open_positions, daily_pnl)
                 for pos in closed_eod:
                     pl.log_trade(pos)
             pl.save()
-            wait_until(config.TELEGRAM_NOTIFY_TIME, now_et)
-            _send_eod(pl.trades, daily_pnl, today_str, spy_pct, pl)
+            if eod_forced:
+                wait_until(config.TELEGRAM_NOTIFY_TIME, now_et)
+            spy_pct_final = fetcher.get_spy_change()
+            _send_eod(pl.trades, daily_pnl, today_str, spy_pct_final, pl)
             return
     except Exception as e:
         logger.warning(f"Could not check open positions at startup: {e}")
@@ -363,6 +366,9 @@ def run() -> None:
     # ------------------------------------------------------------------
     # 15:45 — EOD hard close
     # ------------------------------------------------------------------
+    # Track whether we hit the hard EOD close (vs all positions closing naturally
+    # earlier in the day). Determines whether Telegram waits until 16:05.
+    eod_forced = bool(open_positions) and not _shutdown
     if open_positions:
         logger.info("EOD close — forcing all positions")
         closed_eod, daily_pnl = trader.close_all_positions_eod(open_positions, daily_pnl)
@@ -374,10 +380,14 @@ def run() -> None:
     pl.save()
 
     # ------------------------------------------------------------------
-    # 16:05 — Telegram EOD recap
+    # Telegram EOD recap
+    # If positions closed naturally before EOD (or on shutdown) send now.
+    # If we had to force-close at 15:45, wait until 16:05 for prices to settle.
     # ------------------------------------------------------------------
-    wait_until(config.TELEGRAM_NOTIFY_TIME, now_et)
-    _send_eod(all_trades, daily_pnl, today_str, spy_pct, pl)
+    if eod_forced:
+        wait_until(config.TELEGRAM_NOTIFY_TIME, now_et)
+    spy_pct_final = fetcher.get_spy_change()
+    _send_eod(all_trades, daily_pnl, today_str, spy_pct_final, pl)
 
 
 def _send_eod(
