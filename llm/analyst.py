@@ -24,16 +24,18 @@ REGOLE ASSOLUTE:
 - Penalizza se entrambi i trade sono nello stesso settore GICS
 - Rispondi SOLO con JSON valido, zero testo aggiuntivo
 
-TASSONOMIA CATALYST:
-- Tier 1 (×1.0): earnings beat >5%, upgrade broker primario >10% target, FDA approval, acquisizione confermata
-- Tier 2 (×0.90): earnings beat modesto, Fed speak direzionale, Trump tweet/White House su settore specifico, upgrade target price, partnership confermata, insider buying
-- Tier 3 (×0.80): rumor non confermati, articoli speculativi, sentiment settoriale
-- Nessuno (×0.70): nessuna news identificabile — segnale puramente tecnico
+TASSONOMIA CATALYST (bonus additivo):
+- Tier 1 (+0.30): earnings beat >5%, upgrade broker primario >10% target, FDA approval, acquisizione confermata
+- Tier 2 (+0.20): earnings beat modesto, Fed speak direzionale, Trump tweet/White House su settore specifico, upgrade target price, partnership confermata, insider buying
+- Tier 3 (+0.10): rumor non confermati, articoli speculativi, sentiment settoriale
+- Nessuno (+0.00): nessuna news identificabile — segnale puramente tecnico
 
 FORMULA CONFIDENCE:
-confidence = (direction_score/3 × catalyst_multiplier) + volume_boost
+confidence = (direction_score/3) + catalyst_bonus + volume_boost
 - direction_score = somma di [above_vwap, or_position>0.66, gap_retention>0.70]
+- catalyst_bonus: Tier1=+0.30, Tier2=+0.20, Tier3=+0.10, Nessuno=+0.00
 - volume_boost: vol_ratio>3x → +0.10, vol_ratio 2-3x → +0.05, <2x → +0.00
+- 2/3 segnali tecnici (0.667) da soli superano già la soglia 0.65
 """
 
 USER_PROMPT_TEMPLATE = """\

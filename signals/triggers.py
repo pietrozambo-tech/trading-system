@@ -61,7 +61,7 @@ def calc_confidence(
     above_vwap: bool,
     or_position: float,
     gap_retention: float,
-    catalyst_multiplier: float,
+    catalyst_bonus: float,
     vol_boost: float,
 ) -> float:
     direction_score = sum([
@@ -69,7 +69,7 @@ def calc_confidence(
         or_position > config.OR_POSITION_THRESHOLD,
         gap_retention > config.GAP_RETENTION_THRESHOLD,
     ])
-    confidence = (direction_score / 3 * catalyst_multiplier) + vol_boost
+    confidence = (direction_score / 3) + catalyst_bonus + vol_boost
     return min(confidence, 1.0)
 
 
@@ -106,7 +106,7 @@ def compute_signals(
         "or_position": round(or_pos, 4),
         "gap_retention": round(gap_ret, 4),
         "vol_boost": vol_boost,
-        "catalyst_multiplier": catalyst_multiplier,
+        "catalyst_bonus": catalyst_multiplier,
         "confidence": round(confidence, 4),
         "passes_threshold": confidence >= config.CONFIDENCE_THRESHOLD,
     }

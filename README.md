@@ -41,22 +41,24 @@ For each stock that passes the quality check, the bot scores 4 signals based on 
 
 These combine into a **confidence score** between 0 and 1. Only stocks scoring 0.65 or above go to the next step.
 
-The confidence score also factors in a **catalyst multiplier** — how strong is the underlying reason for the move?
+The confidence score also factors in a **catalyst bonus** — an additive bump based on how strong the underlying news is.
 
-| News quality | Multiplier |
-|-------------|-----------|
-| Major catalyst (FDA approval, confirmed acquisition, strong earnings beat >5%) | ×1.00 |
-| Real but moderate news (earnings beat, analyst upgrade, insider buying) | ×0.90 |
-| Rumour or speculative article | ×0.80 |
-| No news — pure technical setup | ×0.70 |
+| News quality | Bonus |
+|-------------|-------|
+| Major catalyst (FDA approval, confirmed acquisition, strong earnings beat >5%) | +0.30 |
+| Real but moderate news (earnings beat, analyst upgrade, insider buying) | +0.20 |
+| Rumour or speculative article | +0.10 |
+| No news — pure technical setup | +0.00 |
 
 **The formula:**
 
 ```
-confidence = (signals_passed / 3 × catalyst_multiplier) + volume_bonus
+confidence = (signals_passed / 3) + catalyst_bonus + volume_bonus
 ```
 
-Where `signals_passed` is how many of the first 3 binary signals are true, and `volume_bonus` is +0.10 if volume is >3× average, +0.05 if 2–3×, zero otherwise.
+Where `signals_passed` is how many of the first 3 binary signals are true, `catalyst_bonus` is the additive news bonus above, and `volume_bonus` is +0.10 if volume is >3× average, +0.05 if 2–3×, zero otherwise.
+
+This means **2 out of 3 technical signals (0.667) is enough to pass on its own**, even with no news. Strong news and volume push the score higher and help prioritise between multiple candidates.
 
 ### 4. AI decision
 
