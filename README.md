@@ -98,8 +98,8 @@ Every 5 minutes the bot checks each open position. It closes a trade if any of t
 
 | Priority | Rule | Trigger | Why this rule exists |
 |----------|------|---------|----------------------|
-| 1 | **Hard stop** | Price falls ≥4.5% from entry | A fixed percentage floor. Simple, predictable, immune to data issues. With a $45k position, 4.5% = ~$2,025 max loss per trade. Always checked first. |
-| 2 | **ATR stop** | Price falls ≥1.5× ATR14 from entry | ATR (Average True Range) measures how much a stock typically moves in a day over the past 14 days. Multiplying by 1.5 sets a stop that's "wider than normal noise" — so you don't get shaken out by ordinary volatility, only by a real move against you. On a calm stock (ATR = 1%) this stop is tighter than 4.5%; on a volatile one it might be looser. Whichever is higher (tighter) between rule 1 and rule 2 wins. |
+| 1 | **Hard stop** | Price falls ≥2.0% from entry | The absolute floor — simple, predictable, immune to data issues. On a ~$49k position, 2% = ~$980 max loss per trade. Always checked first. |
+| 2 | **ATR stop** | Price falls ≥1.2× ATR14 from entry | ATR (Average True Range) measures how much a stock typically moves in a day over the past 14 days. Multiplying by 1.2 sets a stop just above normal daily noise — you only exit if the move against you is meaningfully larger than usual. On calm stocks (ATR ~1%) this fires around -1.2%, tighter than the hard stop. On volatile stocks the hard stop at -2% acts as the backstop. Whichever is tighter (higher price) between rule 1 and rule 2 wins. |
 | 3 | **VWAP take-profit** | Price drops below VWAP *and* profit ≥2.5% | This is a profit-protecting exit, not a stop loss. The idea: if the stock was running but has now fallen back below the average price of the day, momentum has likely shifted. The 2.5% minimum is there so we don't exit a trade that barely moved — we only lock in profit when there's real gain to protect. Calibrated via backtesting. |
 | 4 | **End-of-day close** | 3:45 PM ET, no exceptions | We never hold overnight. Gaps at open, earnings after hours, macro news — too much can happen. Everything is flat before the close, every single day. |
 
@@ -119,7 +119,7 @@ A Telegram message with a human-readable summary: market context, each trade's e
 | Cash cushion (never invested) | $2,000 |
 | Position size per trade | (equity − $2,000) ÷ 2, recalculated live each day |
 | Example on $100k | ($100,000 − $2,000) ÷ 2 = $49,000/trade |
-| Hard stop per trade | -4.5% from entry |
+| Hard stop per trade | -2.0% from entry (~$980 on $49k position) |
 | VWAP take-profit threshold | 2.5% profit minimum |
 | Real money equivalent (20:1 scale) | ~$2,450 per trade on $5k account |
 

@@ -42,8 +42,8 @@ CATALYST_NONE  = 0.00   # +0.00 — pure technical setup
 # Ogni trade = (equity - CASH_CUSHION_USD) / MAX_POSITIONS, arrotondato per difetto.
 CASH_CUSHION_USD         = 2_000   # sempre disponibile, mai investito
 MAX_POSITIONS            = 2
-HARD_BLOCKER_PCT         = 0.045   # -4.5% dal prezzo di entrata
-ATR_MULTIPLIER           = 1.5
+HARD_BLOCKER_PCT         = 0.020   # -2.0% dal prezzo di entrata
+ATR_MULTIPLIER           = 1.2
 ATR_LOOKBACK             = 14      # days
 MAX_DAILY_LOSS_USD       = None    # disabilitato — ogni trade ha il proprio hard stop
 
