@@ -10,11 +10,9 @@ No manual intervention needed.
 
 ### 1. Pre-market scan — 9:25 AM New York time
 
-The bot scans a watchlist of 57 US stocks looking for ones that are:
-- **Gapping up** in pre-market trading (price at least +0.2% above yesterday's close)
-- **Trading with unusual volume** — at least 20% more than their typical pre-market volume over the past 10 days
+The bot scans all 57 stocks looking for ones **gapping up at least +0.5%** above yesterday's close. That's the only filter here — a meaningful overnight move signals that something happened (earnings, news, an upgrade) worth investigating further. Stocks that drifted up 0.2% on no news don't qualify.
 
-The idea: if a stock is up pre-market *and* more people than usual are trading it, something is probably happening — news, earnings, an upgrade, etc.
+Pre-market volume is intentionally not filtered here — it's noisy and unreliable in thin pre-market hours. Volume gets measured properly in Stage 3 using the first 10 minutes of real market trading.
 
 ### 2. Quality check — 9:40 AM
 
