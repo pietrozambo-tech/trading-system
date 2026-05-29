@@ -23,6 +23,7 @@ REGOLE ASSOLUTE:
 - NON forzare trade se confidence < 0.65
 - Penalizza se entrambi i trade sono nello stesso settore GICS
 - Rispondi SOLO con JSON valido, zero testo aggiuntivo
+- Il campo "reason" deve essere scritto in italiano
 
 TASSONOMIA CATALYST (bonus additivo):
 - Tier 1 (+0.30): earnings beat >5%, upgrade broker primario >10% target, FDA approval, acquisizione confermata

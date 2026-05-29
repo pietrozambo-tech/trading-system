@@ -339,6 +339,11 @@ def run() -> None:
             continue
         if len(open_positions) >= config.MAX_POSITIONS:
             break
+        # Replace LLM's 0-1 confidence with the uncapped algorithmic score
+        # (e.g. 1.04 is more informative than 0.87 for the Telegram recap)
+        algo = next((c for c in candidates_with_signals if c["ticker"] == decision["ticker"]), {})
+        if algo.get("confidence") is not None:
+            decision["confidence"] = algo["confidence"]
         position = trader.open_position(decision["ticker"], decision)
         if position:
             open_positions.append(position)
