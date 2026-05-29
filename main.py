@@ -300,6 +300,21 @@ def _send_eod(
         logger.warning(f"LLM EOD recap failed: {e}")
         llm_text = ""
 
+    def _stage_count(name):
+        if not pl:
+            return None
+        for s in pl.stages:
+            if s["stage"] == name:
+                return s["count"]
+        return None
+
+    pipeline_summary = {
+        "blocked":        pl.blocked if pl else None,
+        "premarket_count": _stage_count("premarket_scan"),
+        "l1_count":        _stage_count("binary_filters_L1"),
+        "l2_count":        _stage_count("L2_signals_passed"),
+    }
+
     telegram.send_eod_recap(
         trade_data=all_trades,
         spy_pct=spy_pct,
@@ -307,6 +322,7 @@ def _send_eod(
         account_equity=equity,
         date_str=today_str,
         llm_text=llm_text,
+        pipeline_summary=pipeline_summary,
     )
 
 
