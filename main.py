@@ -174,7 +174,7 @@ def run() -> None:
 
     watchlist = eligibility.build_premarket_watchlist(UNIVERSE)
     pl.log_stage("premarket_scan", [c["ticker"] for c in watchlist],
-                 f"gap>+{config.MIN_PREMARKET_GAP:.1%} + vol>{config.MIN_PREMARKET_VOL_RATIO:.0f}x avg")
+                 f"gap>+{config.MIN_PREMARKET_GAP:.1%}")
 
     # ------------------------------------------------------------------
     # 09:45 — Binary L1 filters + SPY check + L2 signals + LLM
