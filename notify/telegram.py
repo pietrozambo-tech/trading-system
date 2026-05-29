@@ -101,8 +101,8 @@ def _fallback_message(
                 f"  P&L: {sign}{pnl_usd:.2f}$ ({sign}{pnl_pct:.2%})",
                 "",
             ]
-        if skipped:
-            lines += [f"Trade 2 — non eseguito. Nessun secondo segnale.", ""]
+        if skipped and len(executed) == 1:
+            lines += ["Trade 2 — nessun secondo segnale valido.", ""]
 
     sign_day = "+" if daily_pnl >= 0 else ""
     sign_tot = "+" if total_pnl >= 0 else ""

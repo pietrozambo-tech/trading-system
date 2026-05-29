@@ -90,7 +90,7 @@ class PipelineLog:
             "or_position":      signals.get("or_position"),
             "gap_retention":    signals.get("gap_retention"),
             "vol_boost":        signals.get("vol_boost"),
-            "catalyst_mult":    signals.get("catalyst_multiplier"),
+            "catalyst_mult":    signals.get("catalyst_bonus"),
             "gap_pct":          signals.get("gap_pct"),
         })
 

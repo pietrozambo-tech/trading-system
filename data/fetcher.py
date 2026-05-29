@@ -91,7 +91,7 @@ def get_intraday_bars(ticker: str, minutes: int = 1, session_date: Optional[date
     if session_date is None:
         session_date = datetime.now(ET).date()
     start = ET.localize(datetime.combine(session_date, datetime.strptime("09:30", "%H:%M").time()))
-    end   = ET.localize(datetime.combine(session_date, datetime.strptime("16:00", "%H:%M").time()))
+    end   = ET.localize(datetime.combine(session_date, datetime.strptime("16:01", "%H:%M").time()))
     req = StockBarsRequest(
         symbol_or_symbols=ticker,
         timeframe=TimeFrame.Minute if minutes == 1 else TimeFrame(minutes, "Min"),

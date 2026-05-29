@@ -273,7 +273,7 @@ def _simulate_day(
     or_bars  = day_bars[
         (day_bars.index.hour == 9) &
         (day_bars.index.minute >= 30) &
-        (day_bars.index.minute < 40)
+        (day_bars.index.minute <= 40)
     ]
     if len(or_bars) < 2:
         return None

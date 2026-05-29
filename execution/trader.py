@@ -76,7 +76,7 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
     account = fetcher.get_account()
     equity = account["equity"]
     quote = fetcher.get_latest_quote(ticker)
-    entry_price = quote["ask"]
+    entry_price = quote.get("ask") or 0.0
     qty = calc_qty(entry_price, equity)
     if qty == 0:
         logger.error(f"Cannot compute qty for {ticker} at ${entry_price}")

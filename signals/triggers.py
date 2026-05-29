@@ -76,7 +76,7 @@ def calc_confidence(
 def compute_signals(
     ticker: str,
     prev_close: float,
-    catalyst_multiplier: float,
+    catalyst_bonus: float,
     session_date: Optional[date] = None,
 ) -> dict:
     """
@@ -95,14 +95,14 @@ def compute_signals(
     or_pos       = s2_or_position(bars_or, price_945)
     gap_ret      = s3_gap_retention(bars_or, open_930, prev_close)
     vol_boost    = s4_volume_boost(ticker, bars_or, session_date)
-    confidence   = calc_confidence(above_vwap, or_pos, gap_ret, catalyst_multiplier, vol_boost)
+    confidence   = calc_confidence(above_vwap, or_pos, gap_ret, catalyst_bonus, vol_boost)
 
     passes = confidence >= config.CONFIDENCE_THRESHOLD
     vwap_str = f"VWAP={'✓' if above_vwap else f'✗(below)'}"
     or_str   = f"OR={or_pos:.2f}{'✓' if or_pos > config.OR_POSITION_THRESHOLD else f'✗(need>{config.OR_POSITION_THRESHOLD})'}"
     gr_str   = f"GR={gap_ret:.2f}{'✓' if gap_ret > config.GAP_RETENTION_THRESHOLD else f'✗(need>{config.GAP_RETENTION_THRESHOLD})'}"
     vol_str  = f"vol=+{vol_boost:.2f}"
-    cat_str  = f"catalyst=+{catalyst_multiplier:.2f}"
+    cat_str  = f"catalyst=+{catalyst_bonus:.2f}"
     conf_str = f"confidence={confidence:.3f}{'✓' if passes else f'✗(need≥{config.CONFIDENCE_THRESHOLD})'}"
 
     if passes:
@@ -119,7 +119,7 @@ def compute_signals(
         "or_position": round(or_pos, 4),
         "gap_retention": round(gap_ret, 4),
         "vol_boost": vol_boost,
-        "catalyst_bonus": catalyst_multiplier,
+        "catalyst_bonus": catalyst_bonus,
         "confidence": round(confidence, 4),
         "passes_threshold": passes,
     }
