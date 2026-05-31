@@ -24,7 +24,8 @@ def check_spy_block(session_date: Optional[date] = None) -> bool:
 def build_premarket_watchlist(universe: list[str], session_date: Optional[date] = None) -> list[dict]:
     """
     Phase 1 — 9:25 ET scan.
-    Filters by pre-market gap > 1.5% and pre-market volume > 100% ADV.
+    Filters by pre-market gap >= MIN_PREMARKET_GAP (0.5%). No volume filter here —
+    pre-market volume is unreliable; volume is assessed properly in L2.
     Returns candidates with metadata.
     """
     candidates = []
@@ -71,7 +72,7 @@ def apply_binary_filters(
     candidates: list[dict], session_date: Optional[date] = None
 ) -> tuple[list[dict], list[dict]]:
     """
-    Phase 2 — 9:45 ET binary filters. Applied cheapest first.
+    Phase 2 — 9:40 ET binary filters. Applied cheapest first.
     All must pass (fail = discard).
     Returns (passed, rejects) where rejects = [{"ticker": ..., "reason": ...}].
     """
@@ -92,7 +93,7 @@ def apply_binary_filters(
                 rejects.append({"ticker": ticker, "reason": f"price_${price:.2f}<min_${config.MIN_PRICE}"})
                 continue
 
-            # 2. ADV > 1M
+            # 2. ADV >= 200k
             adv = c.get("adv") or fetcher.get_adv(ticker)
             if adv < config.MIN_ADV:
                 logger.info(f"L1 REJECT {ticker}: ADV {adv:,.0f} < {config.MIN_ADV:,} min")

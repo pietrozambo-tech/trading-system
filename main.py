@@ -295,9 +295,9 @@ def run() -> None:
     candidates_with_signals = []
     for c in candidates:
         ticker        = c["ticker"]
-        news          = fetcher.get_news(ticker, limit=5)
-        catalyst_mult = analyst.classify_catalyst_from_news(news)
-        signals       = triggers.compute_signals(ticker, c["prev_close"], catalyst_mult)
+        news            = fetcher.get_news(ticker, limit=5)
+        catalyst_bonus  = analyst.classify_catalyst_from_news(news)
+        signals         = triggers.compute_signals(ticker, c["prev_close"], catalyst_bonus)
         if signals:
             pl.log_signals({**signals, "gap_pct": c.get("gap_pct")})
             if signals.get("passes_threshold"):
@@ -348,7 +348,6 @@ def run() -> None:
         if position:
             open_positions.append(position)
             all_trades.append(position)
-            pl.log_trade(position)
 
     # ------------------------------------------------------------------
     # Intraday monitoring loop

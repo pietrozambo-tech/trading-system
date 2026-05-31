@@ -106,7 +106,7 @@ def get_intraday_bars(ticker: str, minutes: int = 1, session_date: Optional[date
 
 
 def get_opening_range_bars(ticker: str, session_date: Optional[date] = None) -> pd.DataFrame:
-    """1-min bars from 9:30 to 9:45 ET (opening range)."""
+    """1-min bars from 9:30 to 9:40 ET (opening range)."""
     bars = get_intraday_bars(ticker, minutes=1, session_date=session_date)
     if bars.empty:
         return bars
@@ -313,8 +313,8 @@ def is_asset_tradable(ticker: str) -> bool:
         return False
 
 
-def get_historical_15min_volume(ticker: str, lookback_days: int = 20, session_date: Optional[date] = None) -> float:
-    """Average volume in 9:30–9:45 window over past N trading days (for S4)."""
+def get_historical_or_volume(ticker: str, lookback_days: int = 20, session_date: Optional[date] = None) -> float:
+    """Average volume in 9:30–9:40 opening-range window over past N trading days (for S4)."""
     client = get_data_client()
     if session_date is None:
         session_date = datetime.now(ET).date()
@@ -326,7 +326,7 @@ def get_historical_15min_volume(ticker: str, lookback_days: int = 20, session_da
             check_date -= timedelta(days=1)
             continue
         start = ET.localize(datetime.combine(check_date, datetime.strptime("09:30", "%H:%M").time()))
-        end   = ET.localize(datetime.combine(check_date, datetime.strptime("09:45", "%H:%M").time()))
+        end   = ET.localize(datetime.combine(check_date, datetime.strptime("09:40", "%H:%M").time()))
         req = StockBarsRequest(
             symbol_or_symbols=ticker,
             timeframe=TimeFrame.Minute,

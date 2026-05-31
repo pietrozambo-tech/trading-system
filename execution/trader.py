@@ -36,7 +36,7 @@ def calc_stop_prices(ticker: str, entry_price: float) -> dict:
 
 
 def calc_qty(entry_price: float, equity: float) -> int:
-    """Shares to buy: split investable capital (equity minus $2k cushion) across max positions."""
+    """Shares to buy: split investable capital (equity minus $1k cushion) across max positions."""
     if entry_price <= 0:
         return 0
     investable = max(0, equity - config.CASH_CUSHION_USD)
