@@ -21,7 +21,7 @@ Once the market opens and the first 10 minutes settle, the bot applies a set of 
 | Check | Requirement | Why |
 |-------|-------------|-----|
 | Price | At least $5 | Avoid erratic penny stocks |
-| Daily volume | >200k shares/day on IEX (≈4–5M real ADV) | IEX captures ~3–5% of total market volume — 200k on IEX corresponds to roughly 4–5M real shares/day, enough to absorb a $49k position without issue |
+| Daily volume | At least 200k shares/day | Filters out small, illiquid stocks where a single order moves the price. Only large, actively traded names qualify. |
 | Bid-ask spread | <0.6% | Entry cost too high otherwise |
 | Earnings tonight | Excluded | Overnight risk is unpredictable — but stocks that *already* reported earnings yesterday are kept, as that's the catalyst we want |
 | Market mood | SPY not down >2.0% | Circuit breaker for real panic days only — strong individual setups still trade in a mildly negative market |
@@ -77,20 +77,34 @@ This means **2 out of 3 technical signals (0.667) is enough to pass on its own**
 
 ### 4. AI decision
 
-The top candidates (with all their signals and recent headlines) are sent to Claude (Anthropic's AI). Claude picks the best 1 or 2 trades and writes a short explanation for each. It's instructed to:
-- Only go long (buy, not short)
-- Skip the trade if it's not convinced — no forced trades
-- Avoid picking two stocks from the same sector
+The top candidates — with their confidence scores, individual signal results, catalyst tier, and recent headlines — are sent to Claude (Anthropic's AI model). Claude reads the full picture for each and picks the best 1 or 2 trades.
+
+**What Claude looks at:**
+- Which of the 3 technical signals passed and the overall confidence score
+- The catalyst: what news triggered the gap, how credible it is (earnings beat vs. rumour vs. no news)
+- Recent headlines for each stock
+- The overall market tone that morning (SPY % change)
+
+**What Claude decides:**
+- Which 1 or 2 stocks to trade, or none if it's not convinced
+- A short explanation for each pick, in Italian — this becomes the context line in the Telegram recap
+
+**Rules Claude follows:**
+- Only go long (buy, never short)
+- No forced trades — if the setup isn't convincing, it passes
+- Never pick two stocks from the same sector (e.g. two semis on the same day)
+
+The AI step exists because the algorithmic score captures *whether* the signals are there, but not *which* setup has the clearest story. Two stocks can both score 1.1 — Claude reads the news and decides which one has the more credible catalyst behind it.
 
 ### 5. Execution — 9:42 AM
 
 Orders are placed via Alpaca (paper trading account). Position size is calculated live at order time using the formula:
 
 ```
-position size = (current equity − $2,000) ÷ 2
+position size = (current equity − $1,000) ÷ 2
 ```
 
-The $2,000 is a permanent cash cushion that never gets invested — it covers fees, slippage, and acts as a last resort. Everything else is split equally between the two possible trades. The number of shares is always rounded down to whole shares. So on a $100k account: ($100,000 − $2,000) ÷ 2 = **$49,000 per trade**. If the account grows to $120k, each trade becomes $59,000 automatically.
+The $1,000 is a permanent cash cushion that never gets invested — it covers fees, slippage, and acts as a last resort. Everything else is split equally between the two possible trades. The number of shares is always rounded down to whole shares. So on a $100k account: ($100,000 − $1,000) ÷ 2 = **$49,500 per trade**. If the account grows to $120k, each trade becomes $59,500 automatically.
 
 ### 6. Intraday monitoring
 
@@ -98,7 +112,7 @@ Every 5 minutes the bot checks each open position. It closes a trade if any of t
 
 | Priority | Rule | Trigger | Why this rule exists |
 |----------|------|---------|----------------------|
-| 1 | **Hard stop** | Price falls ≥2.0% from entry | The absolute floor — simple, predictable, immune to data issues. On a ~$49k position, 2% = ~$980 max loss per trade. Always checked first. |
+| 1 | **Hard stop** | Price falls ≥2.0% from entry | The absolute floor — simple, predictable, immune to data issues. On a ~$49.5k position, 2% = ~$990 max loss per trade. Always checked first. |
 | 2 | **ATR stop** | Price falls ≥1× ATR14 from entry | ATR (Average True Range) measures how much a stock typically moves in a day over the past 14 days. Setting the stop exactly at ATR14 below entry means you exit if the move against you exceeds the stock's typical daily range — a signal that something is genuinely wrong, not just noise. On calm stocks (ATR ~1%) this fires at -1%, tighter than the hard stop. On volatile stocks (ATR >2%) the hard stop at -2% fires first. Whichever is tighter (higher price) wins. |
 | 3 | **VWAP take-profit** | Price drops below VWAP *and* profit ≥1.5% | This is a profit-protecting exit, not a stop loss. If the stock was running but has now fallen back below the average price of the day, momentum has likely shifted. The 1.5% minimum is there so we don't exit a trade that barely moved — we only lock in profit when there's real gain to protect. |
 | 4 | **End-of-day close** | 3:45 PM ET, no exceptions | We never hold overnight. Gaps at open, earnings after hours, macro news — too much can happen. Everything is flat before the close, every single day. |
@@ -175,13 +189,12 @@ The trade header (`Trade N — TICKER long [Score: X.XX]`) is **bold** in Telegr
 | Parameter | Value |
 |-----------|-------|
 | Paper account size | $100,000 |
-| Cash cushion (never invested) | $2,000 |
-| Position size per trade | (equity − $2,000) ÷ 2, recalculated live each day |
-| Example on $100k | ($100,000 − $2,000) ÷ 2 = $49,000/trade |
-| Hard stop per trade | -2.0% from entry (~$980 on $49k position) |
+| Cash cushion (never invested) | $1,000 |
+| Position size per trade | (equity − $1,000) ÷ 2, recalculated live each day |
+| Example on $100k | ($100,000 − $1,000) ÷ 2 = $49,500/trade |
+| Hard stop per trade | -2.0% from entry (~$990 on $49.5k position) |
 | ATR stop per trade | -1× ATR14 from entry (tighter than hard stop on low-vol stocks) |
 | VWAP take-profit threshold | 1.5% profit minimum |
-| Real money equivalent (20:1 scale) | ~$2,450 per trade on $5k account |
 
 ---
 

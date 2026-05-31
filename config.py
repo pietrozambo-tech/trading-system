@@ -40,7 +40,7 @@ CATALYST_NONE  = 0.00   # +0.00 — pure technical setup
 # === RISK MANAGEMENT ===
 # Tieni sempre $2k nel conto come cuscinetto (fee/emergenze).
 # Ogni trade = (equity - CASH_CUSHION_USD) / MAX_POSITIONS, arrotondato per difetto.
-CASH_CUSHION_USD         = 2_000   # sempre disponibile, mai investito
+CASH_CUSHION_USD         = 1_000   # sempre disponibile, mai investito
 MAX_POSITIONS            = 2
 HARD_BLOCKER_PCT         = 0.020   # -2.0% dal prezzo di entrata
 ATR_LOOKBACK             = 14      # days
