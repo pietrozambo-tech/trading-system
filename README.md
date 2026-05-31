@@ -60,10 +60,12 @@ The confidence score also factors in a **catalyst bonus** — an additive bump b
 
 | News quality | Bonus |
 |-------------|-------|
-| Major catalyst (FDA approval, confirmed acquisition, strong earnings beat >5%) | +0.30 |
-| Real but moderate news (earnings beat, analyst upgrade, insider buying) | +0.20 |
-| Rumour or speculative article | +0.10 |
+| **Tier 1** — Revenue beat, guidance raised, large EPS surprise (>10%), FDA approval, confirmed acquisition/merger | +0.30 |
+| **Tier 2** — Modest EPS beat, analyst upgrade, price target raise, insider buying, Fed/macro news | +0.20 |
+| **Tier 3** — Rumours, speculative articles, generic sector sentiment | +0.10 |
 | No news — pure technical setup | +0.00 |
+
+The distinction between Tier 1 and Tier 2 matters: a **revenue beat** or **guidance raise** signals that the business is genuinely accelerating — the gap is likely to sustain. A modest EPS beat (which can come from cost cuts or buybacks) is real news but less likely to drive continuation throughout the day.
 
 **The formula:**
 
@@ -81,9 +83,10 @@ The top candidates — with their confidence scores, individual signal results, 
 
 **What Claude looks at:**
 - Which of the 3 technical signals passed and the overall confidence score
-- The catalyst: what news triggered the gap, how credible it is (earnings beat vs. rumour vs. no news)
+- The catalyst: what news triggered the gap and its quality (revenue beat vs. EPS beat vs. rumour)
 - Recent headlines for each stock
 - The overall market tone that morning (SPY % change)
+- How far the stock is from its 3-month high — stocks near their highs have less overhead resistance (context only, not a filter)
 
 **What Claude decides:**
 - Which 1 or 2 stocks to trade, or none if it's not convinced
@@ -265,6 +268,20 @@ Every session saves a breakdown to `logs/YYYY-MM-DD.json` showing exactly how ma
   "trades": [ ... ]
 }
 ```
+
+---
+
+## Next steps
+
+Ideas discussed and parked — revisit when there's time.
+
+### Short interest signal
+Stocks with high short interest (15%+) that receive a positive catalyst don't just gap — they can squeeze: short sellers are forced to cover, amplifying the move. This is one of the most powerful momentum multipliers for gap-and-go setups. Adding short float as a bonus to the confidence score (or as context for Claude) could meaningfully improve signal quality.
+
+Requires an external data source (Finviz, IEX Cloud, or similar) since Alpaca doesn't provide short interest data.
+
+### 2 vs 3 max positions
+The capital deployed is the same regardless: 2 × $49.5k or 3 × $33k both put $99k to work. The question is whether the 3rd-best setup on a given day is genuinely good or just marginal. The daily log now records `passes_threshold` per ticker — after a few weeks of data, count how many days had 3+ viable candidates above the confidence threshold and decide from there.
 
 ---
 

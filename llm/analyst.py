@@ -26,9 +26,9 @@ REGOLE ASSOLUTE:
 - Il campo "reason" deve essere scritto in italiano
 
 TASSONOMIA CATALYST (bonus additivo):
-- Tier 1 (+0.30): earnings beat >5%, upgrade broker primario >10% target, FDA approval, acquisizione confermata
-- Tier 2 (+0.20): earnings beat modesto, Fed speak direzionale, Trump tweet/White House su settore specifico, upgrade target price, partnership confermata, insider buying
-- Tier 3 (+0.10): rumor non confermati, articoli speculativi, sentiment settoriale
+- Tier 1 (+0.30): revenue beat, guidance raised/alzata, earnings beat confermato, FDA approval, acquisizione/merger confermati
+- Tier 2 (+0.20): EPS beat modesto, analyst upgrade, price target raise, insider buying, Fed speak direzionale, partnership confermata
+- Tier 3 (+0.10): rumor non confermati, articoli speculativi, sentiment settoriale generico
 - Nessuno (+0.00): nessuna news identificabile — segnale puramente tecnico
 
 FORMULA CONFIDENCE:
@@ -37,6 +37,11 @@ confidence = (direction_score/3) + catalyst_bonus + volume_boost
 - catalyst_bonus: Tier1=+0.30, Tier2=+0.20, Tier3=+0.10, Nessuno=+0.00
 - volume_boost: vol_ratio>3x → +0.10, vol_ratio 2-3x → +0.05, <2x → +0.00
 - 2/3 segnali tecnici (0.667) da soli superano già la soglia 0.65
+
+CONTESTO AGGIUNTIVO:
+Il campo dist_from_3m_high_pct indica quanto % il titolo è sotto al massimo degli ultimi 3 mesi.
+0% = vicino ai massimi (poca resistenza sopra). -20% = 20% sotto i massimi (più resistenza).
+Usalo come contesto qualitativo, non come criterio di esclusione.
 """
 
 USER_PROMPT_TEMPLATE = """\
@@ -64,7 +69,11 @@ Restituisci JSON con questa struttura esatta:
 def classify_catalyst_from_news(news: list[dict]) -> float:
     """
     Heuristic catalyst classification based on news headlines.
-    Returns the multiplier for the strongest catalyst found.
+    Returns the bonus for the strongest catalyst found.
+
+    Tier 1: revenue beat, guidance raised, confirmed M&A, FDA approval, earnings beat
+    Tier 2: modest EPS beat, analyst upgrade, price target raise, insider buying, macro
+    Tier 3: rumours, speculative articles, generic sector sentiment
     """
     if not news:
         return config.CATALYST_NONE
@@ -74,33 +83,42 @@ def classify_catalyst_from_news(news: list[dict]) -> float:
         for n in news
     )
 
-    # Tier 1
-    tier1_keywords = [
-        "earnings beat", "eps beat", "revenue beat", "guidance raised",
-        "fda approval", "acquisition", "merger confirmed", "upgrade",
+    # Tier 1 — high-impact, confirmed catalysts
+    tier1_phrases = [
+        "fda approval", "fda approved",
+        "acquisition confirmed", "merger confirmed", "buyout confirmed",
+        "revenue beat", "top-line beat",
+        "guidance raised", "raises guidance", "raised guidance",
+        "guidance increase", "raised outlook", "raises outlook",
+        "earnings beat",
     ]
-    # Tier 2
-    tier2_keywords = [
-        "earnings", "fed", "federal reserve", "trump", "white house",
-        "partnership", "insider buying", "price target",
-    ]
-    # Tier 3
-    tier3_keywords = [
-        "rumor", "report", "specul", "analyst", "sector", "industry",
+    # Large EPS surprise qualifies for Tier 1; a modest beat goes to Tier 2
+    eps_large_surprise = "eps beat" in combined and any(
+        m in combined for m in ["10%", "15%", "20%", "25%", "30%", "40%", "50%"]
+    )
+
+    # Tier 2 — real but moderate
+    tier2_phrases = [
+        "eps beat", "earnings",
+        "acquisition", "merger",
+        "fed ", "federal reserve", "trump", "white house",
+        "partnership", "insider buying",
+        "price target", "upgrade", "analyst upgrade",
+        "guidance", "outlook",
     ]
 
-    # Check upgrade with meaningful target raise as Tier 1
-    if any(k in combined for k in ["fda approval", "acquisition confirmed", "merger confirmed"]):
+    # Tier 3 — speculative / generic
+    tier3_phrases = [
+        "rumor", "specul",
+        "report", "analyst", "sector", "industry",
+    ]
+
+    if any(p in combined for p in tier1_phrases) or eps_large_surprise:
         return config.CATALYST_TIER1
-    if "earnings beat" in combined or ("eps beat" in combined and "5%" in combined):
-        return config.CATALYST_TIER1
-    if any(k in combined for k in tier1_keywords):
+    if any(p in combined for p in tier2_phrases):
         return config.CATALYST_TIER2
-    if any(k in combined for k in tier2_keywords):
-        return config.CATALYST_TIER2
-    if any(k in combined for k in tier3_keywords):
+    if any(p in combined for p in tier3_phrases):
         return config.CATALYST_TIER3
-
     return config.CATALYST_NONE
 
 
@@ -111,6 +129,7 @@ def build_candidate_payload(candidates_with_signals: list[dict]) -> list[dict]:
         ticker = c["ticker"]
         news = fetcher.get_news(ticker, limit=5)
         headlines = [n.get("headline", "") for n in news[:3]]
+        dist = c.get("dist_from_3m_high")
         payload.append({
             "ticker": ticker,
             "gap_pct": round(c.get("gap_pct", 0), 4),
@@ -120,6 +139,7 @@ def build_candidate_payload(candidates_with_signals: list[dict]) -> list[dict]:
             "vol_boost": c.get("vol_boost"),
             "confidence_algo": c.get("confidence"),
             "catalyst_bonus": c.get("catalyst_bonus"),
+            "dist_from_3m_high_pct": round(dist * 100, 1) if dist is not None else None,
             "recent_headlines": headlines,
         })
     return payload
