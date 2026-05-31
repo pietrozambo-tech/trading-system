@@ -13,3 +13,4 @@ venv/
 *.log
 backtest/results/
 logs/
+*.pdf
