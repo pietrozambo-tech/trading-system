@@ -21,7 +21,7 @@ Once the market opens and the first 10 minutes settle, the bot applies a set of 
 | Check | Requirement | Why |
 |-------|-------------|-----|
 | Price | At least $5 | Avoid erratic penny stocks |
-| Daily volume | >1 million shares on average | Makes sure we can buy and sell without moving the price |
+| Daily volume | At least 200k shares/day | Filters out small, illiquid stocks where a single order moves the price. Only large, actively traded names qualify. |
 | Bid-ask spread | <0.6% | Entry cost too high otherwise |
 | Earnings tonight | Excluded | Overnight risk is unpredictable — but stocks that *already* reported earnings yesterday are kept, as that's the catalyst we want |
 | Market mood | SPY not down >2.0% | Circuit breaker for real panic days only — strong individual setups still trade in a mildly negative market |
@@ -52,18 +52,20 @@ confidence = (signals_passed / 3) + catalyst_bonus + volume_boost
 | Gap retention ✓ | +0.333 | Gap still 70%+ intact |
 | Catalyst bonus | +0.30 | Major earnings beat |
 | Volume boost | +0.10 | Volume >3× average |
-| **Total max** | **1.0** (capped) | |
+| **Theoretical max** | **1.43** (3/3 + 0.30 + 0.10) | Not capped — higher scores help LLM prioritise between multiple candidates |
 
-Minimum to pass: **2 out of 3 signals** (0.667) with no news and no volume boost is already above the 0.65 threshold.
+Minimum to pass: **2 out of 3 signals** (0.667) with no news and no volume boost is already above the 0.65 threshold. Scores above 1.0 are valid and meaningful — a 1.3 beats a 1.0 when the LLM has to choose.
 
 The confidence score also factors in a **catalyst bonus** — an additive bump based on how strong the underlying news is.
 
 | News quality | Bonus |
 |-------------|-------|
-| Major catalyst (FDA approval, confirmed acquisition, strong earnings beat >5%) | +0.30 |
-| Real but moderate news (earnings beat, analyst upgrade, insider buying) | +0.20 |
-| Rumour or speculative article | +0.10 |
+| **Tier 1** — Revenue beat, guidance raised, large EPS surprise (>10%), FDA approval, confirmed acquisition/merger | +0.30 |
+| **Tier 2** — Modest EPS beat, analyst upgrade, price target raise, insider buying, Fed/macro news | +0.20 |
+| **Tier 3** — Rumours, speculative articles, generic sector sentiment | +0.10 |
 | No news — pure technical setup | +0.00 |
+
+The distinction between Tier 1 and Tier 2 matters: a **revenue beat** or **guidance raise** signals that the business is genuinely accelerating — the gap is likely to sustain. A modest EPS beat (which can come from cost cuts or buybacks) is real news but less likely to drive continuation throughout the day.
 
 **The formula:**
 
@@ -77,20 +79,35 @@ This means **2 out of 3 technical signals (0.667) is enough to pass on its own**
 
 ### 4. AI decision
 
-The top candidates (with all their signals and recent headlines) are sent to Claude (Anthropic's AI). Claude picks the best 1 or 2 trades and writes a short explanation for each. It's instructed to:
-- Only go long (buy, not short)
-- Skip the trade if it's not convinced — no forced trades
-- Avoid picking two stocks from the same sector
+The top candidates — with their confidence scores, individual signal results, catalyst tier, and recent headlines — are sent to Claude (Anthropic's AI model). Claude reads the full picture for each and picks the best 1 or 2 trades.
+
+**What Claude looks at:**
+- Which of the 3 technical signals passed and the overall confidence score
+- The catalyst: what news triggered the gap and its quality (revenue beat vs. EPS beat vs. rumour)
+- Recent headlines for each stock
+- The overall market tone that morning (SPY % change)
+- How far the stock is from its 3-month high — stocks near their highs have less overhead resistance (context only, not a filter)
+
+**What Claude decides:**
+- Which 1 or 2 stocks to trade, or none if it's not convinced
+- A short explanation for each pick, in Italian — this becomes the context line in the Telegram recap
+
+**Rules Claude follows:**
+- Only go long (buy, never short)
+- No forced trades — if the setup isn't convincing, it passes
+- Never pick two stocks from the same sector (e.g. two semis on the same day)
+
+The AI step exists because the algorithmic score captures *whether* the signals are there, but not *which* setup has the clearest story. Two stocks can both score 1.1 — Claude reads the news and decides which one has the more credible catalyst behind it.
 
 ### 5. Execution — 9:42 AM
 
 Orders are placed via Alpaca (paper trading account). Position size is calculated live at order time using the formula:
 
 ```
-position size = (current equity − $2,000) ÷ 2
+position size = (current equity − $1,000) ÷ 2
 ```
 
-The $2,000 is a permanent cash cushion that never gets invested — it covers fees, slippage, and acts as a last resort. Everything else is split equally between the two possible trades. The number of shares is always rounded down to whole shares. So on a $100k account: ($100,000 − $2,000) ÷ 2 = **$49,000 per trade**. If the account grows to $120k, each trade becomes $59,000 automatically.
+The $1,000 is a permanent cash cushion that never gets invested — it covers fees, slippage, and acts as a last resort. Everything else is split equally between the two possible trades. The number of shares is always rounded down to whole shares. So on a $100k account: ($100,000 − $1,000) ÷ 2 = **$49,500 per trade**. If the account grows to $120k, each trade becomes $59,500 automatically.
 
 ### 6. Intraday monitoring
 
@@ -98,7 +115,7 @@ Every 5 minutes the bot checks each open position. It closes a trade if any of t
 
 | Priority | Rule | Trigger | Why this rule exists |
 |----------|------|---------|----------------------|
-| 1 | **Hard stop** | Price falls ≥2.0% from entry | The absolute floor — simple, predictable, immune to data issues. On a ~$49k position, 2% = ~$980 max loss per trade. Always checked first. |
+| 1 | **Hard stop** | Price falls ≥2.0% from entry | The absolute floor — simple, predictable, immune to data issues. On a ~$49.5k position, 2% = ~$990 max loss per trade. Always checked first. |
 | 2 | **ATR stop** | Price falls ≥1× ATR14 from entry | ATR (Average True Range) measures how much a stock typically moves in a day over the past 14 days. Setting the stop exactly at ATR14 below entry means you exit if the move against you exceeds the stock's typical daily range — a signal that something is genuinely wrong, not just noise. On calm stocks (ATR ~1%) this fires at -1%, tighter than the hard stop. On volatile stocks (ATR >2%) the hard stop at -2% fires first. Whichever is tighter (higher price) wins. |
 | 3 | **VWAP take-profit** | Price drops below VWAP *and* profit ≥1.5% | This is a profit-protecting exit, not a stop loss. If the stock was running but has now fallen back below the average price of the day, momentum has likely shifted. The 1.5% minimum is there so we don't exit a trade that barely moved — we only lock in profit when there's real gain to protect. |
 | 4 | **End-of-day close** | 3:45 PM ET, no exceptions | We never hold overnight. Gaps at open, earnings after hours, macro news — too much can happen. Everything is flat before the close, every single day. |
@@ -109,6 +126,65 @@ The 1.5% minimum for the VWAP take-profit gives the condition room to fire: duri
 
 A Telegram message with a human-readable summary: market context, each trade's entry/exit/P&L, and the running account total.
 
+The message is sent **immediately** when all positions close naturally during the day (stop or VWAP exit). If the bot has to force-close at 3:45 PM, it waits until 4:05 PM so prices settle first. SPY performance is always measured at the exact moment the message is sent.
+
+**Example — 1 trade closed early via profit-taker:**
+```
+📈 Venerdì 29/5/2026
+
+Mercato: SPY +0.42% — seduta tranquilla, indici in leggero rialzo.
+
+Trade 1 — NVDA long [Score: 1.07]
+Earnings beat Q1, gap ben difeso con volumi 3× la media.
+  Entrata: $135.20
+  Uscita:  $137.85 (Profit taker)
+  P&L: +$959.30 (+1.96%)
+
+Trade 2 — nessun secondo segnale valido.
+
+Giornata:    +$959.30$
+P&L totale:  +$959.30$
+Saldo:       $100,959.30
+```
+
+**Example — 2 trades closed at end of day:**
+```
+📊 Venerdì 29/5/2026
+
+Mercato: SPY +0.28% — chiusura piatta, nessuna direzionalità.
+
+Trade 1 — NVDA long [Score: 1.07]
+Gap retention all'82%, volumi forti, catalyst earnings.
+  Entrata: $135.40
+  Uscita:  $137.90 (Fine giornata)
+  P&L: +$905.00 (+1.84%)
+
+Trade 2 — TSLA long [Score: 0.87]
+Setup tecnico pulito, prezzo sopra VWAP in apertura.
+  Entrata: $318.50
+  Uscita:  $315.80 (Fine giornata)
+  P&L: -$413.10 (-0.85%)
+
+Giornata:    +$491.90$
+P&L totale:  +$491.90$
+Saldo:       $100,491.90
+```
+
+**Example — no trade (SPY too negative):**
+```
+📊 Venerdì 29/5/2026
+
+Mercato: SPY -2.31% — giornata negativa.
+
+Nessun trade. Mercato bloccato — SPY troppo negativo. Riproviamo domani.
+
+Giornata:    +$0.00$
+P&L totale:  +$0.00$
+Saldo:       $100,000.00
+```
+
+The trade header (`Trade N — TICKER long [Score: X.XX]`) is **bold** in Telegram. The score is the algorithmic confidence from signal scoring, uncapped — a score of 1.07 means all 3 technical signals passed (1.0) plus a Tier 3 catalyst bonus (+0.10) with no volume boost. Maximum theoretical score is 1.43.
+
 ---
 
 ## The numbers
@@ -116,13 +192,12 @@ A Telegram message with a human-readable summary: market context, each trade's e
 | Parameter | Value |
 |-----------|-------|
 | Paper account size | $100,000 |
-| Cash cushion (never invested) | $2,000 |
-| Position size per trade | (equity − $2,000) ÷ 2, recalculated live each day |
-| Example on $100k | ($100,000 − $2,000) ÷ 2 = $49,000/trade |
-| Hard stop per trade | -2.0% from entry (~$980 on $49k position) |
+| Cash cushion (never invested) | $1,000 |
+| Position size per trade | (equity − $1,000) ÷ 2, recalculated live each day |
+| Example on $100k | ($100,000 − $1,000) ÷ 2 = $49,500/trade |
+| Hard stop per trade | -2.0% from entry (~$990 on $49.5k position) |
 | ATR stop per trade | -1× ATR14 from entry (tighter than hard stop on low-vol stocks) |
 | VWAP take-profit threshold | 1.5% profit minimum |
-| Real money equivalent (20:1 scale) | ~$2,450 per trade on $5k account |
 
 ---
 
@@ -193,6 +268,20 @@ Every session saves a breakdown to `logs/YYYY-MM-DD.json` showing exactly how ma
   "trades": [ ... ]
 }
 ```
+
+---
+
+## Next steps
+
+Ideas discussed and parked — revisit when there's time.
+
+### Short interest signal
+Stocks with high short interest (15%+) that receive a positive catalyst don't just gap — they can squeeze: short sellers are forced to cover, amplifying the move. This is one of the most powerful momentum multipliers for gap-and-go setups. Adding short float as a bonus to the confidence score (or as context for Claude) could meaningfully improve signal quality.
+
+Requires an external data source (Finviz, IEX Cloud, or similar) since Alpaca doesn't provide short interest data.
+
+### 2 vs 3 max positions
+The capital deployed is the same regardless: 2 × $49.5k or 3 × $33k both put $99k to work. The question is whether the 3rd-best setup on a given day is genuinely good or just marginal. The daily log now records `passes_threshold` per ticker — after a few weeks of data, count how many days had 3+ viable candidates above the confidence threshold and decide from there.
 
 ---
 
