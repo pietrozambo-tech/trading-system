@@ -123,9 +123,6 @@ def _fallback_message(
 
 def send_shutdown_result(closed: list[dict], failed_tickers: list[str]) -> None:
     """Single message after SIGTERM close attempt — outcome per position."""
-    if not closed and not failed_tickers:
-        send_message("⚠️ Errore di sistema — nessuna posizione aperta.")
-        return
     lines = ["⚠️ Errore di sistema — chiusura forzata:"]
     for pos in closed:
         price = pos.get("exit_price")

@@ -394,8 +394,6 @@ def run() -> None:
     # ------------------------------------------------------------------
     # 15:45 — EOD hard close
     # ------------------------------------------------------------------
-    # Track whether we hit the hard EOD close (vs all positions closing naturally
-    # earlier in the day). Determines whether Telegram waits until 16:05.
     if open_positions:
         logger.info("EOD close — forcing all positions")
         positions_before_close = list(open_positions)
