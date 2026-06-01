@@ -97,20 +97,19 @@ def classify_catalyst_from_news(news: list[dict]) -> float:
         m in combined for m in ["10%", "15%", "20%", "25%", "30%", "40%", "50%"]
     )
 
-    # Tier 2 — real but moderate
+    # Tier 2 — real but moderate positive catalysts
     tier2_phrases = [
-        "eps beat", "earnings",
+        "eps beat",
         "acquisition", "merger",
         "fed ", "federal reserve", "trump", "white house",
         "partnership", "insider buying",
-        "price target", "upgrade", "analyst upgrade",
-        "guidance", "outlook",
+        "price target", "analyst upgrade",
     ]
 
-    # Tier 3 — speculative / generic
+    # Tier 3 — speculative / unconfirmed positive news only
     tier3_phrases = [
-        "rumor", "specul",
-        "report", "analyst", "sector", "industry",
+        "rumor", "rumour", "specul",
+        "buzz", "whisper",
     ]
 
     if any(p in combined for p in tier1_phrases) or eps_large_surprise:
@@ -127,7 +126,7 @@ def build_candidate_payload(candidates_with_signals: list[dict]) -> list[dict]:
     payload = []
     for c in candidates_with_signals:
         ticker = c["ticker"]
-        news = fetcher.get_news(ticker, limit=5)
+        news = c.get("news") or fetcher.get_news(ticker, limit=5)
         headlines = [n.get("headline", "") for n in news[:3]]
         dist = c.get("dist_from_3m_high")
         payload.append({

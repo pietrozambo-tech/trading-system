@@ -168,7 +168,7 @@ def wait_until(target_time_str: str, session_now: datetime) -> None:
     delta = (target - datetime.now(ET)).total_seconds()
     if delta > 0:
         logger.info(f"Waiting {delta:.0f}s until {target_time_str} ET …")
-        time.sleep(delta)
+        _shutdown_event.wait(timeout=delta)  # returns immediately on SIGTERM (unlike time.sleep)
 
 
 def current_et_str() -> str:
@@ -201,7 +201,7 @@ def run() -> None:
     # to the monitoring loop — handles crash-and-restart without leaving positions unmonitored.
     try:
         existing = fetcher.get_open_positions()
-        if len(existing) >= config.MAX_POSITIONS:
+        if len(existing) > 0:
             tickers = [p["ticker"] for p in existing]
             logger.warning(f"Already {len(existing)} open position(s) {tickers} — skipping pipeline, resuming monitoring.")
             telegram.send_message(
@@ -268,6 +268,8 @@ def run() -> None:
     # 09:25 — Pre-market watchlist
     # ------------------------------------------------------------------
     wait_until(config.WATCHLIST_TIME, now_et)
+    if _shutdown:
+        return
     pl.log_stage("universe", UNIVERSE)
 
     watchlist = eligibility.build_premarket_watchlist(UNIVERSE)
@@ -278,6 +280,8 @@ def run() -> None:
     # 09:40 — Binary L1 filters + SPY check + L2 signals + LLM
     # ------------------------------------------------------------------
     wait_until(config.ENTRY_TIME, now_et)
+    if _shutdown:
+        return
     spy_pct  = fetcher.get_spy_change()
     pl.spy_pct = spy_pct
 
@@ -289,6 +293,14 @@ def run() -> None:
         return
 
     candidates, l1_rejects = eligibility.apply_binary_filters(watchlist)
+
+    # Fetch news once per L1-passed ticker — reused by earnings filter, L2 scoring, and LLM payload
+    for c in candidates:
+        try:
+            c["news"] = fetcher.get_news(c["ticker"], limit=5)
+        except Exception:
+            c["news"] = []
+
     safe_candidates, earnings_rejects = eligibility.filter_earnings_tonight(candidates)
     candidates = safe_candidates
     pl.log_l1_rejects(l1_rejects + earnings_rejects)
@@ -304,7 +316,7 @@ def run() -> None:
     candidates_with_signals = []
     for c in candidates:
         ticker        = c["ticker"]
-        news            = fetcher.get_news(ticker, limit=5)
+        news            = c["news"]
         catalyst_bonus  = analyst.classify_catalyst_from_news(news)
         signals         = triggers.compute_signals(ticker, c["prev_close"], catalyst_bonus)
         if signals:
@@ -338,6 +350,7 @@ def run() -> None:
         _send_eod(all_trades, daily_pnl, today_str, spy_pct, pl)
         return
 
+    valid_tickers = {c["ticker"] for c in candidates_with_signals}
     for key in ("trade_1", "trade_2"):
         decision = llm_result.get(key)
         if not decision:
@@ -346,6 +359,9 @@ def run() -> None:
             continue
         if len(open_positions) >= config.MAX_POSITIONS:
             break
+        if decision.get("ticker") not in valid_tickers:
+            logger.error(f"LLM returned unrecognised ticker '{decision.get('ticker')}' — skipping")
+            continue
         # Replace LLM's 0-1 confidence with the uncapped algorithmic score
         # (e.g. 1.04 is more informative than 0.87 for the Telegram recap)
         algo = next((c for c in candidates_with_signals if c["ticker"] == decision["ticker"]), {})

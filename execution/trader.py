@@ -108,12 +108,31 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
 
 
 def close_position(ticker: str, qty: int, reason: str) -> Optional[dict]:
-    """Close position at market. Returns exit info."""
+    """Close position at market. Returns exit info with actual fill price."""
     client = _trading_client()
     try:
-        client.close_position(ticker)
-        quote = fetcher.get_latest_quote(ticker)
-        exit_price = quote["bid"]  # sell at bid
+        order = client.close_position(ticker)
+        # Prefer actual fill price from the order object
+        exit_price = float(order.filled_avg_price) if order.filled_avg_price else None
+        if exit_price is None:
+            # Market order may not be reflected immediately — wait briefly and retry
+            time.sleep(1)
+            try:
+                refreshed = client.get_order_by_id(str(order.id))
+                if refreshed.filled_avg_price:
+                    exit_price = float(refreshed.filled_avg_price)
+            except Exception:
+                pass
+        if exit_price is None:
+            # Last resort: snapshot latest trade (our sell order should be the most recent)
+            try:
+                snap = fetcher.get_snapshot(ticker)
+                if snap.latest_trade:
+                    exit_price = float(snap.latest_trade.price)
+            except Exception:
+                pass
+        if exit_price is None:
+            exit_price = float(fetcher.get_latest_quote(ticker)["ask"])
         exit_time = datetime.now(ET).strftime("%H:%M:%S")
         logger.info(f"Position closed: {ticker} @ ${exit_price:.2f} reason={reason}")
         return {"exit_price": exit_price, "exit_time": exit_time, "exit_reason": reason}

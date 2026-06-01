@@ -146,7 +146,7 @@ def filter_earnings_tonight(
     rejects = []
     for c in candidates:
         ticker = c["ticker"]
-        news = fetcher.get_news(ticker, limit=5)
+        news = c.get("news") or fetcher.get_news(ticker, limit=5)
         earnings_tonight = False
         for n in news:
             text = (n.get("headline", "") + " " + n.get("summary", "")).lower()
