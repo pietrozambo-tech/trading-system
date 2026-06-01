@@ -149,14 +149,6 @@ def get_snapshot(ticker: str) -> dict:
     return snap
 
 
-def get_latest_bar(ticker: str) -> dict:
-    """Most recent 1-min bar."""
-    client = get_data_client()
-    req = StockLatestBarRequest(symbol_or_symbols=ticker)
-    bar = _with_retry(client.get_stock_latest_bar, req)[ticker]
-    return {"open": bar.open, "high": bar.high, "low": bar.low, "close": bar.close, "volume": bar.volume}
-
-
 def get_adv(ticker: str, lookback: int = 20) -> float:
     """Average daily volume over last N trading days."""
     bars = get_daily_bars(ticker, lookback_days=lookback)

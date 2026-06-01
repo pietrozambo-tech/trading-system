@@ -90,6 +90,11 @@ def compute_signals(
     open_930   = float(bars_or["open"].iloc[0])
     price_940  = float(bars_or["close"].iloc[-1])
 
+    # Pre-market gap fully reversed before open — exclude immediately
+    if open_930 < prev_close:
+        logger.info(f"{ticker}: opened below prev_close (gap reversed at open) — excluding")
+        return {}
+
     above_vwap   = s1_above_vwap(bars_or, price_940)
     or_pos       = s2_or_position(bars_or, price_940)
     gap_ret      = s3_gap_retention(bars_or, open_930, prev_close)

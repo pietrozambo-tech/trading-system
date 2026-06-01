@@ -12,7 +12,6 @@ TELEGRAM_API = "https://api.telegram.org/bot{token}/sendMessage"
 EXIT_LABELS = {
     "eod_close":    "Fine giornata",
     "hard_blocker": "Stop loss",
-    "dollar_stop":  "Stop loss",
     "atr_stop":     "Stop loss (ATR)",
     "vwap_exit":    "Profit taker",
 }

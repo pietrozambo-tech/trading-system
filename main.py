@@ -228,7 +228,6 @@ def run() -> None:
             daily_pnl = 0.0
             open_positions = recovered
             all_trades     = []
-            spy_pct        = fetcher.get_spy_change()
             # Jump directly to monitoring loop — skip pre-market, filters, LLM, orders
             logger.info("Starting monitoring loop (recovered) …")
             while current_et_str() < config.EOD_CLOSE_TIME and not _shutdown:

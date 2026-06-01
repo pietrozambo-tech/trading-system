@@ -208,7 +208,6 @@ def generate_eod_recap(
     exit_labels = {
         "eod_close":    "Fine giornata",
         "hard_blocker": "Stop loss",
-        "dollar_stop":  "Stop loss",
         "atr_stop":     "Stop loss (ATR)",
         "vwap_exit":    "Profit taker",
     }
@@ -234,7 +233,7 @@ STRUTTURA OBBLIGATORIA (esattamente in questo ordine, con le righe vuote indicat
 
 [Data e giorno della settimana]
 [riga vuota]
-Mercato: [una frase — SPY {spy_pct:+.2f}% oggi, commenta in max 6 parole]
+Mercato: [una frase — SPY {spy_pct:+.2%} oggi, commenta in max 6 parole]
 [riga vuota]
 Per ogni trade (con riga vuota tra un trade e l'altro):
   <b>Trade N — TICKER long [Score: X.XX]</b>
