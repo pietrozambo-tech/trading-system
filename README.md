@@ -210,19 +210,22 @@ The trade header (`Trade N — TICKER long [Score: X.XX]`) is **bold** in Telegr
 
 ---
 
-## The watchlist (57 stocks)
+## The watchlist (60 stocks)
 
 | Sector | Tickers |
 |--------|---------|
-| Tech / Growth | AAPL, MSFT, NVDA, AMZN, META, GOOGL, TSLA, AMD, NFLX, CRM, ORCL, ADBE, INTC, QCOM, MU, AVGO, TXN, AMAT |
+| Tech / Growth | AAPL, MSFT, NVDA, AMZN, META, GOOGL, TSLA, AMD, NFLX, CRM, ORCL, ADBE, INTC, QCOM, MU, AVGO, TXN, AMAT, MRVL |
 | Finance | JPM, BAC, GS, MS, C, WFC, BLK, SCHW |
-| Healthcare | UNH, JNJ, PFE, ABBV, MRK, BMY |
+| Healthcare | UNH, JNJ, PFE, ABBV, MRK, BMY, MRNA |
 | Energy | XOM, CVX, SLB, HAL, OXY |
+| Clean Energy | ENPH |
+| Consumer | NKE |
+| Defense | LMT |
+| Crypto Proxy | MSTR |
 | Airlines / Cruises | DAL, AAL, NCLH, CCL |
 | Space | RKLB, ASTS, BKSY, RDW, LUNR |
 | Nuclear / Uranium | UUUU, CCJ, NNE, SMR |
 | Quantum Computing | IONQ, QBTS, QUBT, RGTI |
-| ETF | SPY, QQQ, IWM |
 
 ---
 
