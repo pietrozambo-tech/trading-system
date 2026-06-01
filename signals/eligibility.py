@@ -81,32 +81,20 @@ def apply_binary_filters(
     for c in candidates:
         ticker = c["ticker"]
         try:
-            # 1. Price >= $5
-            daily = fetcher.get_daily_bars(ticker, lookback_days=5)
-            if daily.empty:
-                logger.debug(f"{ticker}: no daily data — skip")
-                rejects.append({"ticker": ticker, "reason": "no_daily_data"})
-                continue
-            price = float(daily["close"].iloc[-1])
-            if price < config.MIN_PRICE:
-                logger.info(f"L1 REJECT {ticker}: price ${price:.2f} < ${config.MIN_PRICE} min")
-                rejects.append({"ticker": ticker, "reason": f"price_${price:.2f}<min_${config.MIN_PRICE}"})
-                continue
-
-            # 2. ADV >= 200k
+            # 1. ADV >= 200k shares/day on IEX (~5–10M real ADV)
             adv = c.get("adv") or fetcher.get_adv(ticker)
             if adv < config.MIN_ADV:
                 logger.info(f"L1 REJECT {ticker}: ADV {adv:,.0f} < {config.MIN_ADV:,} min")
                 rejects.append({"ticker": ticker, "reason": f"adv_{adv:,.0f}<min_{config.MIN_ADV:,}"})
                 continue
 
-            # 3. Tradable (no halt)
+            # 2. Tradable (no halt)
             if not fetcher.is_asset_tradable(ticker):
                 logger.info(f"L1 REJECT {ticker}: not tradable on Alpaca")
                 rejects.append({"ticker": ticker, "reason": "not_tradable"})
                 continue
 
-            # 4. Bid-ask spread < 0.6% (real-time)
+            # 3. Bid-ask spread < 0.6% (real-time)
             quote = fetcher.get_latest_quote(ticker)
             if quote["spread_pct"] >= config.MAX_BID_ASK_SPREAD:
                 logger.info(f"L1 REJECT {ticker}: spread {quote['spread_pct']:.3%} >= {config.MAX_BID_ASK_SPREAD:.3%} max")
