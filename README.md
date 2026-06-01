@@ -87,6 +87,7 @@ The top candidates — with their confidence scores, individual signal results, 
 - Recent headlines for each stock
 - The overall market tone that morning (SPY % change)
 - How far the stock is from its 3-month high — stocks near their highs have less overhead resistance (context only, not a filter)
+- **Post-open advance** — how much the stock moved between the 9:30 open and 9:40 entry. A positive value (+0.8%) means buyers pushed higher after the gap opened — real continuation momentum. Near zero means the stock is flat at the opening high, risking buying the peak. Negative means it was already fading at the time of entry. Claude uses this to distinguish "arrived early" setups from "late to the party" ones.
 
 **What Claude decides:**
 - Which 1 or 2 stocks to trade, or none if it's not convinced
