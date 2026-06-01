@@ -183,6 +183,7 @@ def run() -> None:
     now_et    = datetime.now(ET)
     today_str = now_et.strftime("%Y-%m-%d")
     logger.info(f"=== Trading session start: {today_str} ===")
+    telegram.send_startup_message(today_str)
 
     # Guard 1: if started after the entry window, the session is over — abort.
     # Scheduled Railway runs land at 09:00; anything past 10:00 is a manual/late start.
@@ -240,6 +241,9 @@ def run() -> None:
                 for pos in just_closed:
                     logger.info(f"Closed: {pos['ticker']} {pos['exit_reason']} P&L=${pos['pnl_usd']:.2f}")
                     pl.log_trade(pos)
+            if _shutdown:
+                logger.warning("Shutdown flag set — forcing EOD close immediately (recovered)")
+                telegram.send_shutdown_alert([p["ticker"] for p in open_positions])
             eod_forced = bool(open_positions) and not _shutdown
             if open_positions:
                 logger.info("EOD close — forcing all positions (recovered)")
@@ -370,6 +374,7 @@ def run() -> None:
             pl.log_trade(pos)
     if _shutdown:
         logger.warning("Shutdown flag set — forcing EOD close immediately")
+        telegram.send_shutdown_alert([p["ticker"] for p in open_positions])
 
     # ------------------------------------------------------------------
     # 15:45 — EOD hard close

@@ -121,6 +121,26 @@ def _fallback_message(
     return "\n".join(lines)
 
 
+def send_startup_message(date_str: str) -> None:
+    """Notify that the bot has started — lets the user correlate unexpected restarts."""
+    try:
+        d = datetime.strptime(date_str, "%Y-%m-%d")
+        header = f"{DAYS_IT[d.weekday()]} {d.day}/{d.month}/{d.year}"
+    except Exception:
+        header = date_str
+    send_message(f"🟢 {header} — bot avviato")
+
+
+def send_shutdown_alert(open_tickers: list[str]) -> None:
+    """Notify immediately on SIGTERM, before attempting to close positions."""
+    if open_tickers:
+        tickers_str = ", ".join(open_tickers)
+        text = f"⚠️ SIGTERM ricevuto — chiusura {tickers_str} in corso. Recap a breve."
+    else:
+        text = "⚠️ SIGTERM ricevuto — nessuna posizione aperta. Chiusura pulita."
+    send_message(text)
+
+
 def send_late_start_warning(triggered_at: str, date_str: str) -> None:
     """Notify when the bot is triggered manually after the entry window."""
     try:
