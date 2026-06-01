@@ -198,65 +198,73 @@ def run() -> None:
 
     # Guard 2: if positions are already open, skip the pipeline and jump straight
     # to the monitoring loop — handles crash-and-restart without leaving positions unmonitored.
+    # If the API call fails we cannot know whether positions are open, so we abort rather than
+    # risk opening duplicate positions on top of an existing unmonitored trade.
     try:
         existing = fetcher.get_open_positions()
-        if len(existing) > 0:
-            tickers = [p["ticker"] for p in existing]
-            logger.warning(f"Already {len(existing)} open position(s) {tickers} — skipping pipeline, resuming monitoring.")
-            telegram.send_message(
-                f"⚠️ Riavvio rilevato: {len(existing)} posizioni già aperte "
-                f"({', '.join(tickers)}). Pipeline saltata, monitoring ripreso."
-            )
-            # Reconstruct position dicts with fresh stop prices so the monitor loop works correctly
-            recovered: list[dict] = []
-            for p in existing:
-                stops = trader.calc_stop_prices(p["ticker"], p["entry_price"])
-                recovered.append({
-                    **p,
-                    **stops,
-                    "direction": "long",
-                    "confidence": None,
-                    "reason": "recovered after restart",
-                    "order_id": None,
-                    "exit_price": None,
-                    "exit_time": None,
-                    "exit_reason": None,
-                    "pnl_usd": None,
-                    "pnl_pct": None,
-                })
-            pl        = PipelineLog(today_str)
-            daily_pnl = 0.0
-            open_positions = recovered
-            all_trades     = []
-            # Jump directly to monitoring loop — skip pre-market, filters, LLM, orders
-            logger.info("Starting monitoring loop (recovered) …")
-            while current_et_str() < config.EOD_CLOSE_TIME and not _shutdown:
-                if not open_positions:
-                    break
-                _shutdown_event.wait(timeout=config.MONITORING_INTERVAL)
-                _shutdown_event.clear()
-                open_positions, just_closed, daily_pnl = trader.monitor_positions(open_positions, daily_pnl)
-                for pos in just_closed:
-                    logger.info(f"Closed: {pos['ticker']} {pos['exit_reason']} P&L=${pos['pnl_usd']:.2f}")
-                    pl.log_trade(pos)
-            if _shutdown:
-                logger.warning("Shutdown flag set — forcing EOD close immediately (recovered)")
-            if open_positions:
-                logger.info("EOD close — forcing all positions (recovered)")
-                positions_before_close = list(open_positions)
-                closed_eod, daily_pnl = trader.close_all_positions_eod(open_positions, daily_pnl)
-                for pos in closed_eod:
-                    pl.log_trade(pos)
-                if _shutdown:
-                    closed_tickers = {p["ticker"] for p in closed_eod}
-                    failed = [p["ticker"] for p in positions_before_close if p["ticker"] not in closed_tickers]
-                    telegram.send_shutdown_result(closed_eod, failed)
-            pl.save()
-            spy_pct_final = fetcher.get_spy_change()
-            _send_eod(pl.trades, daily_pnl, today_str, spy_pct_final, pl)
-            return
     except Exception as e:
-        logger.warning(f"Could not check open positions at startup: {e}")
+        logger.error(f"Cannot verify open positions at startup: {e} — aborting session")
+        telegram.send_message(
+            "⚠️ Errore all'avvio: impossibile verificare le posizioni aperte su Alpaca.\n"
+            "Sessione annullata per sicurezza. Controlla manualmente su Alpaca."
+        )
+        return
+
+    if len(existing) > 0:
+        tickers = [p["ticker"] for p in existing]
+        logger.warning(f"Already {len(existing)} open position(s) {tickers} — skipping pipeline, resuming monitoring.")
+        telegram.send_message(
+            f"⚠️ Riavvio rilevato: {len(existing)} posizioni già aperte "
+            f"({', '.join(tickers)}). Pipeline saltata, monitoring ripreso."
+        )
+        # Reconstruct position dicts with fresh stop prices so the monitor loop works correctly
+        recovered: list[dict] = []
+        for p in existing:
+            stops = trader.calc_stop_prices(p["ticker"], p["entry_price"])
+            recovered.append({
+                **p,
+                **stops,
+                "direction": "long",
+                "confidence": None,
+                "reason": "recovered after restart",
+                "order_id": None,
+                "exit_price": None,
+                "exit_time": None,
+                "exit_reason": None,
+                "pnl_usd": None,
+                "pnl_pct": None,
+            })
+        pl        = PipelineLog(today_str)
+        daily_pnl = 0.0
+        open_positions = recovered
+        all_trades     = []
+        # Jump directly to monitoring loop — skip pre-market, filters, LLM, orders
+        logger.info("Starting monitoring loop (recovered) …")
+        while current_et_str() < config.EOD_CLOSE_TIME and not _shutdown:
+            if not open_positions:
+                break
+            _shutdown_event.wait(timeout=config.MONITORING_INTERVAL)
+            _shutdown_event.clear()
+            open_positions, just_closed, daily_pnl = trader.monitor_positions(open_positions, daily_pnl)
+            for pos in just_closed:
+                logger.info(f"Closed: {pos['ticker']} {pos['exit_reason']} P&L=${pos['pnl_usd']:.2f}")
+                pl.log_trade(pos)
+        if _shutdown:
+            logger.warning("Shutdown flag set — forcing EOD close immediately (recovered)")
+        if open_positions:
+            logger.info("EOD close — forcing all positions (recovered)")
+            positions_before_close = list(open_positions)
+            closed_eod, daily_pnl = trader.close_all_positions_eod(open_positions, daily_pnl)
+            for pos in closed_eod:
+                pl.log_trade(pos)
+            if _shutdown:
+                closed_tickers = {p["ticker"] for p in closed_eod}
+                failed = [p["ticker"] for p in positions_before_close if p["ticker"] not in closed_tickers]
+                telegram.send_shutdown_result(closed_eod, failed)
+        pl.save()
+        spy_pct_final = fetcher.get_spy_change()
+        _send_eod(pl.trades, daily_pnl, today_str, spy_pct_final, pl)
+        return
 
     pl           = PipelineLog(today_str)
     daily_pnl    = 0.0
