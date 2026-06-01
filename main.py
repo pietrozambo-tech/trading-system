@@ -416,11 +416,14 @@ def _send_eod(
     except Exception:
         equity = 0.0
 
-    try:
-        llm_text = analyst.generate_eod_recap(all_trades, spy_pct, equity, daily_pnl)
-    except Exception as e:
-        logger.warning(f"LLM EOD recap failed: {e}")
-        llm_text = ""
+    if _shutdown:
+        llm_text = ""  # skip LLM on shutdown — not enough time before SIGKILL
+    else:
+        try:
+            llm_text = analyst.generate_eod_recap(all_trades, spy_pct, equity, daily_pnl)
+        except Exception as e:
+            logger.warning(f"LLM EOD recap failed: {e}")
+            llm_text = ""
 
     def _stage_count(name):
         if not pl:
