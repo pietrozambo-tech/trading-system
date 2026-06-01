@@ -119,15 +119,25 @@ def get_opening_range_bars(ticker: str, session_date: Optional[date] = None) -> 
 
 
 def get_latest_quote(ticker: str) -> dict:
-    """Latest bid/ask for spread calculation."""
+    """Latest price and spread proxy for L1 filtering.
+
+    Uses (high-low)/close of the most recent 1-min bar instead of IEX TOPS
+    bid/ask. At market open, IEX bid prices can be stale (set pre-market)
+    while ask reflects the current price, making the calculated spread equal
+    to the gap-up amount and incorrectly rejecting gapping stocks.
+    Bar-based range uses only actual trade prices and is always fresh.
+    """
     client = get_data_client()
-    req = StockLatestQuoteRequest(symbol_or_symbols=ticker)
-    quote = _with_retry(client.get_stock_latest_quote, req)[ticker]
+    req = StockLatestBarRequest(symbol_or_symbols=ticker, feed="iex")
+    bar = _with_retry(client.get_stock_latest_bar, req)[ticker]
+    close = float(bar.close)
+    high  = float(bar.high)
+    low   = float(bar.low)
+    spread_pct = (high - low) / close if close > 0 else 1.0
     return {
-        "bid": float(quote.bid_price),
-        "ask": float(quote.ask_price),
-        "spread_pct": (float(quote.ask_price) - float(quote.bid_price)) / float(quote.ask_price)
-        if float(quote.ask_price) > 0 else 1.0,
+        "bid": low,
+        "ask": close,
+        "spread_pct": spread_pct,
     }
 
 
@@ -172,32 +182,46 @@ def get_atr14(ticker: str) -> float:
 
 
 def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict:
-    """Volume and price at ~9:25 ET using extended-hours bars."""
-    client = get_data_client()
+    """Current price and pre-market volume at ~9:25 ET.
+
+    Price: snapshot latest_trade — avoids stale IEX bar close which can lag
+    by hours if no IEX trades occurred recently in pre-market.
+    Volume: sum of pre-market minute bars (metadata only, not used as filter).
+    """
     if session_date is None:
         session_date = datetime.now(ET).date()
-    start = ET.localize(datetime.combine(session_date, datetime.strptime("04:00", "%H:%M").time()))
-    end   = ET.localize(datetime.combine(session_date, datetime.strptime("09:26", "%H:%M").time()))
-    req = StockBarsRequest(
-        symbol_or_symbols=ticker,
-        timeframe=TimeFrame.Minute,
-        start=start,
-        end=end,
-        feed="iex",
-    )
+
+    # Price via snapshot (most recent trade on IEX, always up-to-date)
+    pm_price = None
     try:
+        snap = get_snapshot(ticker)
+        if snap.latest_trade:
+            pm_price = float(snap.latest_trade.price)
+    except Exception as e:
+        logger.warning(f"Snapshot price error for {ticker}: {e}")
+
+    # Volume via bars (best-effort, failures are non-fatal)
+    pm_volume = 0
+    try:
+        client = get_data_client()
+        start = ET.localize(datetime.combine(session_date, datetime.strptime("04:00", "%H:%M").time()))
+        end   = ET.localize(datetime.combine(session_date, datetime.strptime("09:26", "%H:%M").time()))
+        req = StockBarsRequest(
+            symbol_or_symbols=ticker,
+            timeframe=TimeFrame.Minute,
+            start=start,
+            end=end,
+            feed="iex",
+        )
         bars = _with_retry(client.get_stock_bars, req).df
         if isinstance(bars.index, pd.MultiIndex):
             bars = bars.xs(ticker, level="symbol")
-        if bars.empty:
-            return {"premarket_volume": 0, "premarket_price": None}
-        return {
-            "premarket_volume": int(bars["volume"].sum()),
-            "premarket_price": float(bars["close"].iloc[-1]),
-        }
+        if not bars.empty:
+            pm_volume = int(bars["volume"].sum())
     except Exception as e:
-        logger.warning(f"Premarket data error for {ticker}: {e}")
-        return {"premarket_volume": 0, "premarket_price": None}
+        logger.warning(f"Premarket volume error for {ticker}: {e}")
+
+    return {"premarket_price": pm_price, "premarket_volume": pm_volume}
 
 
 def get_historical_premarket_volume_avg(ticker: str, lookback_days: int = 10, session_date: Optional[date] = None) -> float:

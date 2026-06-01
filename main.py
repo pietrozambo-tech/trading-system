@@ -6,16 +6,16 @@ Il cron parte presto, wait_until() gestisce il timing esatto via pytz.
 
 Timeline (all times ET):
   09:25  Build pre-market watchlist
-  09:40  Apply binary L1 filters + compute L2 signals → LLM decision
-  09:42  Place orders
-  intra  Monitor every 5 min
+  09:40  Apply binary L1 filters + compute L2 signals → LLM decision → place orders immediately
+  intra  Monitor every 60 sec
   15:45  Force-close all positions
-  16:05  Send Telegram EOD recap
+  16:05  Send Telegram EOD recap (only if EOD forced; otherwise sent immediately on natural close)
 """
 import json
 import logging
 import os
 import signal
+import threading
 import time
 from datetime import datetime
 
@@ -38,12 +38,16 @@ ET = pytz.timezone("America/New_York")
 
 # Graceful shutdown — set to True when Railway sends SIGTERM so the monitoring
 # loop exits cleanly, closes positions, and sends the Telegram recap before dying.
+# _shutdown_event wakes the monitoring sleep immediately on signal (time.sleep
+# ignores signals in Python 3.5+ due to PEP 475; threading.Event.wait does not).
 _shutdown = False
+_shutdown_event = threading.Event()
 
 def _handle_signal(signum, frame):
     global _shutdown
     logger.warning("Shutdown signal received — closing positions before exit …")
     _shutdown = True
+    _shutdown_event.set()
 
 signal.signal(signal.SIGTERM, _handle_signal)
 signal.signal(signal.SIGINT,  _handle_signal)
@@ -230,7 +234,8 @@ def run() -> None:
             while current_et_str() < config.EOD_CLOSE_TIME and not _shutdown:
                 if not open_positions:
                     break
-                time.sleep(config.MONITORING_INTERVAL)
+                _shutdown_event.wait(timeout=config.MONITORING_INTERVAL)
+                _shutdown_event.clear()
                 open_positions, just_closed, daily_pnl = trader.monitor_positions(open_positions, daily_pnl)
                 for pos in just_closed:
                     logger.info(f"Closed: {pos['ticker']} {pos['exit_reason']} P&L=${pos['pnl_usd']:.2f}")
@@ -318,10 +323,8 @@ def run() -> None:
     logger.info(f"LLM decision: {llm_result}")
 
     # ------------------------------------------------------------------
-    # 09:42 — Place orders (skip if already past EOD cut-off)
+    # Place orders immediately after LLM decision (skip if past EOD cut-off)
     # ------------------------------------------------------------------
-    wait_until(config.ORDER_TIME, now_et)
-
     eod_dt = ET.localize(datetime.combine(datetime.now(ET).date(),
                           datetime.strptime(config.EOD_CLOSE_TIME, "%H:%M").time()))
     if datetime.now(ET) >= eod_dt:
@@ -359,7 +362,8 @@ def run() -> None:
         if trader.daily_loss_limit_reached(daily_pnl):
             logger.warning(f"Daily loss limit reached (${daily_pnl:.2f}) — closing all")
             break
-        time.sleep(config.MONITORING_INTERVAL)
+        _shutdown_event.wait(timeout=config.MONITORING_INTERVAL)
+        _shutdown_event.clear()
         open_positions, just_closed, daily_pnl = trader.monitor_positions(open_positions, daily_pnl)
         for pos in just_closed:
             logger.info(f"Closed: {pos['ticker']} {pos['exit_reason']} P&L=${pos['pnl_usd']:.2f}")

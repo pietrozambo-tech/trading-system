@@ -99,9 +99,9 @@ The top candidates — with their confidence scores, individual signal results, 
 
 The AI step exists because the algorithmic score captures *whether* the signals are there, but not *which* setup has the clearest story. Two stocks can both score 1.1 — Claude reads the news and decides which one has the more credible catalyst behind it.
 
-### 5. Execution — 9:42 AM
+### 5. Execution — immediately after step 4
 
-Orders are placed via Alpaca (paper trading account). Position size is calculated live at order time using the formula:
+Orders are placed via Alpaca (paper trading account) as soon as the LLM returns its decision — no fixed delay. Position size is calculated live at order time using the formula:
 
 ```
 position size = (current equity − $1,000) ÷ 2
@@ -111,7 +111,7 @@ The $1,000 is a permanent cash cushion that never gets invested — it covers fe
 
 ### 6. Intraday monitoring
 
-Every 5 minutes the bot checks each open position. It closes a trade if any of these triggers fires, checked in this exact order:
+Every minute the bot checks each open position. It closes a trade if any of these triggers fires, checked in this exact order:
 
 | Priority | Rule | Trigger | Why this rule exists |
 |----------|------|---------|----------------------|
