@@ -283,6 +283,23 @@ Requires an external data source (Finviz, IEX Cloud, or similar) since Alpaca do
 ### 2 vs 3 max positions
 The capital deployed is the same regardless: 2 × $49.5k or 3 × $33k both put $99k to work. The question is whether the 3rd-best setup on a given day is genuinely good or just marginal. The daily log now records `passes_threshold` per ticker — after a few weeks of data, count how many days had 3+ viable candidates above the confidence threshold and decide from there.
 
+### Entry timing optimisation
+Current entry is at 9:40 (10 minutes after open). The hypothesis is that this catches the end of the initial opening rush, just before a brief pullback/exhaust phase — meaning entries at an inflated price and a tighter margin before the ATR stop fires.
+
+Backtest the following entry times against live session data:
+
+| Entry time | Rationale |
+|------------|-----------|
+| 9:32 | Catch the opening momentum before the crowd — aggressive, less confirmation |
+| 9:35 | 5-minute opening range, common institutional reference |
+| 9:38 | Pre-current — just before our existing check |
+| 9:40 | Current baseline |
+| 9:45 | Let the first exhaust complete, enter on early consolidation |
+| 9:50 | Wait for VWAP retest after initial dip |
+| 10:00 | Full 30-minute opening range, maximum confirmation, less upside remaining |
+
+For each time, measure: average entry price vs 9:30 open, average P&L, % of trades that hit the ATR stop, and final day P&L. Requires a few weeks of live log data before the sample is meaningful.
+
 ---
 
 ## Environment variables (set in Railway)
