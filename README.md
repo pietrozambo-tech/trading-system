@@ -122,7 +122,7 @@ Every minute the bot checks each open position. It closes a trade if any of thes
 
 The 1.5% minimum for the VWAP take-profit gives the condition room to fire: during a reversal VWAP lags the current price, so by the time price crosses below VWAP the profit has often already eroded — a 2.5% threshold was too tight and never fired in backtesting.
 
-### 7. End-of-day recap — 4:05 PM
+### 7. Daily recap
 
 Two types of Telegram notifications are sent throughout the day:
 
@@ -132,9 +132,9 @@ Two types of Telegram notifications are sent throughout the day:
   ✅ NVDA chiusa @ $221.40
   ```
   If the close fails: `❌ NVDA — chiusura fallita. Intervieni manualmente su Alpaca.` — so you always know whether to act.
-- **EOD recap** — the full daily summary: market context, each trade's entry/exit/P&L, running account total.
+- **Daily recap** — the full summary: market context, each trade's entry/exit/P&L, running account total.
 
-The EOD recap is sent **immediately** when all positions close naturally during the day (stop or VWAP exit). If the bot has to force-close at 3:45 PM, it waits until 4:05 PM so prices settle first. SPY performance is always measured at the exact moment the message is sent. On SIGTERM the recap uses the plain-text fallback format (no LLM generation — not enough time before Railway's SIGKILL).
+The recap is sent **as soon as all positions are closed** — which can be at any point during the day (a stop or VWAP exit can fire at 10:30 AM just as easily as at 3:00 PM). The latest it can arrive is around 4:05 PM: the bot force-closes everything at 3:45 PM and then waits until 4:05 PM before sending, so prices have time to settle after the close. SPY performance is always measured at the exact moment the message is sent. On SIGTERM the recap uses the plain-text fallback format (no LLM generation — not enough time before Railway's SIGKILL).
 
 **Example — 1 trade closed early via profit-taker:**
 ```
