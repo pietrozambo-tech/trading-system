@@ -183,7 +183,6 @@ def run() -> None:
     now_et    = datetime.now(ET)
     today_str = now_et.strftime("%Y-%m-%d")
     logger.info(f"=== Trading session start: {today_str} ===")
-    telegram.send_startup_message(today_str)
 
     # Guard 1: if started after the entry window, the session is over — abort.
     # Scheduled Railway runs land at 09:00; anything past 10:00 is a manual/late start.
@@ -243,13 +242,17 @@ def run() -> None:
                     pl.log_trade(pos)
             if _shutdown:
                 logger.warning("Shutdown flag set — forcing EOD close immediately (recovered)")
-                telegram.send_shutdown_alert([p["ticker"] for p in open_positions])
             eod_forced = bool(open_positions) and not _shutdown
             if open_positions:
                 logger.info("EOD close — forcing all positions (recovered)")
+                positions_before_close = list(open_positions)
                 closed_eod, daily_pnl = trader.close_all_positions_eod(open_positions, daily_pnl)
                 for pos in closed_eod:
                     pl.log_trade(pos)
+                if _shutdown:
+                    closed_tickers = {p["ticker"] for p in closed_eod}
+                    failed = [p["ticker"] for p in positions_before_close if p["ticker"] not in closed_tickers]
+                    telegram.send_shutdown_result(closed_eod, failed)
             pl.save()
             if eod_forced:
                 wait_until(config.TELEGRAM_NOTIFY_TIME, now_et)
@@ -390,7 +393,6 @@ def run() -> None:
             pl.log_trade(pos)
     if _shutdown:
         logger.warning("Shutdown flag set — forcing EOD close immediately")
-        telegram.send_shutdown_alert([p["ticker"] for p in open_positions])
 
     # ------------------------------------------------------------------
     # 15:45 — EOD hard close
@@ -400,9 +402,14 @@ def run() -> None:
     eod_forced = bool(open_positions) and not _shutdown
     if open_positions:
         logger.info("EOD close — forcing all positions")
+        positions_before_close = list(open_positions)
         closed_eod, daily_pnl = trader.close_all_positions_eod(open_positions, daily_pnl)
         for pos in closed_eod:
             pl.log_trade(pos)
+        if _shutdown:
+            closed_tickers = {p["ticker"] for p in closed_eod}
+            failed = [p["ticker"] for p in positions_before_close if p["ticker"] not in closed_tickers]
+            telegram.send_shutdown_result(closed_eod, failed)
         open_positions = []
 
     logger.info(f"Day P&L: ${daily_pnl:.2f}")

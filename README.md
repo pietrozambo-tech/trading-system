@@ -124,10 +124,14 @@ The 1.5% minimum for the VWAP take-profit gives the condition room to fire: duri
 
 ### 7. End-of-day recap — 4:05 PM
 
-Three types of Telegram notifications are sent throughout the day:
+Two types of Telegram notifications are sent throughout the day:
 
-- **Bot started** (`🟢 Lunedì 1/6/2026 — bot avviato`) — sent at startup every morning. Lets you correlate unexpected Railway restarts.
-- **SIGTERM alert** (`⚠️ SIGTERM ricevuto — chiusura NVDA in corso`) — sent immediately if Railway stops the container mid-session, before attempting to close positions.
+- **System error alert** — if Railway stops the container mid-session (SIGTERM), the bot attempts to close all open positions and sends a single message with the outcome per position. Example:
+  ```
+  ⚠️ Errore di sistema — chiusura forzata:
+  ✅ NVDA chiusa @ $221.40
+  ```
+  If the close fails: `❌ NVDA — chiusura fallita. Intervieni manualmente su Alpaca.` — so you always know whether to act.
 - **EOD recap** — the full daily summary: market context, each trade's entry/exit/P&L, running account total.
 
 The EOD recap is sent **immediately** when all positions close naturally during the day (stop or VWAP exit). If the bot has to force-close at 3:45 PM, it waits until 4:05 PM so prices settle first. SPY performance is always measured at the exact moment the message is sent. On SIGTERM the recap uses the plain-text fallback format (no LLM generation — not enough time before Railway's SIGKILL).

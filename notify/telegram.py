@@ -121,24 +121,19 @@ def _fallback_message(
     return "\n".join(lines)
 
 
-def send_startup_message(date_str: str) -> None:
-    """Notify that the bot has started — lets the user correlate unexpected restarts."""
-    try:
-        d = datetime.strptime(date_str, "%Y-%m-%d")
-        header = f"{DAYS_IT[d.weekday()]} {d.day}/{d.month}/{d.year}"
-    except Exception:
-        header = date_str
-    send_message(f"🟢 {header} — bot avviato")
-
-
-def send_shutdown_alert(open_tickers: list[str]) -> None:
-    """Notify immediately on SIGTERM, before attempting to close positions."""
-    if open_tickers:
-        tickers_str = ", ".join(open_tickers)
-        text = f"⚠️ SIGTERM ricevuto — chiusura {tickers_str} in corso. Recap a breve."
-    else:
-        text = "⚠️ SIGTERM ricevuto — nessuna posizione aperta. Chiusura pulita."
-    send_message(text)
+def send_shutdown_result(closed: list[dict], failed_tickers: list[str]) -> None:
+    """Single message after SIGTERM close attempt — outcome per position."""
+    if not closed and not failed_tickers:
+        send_message("⚠️ Errore di sistema — nessuna posizione aperta.")
+        return
+    lines = ["⚠️ Errore di sistema — chiusura forzata:"]
+    for pos in closed:
+        price = pos.get("exit_price")
+        price_str = f" @ ${price:.2f}" if price else ""
+        lines.append(f"✅ {pos['ticker']} chiusa{price_str}")
+    for ticker in failed_tickers:
+        lines.append(f"❌ {ticker} — chiusura fallita. Intervieni manualmente su Alpaca.")
+    send_message("\n".join(lines))
 
 
 def send_late_start_warning(triggered_at: str, date_str: str) -> None:
