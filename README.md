@@ -62,7 +62,7 @@ The confidence score also factors in a **catalyst bonus** — an additive bump b
 |-------------|-------|
 | **Tier 1** — Revenue beat, guidance raised, large EPS surprise (>10%), FDA approval, confirmed acquisition/merger | +0.30 |
 | **Tier 2** — Modest EPS beat, analyst upgrade, price target raise, insider buying, Fed/macro news | +0.20 |
-| **Tier 3** — Rumours, speculative articles, generic sector sentiment | +0.10 |
+| **Tier 3** — Rumours, speculative articles, unconfirmed buzz | +0.10 |
 | No news — pure technical setup | +0.00 |
 
 The distinction between Tier 1 and Tier 2 matters: a **revenue beat** or **guidance raise** signals that the business is genuinely accelerating — the gap is likely to sustain. A modest EPS beat (which can come from cost cuts or buybacks) is real news but less likely to drive continuation throughout the day.
