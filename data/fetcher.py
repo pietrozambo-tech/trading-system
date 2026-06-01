@@ -118,6 +118,18 @@ def get_opening_range_bars(ticker: str, session_date: Optional[date] = None) -> 
     return bars[bars.index <= cutoff]
 
 
+def get_current_price(ticker: str) -> float:
+    """Real-time mid-price from IEX bid/ask. Use during market hours for stop/VWAP checks."""
+    client = get_data_client()
+    req = StockLatestQuoteRequest(symbol_or_symbols=ticker, feed="iex")
+    quote = _with_retry(client.get_stock_latest_quote, req)[ticker]
+    bid = float(quote.bid_price)
+    ask = float(quote.ask_price)
+    if bid > 0 and ask > 0:
+        return (bid + ask) / 2
+    return ask if ask > 0 else bid
+
+
 def get_latest_quote(ticker: str) -> dict:
     """Latest price and spread proxy for L1 filtering.
 

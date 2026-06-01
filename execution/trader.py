@@ -190,8 +190,7 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
                 still_open.append(position)
                 continue
 
-            quote = fetcher.get_latest_quote(ticker)
-            current_price = (quote["bid"] + quote["ask"]) / 2
+            current_price = fetcher.get_current_price(ticker)
 
             # Stop check
             stop_reason = check_stop_triggered(position, current_price)
