@@ -122,6 +122,7 @@ def compute_signals(
         "above_vwap": above_vwap,
         "or_position": round(or_pos, 4),
         "gap_retention": round(gap_ret, 4),
+        "post_open_advance_pct": round((price_940 - open_930) / open_930, 4),
         "vol_boost": vol_boost,
         "catalyst_bonus": catalyst_bonus,
         "confidence": round(confidence, 4),

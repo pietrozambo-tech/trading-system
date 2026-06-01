@@ -42,6 +42,11 @@ CONTESTO AGGIUNTIVO:
 Il campo dist_from_3m_high_pct indica quanto % il titolo è sotto al massimo degli ultimi 3 mesi.
 0% = vicino ai massimi (poca resistenza sopra). -20% = 20% sotto i massimi (più resistenza).
 Usalo come contesto qualitativo, non come criterio di esclusione.
+
+Il campo post_open_advance_pct indica quanto il titolo è salito (o sceso) tra l'apertura alle 9:30 e le 9:40.
+Valori positivi (es. +0.8%) = momentum reale post-gap, il titolo continua a salire dopo l'apertura.
+Valori vicini a 0 = consolidamento piatto, stai comprando esattamente dove ha aperto — rischio di essere arrivato tardi.
+Valori negativi = il titolo stava già ritracciando al momento dell'entry — segnale di debolezza.
 """
 
 USER_PROMPT_TEMPLATE = """\
@@ -135,6 +140,7 @@ def build_candidate_payload(candidates_with_signals: list[dict]) -> list[dict]:
             "above_vwap": c.get("above_vwap"),
             "or_position": c.get("or_position"),
             "gap_retention": c.get("gap_retention"),
+            "post_open_advance_pct": c.get("post_open_advance_pct"),
             "vol_boost": c.get("vol_boost"),
             "confidence_algo": c.get("confidence"),
             "catalyst_bonus": c.get("catalyst_bonus"),
