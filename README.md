@@ -134,7 +134,7 @@ Two types of Telegram notifications are sent throughout the day:
   If the close fails: `❌ NVDA — chiusura fallita. Intervieni manualmente su Alpaca.` — so you always know whether to act.
 - **Daily recap** — the full summary: market context, each trade's entry/exit/P&L, running account total.
 
-The recap is sent **as soon as all positions are closed** — which can be at any point during the day (a stop or VWAP exit can fire at 10:30 AM just as easily as at 3:00 PM). The latest it can arrive is around 4:05 PM: the bot force-closes everything at 3:45 PM and then waits until 4:05 PM before sending, so prices have time to settle after the close. SPY performance is always measured at the exact moment the message is sent. On SIGTERM the recap uses the plain-text fallback format (no LLM generation — not enough time before Railway's SIGKILL).
+The recap is sent **as soon as the last position closes** — whether that's a stop at 10:30 AM, a VWAP exit at 2:00 PM, or the forced 3:45 PM liquidation. No artificial delays. SPY performance is always measured at the exact moment the message is sent. On SIGTERM the recap uses the plain-text fallback format (no LLM generation — not enough time before Railway's SIGKILL).
 
 **Example — 1 trade closed early via profit-taker:**
 ```

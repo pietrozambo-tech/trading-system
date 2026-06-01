@@ -53,7 +53,6 @@ WATCHLIST_TIME       = "09:25"
 ENTRY_TIME           = "09:40"
 MONITORING_INTERVAL  = 60        # seconds between position checks
 EOD_CLOSE_TIME       = "15:45"
-TELEGRAM_NOTIFY_TIME = "16:05"
 
 # === GENERAL ===
 MAX_CANDIDATES_TO_LLM  = 15

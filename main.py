@@ -242,7 +242,6 @@ def run() -> None:
                     pl.log_trade(pos)
             if _shutdown:
                 logger.warning("Shutdown flag set — forcing EOD close immediately (recovered)")
-            eod_forced = bool(open_positions) and not _shutdown
             if open_positions:
                 logger.info("EOD close — forcing all positions (recovered)")
                 positions_before_close = list(open_positions)
@@ -254,8 +253,6 @@ def run() -> None:
                     failed = [p["ticker"] for p in positions_before_close if p["ticker"] not in closed_tickers]
                     telegram.send_shutdown_result(closed_eod, failed)
             pl.save()
-            if eod_forced:
-                wait_until(config.TELEGRAM_NOTIFY_TIME, now_et)
             spy_pct_final = fetcher.get_spy_change()
             _send_eod(pl.trades, daily_pnl, today_str, spy_pct_final, pl)
             return
@@ -399,7 +396,6 @@ def run() -> None:
     # ------------------------------------------------------------------
     # Track whether we hit the hard EOD close (vs all positions closing naturally
     # earlier in the day). Determines whether Telegram waits until 16:05.
-    eod_forced = bool(open_positions) and not _shutdown
     if open_positions:
         logger.info("EOD close — forcing all positions")
         positions_before_close = list(open_positions)
@@ -414,14 +410,6 @@ def run() -> None:
 
     logger.info(f"Day P&L: ${daily_pnl:.2f}")
     pl.save()
-
-    # ------------------------------------------------------------------
-    # Telegram EOD recap
-    # If positions closed naturally before EOD (or on shutdown) send now.
-    # If we had to force-close at 15:45, wait until 16:05 for prices to settle.
-    # ------------------------------------------------------------------
-    if eod_forced:
-        wait_until(config.TELEGRAM_NOTIFY_TIME, now_et)
     spy_pct_final = fetcher.get_spy_change()
     _send_eod(all_trades, daily_pnl, today_str, spy_pct_final, pl)
 
