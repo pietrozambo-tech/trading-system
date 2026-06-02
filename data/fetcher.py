@@ -77,7 +77,6 @@ def get_daily_bars(ticker: str, lookback_days: int = 25) -> pd.DataFrame:
         timeframe=TimeFrame.Day,
         start=start,
         end=end,
-        feed="iex",
     )
     bars = _with_retry(client.get_stock_bars, req).df
     if isinstance(bars.index, pd.MultiIndex):
@@ -97,7 +96,6 @@ def get_intraday_bars(ticker: str, minutes: int = 1, session_date: Optional[date
         timeframe=TimeFrame.Minute if minutes == 1 else TimeFrame(minutes, "Min"),
         start=start,
         end=end,
-        feed="iex",
     )
     bars = _with_retry(client.get_stock_bars, req).df
     if isinstance(bars.index, pd.MultiIndex):
@@ -119,9 +117,9 @@ def get_opening_range_bars(ticker: str, session_date: Optional[date] = None) -> 
 
 
 def get_current_price(ticker: str) -> float:
-    """Real-time mid-price from IEX bid/ask. Use during market hours for stop/VWAP checks."""
+    """Real-time mid-price from consolidated bid/ask. Use during market hours for stop/VWAP checks."""
     client = get_data_client()
-    req = StockLatestQuoteRequest(symbol_or_symbols=ticker, feed="iex")
+    req = StockLatestQuoteRequest(symbol_or_symbols=ticker)
     quote = _with_retry(client.get_stock_latest_quote, req)[ticker]
     bid = float(quote.bid_price)
     ask = float(quote.ask_price)
@@ -131,34 +129,23 @@ def get_current_price(ticker: str) -> float:
 
 
 def get_latest_quote(ticker: str) -> dict:
-    """Latest bid/ask quote for L1 spread filtering and entry price estimation.
-
-    Uses SIP consolidated quotes (all exchanges) as primary source — accurate
-    bid/ask even at market open. IEX TOPS bids can be stale at open (left at
-    pre-market price), making the spread appear as large as the gap itself and
-    incorrectly rejecting gapping stocks like MRVL on earnings day.
-
-    Bar-based range is kept as fallback only when quote prices are unavailable.
-    """
+    """Latest consolidated bid/ask for entry price estimation."""
     client = get_data_client()
     try:
-        req = StockLatestQuoteRequest(symbol_or_symbols=ticker)  # SIP consolidated
+        req = StockLatestQuoteRequest(symbol_or_symbols=ticker)
         quote = _with_retry(client.get_stock_latest_quote, req)[ticker]
         bid = float(quote.bid_price) if quote.bid_price else 0.0
         ask = float(quote.ask_price) if quote.ask_price else 0.0
         if bid > 0 and ask > 0:
             return {"bid": bid, "ask": ask, "spread_pct": (ask - bid) / ask}
     except Exception as e:
-        logger.warning(f"SIP quote unavailable for {ticker}: {e} — falling back to bar range")
+        logger.warning(f"Quote unavailable for {ticker}: {e} — falling back to bar close")
 
-    # Fallback: bar high-low range as spread proxy
-    req = StockLatestBarRequest(symbol_or_symbols=ticker, feed="iex")
+    # Fallback: latest bar close as ask proxy
+    req = StockLatestBarRequest(symbol_or_symbols=ticker)
     bar = _with_retry(client.get_stock_latest_bar, req)[ticker]
     close = float(bar.close)
-    high  = float(bar.high)
-    low   = float(bar.low)
-    spread_pct = (high - low) / close if close > 0 else 1.0
-    return {"bid": low, "ask": close, "spread_pct": spread_pct}
+    return {"bid": close, "ask": close, "spread_pct": 0.0}
 
 
 def get_snapshot(ticker: str) -> dict:
@@ -194,16 +181,10 @@ def get_atr14(ticker: str) -> float:
 
 
 def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict:
-    """Current price and pre-market volume at ~9:25 ET.
-
-    Price: snapshot latest_trade — avoids stale IEX bar close which can lag
-    by hours if no IEX trades occurred recently in pre-market.
-    Volume: sum of pre-market minute bars (metadata only, not used as filter).
-    """
+    """Current price and pre-market volume at ~9:25 ET."""
     if session_date is None:
         session_date = datetime.now(ET).date()
 
-    # Price via snapshot (most recent trade on IEX, always up-to-date)
     pm_price = None
     try:
         snap = get_snapshot(ticker)
@@ -212,7 +193,6 @@ def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict
     except Exception as e:
         logger.warning(f"Snapshot price error for {ticker}: {e}")
 
-    # Volume via bars (best-effort, failures are non-fatal)
     pm_volume = 0
     try:
         client = get_data_client()
@@ -223,7 +203,6 @@ def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict
             timeframe=TimeFrame.Minute,
             start=start,
             end=end,
-            feed="iex",
         )
         bars = _with_retry(client.get_stock_bars, req).df
         if isinstance(bars.index, pd.MultiIndex):
@@ -234,43 +213,6 @@ def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict
         logger.warning(f"Premarket volume error for {ticker}: {e}")
 
     return {"premarket_price": pm_price, "premarket_volume": pm_volume}
-
-
-def get_historical_premarket_volume_avg(ticker: str, lookback_days: int = 10, session_date: Optional[date] = None) -> float:
-    """
-    Average pre-market volume (04:00–09:25 ET) over last N trading days.
-    Apple-to-apple comparison for the pre-market scan.
-    """
-    client = get_data_client()
-    if session_date is None:
-        session_date = datetime.now(ET).date()
-    totals = []
-    check_date = session_date - timedelta(days=1)
-    attempts = 0
-    while len(totals) < lookback_days and attempts < lookback_days * 3:
-        attempts += 1
-        if check_date.weekday() >= 5:
-            check_date -= timedelta(days=1)
-            continue
-        start = ET.localize(datetime.combine(check_date, datetime.strptime("04:00", "%H:%M").time()))
-        end   = ET.localize(datetime.combine(check_date, datetime.strptime("09:26", "%H:%M").time()))
-        req = StockBarsRequest(
-            symbol_or_symbols=ticker,
-            timeframe=TimeFrame.Minute,
-            start=start,
-            end=end,
-            feed="iex",
-        )
-        try:
-            bars = _with_retry(client.get_stock_bars, req).df
-            if isinstance(bars.index, pd.MultiIndex):
-                bars = bars.xs(ticker, level="symbol")
-            if not bars.empty:
-                totals.append(int(bars["volume"].sum()))
-        except Exception:
-            pass
-        check_date -= timedelta(days=1)
-    return float(sum(totals) / len(totals)) if totals else 0.0
 
 
 def get_news(ticker: str, start: Optional[datetime] = None, limit: int = 10) -> list[dict]:
@@ -368,7 +310,6 @@ def get_historical_or_volume(ticker: str, lookback_days: int = 20, session_date:
             timeframe=TimeFrame.Minute,
             start=start,
             end=end,
-            feed="iex",
         )
         try:
             bars = _with_retry(client.get_stock_bars, req).df

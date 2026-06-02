@@ -17,7 +17,7 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID   = os.getenv("TELEGRAM_CHAT_ID")
 
 # === UNIVERSE FILTERS (L1) ===
-MIN_ADV               = 200_000          # 200k shares/day on IEX (~5–10M real ADV — IEX captures ~2–4% of consolidated volume)
+MIN_ADV               = 5_000_000         # 5M shares/day consolidated (SIP)
 MIN_PREMARKET_GAP     = 0.005            # +0.5% — gap meaningfully above yesterday's close
 SPY_BLOCK_THRESHOLD   = -0.020          # -2.0%
 
