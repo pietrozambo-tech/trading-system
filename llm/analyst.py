@@ -38,6 +38,11 @@ confidence = (direction_score/3) + catalyst_bonus + volume_boost
 - volume_boost: vol_ratio>3x → +0.10, vol_ratio 2-3x → +0.05, <2x → +0.00
 - 2/3 segnali tecnici (0.667) da soli superano già la soglia 0.65
 
+PRIORITÀ NELLA SCELTA:
+- Non ribaltare la classifica di confidence_algo senza una ragione esplicita nelle news
+- Se due candidati hanno confidence_algo simile (differenza ≤ 0.10): scegli quello con catalyst_bonus più alto; a parità di catalyst_bonus, scegli quello con vol_boost più alto
+- La classifica algoritmica è già corretta — il tuo contributo è leggere le news, non ri-pesare i segnali tecnici
+
 CONTESTO AGGIUNTIVO:
 Il campo dist_from_3m_high_pct indica quanto % il titolo è sotto al massimo degli ultimi 3 mesi.
 0% = vicino ai massimi (poca resistenza sopra). -20% = 20% sotto i massimi (più resistenza).

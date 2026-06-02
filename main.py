@@ -351,6 +351,18 @@ def run() -> None:
     pl.log_llm(candidates_with_signals, llm_result)
     logger.info(f"LLM decision: {llm_result}")
 
+    # Observability: log when LLM deviates from algo top pick
+    _sorted_by_algo = sorted(candidates_with_signals, key=lambda x: -(x.get("confidence") or 0))
+    if _sorted_by_algo:
+        _top_algo_ticker = _sorted_by_algo[0]["ticker"]
+        _llm_pick_1 = (llm_result.get("trade_1") or {}).get("ticker")
+        if _llm_pick_1 and _llm_pick_1 != _top_algo_ticker:
+            logger.warning(
+                f"LLM deviated from algo ranking: picked {_llm_pick_1} "
+                f"instead of top-scored {_top_algo_ticker} "
+                f"(conf={_sorted_by_algo[0].get('confidence', 0):.2f})"
+            )
+
     # ------------------------------------------------------------------
     # Place orders immediately after LLM decision (skip if past EOD cut-off)
     # ------------------------------------------------------------------
@@ -375,11 +387,18 @@ def run() -> None:
         if decision.get("ticker") not in valid_tickers:
             logger.error(f"LLM returned unrecognised ticker '{decision.get('ticker')}' — skipping")
             continue
+        algo = next((c for c in candidates_with_signals if c["ticker"] == decision["ticker"]), {})
+        # Hard guard: algo confidence must be above threshold (defensive — valid_tickers already ensures this)
+        algo_conf = algo.get("confidence") or 0
+        if algo_conf < config.CONFIDENCE_THRESHOLD:
+            logger.error(
+                f"LLM picked {decision['ticker']} with algo confidence {algo_conf:.2f} "
+                f"< threshold {config.CONFIDENCE_THRESHOLD} — skipping"
+            )
+            continue
         # Replace LLM's 0-1 confidence with the uncapped algorithmic score
         # (e.g. 1.04 is more informative than 0.87 for the Telegram recap)
-        algo = next((c for c in candidates_with_signals if c["ticker"] == decision["ticker"]), {})
-        if algo.get("confidence") is not None:
-            decision["confidence"] = algo["confidence"]
+        decision["confidence"] = algo_conf
         position = trader.open_position(decision["ticker"], decision)
         if position:
             open_positions.append(position)
