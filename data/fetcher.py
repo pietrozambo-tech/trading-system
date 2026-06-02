@@ -131,26 +131,34 @@ def get_current_price(ticker: str) -> float:
 
 
 def get_latest_quote(ticker: str) -> dict:
-    """Latest price and spread proxy for L1 filtering.
+    """Latest bid/ask quote for L1 spread filtering and entry price estimation.
 
-    Uses (high-low)/close of the most recent 1-min bar instead of IEX TOPS
-    bid/ask. At market open, IEX bid prices can be stale (set pre-market)
-    while ask reflects the current price, making the calculated spread equal
-    to the gap-up amount and incorrectly rejecting gapping stocks.
-    Bar-based range uses only actual trade prices and is always fresh.
+    Uses SIP consolidated quotes (all exchanges) as primary source — accurate
+    bid/ask even at market open. IEX TOPS bids can be stale at open (left at
+    pre-market price), making the spread appear as large as the gap itself and
+    incorrectly rejecting gapping stocks like MRVL on earnings day.
+
+    Bar-based range is kept as fallback only when quote prices are unavailable.
     """
     client = get_data_client()
+    try:
+        req = StockLatestQuoteRequest(symbol_or_symbols=ticker)  # SIP consolidated
+        quote = _with_retry(client.get_stock_latest_quote, req)[ticker]
+        bid = float(quote.bid_price) if quote.bid_price else 0.0
+        ask = float(quote.ask_price) if quote.ask_price else 0.0
+        if bid > 0 and ask > 0:
+            return {"bid": bid, "ask": ask, "spread_pct": (ask - bid) / ask}
+    except Exception as e:
+        logger.warning(f"SIP quote unavailable for {ticker}: {e} — falling back to bar range")
+
+    # Fallback: bar high-low range as spread proxy
     req = StockLatestBarRequest(symbol_or_symbols=ticker, feed="iex")
     bar = _with_retry(client.get_stock_latest_bar, req)[ticker]
     close = float(bar.close)
     high  = float(bar.high)
     low   = float(bar.low)
     spread_pct = (high - low) / close if close > 0 else 1.0
-    return {
-        "bid": low,
-        "ask": close,
-        "spread_pct": spread_pct,
-    }
+    return {"bid": low, "ask": close, "spread_pct": spread_pct}
 
 
 def get_snapshot(ticker: str) -> dict:
