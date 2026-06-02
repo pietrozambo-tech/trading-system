@@ -113,7 +113,7 @@ def get_opening_range_bars(ticker: str, session_date: Optional[date] = None) -> 
         session_date or datetime.now(ET).date(),
         datetime.strptime(config.ENTRY_TIME, "%H:%M").time()
     ))
-    return bars[bars.index <= cutoff]
+    return bars[bars.index < cutoff]
 
 
 def get_current_price(ticker: str) -> float:

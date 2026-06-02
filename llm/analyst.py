@@ -91,15 +91,28 @@ def classify_catalyst_from_news(news: list[dict]) -> float:
         return config.CATALYST_NONE
 
     # Phrases that indicate the story is bearish — skip articles containing these
-    # so they don't accidentally match a Tier keyword (e.g. "missed earnings beat consensus")
+    # so they don't accidentally match a Tier keyword (e.g. "missed earnings beat consensus").
+    # Patterns starting with \b use re.search() to enforce word boundaries, preventing
+    # "miss" from matching inside "commissioner", "mission", "emissions", "dismissal", etc.
+    import re
     negative_blockers = [
-        "miss", "misses", "missed", "falls short", "fell short",
+        r"\bmiss\b", r"\bmisses\b", r"\bmissed\b",
+        "falls short", "fell short",
         "below estimates", "below expectations", "below consensus",
-        "disappoints", "disappointing", "disappointed",
+        r"\bdisappoints\b", r"\bdisappointing\b", r"\bdisappointed\b",
         "cuts guidance", "cut guidance", "lowers guidance", "slashes guidance",
         "reduces guidance", "guidance cut", "guidance reduced", "guidance lowered",
         "warns of", "cautious outlook", "weaker than expected",
     ]
+
+    def _is_negative(text: str) -> bool:
+        for pat in negative_blockers:
+            if pat.startswith("\\b"):
+                if re.search(pat, text):
+                    return True
+            elif pat in text:
+                return True
+        return False
 
     tier1_phrases = [
         "fda approv",                          # fda approval / fda approved
@@ -128,6 +141,8 @@ def classify_catalyst_from_news(news: list[dict]) -> float:
         "rumor", "rumour", "speculat",
         "buzz", "whisper",
         "could acquire", "might acquire", "exploring a sale", "considering a deal",
+        "merger talks", "merger discussions", "exploring a merger", "in talks to merge",
+        "takeover talks", "buyout talks",
     ]
 
     best_tier = 0
@@ -136,7 +151,7 @@ def classify_catalyst_from_news(news: list[dict]) -> float:
         text = (article.get("headline", "") + " " + article.get("summary", "")).lower()
 
         # Skip articles whose primary story is negative
-        if any(neg in text for neg in negative_blockers):
+        if _is_negative(text):
             continue
 
         # Tier 1 — return immediately, can't do better

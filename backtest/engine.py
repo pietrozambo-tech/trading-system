@@ -238,7 +238,7 @@ def _calc_atr14(daily: pd.DataFrame, as_of: date) -> float:
 
 
 def _calc_hist_or_vol(intraday_by_date: dict, as_of: date, lookback: int = 20) -> float:
-    """Rolling average of 9:30–9:35 OR volume (6 bars) from cached intraday data."""
+    """Rolling average of 9:30–9:34 OR volume (5 bars) from cached intraday data."""
     totals = []
     sorted_dates = sorted(d for d in intraday_by_date if d < as_of)
     for d in sorted_dates[-lookback:]:
@@ -797,10 +797,10 @@ def _simulate_day_true_entry(
     gap_size   = open_930 - prev_close
     gap_ret    = 1.0 - (gap_eaten / gap_size) if abs(gap_size) > 0.001 else 1.0
 
-    # Volume: scale historical OR avg (6-bar baseline) to the current entry window
+    # Volume: scale historical OR avg (5-bar baseline, 9:30–9:34) to the current entry window
     vol_today      = float(or_bars["volume"].sum())
     vol_avg_or     = _calc_hist_or_vol(intraday_cache, session_date)
-    vol_avg_scaled = vol_avg_or * (entry_offset_min / 6.0) if vol_avg_or > 0 else 0
+    vol_avg_scaled = vol_avg_or * (entry_offset_min / 5.0) if vol_avg_or > 0 else 0
     vol_ratio      = vol_today / vol_avg_scaled if vol_avg_scaled > 0 else 0
     vol_boost      = (
         0.10 if vol_ratio > params.vol_ratio_high else

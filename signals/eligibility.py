@@ -79,7 +79,7 @@ def apply_binary_filters(
     for c in candidates:
         ticker = c["ticker"]
         try:
-            # 1. ADV >= 200k shares/day on IEX (~5–10M real ADV)
+            # 1. ADV >= 5M shares/day (SIP consolidated)
             adv = c.get("adv") or fetcher.get_adv(ticker)
             if adv < config.MIN_ADV:
                 logger.info(f"L1 REJECT {ticker}: ADV {adv:,.0f} < {config.MIN_ADV:,} min")

@@ -375,12 +375,13 @@ def run() -> None:
         _send_eod(all_trades, daily_pnl, today_str, spy_pct, pl)
         return
 
+    if llm_result.get("no_trade_reason") and not llm_result.get("trade_1") and not llm_result.get("trade_2"):
+        all_trades.append({"reason": llm_result["no_trade_reason"]})
+
     valid_tickers = {c["ticker"] for c in candidates_with_signals}
     for key in ("trade_1", "trade_2"):
         decision = llm_result.get(key)
         if not decision:
-            if llm_result.get("no_trade_reason"):
-                all_trades.append({"reason": llm_result["no_trade_reason"]})
             continue
         if len(open_positions) >= config.MAX_POSITIONS:
             break
