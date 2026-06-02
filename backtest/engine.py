@@ -243,7 +243,7 @@ def _calc_hist_or_vol(intraday_by_date: dict, as_of: date, lookback: int = 20) -
     sorted_dates = sorted(d for d in intraday_by_date if d < as_of)
     for d in sorted_dates[-lookback:]:
         bars = intraday_by_date[d]
-        or_bars = bars[(bars.index.hour == 9) & (bars.index.minute >= 30) & (bars.index.minute <= 35)]
+        or_bars = bars[(bars.index.hour == 9) & (bars.index.minute >= 30) & (bars.index.minute <= 34)]
         if not or_bars.empty:
             totals.append(float(or_bars["volume"].sum()))
     return sum(totals) / len(totals) if totals else 0.0
@@ -276,12 +276,12 @@ def _simulate_day(
     if len(adv_hist) >= 10 and float(adv_hist["volume"].mean()) < params.min_adv:
         return None
 
-    # Opening range bars (9:30–9:35)
+    # Opening range bars (9:30–9:34) — 5 complete bars, matches live system at 09:35
     day_bars = intraday_cache[session_date]
     or_bars  = day_bars[
         (day_bars.index.hour == 9) &
         (day_bars.index.minute >= 30) &
-        (day_bars.index.minute <= 35)
+        (day_bars.index.minute <= 34)
     ]
     if len(or_bars) < 2:
         return None
@@ -335,9 +335,9 @@ def _simulate_day(
     stop_pct   = entry_price * (1 - params.hard_blocker_pct)
     stop_price = max(stop_atr, stop_pct)
 
-    # Replay bars from 9:36 to 15:45
+    # Replay bars from 9:35 to 15:45
     post_bars = day_bars[
-        ((day_bars.index.hour == 9)  & (day_bars.index.minute >= 36)) |
+        ((day_bars.index.hour == 9)  & (day_bars.index.minute >= 35)) |
         ((day_bars.index.hour > 9)   & (day_bars.index.hour < 15))    |
         ((day_bars.index.hour == 15) & (day_bars.index.minute <= 45))
     ]
@@ -386,7 +386,7 @@ def _simulate_day(
         above_vwap=above_vwap,
         or_position=round(or_pos, 4),
         gap_retention=round(gap_ret, 4),
-        entry_offset_min=6,  # 9:35 bar close = offset 6 from 9:30
+        entry_offset_min=5,  # 9:34 bar close ≈ price at 9:35 = offset 5 from 9:30
     )
 
 
@@ -563,8 +563,9 @@ def _simulate_day_all_entries(
     entry_offsets: list[int],
 ) -> list[TradeResult]:
     """
-    Compute 9:35 OR signals, then simulate a trade for each entry offset (minutes from 9:30).
-    Entry offsets < 6 are 'oracle': they enter before the 9:35 OR bar closes (offset=6 is live-equivalent).
+    Compute OR signals (9:30–9:34), then simulate a trade for each entry offset (minutes from 9:30).
+    Entry offsets < 5 are 'oracle': they use signal data from bars not yet closed at entry.
+    Offset=5 is live-equivalent (enters on 9:34 bar close ≈ price at 9:35).
     Returns one TradeResult per offset for setups that pass the confidence threshold.
     """
     daily          = cache["daily"]
@@ -584,11 +585,11 @@ def _simulate_day_all_entries(
     if len(adv_hist) >= 10 and float(adv_hist["volume"].mean()) < params.min_adv:
         return []
 
-    # Opening range bars 9:30–9:35
+    # Opening range bars 9:30–9:34 (5 bars, matches live)
     or_bars = day_bars[
         (day_bars.index.hour == 9) &
         (day_bars.index.minute >= 30) &
-        (day_bars.index.minute <= 35)
+        (day_bars.index.minute <= 34)
     ]
     if len(or_bars) < 2:
         return []
@@ -632,7 +633,7 @@ def _simulate_day_all_entries(
     for offset in entry_offsets:
         # Bar at minute M has close = price at end of minute M+1
         # offset=1  → bar at 9:30 → close ≈ price at 9:31
-        # offset=6  → bar at 9:35 → close ≈ price at 9:36 (live-equivalent)
+        # offset=5  → bar at 9:34 → close ≈ price at 9:35 (live-equivalent)
         # offset=15 → bar at 9:44 → close ≈ price at 9:45
         total_min      = 9 * 60 + 30 + offset - 1
         e_hour, e_min  = divmod(total_min, 60)
@@ -698,8 +699,9 @@ def run_entry_timing_backtest(
 ) -> dict[int, BacktestResults]:
     """
     Run backtest with multiple entry times. Returns dict: offset_min → BacktestResults.
-    All offsets share the same signal filter (9:35 OR window).
-    Offsets < 6 are 'oracle': entry before the 9:35 bar closes. Offset=6 is live-equivalent.
+    All offsets share the same signal filter (9:30–9:34 OR window).
+    Offsets < 5 are 'oracle': they use signal data from bars not yet closed at entry.
+    Offset=5 is live-equivalent (9:34 bar close ≈ price at 9:35).
     """
     if params is None:
         params = BacktestParams()
@@ -747,8 +749,8 @@ def _simulate_day_true_entry(
     Non-oracle entry: signals computed from bars available at entry time only.
     entry_offset_min=1  → signals from 9:30 bar only (1 min of data)
     entry_offset_min=3  → signals from 9:30–9:32 (3 bars)
-    entry_offset_min=5  → signals from 9:30–9:34 (5 bars)
-    entry_offset_min=6  → signals from 9:30–9:35 (6 bars) — same as live (9:35 entry)
+    entry_offset_min=5  → signals from 9:30–9:34 (5 bars) — same as live (9:35 entry)
+    entry_offset_min=6  → signals from 9:30–9:35 (6 bars)
     """
     daily          = cache["daily"]
     intraday_cache = cache["intraday"]

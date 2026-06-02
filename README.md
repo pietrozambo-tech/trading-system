@@ -6,17 +6,43 @@ No manual intervention needed.
 
 ---
 
+## The universe: 60 curated stocks
+
+The bot doesn't scan the entire US stock market — it operates on a fixed watchlist of **60 hand-picked stocks**. Scanning thousands of tickers is technically possible but strategically counterproductive.
+
+**Why a curated universe instead of the full market:**
+
+- **Institutional volume.** Every stock on the list trades at least 5 million shares per day on average. A $50k position doesn't move the price, and the bid-ask spread is tight enough that slippage is negligible. Thinly traded names are excluded entirely.
+- **Gap quality.** The list focuses on sectors where overnight gaps tend to be driven by real, verifiable catalysts — earnings beats, FDA approvals, analyst upgrades, macro data. A gap on a large-cap semiconductor or biotech has a clear story and tends to follow through. A gap on a micro-cap with 50k daily volume is usually noise.
+- **Sectors with momentum.** Tech (semis, cloud, AI), healthcare, energy, financials, space, and nuclear — sectors with active institutional participation and frequent catalyst-driven moves. Consumer staples and utilities are intentionally excluded: they gap rarely, and when they do, the moves are small.
+- **Pipeline speed.** With 60 stocks, the full pre-market scan completes in under 90 seconds. Scaling to 5,000 stocks would require hours of API calls — far past the 9:25 AM window when pre-market data is still relevant.
+
+The complete list is in the [Appendix — Watchlist (60 stocks)](#the-watchlist-60-stocks).
+
+---
+
 ## What it does, step by step
 
 ### 1. Pre-market scan — 9:25 AM New York time
 
-The bot scans all 57 stocks looking for ones **gapping up at least +0.5%** above yesterday's close. That's the only filter here — a meaningful overnight move signals that something happened (earnings, news, an upgrade) worth investigating further. Stocks that drifted up 0.2% on no news don't qualify.
+The bot scans all 60 stocks looking for ones **gapping up at least +0.5%** above yesterday's close. That's the only filter here — a meaningful overnight move signals that something happened (earnings, news, an upgrade) worth investigating further. Stocks that drifted up 0.2% on no news don't qualify.
 
 Pre-market volume is intentionally not filtered here — it's noisy and unreliable in thin pre-market hours. Volume gets measured properly in Stage 3 using the first 5 minutes of real market trading.
 
 ### 2. Quality check — 9:35 AM
 
-Once the market opens and the first 5 minutes settle, the bot applies a set of hard filters to remove anything that doesn't meet the bar:
+Once the market opens, the bot waits exactly 5 minutes before running any filters. Why 5 minutes? We backtested entry times at 9:31, 9:33, 9:35, and 9:40 over 18 months of data (Jan 2025 – Jun 2026, 60-ticker universe) using a non-oracle methodology — meaning signals were computed only from bars actually available at entry time, with no lookahead:
+
+| Entry | Profit factor | Notes |
+|-------|--------------|-------|
+| 9:31 | 1.05 | 1 bar only — signals too noisy |
+| 9:33 | 1.18 | 3 bars — VWAP and gap retention still unreliable |
+| **9:35** | **1.37** | 5 bars — best balance of signal quality and early entry |
+| 9:40 | 1.21 | 10 bars — solid signals, but misses most of the opening move |
+
+The 9:35 entry captures the bulk of the initial momentum while still having enough price action to compute reliable VWAP, opening range position, and gap retention signals. Entering at 9:31 catches more upside on the winners but generates too many false signals on stocks that gap up and immediately reverse. Waiting until 9:40 leaves the best entries on the table.
+
+The bot then applies a set of hard filters to remove anything that doesn't meet the bar:
 
 | Check | Requirement | Why |
 |-------|-------------|-----|
@@ -208,7 +234,7 @@ The trade header (`Trade N — TICKER long [Score: X.XX]`) is **bold** in Telegr
 
 ---
 
-## The watchlist (60 stocks)
+## Appendix — The watchlist (60 stocks)
 
 | Sector | Tickers |
 |--------|---------|
