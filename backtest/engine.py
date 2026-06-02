@@ -39,6 +39,9 @@ class BacktestParams:
     or_position_threshold:   float = 0.66
     gap_retention_threshold: float = 0.70
     min_gap_pct:             float = 0.005   # +0.5% long-only
+    min_adv:                 float = 5_000_000  # 5M shares/day (SIP consolidated)
+    vol_ratio_high:          float = 3.0
+    vol_ratio_mid:           float = 2.0
     position_size_usd:       float = 49_000.0  # (100k - 2k cushion) / 2 trades
     max_positions:           int   = 2
     catalyst_bonus:          float = 0.10   # conservative proxy (Tier 3) — no real news in backtest
@@ -50,18 +53,19 @@ class BacktestParams:
 
 @dataclass
 class TradeResult:
-    ticker:       str
-    date:         str
-    entry_price:  float
-    exit_price:   float
-    exit_reason:  str
-    qty:          int
-    pnl_usd:      float
-    pnl_pct:      float
-    confidence:   float
-    above_vwap:   bool
-    or_position:  float
-    gap_retention: float
+    ticker:            str
+    date:              str
+    entry_price:       float
+    exit_price:        float
+    exit_reason:       str
+    qty:               int
+    pnl_usd:           float
+    pnl_pct:           float
+    confidence:        float
+    above_vwap:        bool
+    or_position:       float
+    gap_retention:     float
+    entry_offset_min:  int = 10
 
 
 @dataclass
@@ -152,7 +156,6 @@ def _fetch_daily_bars(client, ticker: str, start: date, end: date) -> pd.DataFra
         timeframe=TimeFrame.Day,
         start=datetime.combine(start - timedelta(days=30), datetime.min.time()),
         end=datetime.combine(end, datetime.min.time()),
-        feed="iex",
     )
     try:
         df = client.get_stock_bars(req).df
@@ -177,7 +180,6 @@ def _fetch_intraday_bars(client, ticker: str, start: date, end: date) -> dict[da
         timeframe=TimeFrame.Minute,
         start=start_dt,
         end=end_dt,
-        feed="iex",
     )
     try:
         df = client.get_stock_bars(req).df
@@ -268,6 +270,11 @@ def _simulate_day(
         return None
     prev_close = float(prev_daily["close"].iloc[-1])
 
+    # ADV filter (rolling 20-day average)
+    adv_hist = prev_daily.tail(20)
+    if len(adv_hist) >= 10 and float(adv_hist["volume"].mean()) < params.min_adv:
+        return None
+
     # Opening range bars (9:30–9:40)
     day_bars = intraday_cache[session_date]
     or_bars  = day_bars[
@@ -304,7 +311,7 @@ def _simulate_day(
     vol_today = float(or_bars["volume"].sum())
     vol_avg   = _calc_hist_15min_vol(intraday_cache, session_date, lookback=20)
     vol_ratio = vol_today / vol_avg if vol_avg > 0 else 0
-    vol_boost = 0.10 if vol_ratio > 3 else (0.05 if vol_ratio > 2 else 0.0)
+    vol_boost = 0.10 if vol_ratio > params.vol_ratio_high else (0.05 if vol_ratio > params.vol_ratio_mid else 0.0)
 
     # Catalyst proxy (no real news in backtest — use conservative Tier 3 bonus)
     direction_score = sum([
@@ -531,3 +538,193 @@ def vwap_sensitivity_analysis(
         logger.info(f"  {threshold:.1%} → PF={s['profit_factor']:.2f} WR={s['win_rate']:.1%} PnL=${s['total_pnl_usd']:+.2f}")
 
     return pd.DataFrame(rows)
+
+
+# ---------------------------------------------------------------------------
+# Entry timing analysis
+# ---------------------------------------------------------------------------
+
+def _precompute_vwap_series(day_bars: pd.DataFrame) -> dict:
+    """Running intraday VWAP from first bar — returns {timestamp: vwap} dict for O(1) lookup."""
+    tp     = (day_bars["high"] + day_bars["low"] + day_bars["close"]) / 3
+    tpv    = tp * day_bars["volume"]
+    cumvol = day_bars["volume"].cumsum()
+    series = (tpv.cumsum() / cumvol.replace(0, float("nan")))
+    return series.to_dict()
+
+
+def _simulate_day_all_entries(
+    ticker: str,
+    session_date: date,
+    cache: dict,
+    params: BacktestParams,
+    entry_offsets: list[int],
+) -> list[TradeResult]:
+    """
+    Compute 9:40 OR signals, then simulate a trade for each entry offset (minutes from 9:30).
+    Entry offsets < 10 are 'oracle': they assume we know the setup will be valid before 9:40.
+    Returns one TradeResult per offset for setups that pass the confidence threshold.
+    """
+    daily          = cache["daily"]
+    intraday_cache = cache["intraday"]
+
+    if session_date not in intraday_cache:
+        return []
+
+    day_bars   = intraday_cache[session_date]
+    prev_daily = daily[daily.index.date < session_date]
+    if len(prev_daily) < 2:
+        return []
+    prev_close = float(prev_daily["close"].iloc[-1])
+
+    # ADV filter
+    adv_hist = prev_daily.tail(20)
+    if len(adv_hist) >= 10 and float(adv_hist["volume"].mean()) < params.min_adv:
+        return []
+
+    # Opening range bars 9:30–9:40
+    or_bars = day_bars[
+        (day_bars.index.hour == 9) &
+        (day_bars.index.minute >= 30) &
+        (day_bars.index.minute <= 40)
+    ]
+    if len(or_bars) < 2:
+        return []
+
+    open_930  = float(or_bars["open"].iloc[0])
+    price_940 = float(or_bars["close"].iloc[-1])
+
+    gap_pct = (open_930 - prev_close) / prev_close
+    if gap_pct < params.min_gap_pct or open_930 < prev_close:
+        return []
+
+    # Signals at 9:40 (unchanged from live system)
+    vwap_or    = _calc_vwap(or_bars)
+    above_vwap = price_940 > vwap_or
+    or_high    = float(or_bars["high"].max())
+    or_low     = float(or_bars["low"].min())
+    or_pos     = (price_940 - or_low) / (or_high - or_low) if or_high != or_low else 0.5
+    gap_eaten  = open_930 - float(or_bars["low"].min())
+    gap_size   = open_930 - prev_close
+    gap_ret    = 1.0 - (gap_eaten / gap_size) if abs(gap_size) > 0.001 else 1.0
+
+    vol_today = float(or_bars["volume"].sum())
+    vol_avg   = _calc_hist_15min_vol(intraday_cache, session_date)
+    vol_ratio = vol_today / vol_avg if vol_avg > 0 else 0
+    vol_boost = (
+        0.10 if vol_ratio > params.vol_ratio_high else
+        0.05 if vol_ratio > params.vol_ratio_mid  else
+        0.0
+    )
+
+    direction = sum([above_vwap, or_pos > params.or_position_threshold, gap_ret > params.gap_retention_threshold])
+    confidence = (direction / 3) + params.catalyst_bonus + vol_boost
+
+    if confidence < params.confidence_threshold:
+        return []
+
+    atr14      = _calc_atr14(daily, session_date)
+    vwap_dict  = _precompute_vwap_series(day_bars)
+    results    = []
+
+    for offset in entry_offsets:
+        # Bar at minute M has close = price at end of minute M+1
+        # offset=1  → bar at 9:30 → close ≈ price at 9:31
+        # offset=10 → bar at 9:39 → close ≈ price at 9:40
+        # offset=15 → bar at 9:44 → close ≈ price at 9:45
+        total_min      = 9 * 60 + 30 + offset - 1
+        e_hour, e_min  = divmod(total_min, 60)
+        entry_df       = day_bars[(day_bars.index.hour == e_hour) & (day_bars.index.minute == e_min)]
+        if entry_df.empty:
+            continue
+
+        entry_ts    = entry_df.index[0]
+        entry_price = float(entry_df.iloc[0]["close"])
+        qty         = max(1, int(params.position_size_usd / entry_price))
+        stop_atr    = entry_price - atr14 if atr14 > 0 else 0
+        stop_pct    = entry_price * (1 - params.hard_blocker_pct)
+        stop_price  = max(stop_atr, stop_pct)
+        stop_label  = "hard_blocker" if stop_pct >= stop_atr else "atr_stop"
+
+        post = day_bars[
+            (day_bars.index > entry_ts) &
+            ((day_bars.index.hour < 15) | ((day_bars.index.hour == 15) & (day_bars.index.minute <= 45)))
+        ]
+
+        exit_price  = float(post["close"].iloc[-1]) if not post.empty else entry_price
+        exit_reason = "eod_close"
+
+        for ts, bar in post.iterrows():
+            price = float(bar["close"])
+            if ts.hour == 15 and ts.minute >= 45:
+                exit_price, exit_reason = price, "eod_close"
+                break
+            if float(bar["low"]) <= stop_price:
+                exit_price  = max(float(bar["low"]), stop_price)
+                exit_reason = stop_label
+                break
+            vwap_now = vwap_dict.get(ts, float("nan"))
+            if not pd.isna(vwap_now) and (price - entry_price) / entry_price >= params.vwap_exit_min_profit and price < vwap_now:
+                exit_price, exit_reason = price, "vwap_exit"
+                break
+
+        results.append(TradeResult(
+            ticker           = ticker,
+            date             = str(session_date),
+            entry_price      = round(entry_price, 4),
+            exit_price       = round(exit_price, 4),
+            exit_reason      = exit_reason,
+            qty              = qty,
+            pnl_usd          = round((exit_price - entry_price) * qty, 2),
+            pnl_pct          = round((exit_price - entry_price) / entry_price, 4),
+            confidence       = round(confidence, 4),
+            above_vwap       = above_vwap,
+            or_position      = round(or_pos, 4),
+            gap_retention    = round(gap_ret, 4),
+            entry_offset_min = offset,
+        ))
+
+    return results
+
+
+def run_entry_timing_backtest(
+    universe: list[str],
+    start_date: date,
+    end_date: date,
+    params: Optional[BacktestParams] = None,
+    entry_offsets: list[int] = None,
+) -> dict[int, BacktestResults]:
+    """
+    Run backtest with multiple entry times. Returns dict: offset_min → BacktestResults.
+    All offsets share the same signal filter (9:40 OR window).
+    Offsets < 10 are 'oracle': entry before 9:40 signal confirmation.
+    """
+    if params is None:
+        params = BacktestParams()
+    if entry_offsets is None:
+        entry_offsets = [1, 3, 5, 10, 15]
+
+    logger.info(f"Entry timing backtest: {start_date}→{end_date} | {len(universe)} tickers | offsets={entry_offsets}")
+    all_cache         = prefetch_universe(universe, start_date, end_date)
+    results_by_offset = {o: BacktestResults() for o in entry_offsets}
+    days              = _trading_days(start_date, end_date)
+
+    for day in days:
+        counts = {o: 0 for o in entry_offsets}
+        for ticker in universe:
+            if all(counts[o] >= params.max_positions for o in entry_offsets):
+                break
+            if ticker not in all_cache:
+                continue
+            trades = _simulate_day_all_entries(ticker, day, all_cache[ticker], params, entry_offsets)
+            for trade in trades:
+                o = trade.entry_offset_min
+                if counts[o] < params.max_positions:
+                    results_by_offset[o].trades.append(trade)
+                    results_by_offset[o].daily_pnl[str(day)] = (
+                        results_by_offset[o].daily_pnl.get(str(day), 0.0) + trade.pnl_usd
+                    )
+                    counts[o] += 1
+
+    logger.info("Entry timing backtest complete.")
+    return results_by_offset
