@@ -41,20 +41,25 @@ def send_message(text: str, parse_mode: str = "HTML") -> bool:
 
 def _no_trade_reason(pipeline: dict) -> str:
     """One-liner explaining why no trade was placed today."""
-    blocked  = pipeline.get("blocked") or ""
-    pre      = pipeline.get("premarket_count")
-    l1       = pipeline.get("l1_count")
-    l2       = pipeline.get("l2_count")
+    blocked    = pipeline.get("blocked") or ""
+    pre        = pipeline.get("premarket_count")
+    l1         = pipeline.get("l1_count")
+    l2         = pipeline.get("l2_count")
+    l2_tickers = pipeline.get("l2_tickers") or []
+    llm_reason = pipeline.get("llm_reason") or ""
 
     if "SPY" in blocked:
         return "Mercato bloccato — SPY troppo negativo. Riproviamo domani."
     if pre == 0 or pre is None:
         return "Nessun titolo con gap ≥0.5% stamattina. Giornata piatta, capita."
     if l1 == 0:
-        return f"{pre} titoli in pre-market, nessuno ha passato i filtri qualità (prezzo, liquidità, spread). Riproviamo domani."
+        return f"{pre} titoli in pre-market, nessuno ha passato i filtri qualità (liquidità). Riproviamo domani."
     if l2 == 0:
         return f"{l1} titoli ai filtri, nessuno con segnali tecnici sufficienti. Meglio aspettare un setup pulito."
-    return "Candidati trovati ma LLM non era convinto. Nessuna entry forzata."
+    tickers_str = ", ".join(l2_tickers) if l2_tickers else f"{l2} candidat{'o' if l2 == 1 else 'i'}"
+    if llm_reason:
+        return f"{tickers_str} — {llm_reason}"
+    return f"{tickers_str} arrivati al LLM ma nessuna entry selezionata."
 
 
 def _fallback_message(

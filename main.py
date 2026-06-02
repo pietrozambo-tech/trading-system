@@ -455,11 +455,21 @@ def _send_eod(
                 return s["count"]
         return None
 
+    def _stage_tickers(name):
+        if not pl:
+            return []
+        for s in pl.stages:
+            if s["stage"] == name:
+                return s.get("tickers", [])
+        return []
+
     pipeline_summary = {
-        "blocked":        pl.blocked if pl else None,
+        "blocked":         pl.blocked if pl else None,
         "premarket_count": _stage_count("premarket_scan"),
         "l1_count":        _stage_count("binary_filters_L1"),
         "l2_count":        _stage_count("L2_signals_passed"),
+        "l2_tickers":      _stage_tickers("L2_signals_passed"),
+        "llm_reason":      (pl.llm_output.get("no_trade_reason") if pl and pl.llm_output else None),
     }
 
     telegram.send_eod_recap(
