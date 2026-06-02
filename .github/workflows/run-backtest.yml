@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "Modalità: 'standard', 'timing', 'sensitivity', 'vwap', 'hardstop'"
+        description: "Modalità: 'standard', 'timing', 'timing-true', 'sensitivity', 'vwap', 'hardstop'"
         required: false
         default: "standard"
 
@@ -40,9 +40,13 @@ jobs:
         if: ${{ github.event.inputs.mode == 'standard' || github.event.inputs.mode == '' }}
         run: python run_backtest.py
 
-      - name: Run backtest (entry timing)
+      - name: Run backtest (entry timing oracle)
         if: ${{ github.event.inputs.mode == 'timing' }}
         run: python run_backtest.py --timing
+
+      - name: Run backtest (entry timing true)
+        if: ${{ github.event.inputs.mode == 'timing-true' }}
+        run: python run_backtest.py --timing-true
 
       - name: Run backtest (sensitivity)
         if: ${{ github.event.inputs.mode == 'sensitivity' }}

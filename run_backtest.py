@@ -2,11 +2,12 @@
 Standalone backtest runner.
 
 Usage:
-  python run_backtest.py                # YTD + 2025, full universe, default params
-  python run_backtest.py --timing       # entry timing comparison (1/3/5/10/15 min)
-  python run_backtest.py --sensitivity  # griglia completa di parametri
-  python run_backtest.py --vwap         # sensitivity solo su VWAP exit threshold
-  python run_backtest.py --hardstop     # sensitivity solo su hard stop (1.0%–2.5%)
+  python run_backtest.py                 # YTD + 2025, full universe, default params
+  python run_backtest.py --timing        # entry timing oracle (signals always at 9:40)
+  python run_backtest.py --timing-true   # entry timing TRUE: signals computed at entry time
+  python run_backtest.py --sensitivity   # griglia completa di parametri
+  python run_backtest.py --vwap          # sensitivity solo su VWAP exit threshold
+  python run_backtest.py --hardstop      # sensitivity solo su hard stop (1.0%–2.5%)
 """
 import argparse
 import logging
@@ -26,7 +27,7 @@ logging.basicConfig(
 from backtest.engine import (
     BacktestParams, BacktestResults,
     run_backtest, sensitivity_analysis, vwap_sensitivity_analysis,
-    run_entry_timing_backtest,
+    run_entry_timing_backtest, run_true_entry_timing_backtest,
     prefetch_universe, _trading_days, _simulate_day,
 )
 
@@ -216,20 +217,44 @@ def print_timing_summary(results_by_offset: dict, universe_size: int) -> None:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--timing",      action="store_true", help="Entry timing comparison (1/3/5/10/15 min)")
+    parser.add_argument("--timing",      action="store_true", help="Entry timing oracle (signals at 9:40)")
+    parser.add_argument("--timing-true", action="store_true", help="Entry timing TRUE: signals computed at entry time")
     parser.add_argument("--sensitivity", action="store_true", help="Griglia completa parametri")
     parser.add_argument("--vwap",        action="store_true", help="Sensitivity solo VWAP exit threshold")
     parser.add_argument("--hardstop",    action="store_true", help="Sensitivity solo hard stop (1.0%–2.5%)")
     args = parser.parse_args()
 
     if args.timing:
-        print(f"Entry timing analysis: {START_DATE} → {END_DATE} | {len(BACKTEST_UNIVERSE)} tickers")
+        print(f"Entry timing oracle: {START_DATE} → {END_DATE} | {len(BACKTEST_UNIVERSE)} tickers")
         print("Signals always computed at 9:40. Entry prices tested at 9:31, 9:33, 9:35, 9:40, 9:45.\n")
         results_by_offset = run_entry_timing_backtest(
             BACKTEST_UNIVERSE, START_DATE, END_DATE,
             entry_offsets=[1, 3, 5, 10, 15],
         )
         print_timing_summary(results_by_offset, len(BACKTEST_UNIVERSE))
+
+    elif args.timing_true:
+        print(f"Entry timing TRUE (non-oracle): {START_DATE} → {END_DATE} | {len(BACKTEST_UNIVERSE)} tickers")
+        print("Signals computed from bars available at entry time only.")
+        print("  9:31 → 1-min OR signals  |  9:33 → 3-min  |  9:35 → 5-min  |  9:40 → 10-min (current)\n")
+        results_by_offset = run_true_entry_timing_backtest(
+            BACKTEST_UNIVERSE, START_DATE, END_DATE,
+            entry_offsets=[1, 3, 5, 10],
+        )
+        print_timing_summary(results_by_offset, len(BACKTEST_UNIVERSE))
+        os.makedirs("backtest/results", exist_ok=True)
+        rows = []
+        for o, res in results_by_offset.items():
+            s  = res.summary()
+            df = res.to_dataframe() if res.trades else pd.DataFrame()
+            ec = df["exit_reason"].value_counts().to_dict() if not df.empty else {}
+            n  = s["total_trades"]
+            rows.append({"entry_offset_min": o, **s,
+                         "vwap_pct": ec.get("vwap_exit",0)/n if n else 0,
+                         "eod_pct":  ec.get("eod_close",0)/n if n else 0,
+                         "stop_pct_exits": sum(v for k,v in ec.items() if "stop" in k or "blocker" in k)/n if n else 0})
+        pd.DataFrame(rows).to_csv("backtest/results/entry_timing_true.csv", index=False)
+        print("Risultati salvati in: backtest/results/entry_timing_true.csv")
 
     elif args.hardstop:
         hardstop_sensitivity()
