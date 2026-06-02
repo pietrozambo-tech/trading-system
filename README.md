@@ -13,7 +13,6 @@ The bot doesn't scan the entire US stock market — it operates on a fixed watch
 **Why a curated universe instead of the full market:**
 
 - **Institutional volume.** Every stock on the list trades at least 5 million shares per day on average. A $50k position doesn't move the price, and the bid-ask spread is tight enough that slippage is negligible. Thinly traded names are excluded entirely.
-- **Gap quality.** The list focuses on sectors where overnight gaps tend to be driven by real, verifiable catalysts — earnings beats, FDA approvals, analyst upgrades, macro data. A gap on a large-cap semiconductor or biotech has a clear story and tends to follow through. A gap on a micro-cap with 50k daily volume is usually noise.
 - **Sectors with momentum.** Tech (semis, cloud, AI), healthcare, energy, financials, space, and nuclear — sectors with active institutional participation and frequent catalyst-driven moves. Consumer staples and utilities are intentionally excluded: they gap rarely, and when they do, the moves are small.
 - **Pipeline speed.** With 60 stocks, the full pre-market scan completes in under 90 seconds. Scaling to 5,000 stocks would require hours of API calls — far past the 9:25 AM window when pre-market data is still relevant.
 
