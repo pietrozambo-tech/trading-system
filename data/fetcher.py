@@ -181,7 +181,7 @@ def get_atr14(ticker: str) -> float:
 
 
 def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict:
-    """Current price and pre-market volume at ~9:25 ET."""
+    """Most recent trade price at ~9:25 ET via snapshot."""
     if session_date is None:
         session_date = datetime.now(ET).date()
 
@@ -193,33 +193,17 @@ def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict
     except Exception as e:
         logger.warning(f"Snapshot price error for {ticker}: {e}")
 
-    pm_volume = 0
-    try:
-        client = get_data_client()
-        start = ET.localize(datetime.combine(session_date, datetime.strptime("04:00", "%H:%M").time()))
-        end   = ET.localize(datetime.combine(session_date, datetime.strptime("09:26", "%H:%M").time()))
-        req = StockBarsRequest(
-            symbol_or_symbols=ticker,
-            timeframe=TimeFrame.Minute,
-            start=start,
-            end=end,
-        )
-        bars = _with_retry(client.get_stock_bars, req).df
-        if isinstance(bars.index, pd.MultiIndex):
-            bars = bars.xs(ticker, level="symbol")
-        if not bars.empty:
-            pm_volume = int(bars["volume"].sum())
-    except Exception as e:
-        logger.warning(f"Premarket volume error for {ticker}: {e}")
-
-    return {"premarket_price": pm_price, "premarket_volume": pm_volume}
+    return {"premarket_price": pm_price}
 
 
 def get_news(ticker: str, start: Optional[datetime] = None, limit: int = 10) -> list[dict]:
     """Recent news via Alpaca News API (Benzinga)."""
     import requests
     if start is None:
-        start = datetime.now(ET) - timedelta(days=1)
+        now = datetime.now(ET)
+        # On Monday, look back 72h to catch Friday evening earnings/news
+        lookback_days = 3 if now.weekday() == 0 else 1
+        start = now - timedelta(days=lookback_days)
     url = "https://data.alpaca.markets/v1beta1/news"
     headers = {
         "APCA-API-KEY-ID": config.ALPACA_API_KEY,

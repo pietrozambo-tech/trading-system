@@ -39,8 +39,7 @@ def build_premarket_watchlist(universe: list[str], session_date: Optional[date] 
             high_3m = float(daily_bars["high"].max())
 
             pm = fetcher.get_premarket_data(ticker, session_date)
-            pm_price  = pm["premarket_price"]
-            pm_volume = pm["premarket_volume"]
+            pm_price = pm["premarket_price"]
 
             if pm_price is None or prev_close == 0:
                 continue
@@ -55,7 +54,6 @@ def build_premarket_watchlist(universe: list[str], session_date: Optional[date] 
                 "ticker": ticker,
                 "prev_close": prev_close,
                 "premarket_price": pm_price,
-                "premarket_volume": pm_volume,
                 "gap_pct": gap_pct,
                 "adv": adv,
                 "dist_from_3m_high": round((pm_price - high_3m) / high_3m, 4),
