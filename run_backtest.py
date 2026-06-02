@@ -193,6 +193,9 @@ def print_timing_summary(results_by_offset: dict, universe_size: int) -> None:
         stop_n  = sum(v for k, v in ec.items() if "stop" in k or "blocker" in k)
         marker  = " ←" if o == 10 else ""
         label   = entry_time.get(o, f"9:{30+o}")
+        if n == 0:
+            print(f"{label:>7}  {'0':>7}  {'n/a':>6}  {'n/a':>5}  {'n/a':>5}  {'n/a':>8}  {'n/a':>9}  {'n/a':>11}  {'n/a':>8}  {'n/a':>6}  {'n/a':>5}  {'n/a':>6}{marker}")
+            continue
         print(
             f"{label:>7}  {n:>7}  {s['win_rate']:>6.1%}  {s['profit_factor']:>5.2f}  "
             f"{s['avg_win_loss_ratio']:>5.2f}  {s['avg_win_usd']:>+8.0f}  {s['avg_loss_usd']:>+9.0f}  "

@@ -180,6 +180,7 @@ def _fetch_intraday_bars(client, ticker: str, start: date, end: date) -> dict[da
         timeframe=TimeFrame.Minute,
         start=start_dt,
         end=end_dt,
+        feed="iex",  # SIP historical requires paid subscription; IEX sufficient for backtesting
     )
     try:
         df = client.get_stock_bars(req).df
