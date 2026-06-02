@@ -237,8 +237,8 @@ def _calc_atr14(daily: pd.DataFrame, as_of: date) -> float:
     return float(val) if pd.notna(val) else 0.0
 
 
-def _calc_hist_15min_vol(intraday_by_date: dict, as_of: date, lookback: int = 20) -> float:
-    """Compute rolling average of 9:30–9:35 volume from cached intraday data."""
+def _calc_hist_or_vol(intraday_by_date: dict, as_of: date, lookback: int = 20) -> float:
+    """Rolling average of 9:30–9:35 OR volume (6 bars) from cached intraday data."""
     totals = []
     sorted_dates = sorted(d for d in intraday_by_date if d < as_of)
     for d in sorted_dates[-lookback:]:
@@ -310,7 +310,7 @@ def _simulate_day(
 
     # S4 — Volume boost from cached historical OR volume
     vol_today = float(or_bars["volume"].sum())
-    vol_avg   = _calc_hist_15min_vol(intraday_cache, session_date, lookback=20)
+    vol_avg   = _calc_hist_or_vol(intraday_cache, session_date, lookback=20)
     vol_ratio = vol_today / vol_avg if vol_avg > 0 else 0
     vol_boost = 0.10 if vol_ratio > params.vol_ratio_high else (0.05 if vol_ratio > params.vol_ratio_mid else 0.0)
 
@@ -386,6 +386,7 @@ def _simulate_day(
         above_vwap=above_vwap,
         or_position=round(or_pos, 4),
         gap_retention=round(gap_ret, 4),
+        entry_offset_min=6,  # 9:35 bar close = offset 6 from 9:30
     )
 
 
@@ -563,7 +564,7 @@ def _simulate_day_all_entries(
 ) -> list[TradeResult]:
     """
     Compute 9:35 OR signals, then simulate a trade for each entry offset (minutes from 9:30).
-    Entry offsets < 5 are 'oracle': they assume we know the setup will be valid before 9:35.
+    Entry offsets < 6 are 'oracle': they enter before the 9:35 OR bar closes (offset=6 is live-equivalent).
     Returns one TradeResult per offset for setups that pass the confidence threshold.
     """
     daily          = cache["daily"]
@@ -610,7 +611,7 @@ def _simulate_day_all_entries(
     gap_ret    = 1.0 - (gap_eaten / gap_size) if abs(gap_size) > 0.001 else 1.0
 
     vol_today = float(or_bars["volume"].sum())
-    vol_avg   = _calc_hist_15min_vol(intraday_cache, session_date)
+    vol_avg   = _calc_hist_or_vol(intraday_cache, session_date)
     vol_ratio = vol_today / vol_avg if vol_avg > 0 else 0
     vol_boost = (
         0.10 if vol_ratio > params.vol_ratio_high else
@@ -631,7 +632,7 @@ def _simulate_day_all_entries(
     for offset in entry_offsets:
         # Bar at minute M has close = price at end of minute M+1
         # offset=1  → bar at 9:30 → close ≈ price at 9:31
-        # offset=10 → bar at 9:39 → close ≈ price at 9:40
+        # offset=6  → bar at 9:35 → close ≈ price at 9:36 (live-equivalent)
         # offset=15 → bar at 9:44 → close ≈ price at 9:45
         total_min      = 9 * 60 + 30 + offset - 1
         e_hour, e_min  = divmod(total_min, 60)
@@ -698,7 +699,7 @@ def run_entry_timing_backtest(
     """
     Run backtest with multiple entry times. Returns dict: offset_min → BacktestResults.
     All offsets share the same signal filter (9:35 OR window).
-    Offsets < 5 are 'oracle': entry before 9:35 signal confirmation.
+    Offsets < 6 are 'oracle': entry before the 9:35 bar closes. Offset=6 is live-equivalent.
     """
     if params is None:
         params = BacktestParams()
@@ -747,7 +748,7 @@ def _simulate_day_true_entry(
     entry_offset_min=1  → signals from 9:30 bar only (1 min of data)
     entry_offset_min=3  → signals from 9:30–9:32 (3 bars)
     entry_offset_min=5  → signals from 9:30–9:34 (5 bars)
-    entry_offset_min=10 → signals from 9:30–9:39 (10 bars) — same as live
+    entry_offset_min=6  → signals from 9:30–9:35 (6 bars) — same as live (9:35 entry)
     """
     daily          = cache["daily"]
     intraday_cache = cache["intraday"]
@@ -794,10 +795,10 @@ def _simulate_day_true_entry(
     gap_size   = open_930 - prev_close
     gap_ret    = 1.0 - (gap_eaten / gap_size) if abs(gap_size) > 0.001 else 1.0
 
-    # Volume: scale historical 10-min avg to the current window length
+    # Volume: scale historical OR avg (6-bar baseline) to the current entry window
     vol_today      = float(or_bars["volume"].sum())
-    vol_avg_10min  = _calc_hist_15min_vol(intraday_cache, session_date)
-    vol_avg_scaled = vol_avg_10min * (entry_offset_min / 10.0) if vol_avg_10min > 0 else 0
+    vol_avg_or     = _calc_hist_or_vol(intraday_cache, session_date)
+    vol_avg_scaled = vol_avg_or * (entry_offset_min / 6.0) if vol_avg_or > 0 else 0
     vol_ratio      = vol_today / vol_avg_scaled if vol_avg_scaled > 0 else 0
     vol_boost      = (
         0.10 if vol_ratio > params.vol_ratio_high else
@@ -876,7 +877,7 @@ def run_true_entry_timing_backtest(
     if params is None:
         params = BacktestParams()
     if entry_offsets is None:
-        entry_offsets = [1, 3, 5, 10]
+        entry_offsets = [1, 3, 5, 6]  # 6 = live-equivalent (9:35 bar close)
 
     logger.info(f"True entry timing backtest: {start_date}→{end_date} | {len(universe)} tickers | offsets={entry_offsets}")
     all_cache         = prefetch_universe(universe, start_date, end_date)

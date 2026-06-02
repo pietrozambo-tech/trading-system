@@ -43,7 +43,7 @@ Il campo dist_from_3m_high_pct indica quanto % il titolo è sotto al massimo deg
 0% = vicino ai massimi (poca resistenza sopra). -20% = 20% sotto i massimi (più resistenza).
 Usalo come contesto qualitativo, non come criterio di esclusione.
 
-Il campo post_open_advance_pct indica quanto il titolo è salito (o sceso) tra l'apertura alle 9:30 e le 9:40.
+Il campo post_open_advance_pct indica quanto il titolo è salito (o sceso) tra l'apertura alle 9:30 e le 9:35 (5 minuti di trading reale).
 Valori positivi (es. +0.8%) = momentum reale post-gap, il titolo continua a salire dopo l'apertura.
 Valori vicini a 0 = consolidamento piatto, stai comprando esattamente dove ha aperto — rischio di essere arrivato tardi.
 Valori negativi = il titolo stava già ritracciando al momento dell'entry — segnale di debolezza.
