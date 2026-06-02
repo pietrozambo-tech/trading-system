@@ -94,15 +94,8 @@ def apply_binary_filters(
                 rejects.append({"ticker": ticker, "reason": "not_tradable"})
                 continue
 
-            # 3. Bid-ask spread < 0.6% (real-time)
             quote = fetcher.get_latest_quote(ticker)
-            if quote["spread_pct"] >= config.MAX_BID_ASK_SPREAD:
-                logger.info(f"L1 REJECT {ticker}: spread {quote['spread_pct']:.3%} >= {config.MAX_BID_ASK_SPREAD:.3%} max")
-                rejects.append({"ticker": ticker, "reason": f"spread_{quote['spread_pct']:.3%}>={config.MAX_BID_ASK_SPREAD:.3%}"})
-                continue
-
             c["current_price"] = quote["ask"]
-            c["bid_ask_spread"] = quote["spread_pct"]
             passed.append(c)
             logger.info(f"L1 pass: {ticker}")
 

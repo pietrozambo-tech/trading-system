@@ -21,7 +21,6 @@ Once the market opens and the first 10 minutes settle, the bot applies a set of 
 | Check | Requirement | Why |
 |-------|-------------|-----|
 | Daily volume | At least 5–10M shares/day (real ADV) | A $50k order in a thinly traded stock moves the price. This filter keeps out names too small to absorb our position size without slippage. |
-| Bid-ask spread | <0.6% | Entry cost too high otherwise |
 | Earnings tonight | Excluded | Overnight risk is unpredictable — but stocks that *already* reported earnings yesterday are kept, as that's the catalyst we want |
 | Market mood | SPY not down >2.0% | Circuit breaker for real panic days only — strong individual setups still trade in a mildly negative market |
 
