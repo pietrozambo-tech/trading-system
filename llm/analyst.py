@@ -73,66 +73,103 @@ Restituisci JSON con questa struttura esatta:
 
 def classify_catalyst_from_news(news: list[dict]) -> float:
     """
-    Heuristic catalyst classification based on news headlines.
-    Returns the bonus for the strongest catalyst found.
+    Heuristic catalyst classification based on news headlines + summaries.
+    Processes each article independently (no cross-article concatenation) to avoid
+    false positives from unrelated articles contaminating each other.
+    Returns the bonus for the strongest positive catalyst found.
 
-    Tier 1: revenue beat, guidance raised, confirmed M&A, FDA approval, earnings beat
-    Tier 2: modest EPS beat, analyst upgrade, price target raise, insider buying, macro
-    Tier 3: rumours, speculative articles, generic sector sentiment
+    Tier 1: revenue beat, guidance raised, confirmed M&A, FDA approval, large EPS surprise
+    Tier 2: modest EPS beat, analyst upgrade, price target raise, insider buying, partnership
+    Tier 3: unconfirmed rumours, speculative articles
     """
     if not news:
         return config.CATALYST_NONE
 
-    combined = " ".join(
-        (n.get("headline", "") + " " + n.get("summary", "")).lower()
-        for n in news
-    )
+    # Phrases that indicate the story is bearish — skip articles containing these
+    # so they don't accidentally match a Tier keyword (e.g. "missed earnings beat consensus")
+    negative_blockers = [
+        "miss", "misses", "missed", "falls short", "fell short",
+        "below estimates", "below expectations", "below consensus",
+        "disappoints", "disappointing", "disappointed",
+        "cuts guidance", "cut guidance", "lowers guidance", "slashes guidance",
+        "reduces guidance", "guidance cut", "guidance reduced", "guidance lowered",
+        "warns of", "cautious outlook", "weaker than expected",
+    ]
 
-    # Tier 1 — high-impact, confirmed catalysts
     tier1_phrases = [
-        "fda approval", "fda approved",
+        "fda approv",                          # fda approval / fda approved
         "acquisition confirmed", "merger confirmed", "buyout confirmed",
-        "revenue beat", "top-line beat",
-        "guidance raised", "raises guidance", "raised guidance",
-        "guidance increase", "raised outlook", "raises outlook",
-        "earnings beat",
+        "agreed to acquire", "definitive agreement to acquire",
+        "revenue beat", "top-line beat", "record revenue", "record sales",
+        "beats revenue", "topped revenue estimates",
+        "guidance raised", "raises guidance", "raised guidance", "raises its guidance",
+        "raised outlook", "raises outlook", "raised its outlook",
+        "guidance increase", "guidance raised",
+        "earnings beat",                        # confirmed result, not rumour
     ]
-    # Large EPS surprise qualifies for Tier 1; a modest beat goes to Tier 2
-    eps_large_surprise = "eps beat" in combined and any(
-        m in combined for m in ["10%", "15%", "20%", "25%", "30%", "40%", "50%"]
-    )
 
-    # Tier 2 — real but moderate positive catalysts
     tier2_phrases = [
-        "eps beat",
-        "acquisition", "merger",
-        "fed ", "federal reserve", "trump", "white house",
-        "partnership", "insider buying",
-        "price target", "analyst upgrade",
+        "eps beat", "beats estimates", "beat estimates", "beat earnings estimates",
+        "analyst upgrade", "upgraded to buy", "upgraded to outperform",
+        "upgraded to overweight", "upgraded to strong buy",
+        "price target raised", "price target increased", "raises price target",
+        "boosts price target", "lifts price target",
+        "insider buying", "insider purchase", "insider bought",
+        "partnership", "strategic partnership", "collaboration agreement",
+        "license agreement", "supply agreement",
     ]
 
-    # Tier 3 — speculative / unconfirmed positive news only
     tier3_phrases = [
-        "rumor", "rumour", "specul",
+        "rumor", "rumour", "speculat",
         "buzz", "whisper",
+        "could acquire", "might acquire", "exploring a sale", "considering a deal",
     ]
 
-    if any(p in combined for p in tier1_phrases) or eps_large_surprise:
-        return config.CATALYST_TIER1
-    if any(p in combined for p in tier2_phrases):
+    best_tier = 0
+
+    for article in news:
+        text = (article.get("headline", "") + " " + article.get("summary", "")).lower()
+
+        # Skip articles whose primary story is negative
+        if any(neg in text for neg in negative_blockers):
+            continue
+
+        # Tier 1 — return immediately, can't do better
+        if any(p in text for p in tier1_phrases):
+            return config.CATALYST_TIER1
+
+        # Large EPS surprise (% mentioned alongside beat) → also Tier 1
+        if ("eps beat" in text or "beat estimates" in text) and any(
+            m in text for m in ["10%", "15%", "20%", "25%", "30%", "40%", "50%"]
+        ):
+            return config.CATALYST_TIER1
+
+        if any(p in text for p in tier2_phrases):
+            best_tier = max(best_tier, 2)
+        elif any(p in text for p in tier3_phrases):
+            best_tier = max(best_tier, 3)
+
+    if best_tier == 2:
         return config.CATALYST_TIER2
-    if any(p in combined for p in tier3_phrases):
+    if best_tier == 3:
         return config.CATALYST_TIER3
     return config.CATALYST_NONE
 
 
 def build_candidate_payload(candidates_with_signals: list[dict]) -> list[dict]:
-    """Enrich candidates with news headlines for LLM context."""
+    """Enrich candidates with news articles (headline + summary) for LLM context."""
     payload = []
     for c in candidates_with_signals:
         ticker = c["ticker"]
         news = c.get("news") or fetcher.get_news(ticker, limit=5)
-        headlines = [n.get("headline", "") for n in news[:3]]
+        recent_news = [
+            {
+                "headline": n.get("headline", ""),
+                "summary":  n.get("summary", ""),
+            }
+            for n in news[:5]
+            if n.get("headline")
+        ]
         dist = c.get("dist_from_3m_high")
         payload.append({
             "ticker": ticker,
@@ -145,7 +182,7 @@ def build_candidate_payload(candidates_with_signals: list[dict]) -> list[dict]:
             "confidence_algo": c.get("confidence"),
             "catalyst_bonus": c.get("catalyst_bonus"),
             "dist_from_3m_high_pct": round(dist * 100, 1) if dist is not None else None,
-            "recent_headlines": headlines,
+            "recent_news": recent_news,
         })
     return payload
 

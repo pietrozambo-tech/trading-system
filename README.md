@@ -30,16 +30,7 @@ Pre-market volume is intentionally not filtered here — it's noisy and unreliab
 
 ### 2. Quality check — 9:35 AM
 
-Once the market opens, the bot waits exactly 5 minutes before running any filters. Why 5 minutes? We backtested entry times at 9:31, 9:33, 9:35, and 9:40 over 18 months of data (Jan 2025 – Jun 2026, 60-ticker universe) using a non-oracle methodology — meaning signals were computed only from bars actually available at entry time, with no lookahead:
-
-| Entry | Profit factor | Notes |
-|-------|--------------|-------|
-| 9:31 | 1.05 | 1 bar only — signals too noisy |
-| 9:33 | 1.18 | 3 bars — VWAP and gap retention still unreliable |
-| **9:35** | **1.37** | 5 bars — best balance of signal quality and early entry |
-| 9:40 | 1.21 | 10 bars — solid signals, but misses most of the opening move |
-
-The 9:35 entry captures the bulk of the initial momentum while still having enough price action to compute reliable VWAP, opening range position, and gap retention signals. Entering at 9:31 catches more upside on the winners but generates too many false signals on stocks that gap up and immediately reverse. Waiting until 9:40 leaves the best entries on the table.
+Once the market opens, the bot waits exactly 5 minutes before running any filters. Backtesting over 18 months showed that 9:35 is the sweet spot: enough price action for reliable signals (VWAP, gap retention, opening range), while still catching most of the opening move. Earlier entries generate too many false signals; waiting until 9:40 misses the best entries.
 
 The bot then applies a set of hard filters to remove anything that doesn't meet the bar:
 
@@ -84,7 +75,7 @@ The confidence score also factors in a **catalyst bonus** — an additive bump b
 | News quality | Bonus |
 |-------------|-------|
 | **Tier 1** — Revenue beat, guidance raised, large EPS surprise (>10%), FDA approval, confirmed acquisition/merger | +0.30 |
-| **Tier 2** — Modest EPS beat, analyst upgrade, price target raise, insider buying, Fed/macro news | +0.20 |
+| **Tier 2** — Modest EPS beat, analyst upgrade, price target raise, insider buying, confirmed partnership | +0.20 |
 | **Tier 3** — Rumours, speculative articles, unconfirmed buzz | +0.10 |
 | No news — pure technical setup | +0.00 |
 
@@ -107,7 +98,7 @@ The top candidates — with their confidence scores, individual signal results, 
 **What Claude looks at:**
 - Which of the 3 technical signals passed and the overall confidence score
 - The catalyst: what news triggered the gap and its quality (revenue beat vs. EPS beat vs. rumour)
-- Recent headlines for each stock
+- Recent news for each stock — up to 5 articles, each with headline and full summary
 - The overall market tone that morning (SPY % change)
 - How far the stock is from its 3-month high — stocks near their highs have less overhead resistance (context only, not a filter)
 - **Post-open advance** — how much the stock moved between the 9:30 open and 9:35 entry. A positive value (+0.8%) means buyers pushed higher after the gap opened — real continuation momentum. Near zero means the stock is flat at the opening high, risking buying the peak. Negative means it was already fading at the time of entry. Claude uses this to distinguish "arrived early" setups from "late to the party" ones.
