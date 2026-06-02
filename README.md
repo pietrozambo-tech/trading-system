@@ -12,11 +12,11 @@ No manual intervention needed.
 
 The bot scans all 57 stocks looking for ones **gapping up at least +0.5%** above yesterday's close. That's the only filter here — a meaningful overnight move signals that something happened (earnings, news, an upgrade) worth investigating further. Stocks that drifted up 0.2% on no news don't qualify.
 
-Pre-market volume is intentionally not filtered here — it's noisy and unreliable in thin pre-market hours. Volume gets measured properly in Stage 3 using the first 10 minutes of real market trading.
+Pre-market volume is intentionally not filtered here — it's noisy and unreliable in thin pre-market hours. Volume gets measured properly in Stage 3 using the first 5 minutes of real market trading.
 
-### 2. Quality check — 9:40 AM
+### 2. Quality check — 9:35 AM
 
-Once the market opens and the first 10 minutes settle, the bot applies a set of hard filters to remove anything that doesn't meet the bar:
+Once the market opens and the first 5 minutes settle, the bot applies a set of hard filters to remove anything that doesn't meet the bar:
 
 | Check | Requirement | Why |
 |-------|-------------|-----|
@@ -26,14 +26,14 @@ Once the market opens and the first 10 minutes settle, the bot applies a set of 
 
 ### 3. Signal scoring
 
-For each stock that passes the quality check, the bot scores 4 signals based on what happened in the first 10 minutes of trading:
+For each stock that passes the quality check, the bot scores 4 signals based on what happened in the first 5 minutes of trading:
 
 | Signal | What it means | How it's calculated |
 |--------|--------------|---------------------|
 | **VWAP position** | Are buyers in control right now? | VWAP (Volume Weighted Average Price) is the average price of every trade so far, weighted by how many shares were traded at each price. If the current price is above it, most people who traded today are sitting on a profit — a sign of strength. Computed from all 1-minute bars since 9:30. |
-| **Opening range position** | Is the stock pushing toward the top of its early range, not the bottom? | Take the highest and lowest price between 9:30 and 9:40. Calculate where the current price sits within that range as a percentage (0% = at the low, 100% = at the high). We require ≥66% — meaning the stock is in the upper third. |
-| **Gap retention** | Is the pre-market gap holding, or is it already being sold off? | Compare the size of the gap at open (today's open minus yesterday's close) with how much of it has been "eaten" by sellers during the first 10 minutes (measured by how far the price dipped from the open). We require ≥70% of the gap still intact. |
-| **Volume boost** | Is today unusually active in the first 10 minutes? | Total shares traded 9:30–9:40 today, divided by the average of the same 9:30–9:40 window over the past 20 trading days. >3× average = +0.10 bonus, 2–3× = +0.05, below 2× = no bonus. |
+| **Opening range position** | Is the stock pushing toward the top of its early range, not the bottom? | Take the highest and lowest price between 9:30 and 9:35. Calculate where the current price sits within that range as a percentage (0% = at the low, 100% = at the high). We require ≥66% — meaning the stock is in the upper third. |
+| **Gap retention** | Is the pre-market gap holding, or is it already being sold off? | Compare the size of the gap at open (today's open minus yesterday's close) with how much of it has been "eaten" by sellers during the first 5 minutes (measured by how far the price dipped from the open). We require ≥70% of the gap still intact. |
+| **Volume boost** | Is today unusually active in the first 5 minutes? | Total shares traded 9:30–9:35 today, divided by the average of the same 9:30–9:35 window over the past 20 trading days. >3× average = +0.10 bonus, 2–3× = +0.05, below 2× = no bonus. |
 
 The first three signals (VWAP, Opening Range, Gap Retention) are **binary and equally weighted** — each one is either true or false, and each contributes exactly 1/3 to the base score. Volume boost and catalyst are additive bonuses on top.
 
@@ -85,7 +85,7 @@ The top candidates — with their confidence scores, individual signal results, 
 - Recent headlines for each stock
 - The overall market tone that morning (SPY % change)
 - How far the stock is from its 3-month high — stocks near their highs have less overhead resistance (context only, not a filter)
-- **Post-open advance** — how much the stock moved between the 9:30 open and 9:40 entry. A positive value (+0.8%) means buyers pushed higher after the gap opened — real continuation momentum. Near zero means the stock is flat at the opening high, risking buying the peak. Negative means it was already fading at the time of entry. Claude uses this to distinguish "arrived early" setups from "late to the party" ones.
+- **Post-open advance** — how much the stock moved between the 9:30 open and 9:35 entry. A positive value (+0.8%) means buyers pushed higher after the gap opened — real continuation momentum. Near zero means the stock is flat at the opening high, risking buying the peak. Negative means it was already fading at the time of entry. Claude uses this to distinguish "arrived early" setups from "late to the party" ones.
 
 **What Claude decides:**
 - Which 1 or 2 stocks to trade, or none if it's not convinced
@@ -231,7 +231,7 @@ The trade header (`Trade N — TICKER long [Score: X.XX]`) is **bold** in Telegr
 
 | What | How |
 |------|-----|
-| Market data & order execution | [Alpaca](https://alpaca.markets) (paper account, IEX data feed) |
+| Market data & order execution | [Alpaca](https://alpaca.markets) (paper account, SIP consolidated data feed) |
 | AI trade selection & recap | [Claude by Anthropic](https://anthropic.com) |
 | News | Alpaca/Benzinga news API |
 | Hosting & scheduling | [Railway](https://railway.app) — runs Mon–Fri at 9:00 AM ET |
@@ -293,22 +293,19 @@ Requires an external data source (Finviz, IEX Cloud, or similar) since Alpaca do
 ### 2 vs 3 max positions
 The capital deployed is the same regardless: 2 × $49.5k or 3 × $33k both put $99k to work. The question is whether the 3rd-best setup on a given day is genuinely good or just marginal. The daily log now records `passes_threshold` per ticker — after a few weeks of data, count how many days had 3+ viable candidates above the confidence threshold and decide from there.
 
-### Entry timing optimisation
-Current entry is at 9:40 (10 minutes after open). The hypothesis is that this catches the end of the initial opening rush, just before a brief pullback/exhaust phase — meaning entries at an inflated price and a tighter margin before the ATR stop fires.
+### Entry timing — implemented (June 2026)
+Backtested entry times at 9:31, 9:33, 9:35, and 9:40 over the full 2025–2026 universe. Both oracle (signals computed at 9:40, entries at earlier times) and non-oracle (signals computed from bars available at entry time only) variants were run.
 
-Backtest the following entry times against live session data:
+Non-oracle results (profit factor, YTD 2025–2026):
 
-| Entry time | Rationale |
-|------------|-----------|
-| 9:32 | Catch the opening momentum before the crowd — aggressive, less confirmation |
-| 9:35 | 5-minute opening range, common institutional reference |
-| 9:38 | Pre-current — just before our existing check |
-| 9:40 | Current baseline |
-| 9:45 | Let the first exhaust complete, enter on early consolidation |
-| 9:50 | Wait for VWAP retest after initial dip |
-| 10:00 | Full 30-minute opening range, maximum confirmation, less upside remaining |
+| Entry | PF | Notes |
+|-------|----|-------|
+| 9:31 | 1.05 | Very thin signal — 1 bar, noisy |
+| 9:33 | 1.18 | Improving but OR still unreliable |
+| **9:35** | **1.37** | Best: captures opening momentum, full 5-min OR |
+| 9:40 | 1.21 | Baseline — later entry means inflated price |
 
-For each time, measure: average entry price vs 9:30 open, average P&L, % of trades that hit the ATR stop, and final day P&L. Requires a few weeks of live log data before the sample is meaningful.
+**Decision: entry changed to 9:35.** The 5-minute opening range is a well-established institutional reference and it captures more of the initial move while retaining enough bars to compute reliable VWAP and gap retention signals.
 
 ---
 

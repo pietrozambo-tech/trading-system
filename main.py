@@ -6,7 +6,7 @@ Il cron parte presto, wait_until() gestisce il timing esatto via pytz.
 
 Timeline (all times ET):
   09:25  Build pre-market watchlist
-  09:40  Apply binary L1 filters + compute L2 signals → LLM decision → place orders immediately
+  09:35  Apply binary L1 filters + compute L2 signals → LLM decision → place orders immediately
   intra  Monitor every 60 sec
   15:45  Force-close all positions
   16:05  Send Telegram EOD recap (only if EOD forced; otherwise sent immediately on natural close)
@@ -290,7 +290,7 @@ def run() -> None:
                  f"gap>+{config.MIN_PREMARKET_GAP:.1%}")
 
     # ------------------------------------------------------------------
-    # 09:40 — Binary L1 filters + SPY check + L2 signals + LLM
+    # 09:35 — Binary L1 filters + SPY check + L2 signals + LLM
     # ------------------------------------------------------------------
     wait_until(config.ENTRY_TIME, now_et)
     if _shutdown:

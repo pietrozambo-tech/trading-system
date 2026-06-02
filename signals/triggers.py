@@ -18,24 +18,24 @@ def calc_vwap(bars: pd.DataFrame) -> float:
     return float((bars["tp_vol"].cumsum() / bars["volume"].cumsum()).iloc[-1])
 
 
-def s1_above_vwap(bars_or: pd.DataFrame, price_940: float) -> bool:
-    """S1: Price at 9:40 above opening-range VWAP."""
+def s1_above_vwap(bars_or: pd.DataFrame, price_935: float) -> bool:
+    """S1: Price at 9:35 above opening-range VWAP."""
     vwap = calc_vwap(bars_or)
-    result = price_940 > vwap
+    result = price_935 > vwap
     return result
 
 
-def s2_or_position(bars_or: pd.DataFrame, price_940: float) -> float:
+def s2_or_position(bars_or: pd.DataFrame, price_935: float) -> float:
     """S2: Position in opening range. > 0.66 = strong."""
     or_high = float(bars_or["high"].max())
     or_low  = float(bars_or["low"].min())
     if or_high == or_low:
         return 0.5
-    return (price_940 - or_low) / (or_high - or_low)
+    return (price_935 - or_low) / (or_high - or_low)
 
 
 def s3_gap_retention(bars_or: pd.DataFrame, open_930: float, prev_close: float) -> float:
-    """S3: Fraction of gap remaining after 10 min. > 0.70 = defended."""
+    """S3: Fraction of gap remaining after 5 min. > 0.70 = defended."""
     gap_size = open_930 - prev_close
     if abs(gap_size) < 0.0001:
         return 1.0  # effectively no gap
@@ -88,15 +88,15 @@ def compute_signals(
         return {}
 
     open_930   = float(bars_or["open"].iloc[0])
-    price_940  = float(bars_or["close"].iloc[-1])
+    price_935  = float(bars_or["close"].iloc[-1])
 
     # Pre-market gap fully reversed before open — exclude immediately
     if open_930 < prev_close:
         logger.info(f"{ticker}: opened below prev_close (gap reversed at open) — excluding")
         return {}
 
-    above_vwap   = s1_above_vwap(bars_or, price_940)
-    or_pos       = s2_or_position(bars_or, price_940)
+    above_vwap   = s1_above_vwap(bars_or, price_935)
+    or_pos       = s2_or_position(bars_or, price_935)
     gap_ret      = s3_gap_retention(bars_or, open_930, prev_close)
     vol_boost    = s4_volume_boost(ticker, bars_or, session_date)
     confidence   = calc_confidence(above_vwap, or_pos, gap_ret, catalyst_bonus, vol_boost)
@@ -116,13 +116,13 @@ def compute_signals(
 
     signals = {
         "ticker": ticker,
-        "price_940": price_940,
+        "price_935": price_935,
         "open_930": open_930,
         "prev_close": prev_close,
         "above_vwap": above_vwap,
         "or_position": round(or_pos, 4),
         "gap_retention": round(gap_ret, 4),
-        "post_open_advance_pct": round((price_940 - open_930) / open_930, 4),
+        "post_open_advance_pct": round((price_935 - open_930) / open_930, 4),
         "vol_boost": vol_boost,
         "catalyst_bonus": catalyst_bonus,
         "confidence": round(confidence, 4),

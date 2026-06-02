@@ -238,12 +238,12 @@ def _calc_atr14(daily: pd.DataFrame, as_of: date) -> float:
 
 
 def _calc_hist_15min_vol(intraday_by_date: dict, as_of: date, lookback: int = 20) -> float:
-    """Compute rolling average of 9:30–9:40 volume from cached intraday data."""
+    """Compute rolling average of 9:30–9:35 volume from cached intraday data."""
     totals = []
     sorted_dates = sorted(d for d in intraday_by_date if d < as_of)
     for d in sorted_dates[-lookback:]:
         bars = intraday_by_date[d]
-        or_bars = bars[(bars.index.hour == 9) & (bars.index.minute >= 30) & (bars.index.minute < 40)]
+        or_bars = bars[(bars.index.hour == 9) & (bars.index.minute >= 30) & (bars.index.minute <= 35)]
         if not or_bars.empty:
             totals.append(float(or_bars["volume"].sum()))
     return sum(totals) / len(totals) if totals else 0.0
@@ -276,39 +276,39 @@ def _simulate_day(
     if len(adv_hist) >= 10 and float(adv_hist["volume"].mean()) < params.min_adv:
         return None
 
-    # Opening range bars (9:30–9:40)
+    # Opening range bars (9:30–9:35)
     day_bars = intraday_cache[session_date]
     or_bars  = day_bars[
         (day_bars.index.hour == 9) &
         (day_bars.index.minute >= 30) &
-        (day_bars.index.minute <= 40)
+        (day_bars.index.minute <= 35)
     ]
     if len(or_bars) < 2:
         return None
 
     open_930   = float(or_bars["open"].iloc[0])
-    price_945  = float(or_bars["close"].iloc[-1])
+    price_935  = float(or_bars["close"].iloc[-1])
 
-    # L1 gap filter — long only, min +0.2%
+    # L1 gap filter — long only, min +0.5%
     gap_pct = (open_930 - prev_close) / prev_close
     if gap_pct < params.min_gap_pct:
         return None
 
     # S1 — VWAP
-    vwap      = _calc_vwap(or_bars)
-    above_vwap = price_945 > vwap
+    vwap       = _calc_vwap(or_bars)
+    above_vwap = price_935 > vwap
 
     # S2 — Opening Range position
     or_high = float(or_bars["high"].max())
     or_low  = float(or_bars["low"].min())
-    or_pos  = (price_945 - or_low) / (or_high - or_low) if or_high != or_low else 0.5
+    or_pos  = (price_935 - or_low) / (or_high - or_low) if or_high != or_low else 0.5
 
     # S3 — Gap retention
     gap_size  = open_930 - prev_close
     gap_eaten = open_930 - float(or_bars["low"].min())
     gap_ret   = 1.0 - (gap_eaten / gap_size) if abs(gap_size) > 0.001 else 1.0
 
-    # S4 — Volume boost from cached historical 15min volume
+    # S4 — Volume boost from cached historical OR volume
     vol_today = float(or_bars["volume"].sum())
     vol_avg   = _calc_hist_15min_vol(intraday_cache, session_date, lookback=20)
     vol_ratio = vol_today / vol_avg if vol_avg > 0 else 0
@@ -326,7 +326,7 @@ def _simulate_day(
         return None
 
     # Entry
-    entry_price = price_945
+    entry_price = price_935
     qty = max(1, int(params.position_size_usd / entry_price))
 
     # Stops — tightest of ATR stop and hard blocker pct
@@ -335,9 +335,9 @@ def _simulate_day(
     stop_pct   = entry_price * (1 - params.hard_blocker_pct)
     stop_price = max(stop_atr, stop_pct)
 
-    # Replay bars from 9:40 to 15:45
+    # Replay bars from 9:36 to 15:45
     post_bars = day_bars[
-        ((day_bars.index.hour == 9)  & (day_bars.index.minute >= 40)) |
+        ((day_bars.index.hour == 9)  & (day_bars.index.minute >= 36)) |
         ((day_bars.index.hour > 9)   & (day_bars.index.hour < 15))    |
         ((day_bars.index.hour == 15) & (day_bars.index.minute <= 45))
     ]
@@ -562,8 +562,8 @@ def _simulate_day_all_entries(
     entry_offsets: list[int],
 ) -> list[TradeResult]:
     """
-    Compute 9:40 OR signals, then simulate a trade for each entry offset (minutes from 9:30).
-    Entry offsets < 10 are 'oracle': they assume we know the setup will be valid before 9:40.
+    Compute 9:35 OR signals, then simulate a trade for each entry offset (minutes from 9:30).
+    Entry offsets < 5 are 'oracle': they assume we know the setup will be valid before 9:35.
     Returns one TradeResult per offset for setups that pass the confidence threshold.
     """
     daily          = cache["daily"]
@@ -583,28 +583,28 @@ def _simulate_day_all_entries(
     if len(adv_hist) >= 10 and float(adv_hist["volume"].mean()) < params.min_adv:
         return []
 
-    # Opening range bars 9:30–9:40
+    # Opening range bars 9:30–9:35
     or_bars = day_bars[
         (day_bars.index.hour == 9) &
         (day_bars.index.minute >= 30) &
-        (day_bars.index.minute <= 40)
+        (day_bars.index.minute <= 35)
     ]
     if len(or_bars) < 2:
         return []
 
     open_930  = float(or_bars["open"].iloc[0])
-    price_940 = float(or_bars["close"].iloc[-1])
+    price_935 = float(or_bars["close"].iloc[-1])
 
     gap_pct = (open_930 - prev_close) / prev_close
     if gap_pct < params.min_gap_pct or open_930 < prev_close:
         return []
 
-    # Signals at 9:40 (unchanged from live system)
+    # Signals at 9:35 (unchanged from live system)
     vwap_or    = _calc_vwap(or_bars)
-    above_vwap = price_940 > vwap_or
+    above_vwap = price_935 > vwap_or
     or_high    = float(or_bars["high"].max())
     or_low     = float(or_bars["low"].min())
-    or_pos     = (price_940 - or_low) / (or_high - or_low) if or_high != or_low else 0.5
+    or_pos     = (price_935 - or_low) / (or_high - or_low) if or_high != or_low else 0.5
     gap_eaten  = open_930 - float(or_bars["low"].min())
     gap_size   = open_930 - prev_close
     gap_ret    = 1.0 - (gap_eaten / gap_size) if abs(gap_size) > 0.001 else 1.0
@@ -697,8 +697,8 @@ def run_entry_timing_backtest(
 ) -> dict[int, BacktestResults]:
     """
     Run backtest with multiple entry times. Returns dict: offset_min → BacktestResults.
-    All offsets share the same signal filter (9:40 OR window).
-    Offsets < 10 are 'oracle': entry before 9:40 signal confirmation.
+    All offsets share the same signal filter (9:35 OR window).
+    Offsets < 5 are 'oracle': entry before 9:35 signal confirmation.
     """
     if params is None:
         params = BacktestParams()

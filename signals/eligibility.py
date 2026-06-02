@@ -70,7 +70,7 @@ def apply_binary_filters(
     candidates: list[dict], session_date: Optional[date] = None
 ) -> tuple[list[dict], list[dict]]:
     """
-    Phase 2 — 9:40 ET binary filters. Applied cheapest first.
+    Phase 2 — 9:35 ET binary filters. Applied cheapest first.
     All must pass (fail = discard).
     Returns (passed, rejects) where rejects = [{"ticker": ..., "reason": ...}].
     """

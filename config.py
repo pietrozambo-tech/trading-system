@@ -47,7 +47,7 @@ VWAP_EXIT_MIN_PROFIT_PCT = 0.015   # VWAP exit solo se profit >= 1.5%
 
 # === TIMING (ET) ===
 WATCHLIST_TIME       = "09:25"
-ENTRY_TIME           = "09:40"
+ENTRY_TIME           = "09:35"
 MONITORING_INTERVAL  = 60        # seconds between position checks
 EOD_CLOSE_TIME       = "15:45"
 
