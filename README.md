@@ -53,10 +53,10 @@ For each stock that passes the quality check, the bot scores 4 signals based on 
 
 The first three signals (Post-open advance, Opening Range, Gap Retention) are **binary and equally weighted** — each one is either true or false, and each contributes exactly 1/3 to the base score. Volume boost and catalyst are additive bonuses on top.
 
-These combine into a **confidence score** between 0 and 1. Only stocks scoring 0.65 or above go to the next step.
+These combine into a **confidence score**. Only stocks scoring 0.65 or above go to the next step.
 
 ```
-confidence = (signals_passed / 3) + catalyst_bonus + volume_boost
+confidence = (signals_passed / 3) + catalyst_bonus + volume_boost + short_squeeze_bonus
 ```
 
 | Component | Max contribution | Example |
@@ -66,11 +66,14 @@ confidence = (signals_passed / 3) + catalyst_bonus + volume_boost
 | Gap retention ✓ | +0.333 | Gap still 70%+ intact |
 | Catalyst bonus | +0.30 | Major earnings beat |
 | Volume boost | +0.10 | Volume >3× average |
-| **Theoretical max** | **1.43** (3/3 + 0.30 + 0.10) | Not capped — higher scores help LLM prioritise between multiple candidates |
+| Short squeeze bonus | +0.10 | Short float >15% and catalyst present |
+| **Theoretical max** | **1.53** (3/3 + 0.30 + 0.10 + 0.10) | Not capped — higher scores help LLM prioritise between multiple candidates |
 
 Minimum to pass: **2 out of 3 signals** (0.667) with no news and no volume boost is already above the 0.65 threshold. Scores above 1.0 are valid and meaningful — a 1.3 beats a 1.0 when the LLM has to choose.
 
-The confidence score also factors in a **catalyst bonus** — an additive bump based on how strong the underlying news is.
+The confidence score factors in two additive bonuses on top of the binary signals:
+
+**Catalyst bonus** — based on the strength of the underlying news:
 
 | News quality | Bonus |
 |-------------|-------|
@@ -81,15 +84,13 @@ The confidence score also factors in a **catalyst bonus** — an additive bump b
 
 The distinction between Tier 1 and Tier 2 matters: a **revenue beat** or **guidance raise** signals that the business is genuinely accelerating — the gap is likely to sustain. A modest EPS beat (which can come from cost cuts or buybacks) is real news but less likely to drive continuation throughout the day.
 
-**The formula:**
+**Short squeeze bonus** — applied when two conditions are both true:
+- Short float >15% (more than 15% of shares outstanding are sold short — data from FINRA biweekly reports via Yahoo Finance)
+- A catalyst is present (Tier 1, 2, or 3)
 
-```
-confidence = (signals_passed / 3) + catalyst_bonus + volume_bonus
-```
+When a heavily-shorted stock receives positive news, short sellers are forced to buy back to cover their positions — on top of normal buying pressure. This amplifies the gap-and-go move and earns an additional +0.10 bonus. **Short interest alone with no catalyst does not trigger the bonus** — without a reason to cover, shorts simply hold their position.
 
-Where `signals_passed` is how many of the first 3 binary signals are true, `catalyst_bonus` is the additive news bonus above, and `volume_bonus` is +0.10 if volume is >3× average, +0.05 if 2–3×, zero otherwise.
-
-This means **2 out of 3 technical signals (0.667) is enough to pass on its own**, even with no news. Strong news and volume push the score higher and help prioritise between multiple candidates.
+This means **2 out of 3 technical signals (0.667) is enough to pass on its own**, even with no news. Strong news, high volume, and a squeeze setup push the score higher and help prioritise between multiple candidates.
 
 ### 4. AI decision
 
@@ -102,6 +103,7 @@ The top candidates — with their confidence scores, individual signal results, 
 - The overall market tone that morning (SPY % change)
 - How far the stock is from its 3-month high — stocks near their highs have less overhead resistance (context only, not a filter)
 - **Post-open advance** — how much the stock moved between the 9:30 open and 9:35 entry. A positive value (+0.8%) means buyers pushed higher after the gap opened — real continuation momentum. Near zero means the stock is flat at the opening high, risking buying the peak. Negative means it was already fading at the time of entry. Claude uses this to distinguish "arrived early" setups from "late to the party" ones.
+- **Short float** — the percentage of shares sold short. When combined with a catalyst, Claude knows the move could be amplified by forced short covering. Presented as raw context so Claude can weigh it against the catalyst strength.
 
 **What Claude decides:**
 - Which 1 or 2 stocks to trade, or none if it's not convinced
@@ -275,7 +277,9 @@ trading-system/
 
 ## Daily log
 
-Every session saves a breakdown to `logs/YYYY-MM-DD.json` showing exactly how many stocks made it through each stage:
+Every session saves a breakdown to `logs/YYYY-MM-DD.json`. When `GITHUB_LOG_TOKEN` is set in Railway, the file is also pushed directly to this repository after each session — so logs accumulate in `logs/` on GitHub and can be reviewed or analysed at any time.
+
+The JSON contains:
 
 ```json
 {
@@ -298,11 +302,6 @@ Every session saves a breakdown to `logs/YYYY-MM-DD.json` showing exactly how ma
 ## Next steps
 
 Ideas discussed and parked — revisit when there's time.
-
-### Short interest signal
-Stocks with high short interest (15%+) that receive a positive catalyst don't just gap — they can squeeze: short sellers are forced to cover, amplifying the move. This is one of the most powerful momentum multipliers for gap-and-go setups. Adding short float as a bonus to the confidence score (or as context for Claude) could meaningfully improve signal quality.
-
-Requires an external data source (Finviz, IEX Cloud, or similar) since Alpaca doesn't provide short interest data.
 
 ### 2 vs 3 max positions
 The capital deployed is the same regardless: 2 × $49.5k or 3 × $33k both put $99k to work. The question is whether the 3rd-best setup on a given day is genuinely good or just marginal. The daily log now records `passes_threshold` per ticker — after a few weeks of data, count how many days had 3+ viable candidates above the confidence threshold and decide from there.
@@ -333,3 +332,4 @@ Non-oracle results (profit factor, YTD 2025–2026):
 | `ANTHROPIC_API_KEY` | Claude API key |
 | `TELEGRAM_BOT_TOKEN` | Telegram bot token |
 | `TELEGRAM_CHAT_ID` | Your Telegram chat ID |
+| `GITHUB_LOG_TOKEN` | GitHub PAT (contents:write) — daily logs pushed to `logs/` in this repo |

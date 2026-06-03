@@ -50,6 +50,8 @@ def build_premarket_watchlist(universe: list[str], session_date: Optional[date] 
             if gap_pct < config.MIN_PREMARKET_GAP:
                 continue
 
+            short_float = fetcher.get_short_float(ticker)
+
             candidates.append({
                 "ticker": ticker,
                 "prev_close": prev_close,
@@ -57,6 +59,7 @@ def build_premarket_watchlist(universe: list[str], session_date: Optional[date] 
                 "gap_pct": gap_pct,
                 "adv": adv,
                 "dist_from_3m_high": round((pm_price - high_3m) / high_3m, 4),
+                "short_float": short_float,
             })
             logger.info(f"Watchlist: {ticker} gap={gap_pct:.2%}")
         except Exception as e:

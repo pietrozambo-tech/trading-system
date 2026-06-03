@@ -37,6 +37,12 @@ CATALYST_TIER2 = 0.20   # +0.20 — real but moderate news
 CATALYST_TIER3 = 0.10   # +0.10 — rumour / speculative
 CATALYST_NONE  = 0.00   # +0.00 — pure technical setup
 
+# === SHORT SQUEEZE BONUS ===
+# Applied only when short_float > threshold AND a catalyst is present.
+# Short interest alone doesn't cause a squeeze — the catalyst is what forces covering.
+SHORT_SQUEEZE_THRESHOLD = 0.15   # 15% of float sold short
+SHORT_SQUEEZE_BONUS     = 0.10   # additive bonus on top of catalyst
+
 # === RISK MANAGEMENT ===
 # Ogni trade = (equity - CASH_CUSHION_USD) / MAX_POSITIONS, arrotondato per difetto.
 CASH_CUSHION_USD         = 1_000   # $1k sempre disponibile, mai investito

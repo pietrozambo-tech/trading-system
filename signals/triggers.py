@@ -61,19 +61,28 @@ def calc_confidence(
     gap_retention: float,
     catalyst_bonus: float,
     vol_boost: float,
+    short_float: Optional[float] = None,
 ) -> float:
     direction_score = sum([
         post_open_advance,
         or_position > config.OR_POSITION_THRESHOLD,
         gap_retention > config.GAP_RETENTION_THRESHOLD,
     ])
-    return (direction_score / 3) + catalyst_bonus + vol_boost
+    squeeze_bonus = (
+        config.SHORT_SQUEEZE_BONUS
+        if short_float is not None
+        and short_float >= config.SHORT_SQUEEZE_THRESHOLD
+        and catalyst_bonus > 0
+        else 0.0
+    )
+    return (direction_score / 3) + catalyst_bonus + vol_boost + squeeze_bonus
 
 
 def compute_signals(
     ticker: str,
     prev_close: float,
     catalyst_bonus: float,
+    short_float: Optional[float] = None,
     session_date: Optional[date] = None,
 ) -> dict:
     """
@@ -93,37 +102,47 @@ def compute_signals(
         logger.info(f"{ticker}: opened below prev_close (gap reversed at open) — excluding")
         return {}
 
-    post_adv     = s1_post_open_advance(open_930, price_935)
-    or_pos       = s2_or_position(bars_or, price_935)
-    gap_ret      = s3_gap_retention(bars_or, open_930, prev_close)
-    vol_boost    = s4_volume_boost(ticker, bars_or, session_date)
-    confidence   = calc_confidence(post_adv, or_pos, gap_ret, catalyst_bonus, vol_boost)
+    post_adv      = s1_post_open_advance(open_930, price_935)
+    or_pos        = s2_or_position(bars_or, price_935)
+    gap_ret       = s3_gap_retention(bars_or, open_930, prev_close)
+    vol_boost     = s4_volume_boost(ticker, bars_or, session_date)
+    squeeze_bonus = (
+        config.SHORT_SQUEEZE_BONUS
+        if short_float is not None
+        and short_float >= config.SHORT_SQUEEZE_THRESHOLD
+        and catalyst_bonus > 0
+        else 0.0
+    )
+    confidence = calc_confidence(post_adv, or_pos, gap_ret, catalyst_bonus, vol_boost, short_float)
 
-    passes  = confidence >= config.CONFIDENCE_THRESHOLD
-    adv_str = f"ADV={'✓' if post_adv else '✗'}"
-    or_str  = f"OR={or_pos:.2f}{'✓' if or_pos > config.OR_POSITION_THRESHOLD else f'✗(need>{config.OR_POSITION_THRESHOLD})'}"
-    gr_str  = f"GR={gap_ret:.2f}{'✓' if gap_ret > config.GAP_RETENTION_THRESHOLD else f'✗(need>{config.GAP_RETENTION_THRESHOLD})'}"
-    vol_str = f"vol=+{vol_boost:.2f}"
-    cat_str = f"catalyst=+{catalyst_bonus:.2f}"
+    passes   = confidence >= config.CONFIDENCE_THRESHOLD
+    adv_str  = f"ADV={'✓' if post_adv else '✗'}"
+    or_str   = f"OR={or_pos:.2f}{'✓' if or_pos > config.OR_POSITION_THRESHOLD else f'✗(need>{config.OR_POSITION_THRESHOLD})'}"
+    gr_str   = f"GR={gap_ret:.2f}{'✓' if gap_ret > config.GAP_RETENTION_THRESHOLD else f'✗(need>{config.GAP_RETENTION_THRESHOLD})'}"
+    vol_str  = f"vol=+{vol_boost:.2f}"
+    cat_str  = f"catalyst=+{catalyst_bonus:.2f}"
+    sq_str   = f" squeeze=+{squeeze_bonus:.2f}" if squeeze_bonus > 0 else ""
     conf_str = f"confidence={confidence:.3f}{'✓' if passes else f'✗(need≥{config.CONFIDENCE_THRESHOLD})'}"
 
     if passes:
-        logger.info(f"L2 PASS  {ticker}: {adv_str} {or_str} {gr_str} {vol_str} {cat_str} → {conf_str}")
+        logger.info(f"L2 PASS  {ticker}: {adv_str} {or_str} {gr_str} {vol_str} {cat_str}{sq_str} → {conf_str}")
     else:
-        logger.info(f"L2 REJECT {ticker}: {adv_str} {or_str} {gr_str} {vol_str} {cat_str} → {conf_str}")
+        logger.info(f"L2 REJECT {ticker}: {adv_str} {or_str} {gr_str} {vol_str} {cat_str}{sq_str} → {conf_str}")
 
     signals = {
-        "ticker": ticker,
-        "price_935": price_935,
-        "open_930": open_930,
-        "prev_close": prev_close,
-        "post_open_advance": post_adv,
+        "ticker":               ticker,
+        "price_935":            price_935,
+        "open_930":             open_930,
+        "prev_close":           prev_close,
+        "post_open_advance":    post_adv,
         "post_open_advance_pct": round((price_935 - open_930) / open_930, 4),
-        "or_position": round(or_pos, 4),
-        "gap_retention": round(gap_ret, 4),
-        "vol_boost": vol_boost,
-        "catalyst_bonus": catalyst_bonus,
-        "confidence": round(confidence, 4),
-        "passes_threshold": passes,
+        "or_position":          round(or_pos, 4),
+        "gap_retention":        round(gap_ret, 4),
+        "vol_boost":            vol_boost,
+        "catalyst_bonus":       catalyst_bonus,
+        "short_float":          short_float,
+        "short_squeeze_bonus":  squeeze_bonus,
+        "confidence":           round(confidence, 4),
+        "passes_threshold":     passes,
     }
     return signals

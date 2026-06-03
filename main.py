@@ -108,15 +108,17 @@ class PipelineLog:
 
     def log_signals(self, signals: dict) -> None:
         self.signals.append({
-            "ticker":             signals.get("ticker"),
-            "confidence":         signals.get("confidence"),
-            "passes_threshold":   signals.get("passes_threshold"),
-            "post_open_advance":  signals.get("post_open_advance"),
-            "or_position":        signals.get("or_position"),
-            "gap_retention":      signals.get("gap_retention"),
-            "vol_boost":          signals.get("vol_boost"),
-            "catalyst_bonus":     signals.get("catalyst_bonus"),
-            "gap_pct":            signals.get("gap_pct"),
+            "ticker":              signals.get("ticker"),
+            "confidence":          signals.get("confidence"),
+            "passes_threshold":    signals.get("passes_threshold"),
+            "post_open_advance":   signals.get("post_open_advance"),
+            "or_position":         signals.get("or_position"),
+            "gap_retention":       signals.get("gap_retention"),
+            "vol_boost":           signals.get("vol_boost"),
+            "catalyst_bonus":      signals.get("catalyst_bonus"),
+            "short_float":         signals.get("short_float"),
+            "short_squeeze_bonus": signals.get("short_squeeze_bonus"),
+            "gap_pct":             signals.get("gap_pct"),
         })
 
     def log_l1_rejects(self, rejects: list[dict]) -> None:
@@ -385,7 +387,7 @@ def run() -> None:
         ticker        = c["ticker"]
         news            = c["news"]
         catalyst_bonus  = analyst.classify_catalyst_from_news(news)
-        signals         = triggers.compute_signals(ticker, c["prev_close"], catalyst_bonus)
+        signals         = triggers.compute_signals(ticker, c["prev_close"], catalyst_bonus, c.get("short_float"))
         if signals:
             pl.log_signals({**signals, "gap_pct": c.get("gap_pct")})
             if signals.get("passes_threshold"):
@@ -457,7 +459,7 @@ def run() -> None:
         position = trader.open_position(decision["ticker"], decision)
         if position:
             # Enrich position with signal data needed for EOD Telegram recap
-            for field in ("catalyst_bonus", "vol_boost", "post_open_advance", "or_position", "gap_retention", "gap_pct", "news"):
+            for field in ("catalyst_bonus", "vol_boost", "short_float", "short_squeeze_bonus", "post_open_advance", "or_position", "gap_retention", "gap_pct", "news"):
                 if field in algo:
                     position[field] = algo[field]
             open_positions.append(position)

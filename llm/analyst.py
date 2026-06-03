@@ -32,10 +32,11 @@ TASSONOMIA CATALYST (bonus additivo):
 - Nessuno (+0.00): nessuna news identificabile — segnale puramente tecnico
 
 FORMULA CONFIDENCE:
-confidence = (direction_score/3) + catalyst_bonus + volume_boost
+confidence = (direction_score/3) + catalyst_bonus + volume_boost + short_squeeze_bonus
 - direction_score = somma di [post_open_advance>0, or_position>0.66, gap_retention>0.70]
 - catalyst_bonus: Tier1=+0.30, Tier2=+0.20, Tier3=+0.10, Nessuno=+0.00
 - volume_boost: vol_ratio>3x → +0.10, vol_ratio 2-3x → +0.05, <2x → +0.00
+- short_squeeze_bonus: short_float_pct>15% E catalyst>0 → +0.10, altrimenti +0.00
 - 2/3 segnali tecnici (0.667) da soli superano già la soglia 0.65
 
 PRIORITÀ NELLA SCELTA:
@@ -52,6 +53,11 @@ Il campo post_open_advance_pct indica quanto il titolo è salito (o sceso) tra l
 Valori positivi (es. +0.8%) = momentum reale post-gap, il titolo continua a salire dopo l'apertura.
 Valori vicini a 0 = consolidamento piatto, stai comprando esattamente dove ha aperto — rischio di essere arrivato tardi.
 Valori negativi = il titolo stava già ritracciando al momento dell'entry — segnale di debolezza.
+
+Il campo short_float_pct indica la percentuale del float venduta allo scoperto (fonte: FINRA, aggiornamento bisettimanale).
+>15%: squeeze potential elevato — se c'è un catalyst, i venditori allo scoperto sono forzati a coprire amplificando il movimento verso l'alto.
+5-15%: moderato, nessun impatto particolare. <5%: normale. null: dato non disponibile.
+Alto short float senza catalyst non è un segnale — il catalyst è la scintilla che innesca la copertura.
 """
 
 USER_PROMPT_TEMPLATE = """\
@@ -190,19 +196,21 @@ def build_candidate_payload(candidates_with_signals: list[dict]) -> list[dict]:
             for n in news[:5]
             if n.get("headline")
         ]
-        dist = c.get("dist_from_3m_high")
+        dist        = c.get("dist_from_3m_high")
+        short_float = c.get("short_float")
         payload.append({
-            "ticker": ticker,
-            "gap_pct": round(c.get("gap_pct", 0), 4),
-            "post_open_advance": c.get("post_open_advance"),
-            "or_position": c.get("or_position"),
-            "gap_retention": c.get("gap_retention"),
+            "ticker":               ticker,
+            "gap_pct":              round(c.get("gap_pct", 0), 4),
+            "post_open_advance":    c.get("post_open_advance"),
+            "or_position":          c.get("or_position"),
+            "gap_retention":        c.get("gap_retention"),
             "post_open_advance_pct": c.get("post_open_advance_pct"),
-            "vol_boost": c.get("vol_boost"),
-            "confidence_algo": c.get("confidence"),
-            "catalyst_bonus": c.get("catalyst_bonus"),
+            "vol_boost":            c.get("vol_boost"),
+            "confidence_algo":      c.get("confidence"),
+            "catalyst_bonus":       c.get("catalyst_bonus"),
+            "short_float_pct":      round(short_float * 100, 1) if short_float is not None else None,
             "dist_from_3m_high_pct": round(dist * 100, 1) if dist is not None else None,
-            "recent_news": recent_news,
+            "recent_news":          recent_news,
         })
     return payload
 

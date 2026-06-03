@@ -122,11 +122,14 @@ def run(session_date: date) -> None:
     for c in safe_candidates:
         ticker = c["ticker"]
         catalyst_bonus = analyst.classify_catalyst_from_news(c["news"])
-        signals = triggers.compute_signals(ticker, c["prev_close"], catalyst_bonus, session_date=session_date)
+        signals = triggers.compute_signals(ticker, c["prev_close"], catalyst_bonus, c.get("short_float"), session_date=session_date)
         if not signals:
             print(f"  {ticker}: nessun dato OR")
             continue
         flag = "✓ PASS" if signals["passes_threshold"] else "✗ NO  "
+        sf   = signals.get("short_float")
+        sf_str = f"  short={sf*100:.1f}%" if sf is not None else "  short=n/a"
+        sq_str = f"  squeeze=+{signals['short_squeeze_bonus']:.2f}" if signals.get("short_squeeze_bonus") else ""
         print(
             f"  {flag} {ticker:6}  conf={signals['confidence']:.3f}"
             f"  adv={'✓' if signals['post_open_advance'] else '✗'}"
@@ -134,6 +137,7 @@ def run(session_date: date) -> None:
             f"  GR={signals['gap_retention']:.2f}"
             f"  vol=+{signals['vol_boost']:.2f}"
             f"  cat=+{catalyst_bonus:.2f}"
+            f"{sf_str}{sq_str}"
             f"  post_open={signals['post_open_advance_pct']:+.2%}"
         )
         if signals["passes_threshold"]:

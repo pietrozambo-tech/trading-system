@@ -50,6 +50,7 @@ def _with_retry(fn, *args, retries: int = 3, **kwargs):
 
 _data_client: Optional[StockHistoricalDataClient] = None
 _trading_client: Optional[TradingClient] = None
+_short_float_cache: dict[str, Optional[float]] = {}
 
 
 def get_data_client() -> StockHistoricalDataClient:
@@ -277,6 +278,29 @@ def is_asset_tradable(ticker: str) -> bool:
         return asset.tradable and asset.status == AssetStatus.ACTIVE
     except Exception:
         return False
+
+
+def get_short_float(ticker: str) -> Optional[float]:
+    """Short interest as a fraction of float (e.g. 0.18 = 18%).
+
+    Source: Yahoo Finance via yfinance — data comes from FINRA biweekly reports,
+    so it's not real-time but is stable enough for our daily pre-market scan.
+    Result is cached per process to avoid redundant HTTP calls within one session.
+    Returns None if the data is unavailable (no exception raised).
+    """
+    if ticker in _short_float_cache:
+        return _short_float_cache[ticker]
+    result = None
+    try:
+        import yfinance as yf
+        info = yf.Ticker(ticker).info
+        val  = info.get("shortPercentOfFloat")
+        if val is not None:
+            result = float(val)
+    except Exception as e:
+        logger.warning(f"Short float unavailable for {ticker}: {e}")
+    _short_float_cache[ticker] = result
+    return result
 
 
 def get_historical_or_volume(ticker: str, lookback_days: int = 20, session_date: Optional[date] = None) -> float:
