@@ -107,10 +107,13 @@ def _fallback_message(
 
     sign_day = "+" if daily_pnl >= 0 else ""
     sign_tot = "+" if total_pnl >= 0 else ""
+    eod = account_equity - daily_pnl
+    daily_pct = daily_pnl / eod if eod else 0
+    total_pct = total_pnl / config.PAPER_INITIAL_EQUITY if config.PAPER_INITIAL_EQUITY else 0
     lines += [
-        f"Giornata: {sign_day}{daily_pnl:.0f}$",
-        f"P&L totale: {sign_tot}{total_pnl:.0f}$",
-        f"Saldo: ${account_equity:,.0f}",
+        f"Giornata: {sign_day}{daily_pnl:.2f}$ ({daily_pct:+.2%})",
+        f"P&L totale: {sign_tot}{total_pnl:.2f}$ ({total_pct:+.2%})",
+        f"Saldo: ${account_equity:,.2f}",
     ]
     return "\n".join(lines)
 

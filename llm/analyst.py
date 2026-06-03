@@ -326,6 +326,9 @@ def generate_eod_recap(
 
     sign_day = "+" if daily_pnl >= 0 else ""
     sign_tot = "+" if total_pnl >= 0 else ""
+    eod = account_equity - daily_pnl
+    daily_pct = daily_pnl / eod if eod else 0
+    total_pct = total_pnl / config.PAPER_INITIAL_EQUITY if config.PAPER_INITIAL_EQUITY else 0
 
     prompt = (
         "Scrivi un messaggio Telegram di fine giornata per un bot di trading. Segui queste regole:\n"
@@ -346,9 +349,9 @@ def generate_eod_recap(
         "  • Se catalyst == 'nessuno': non menzionare affatto le news]\n"
         "Entrata $[entry] → Uscita $[exit] — [uscita]\n"
         "P&L: [pnl]\n\n"
-        f"Giornata: {sign_day}{daily_pnl:.0f}$\n"
-        f"P&L totale: {sign_tot}{total_pnl:.0f}$\n"
-        f"Saldo: ${account_equity:,.0f}\n\n"
+        f"Giornata: {sign_day}{daily_pnl:.2f}$ ({daily_pct:+.2%})\n"
+        f"P&L totale: {sign_tot}{total_pnl:.2f}$ ({total_pct:+.2%})\n"
+        f"Saldo: ${account_equity:,.2f}\n\n"
         f"DATI TRADE:\n{_json.dumps(trade_rows, indent=2, default=str)}"
     )
     client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
