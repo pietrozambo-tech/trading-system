@@ -93,15 +93,18 @@ def _fallback_message(
         reason = _no_trade_reason(pipeline_summary or {})
         lines += [f"Nessun trade. {reason}", ""]
     else:
-        for t in executed:
-            modalita = EXIT_LABELS.get(t.get("exit_reason", ""), "Chiuso")
-            pnl_usd  = t.get("pnl_usd") or 0
-            pnl_pct  = (t.get("pnl_pct") or 0) * 100
-            sign     = "+" if pnl_usd >= 0 else ""
+        for i, t in enumerate(executed, 1):
+            modalita   = EXIT_LABELS.get(t.get("exit_reason", ""), "Chiuso")
+            pnl_usd    = t.get("pnl_usd") or 0
+            pnl_pct    = (t.get("pnl_pct") or 0) * 100
+            sign       = "+" if pnl_usd >= 0 else ""
+            confidence = t.get("confidence")
+            score_str  = f" [Score: {confidence:.2f}]" if confidence is not None else ""
             lines += [
-                f"<b>{t['ticker']}</b> — long",
-                f"Entrata ${t['entry_price']:.2f} → Uscita ${t['exit_price']:.2f} — {modalita}",
-                f"P&L: {sign}${pnl_usd:.0f} ({pnl_pct:+.1f}%)",
+                f"<b>Trade {i} — {t['ticker']} long{score_str}</b>",
+                f"  Entrata: ${t['entry_price']:.2f}",
+                f"  Uscita:  ${t['exit_price']:.2f} ({modalita})",
+                f"  P&L: {sign}${pnl_usd:.2f} ({pnl_pct:+.2f}%)",
                 "",
             ]
 

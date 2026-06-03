@@ -309,7 +309,8 @@ def generate_eod_recap(
             "entry":         t.get("entry_price"),
             "exit":          t.get("exit_price"),
             "uscita":        exit_human.get(t.get("exit_reason", ""), "chiuso"),
-            "pnl":           f"{'+'if pnl_usd>=0 else ''}${pnl_usd:.0f} ({pnl_pct:+.1f}%)",
+            "pnl":           f"{'+'if pnl_usd>=0 else ''}${pnl_usd:.2f} ({pnl_pct:+.2f}%)",
+            "score":         round(t.get("confidence") or 0, 2),
         }
         # Include news headlines only when a catalyst was identified
         if catalyst_bonus > 0:
@@ -342,14 +343,15 @@ def generate_eod_recap(
         "<b>📊 [giorno settimana] [giorno mese anno]</b>\n\n"
         f"Mercato: {spy_pct_str} — {spy_comment}\n\n"
         "[Per ogni trade — riga vuota tra blocchi diversi:]\n"
-        "<b>[TICKER]</b> — long\n"
-        "[RIGA CONTESTO — max 10 parole, solo setup e catalyst — NON menzionare come/quando è uscito (c'è già nella riga Entrata/Uscita):\n"
+        "<b>Trade [N] — [TICKER] long [Score: [score]]</b>\n"
+        "[RIGA CONTESTO — max 10 parole, solo setup e catalyst, NON menzionare come/quando è uscito:\n"
         "  • Se volumi_forti: 'Gap pre-market confermato, volumi forti'\n"
         "  • Se catalyst != 'nessuno': 'Gap pre-market confermato, [notizia in 3-4 parole]'\n"
         "  • Se né volumi forti né catalyst: 'Setup tecnico pulito, prezzo sopra VWAP in apertura'\n"
         "  • Non menzionare mai le news se catalyst == 'nessuno']\n"
-        "Entrata $[entry] → Uscita $[exit] — [uscita]\n"
-        "P&L: [pnl]\n\n"
+        "  Entrata: $[entry]\n"
+        "  Uscita:  $[exit] ([uscita])\n"
+        "  P&L: [pnl]\n\n"
         f"Giornata: {sign_day}{daily_pnl:.2f}$ ({daily_pct:+.2%})\n"
         f"P&L totale: {sign_tot}{total_pnl:.2f}$ ({total_pct:+.2%})\n"
         f"Saldo: ${account_equity:,.2f}\n\n"

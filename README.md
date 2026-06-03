@@ -157,10 +157,11 @@ The recap is sent **as soon as the last position closes** — whether that's a s
 
 Mercato: SPY +0.42% — mercato positivo
 
-NVDA — long
+Trade 1 — NVDA long [Score: 1.07]
 Gap pre-market confermato, earnings beat Q1
-Entrata $135.20 → Uscita $137.85 — Profit
-P&L: +$959 (+1.96%)
+  Entrata: $135.20
+  Uscita:  $137.85 (Profit)
+  P&L: +$959.30 (+1.96%)
 
 Giornata: +$959.30 (+0.96%)
 P&L totale: +$959.30 (+0.96%)
@@ -173,15 +174,17 @@ Saldo: $100,959.30
 
 Mercato: SPY +0.28% — mercato positivo
 
-NVDA — long
+Trade 1 — NVDA long [Score: 1.07]
 Gap pre-market confermato, volumi forti
-Entrata $135.40 → Uscita $137.90 — Fine giornata
-P&L: +$905 (+1.84%)
+  Entrata: $135.40
+  Uscita:  $137.90 (Fine giornata)
+  P&L: +$905.00 (+1.84%)
 
-TSLA — long
+Trade 2 — TSLA long [Score: 0.87]
 Setup tecnico pulito, prezzo sopra VWAP in apertura
-Entrata $318.50 → Uscita $315.80 — Fine giornata
-P&L: -$413 (-0.85%)
+  Entrata: $318.50
+  Uscita:  $315.80 (Fine giornata)
+  P&L: -$413.10 (-0.85%)
 
 Giornata: +$491.90 (+0.49%)
 P&L totale: +$491.90 (+0.49%)
@@ -201,7 +204,7 @@ P&L totale: +$0.00 (+0.00%)
 Saldo: $100,000.00
 ```
 
-The ticker line (`TICKER — long`) is **bold** in Telegram. The context line follows one of three patterns depending on the setup: volumes strong, catalyst present, or clean technical setup with no news.
+The trade header (`Trade N — TICKER long [Score: X.XX]`) is **bold** in Telegram. The score is the algorithmic confidence, uncapped — 1.07 means all 3 signals passed plus a Tier 3 catalyst bonus. The context line describes setup and catalyst only; the exit reason appears once on the Uscita line.
 
 ---
 
