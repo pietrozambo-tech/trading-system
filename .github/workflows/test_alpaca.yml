@@ -14,6 +14,7 @@ jobs:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+      GITHUB_LOG_TOKEN:   ${{ secrets.GITHUB_LOG_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
@@ -32,3 +33,6 @@ jobs:
 
       - name: Run connectivity test
         run: python test_alpaca.py
+
+      - name: Run GitHub log push test
+        run: python test_github_log.py
