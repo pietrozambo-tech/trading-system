@@ -158,7 +158,7 @@ The recap is sent **as soon as the last position closes** — whether that's a s
 Mercato: SPY +0.42% — mercato positivo
 
 NVDA — long
-Gap pre-market confermato, earnings beat Q1, profit su VWAP
+Gap pre-market confermato, earnings beat Q1
 Entrata $135.20 → Uscita $137.85 — Profit
 P&L: +$959 (+1.96%)
 
@@ -174,7 +174,7 @@ Saldo: $100,959.30
 Mercato: SPY +0.28% — mercato positivo
 
 NVDA — long
-Gap pre-market confermato, volumi forti, chiuso a fine giornata
+Gap pre-market confermato, volumi forti
 Entrata $135.40 → Uscita $137.90 — Fine giornata
 P&L: +$905 (+1.84%)
 
