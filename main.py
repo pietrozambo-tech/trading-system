@@ -146,6 +146,7 @@ class PipelineLog:
         with open(path, "w") as f:
             json.dump(payload, f, indent=2, default=str)
         logger.info(f"[PIPELINE] Log salvato in {path}")
+        _push_log_to_github(self.date, path)
 
     def summary_text(self) -> str:
         lines = [f"📋 Pipeline {self.date}"]
@@ -179,6 +180,59 @@ def wait_until(target_time_str: str, session_now: datetime) -> None:
 
 def current_et_str() -> str:
     return datetime.now(ET).strftime("%H:%M")
+
+
+# ---------------------------------------------------------------------------
+# GitHub log persistence
+# ---------------------------------------------------------------------------
+
+def _push_log_to_github(date_str: str, log_path: str) -> None:
+    """Push the daily JSON log to GitHub via the Contents API.
+
+    Requires GITHUB_LOG_TOKEN (PAT with contents:write on this repo) set as a
+    Railway env var. Silently skips if the token is absent so local runs and
+    sessions without the token configured still work fine.
+    """
+    import base64
+    import requests as _req
+
+    token = os.getenv("GITHUB_LOG_TOKEN")
+    if not token:
+        logger.info("GITHUB_LOG_TOKEN not set — skipping GitHub log push")
+        return
+
+    repo    = os.getenv("GITHUB_REPO", "pietrozambo-tech/trading-system")
+    api_url = f"https://api.github.com/repos/{repo}/contents/logs/{date_str}.json"
+    headers = {
+        "Authorization":        f"Bearer {token}",
+        "Accept":               "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+
+    with open(log_path, "rb") as f:
+        content = base64.b64encode(f.read()).decode()
+
+    # GET first to retrieve SHA (required by GitHub API when updating an existing file)
+    sha = None
+    try:
+        r = _req.get(api_url, headers=headers, timeout=10)
+        if r.status_code == 200:
+            sha = r.json().get("sha")
+    except Exception:
+        pass
+
+    body: dict = {"message": f"trading log {date_str}", "content": content}
+    if sha:
+        body["sha"] = sha
+
+    try:
+        r = _req.put(api_url, json=body, headers=headers, timeout=30)
+        if r.status_code in (200, 201):
+            logger.info(f"[PIPELINE] Log pushed to GitHub: logs/{date_str}.json")
+        else:
+            logger.warning(f"GitHub log push failed: {r.status_code} {r.text[:120]}")
+    except Exception as e:
+        logger.warning(f"GitHub log push error: {e}")
 
 
 # ---------------------------------------------------------------------------
