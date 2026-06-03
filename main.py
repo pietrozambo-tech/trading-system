@@ -402,6 +402,10 @@ def run() -> None:
         decision["confidence"] = algo_conf
         position = trader.open_position(decision["ticker"], decision)
         if position:
+            # Enrich position with signal data needed for EOD Telegram recap
+            for field in ("catalyst_bonus", "above_vwap", "or_position", "gap_retention", "gap_pct", "news"):
+                if field in algo:
+                    position[field] = algo[field]
             open_positions.append(position)
             all_trades.append(position)
 

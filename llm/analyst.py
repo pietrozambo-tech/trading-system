@@ -274,20 +274,47 @@ def generate_eod_recap(
         "vwap_exit":    "profit preso",
     }
 
-    # Pass only human-readable fields — strip all internal algo variable names
-    # (reason, above_vwap, or_position, gap_retention, confidence, etc.)
+    exit_human = {
+        "hard_blocker": "stop automatico (-2%)",
+        "atr_stop":     "stop ATR",
+        "vwap_exit":    "profit su VWAP",
+        "eod_close":    "chiuso a fine giornata",
+    }
+
     trade_rows = []
     for t in executed:
         pnl_usd = t.get("pnl_usd") or 0
         pnl_pct = (t.get("pnl_pct") or 0) * 100
-        trade_rows.append({
-            "ticker":    t.get("ticker"),
-            "entry":     t.get("entry_price"),
-            "exit":      t.get("exit_price"),
-            "uscita":    exit_labels.get(t.get("exit_reason", ""), "chiuso"),
-            "pnl":       f"{'+'if pnl_usd>=0 else ''}${pnl_usd:.0f} ({pnl_pct:+.1f}%)",
-            "gap_pct":   f"{(t.get('gap_pct') or 0)*100:+.1f}%",
-        })
+        catalyst_bonus = t.get("catalyst_bonus") or 0
+        # Classify catalyst tier for the LLM — without any internal field names
+        if catalyst_bonus >= 0.30:
+            catalyst_label = "tier1"
+        elif catalyst_bonus >= 0.20:
+            catalyst_label = "tier2"
+        elif catalyst_bonus >= 0.10:
+            catalyst_label = "tier3 (speculativo)"
+        else:
+            catalyst_label = "nessuno"
+
+        row = {
+            "ticker":        t.get("ticker"),
+            "gap_pct":       f"{(t.get('gap_pct') or 0)*100:+.1f}%",
+            "segnali_attivi": sum([
+                bool(t.get("above_vwap")),
+                (t.get("or_position") or 0) > 0.66,
+                (t.get("gap_retention") or 0) > 0.70,
+            ]),
+            "catalyst":      catalyst_label,
+            "entry":         t.get("entry_price"),
+            "exit":          t.get("exit_price"),
+            "uscita":        exit_human.get(t.get("exit_reason", ""), "chiuso"),
+            "pnl":           f"{'+'if pnl_usd>=0 else ''}${pnl_usd:.0f} ({pnl_pct:+.1f}%)",
+        }
+        # Include news headlines only when a catalyst was identified
+        if catalyst_bonus > 0:
+            news = t.get("news") or []
+            row["notizie_principali"] = [n.get("headline", "") for n in news[:2] if n.get("headline")]
+        trade_rows.append(row)
 
     spy_pct_str = f"{spy_pct:+.2%}"
     if spy_pct > 0.005:
@@ -302,16 +329,21 @@ def generate_eod_recap(
 
     prompt = (
         "Scrivi un messaggio Telegram di fine giornata per un bot di trading. Segui queste regole:\n"
-        "- Italiano, tono diretto e amichevole — come un amico che ti aggiorna\n"
+        "- Italiano, tono diretto e amichevole\n"
         "- HTML Telegram: solo <b>...</b> per il grassetto, nessun altro tag\n"
-        "- VIETATO usare nomi tecnici di variabili o campi (no: above_vwap, or_position, gap_retention, confidence, catalyst_bonus, vol_boost)\n"
+        "- VIETATO usare nomi di variabili o campi tecnici\n"
         "- Max 2 emoji in tutto, nessun underscore\n"
-        "- Scrivi le date in italiano (es. '3 giugno 2026', non '3/6/2026')\n\n"
-        "STRUTTURA ESATTA (rispetta righe vuote e ordine):\n\n"
-        "<b>📊 [giorno settimana] [giorno mese anno in italiano]</b>\n\n"
+        "- Date in italiano: '4 giugno 2026', non '4/6/2026'\n\n"
+        "STRUTTURA ESATTA:\n\n"
+        "<b>📊 [giorno settimana] [giorno mese anno]</b>\n\n"
         f"Mercato: {spy_pct_str} — {spy_comment}\n\n"
-        "[Per ogni trade, un blocco così — con riga vuota tra blocchi diversi:]\n"
-        "<b>[TICKER]</b> — [una frase semplice di max 8 parole su cosa è successo, senza termini tecnici]\n"
+        "[Per ogni trade — riga vuota tra blocchi diversi:]\n"
+        "<b>[TICKER]</b> — long\n"
+        "[RIGA CONTESTO — costruiscila così, max 12 parole:\n"
+        "  • Inizia sempre con 'Gap pre-market confermato'\n"
+        "  • Se catalyst != 'nessuno': aggiungi la notizia principale in 3-4 parole (usa notizie_principali)\n"
+        "  • Termina sempre con il campo 'uscita' del trade (es. 'stop automatico (-2%)' o 'profit su VWAP')\n"
+        "  • Se catalyst == 'nessuno': non menzionare affatto le news]\n"
         "Entrata $[entry] → Uscita $[exit] — [uscita]\n"
         "P&L: [pnl]\n\n"
         f"Giornata: {sign_day}{daily_pnl:.0f}$\n"
