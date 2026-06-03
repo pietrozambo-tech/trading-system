@@ -18,11 +18,9 @@ def calc_vwap(bars: pd.DataFrame) -> float:
     return float((bars["tp_vol"].cumsum() / bars["volume"].cumsum()).iloc[-1])
 
 
-def s1_above_vwap(bars_or: pd.DataFrame, price_935: float) -> bool:
-    """S1: Price at 9:35 above opening-range VWAP."""
-    vwap = calc_vwap(bars_or)
-    result = price_935 > vwap
-    return result
+def s1_post_open_advance(open_930: float, price_935: float) -> bool:
+    """S1: Price at 9:35 above 9:30 open — stock moved up in its first 5 minutes."""
+    return price_935 > open_930
 
 
 def s2_or_position(bars_or: pd.DataFrame, price_935: float) -> float:
@@ -58,14 +56,14 @@ def s4_volume_boost(ticker: str, bars_or: pd.DataFrame, session_date: Optional[d
 
 
 def calc_confidence(
-    above_vwap: bool,
+    post_open_advance: bool,
     or_position: float,
     gap_retention: float,
     catalyst_bonus: float,
     vol_boost: float,
 ) -> float:
     direction_score = sum([
-        above_vwap,
+        post_open_advance,
         or_position > config.OR_POSITION_THRESHOLD,
         gap_retention > config.GAP_RETENTION_THRESHOLD,
     ])
@@ -95,34 +93,34 @@ def compute_signals(
         logger.info(f"{ticker}: opened below prev_close (gap reversed at open) — excluding")
         return {}
 
-    above_vwap   = s1_above_vwap(bars_or, price_935)
+    post_adv     = s1_post_open_advance(open_930, price_935)
     or_pos       = s2_or_position(bars_or, price_935)
     gap_ret      = s3_gap_retention(bars_or, open_930, prev_close)
     vol_boost    = s4_volume_boost(ticker, bars_or, session_date)
-    confidence   = calc_confidence(above_vwap, or_pos, gap_ret, catalyst_bonus, vol_boost)
+    confidence   = calc_confidence(post_adv, or_pos, gap_ret, catalyst_bonus, vol_boost)
 
-    passes = confidence >= config.CONFIDENCE_THRESHOLD
-    vwap_str = f"VWAP={'✓' if above_vwap else f'✗(below)'}"
-    or_str   = f"OR={or_pos:.2f}{'✓' if or_pos > config.OR_POSITION_THRESHOLD else f'✗(need>{config.OR_POSITION_THRESHOLD})'}"
-    gr_str   = f"GR={gap_ret:.2f}{'✓' if gap_ret > config.GAP_RETENTION_THRESHOLD else f'✗(need>{config.GAP_RETENTION_THRESHOLD})'}"
-    vol_str  = f"vol=+{vol_boost:.2f}"
-    cat_str  = f"catalyst=+{catalyst_bonus:.2f}"
+    passes  = confidence >= config.CONFIDENCE_THRESHOLD
+    adv_str = f"ADV={'✓' if post_adv else '✗'}"
+    or_str  = f"OR={or_pos:.2f}{'✓' if or_pos > config.OR_POSITION_THRESHOLD else f'✗(need>{config.OR_POSITION_THRESHOLD})'}"
+    gr_str  = f"GR={gap_ret:.2f}{'✓' if gap_ret > config.GAP_RETENTION_THRESHOLD else f'✗(need>{config.GAP_RETENTION_THRESHOLD})'}"
+    vol_str = f"vol=+{vol_boost:.2f}"
+    cat_str = f"catalyst=+{catalyst_bonus:.2f}"
     conf_str = f"confidence={confidence:.3f}{'✓' if passes else f'✗(need≥{config.CONFIDENCE_THRESHOLD})'}"
 
     if passes:
-        logger.info(f"L2 PASS  {ticker}: {vwap_str} {or_str} {gr_str} {vol_str} {cat_str} → {conf_str}")
+        logger.info(f"L2 PASS  {ticker}: {adv_str} {or_str} {gr_str} {vol_str} {cat_str} → {conf_str}")
     else:
-        logger.info(f"L2 REJECT {ticker}: {vwap_str} {or_str} {gr_str} {vol_str} {cat_str} → {conf_str}")
+        logger.info(f"L2 REJECT {ticker}: {adv_str} {or_str} {gr_str} {vol_str} {cat_str} → {conf_str}")
 
     signals = {
         "ticker": ticker,
         "price_935": price_935,
         "open_930": open_930,
         "prev_close": prev_close,
-        "above_vwap": above_vwap,
+        "post_open_advance": post_adv,
+        "post_open_advance_pct": round((price_935 - open_930) / open_930, 4),
         "or_position": round(or_pos, 4),
         "gap_retention": round(gap_ret, 4),
-        "post_open_advance_pct": round((price_935 - open_930) / open_930, 4),
         "vol_boost": vol_boost,
         "catalyst_bonus": catalyst_bonus,
         "confidence": round(confidence, 4),

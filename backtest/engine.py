@@ -62,7 +62,7 @@ class TradeResult:
     pnl_usd:           float
     pnl_pct:           float
     confidence:        float
-    above_vwap:        bool
+    post_open_advance: bool
     or_position:       float
     gap_retention:     float
     entry_offset_min:  int = 10
@@ -294,9 +294,8 @@ def _simulate_day(
     if gap_pct < params.min_gap_pct:
         return None
 
-    # S1 — VWAP
-    vwap       = _calc_vwap(or_bars)
-    above_vwap = price_935 > vwap
+    # S1 — Post-open advance: price moved up in first 5 minutes
+    post_open_advance = price_935 > open_930
 
     # S2 — Opening Range position
     or_high = float(or_bars["high"].max())
@@ -316,7 +315,7 @@ def _simulate_day(
 
     # Catalyst proxy (no real news in backtest — use conservative Tier 3 bonus)
     direction_score = sum([
-        above_vwap,
+        post_open_advance,
         or_pos > params.or_position_threshold,
         gap_ret > params.gap_retention_threshold,
     ])
@@ -383,7 +382,7 @@ def _simulate_day(
         pnl_usd=round(pnl_usd, 2),
         pnl_pct=round(pnl_pct, 4),
         confidence=round(confidence, 4),
-        above_vwap=above_vwap,
+        post_open_advance=post_open_advance,
         or_position=round(or_pos, 4),
         gap_retention=round(gap_ret, 4),
         entry_offset_min=5,  # 9:34 bar close ≈ price at 9:35 = offset 5 from 9:30
@@ -602,8 +601,7 @@ def _simulate_day_all_entries(
         return []
 
     # Signals at 9:35 (unchanged from live system)
-    vwap_or    = _calc_vwap(or_bars)
-    above_vwap = price_935 > vwap_or
+    post_open_advance = price_935 > open_930
     or_high    = float(or_bars["high"].max())
     or_low     = float(or_bars["low"].min())
     or_pos     = (price_935 - or_low) / (or_high - or_low) if or_high != or_low else 0.5
@@ -620,7 +618,7 @@ def _simulate_day_all_entries(
         0.0
     )
 
-    direction = sum([above_vwap, or_pos > params.or_position_threshold, gap_ret > params.gap_retention_threshold])
+    direction = sum([post_open_advance, or_pos > params.or_position_threshold, gap_ret > params.gap_retention_threshold])
     confidence = (direction / 3) + params.catalyst_bonus + vol_boost
 
     if confidence < params.confidence_threshold:
@@ -681,7 +679,7 @@ def _simulate_day_all_entries(
             pnl_usd          = round((exit_price - entry_price) * qty, 2),
             pnl_pct          = round((exit_price - entry_price) / entry_price, 4),
             confidence       = round(confidence, 4),
-            above_vwap       = above_vwap,
+            post_open_advance = post_open_advance,
             or_position      = round(or_pos, 4),
             gap_retention    = round(gap_ret, 4),
             entry_offset_min = offset,
@@ -788,8 +786,7 @@ def _simulate_day_true_entry(
         return None
 
     # Signals from available bars only
-    vwap_or    = _calc_vwap(or_bars)
-    above_vwap = price_at_entry > vwap_or
+    post_open_advance = price_at_entry > open_930
     or_high    = float(or_bars["high"].max())
     or_low     = float(or_bars["low"].min())
     or_pos     = (price_at_entry - or_low) / (or_high - or_low) if or_high != or_low else 0.5
@@ -808,7 +805,7 @@ def _simulate_day_true_entry(
         0.0
     )
 
-    direction  = sum([above_vwap, or_pos > params.or_position_threshold, gap_ret > params.gap_retention_threshold])
+    direction  = sum([post_open_advance, or_pos > params.or_position_threshold, gap_ret > params.gap_retention_threshold])
     confidence = (direction / 3) + params.catalyst_bonus + vol_boost
 
     if confidence < params.confidence_threshold:
@@ -857,7 +854,7 @@ def _simulate_day_true_entry(
         pnl_usd          = round((exit_price - entry_price) * qty, 2),
         pnl_pct          = round((exit_price - entry_price) / entry_price, 4),
         confidence       = round(confidence, 4),
-        above_vwap       = above_vwap,
+        post_open_advance = post_open_advance,
         or_position      = round(or_pos, 4),
         gap_retention    = round(gap_ret, 4),
         entry_offset_min = entry_offset_min,

@@ -33,7 +33,7 @@ TASSONOMIA CATALYST (bonus additivo):
 
 FORMULA CONFIDENCE:
 confidence = (direction_score/3) + catalyst_bonus + volume_boost
-- direction_score = somma di [above_vwap, or_position>0.66, gap_retention>0.70]
+- direction_score = somma di [post_open_advance>0, or_position>0.66, gap_retention>0.70]
 - catalyst_bonus: Tier1=+0.30, Tier2=+0.20, Tier3=+0.10, Nessuno=+0.00
 - volume_boost: vol_ratio>3x → +0.10, vol_ratio 2-3x → +0.05, <2x → +0.00
 - 2/3 segnali tecnici (0.667) da soli superano già la soglia 0.65
@@ -194,7 +194,7 @@ def build_candidate_payload(candidates_with_signals: list[dict]) -> list[dict]:
         payload.append({
             "ticker": ticker,
             "gap_pct": round(c.get("gap_pct", 0), 4),
-            "above_vwap": c.get("above_vwap"),
+            "post_open_advance": c.get("post_open_advance"),
             "or_position": c.get("or_position"),
             "gap_retention": c.get("gap_retention"),
             "post_open_advance_pct": c.get("post_open_advance_pct"),
@@ -300,7 +300,7 @@ def generate_eod_recap(
             "ticker":        t.get("ticker"),
             "gap_pct":       f"{(t.get('gap_pct') or 0)*100:+.1f}%",
             "segnali_attivi": sum([
-                bool(t.get("above_vwap")),
+                bool(t.get("post_open_advance")),
                 (t.get("or_position") or 0) > 0.66,
                 (t.get("gap_retention") or 0) > 0.70,
             ]),

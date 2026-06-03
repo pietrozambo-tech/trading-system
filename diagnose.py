@@ -129,7 +129,7 @@ def run(session_date: date) -> None:
         flag = "✓ PASS" if signals["passes_threshold"] else "✗ NO  "
         print(
             f"  {flag} {ticker:6}  conf={signals['confidence']:.3f}"
-            f"  vwap={'✓' if signals['above_vwap'] else '✗'}"
+            f"  adv={'✓' if signals['post_open_advance'] else '✗'}"
             f"  OR={signals['or_position']:.2f}"
             f"  GR={signals['gap_retention']:.2f}"
             f"  vol=+{signals['vol_boost']:.2f}"

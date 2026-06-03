@@ -46,12 +46,12 @@ For each stock that passes the quality check, the bot scores 4 signals based on 
 
 | Signal | What it means | How it's calculated |
 |--------|--------------|---------------------|
-| **VWAP position** | Are buyers in control right now? | VWAP (Volume Weighted Average Price) is the average price of every trade so far, weighted by how many shares were traded at each price. If the current price is above it, most people who traded today are sitting on a profit — a sign of strength. Computed from all 1-minute bars since 9:30. |
+| **Post-open advance** | Did the stock actually move up in the first 5 minutes? | Compare the 9:35 price (last bar close) to the 9:30 open. True if the stock is higher than where it opened — confirming that the gap led to real continuation, not an immediate fade. |
 | **Opening range position** | Is the stock pushing toward the top of its early range, not the bottom? | Take the highest and lowest price between 9:30 and 9:35. Calculate where the current price sits within that range as a percentage (0% = at the low, 100% = at the high). We require ≥66% — meaning the stock is in the upper third. |
 | **Gap retention** | Is the pre-market gap holding, or is it already being sold off? | Compare the size of the gap at open (today's open minus yesterday's close) with how much of it has been "eaten" by sellers during the first 5 minutes (measured by how far the price dipped from the open). We require ≥70% of the gap still intact. |
 | **Volume boost** | Is today unusually active in the first 5 minutes? | Total shares traded 9:30–9:35 today, divided by the average of the same 9:30–9:35 window over the past 20 trading days. >3× average = +0.10 bonus, 2–3× = +0.05, below 2× = no bonus. |
 
-The first three signals (VWAP, Opening Range, Gap Retention) are **binary and equally weighted** — each one is either true or false, and each contributes exactly 1/3 to the base score. Volume boost and catalyst are additive bonuses on top.
+The first three signals (Post-open advance, Opening Range, Gap Retention) are **binary and equally weighted** — each one is either true or false, and each contributes exactly 1/3 to the base score. Volume boost and catalyst are additive bonuses on top.
 
 These combine into a **confidence score** between 0 and 1. Only stocks scoring 0.65 or above go to the next step.
 
@@ -61,7 +61,7 @@ confidence = (signals_passed / 3) + catalyst_bonus + volume_boost
 
 | Component | Max contribution | Example |
 |-----------|-----------------|---------|
-| VWAP ✓ | +0.333 | Price above VWAP |
+| Post-open advance ✓ | +0.333 | Price at 9:35 > open at 9:30 |
 | Opening range ✓ | +0.333 | Price in top third |
 | Gap retention ✓ | +0.333 | Gap still 70%+ intact |
 | Catalyst bonus | +0.30 | Major earnings beat |

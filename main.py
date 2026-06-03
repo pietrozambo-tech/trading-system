@@ -108,15 +108,15 @@ class PipelineLog:
 
     def log_signals(self, signals: dict) -> None:
         self.signals.append({
-            "ticker":            signals.get("ticker"),
-            "confidence":        signals.get("confidence"),
-            "passes_threshold":  signals.get("passes_threshold"),
-            "above_vwap":        signals.get("above_vwap"),
-            "or_position":       signals.get("or_position"),
-            "gap_retention":     signals.get("gap_retention"),
-            "vol_boost":         signals.get("vol_boost"),
-            "catalyst_bonus":    signals.get("catalyst_bonus"),
-            "gap_pct":           signals.get("gap_pct"),
+            "ticker":             signals.get("ticker"),
+            "confidence":         signals.get("confidence"),
+            "passes_threshold":   signals.get("passes_threshold"),
+            "post_open_advance":  signals.get("post_open_advance"),
+            "or_position":        signals.get("or_position"),
+            "gap_retention":      signals.get("gap_retention"),
+            "vol_boost":          signals.get("vol_boost"),
+            "catalyst_bonus":     signals.get("catalyst_bonus"),
+            "gap_pct":            signals.get("gap_pct"),
         })
 
     def log_l1_rejects(self, rejects: list[dict]) -> None:
@@ -156,7 +156,7 @@ class PipelineLog:
             for sig in sorted(self.signals, key=lambda x: -(x["confidence"] or 0)):
                 lines.append(
                     f"  {sig['ticker']}: conf={sig['confidence']:.2f} "
-                    f"vwap={'✓' if sig['above_vwap'] else '✗'} "
+                    f"adv={'✓' if sig['post_open_advance'] else '✗'} "
                     f"OR={sig['or_position']:.2f} GR={sig['gap_retention']:.2f}"
                 )
         if self.blocked:
@@ -403,7 +403,7 @@ def run() -> None:
         position = trader.open_position(decision["ticker"], decision)
         if position:
             # Enrich position with signal data needed for EOD Telegram recap
-            for field in ("catalyst_bonus", "above_vwap", "or_position", "gap_retention", "gap_pct", "news"):
+            for field in ("catalyst_bonus", "post_open_advance", "or_position", "gap_retention", "gap_pct", "news"):
                 if field in algo:
                     position[field] = algo[field]
             open_positions.append(position)
