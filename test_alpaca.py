@@ -120,6 +120,17 @@ def main():
     except Exception as e:
         check("ATR14 calculation", False, str(e))
 
+    # ------------------------------------------------------------------ #
+    # 8. get_current_price — latest trade (nuovo metodo post-fix 3 giugno)
+    # ------------------------------------------------------------------ #
+    print("\n[8] get_current_price — latest trade IEX (StockLatestTradeRequest)")
+    from data.fetcher import get_current_price
+    try:
+        price = get_current_price("AAPL")
+        check("Latest trade price > 0", price > 0, f"${price:.2f}")
+    except Exception as e:
+        check("get_current_price", False, str(e))
+
     print("\n=== All checks passed — Alpaca connection is working ===\n")
 
 
