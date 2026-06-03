@@ -91,6 +91,7 @@ class PipelineLog:
     def __init__(self, date: str):
         self.date = date
         self.stages: list[dict] = []
+        self.premarket_candidates: list[dict] = []
         self.signals: list[dict] = []
         self.l1_rejects: list[dict] = []
         self.llm_input: list[str] = []
@@ -135,15 +136,16 @@ class PipelineLog:
         os.makedirs("logs", exist_ok=True)
         path = f"logs/{self.date}.json"
         payload = {
-            "date":        self.date,
-            "spy_pct":     self.spy_pct,
-            "blocked":     self.blocked,
-            "pipeline":    self.stages,
-            "l1_rejects":  self.l1_rejects,
-            "signals":     self.signals,
-            "llm_input":   self.llm_input,
-            "llm_output":  self.llm_output,
-            "trades":      self.trades,
+            "date":                 self.date,
+            "spy_pct":              self.spy_pct,
+            "blocked":              self.blocked,
+            "pipeline":             self.stages,
+            "premarket_candidates": self.premarket_candidates,
+            "l1_rejects":           self.l1_rejects,
+            "signals":              self.signals,
+            "llm_input":            self.llm_input,
+            "llm_output":           self.llm_output,
+            "trades":               self.trades,
         }
         with open(path, "w") as f:
             json.dump(payload, f, indent=2, default=str)
@@ -344,6 +346,16 @@ def run() -> None:
     watchlist = eligibility.build_premarket_watchlist(UNIVERSE)
     pl.log_stage("premarket_scan", [c["ticker"] for c in watchlist],
                  f"gap>+{config.MIN_PREMARKET_GAP:.1%}")
+    pl.premarket_candidates = [
+        {
+            "ticker":              c["ticker"],
+            "gap_pct":             round(c["gap_pct"] * 100, 2),
+            "adv_m":               round(c["adv"] / 1_000_000, 1),
+            "short_float_pct":     round(c["short_float"] * 100, 1) if c.get("short_float") is not None else None,
+            "dist_from_3m_high_pct": round(c["dist_from_3m_high"] * 100, 1) if c.get("dist_from_3m_high") is not None else None,
+        }
+        for c in watchlist
+    ]
 
     # ------------------------------------------------------------------
     # 09:35 — Binary L1 filters + SPY check + L2 signals + LLM
