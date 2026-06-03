@@ -304,6 +304,7 @@ def generate_eod_recap(
                 (t.get("or_position") or 0) > 0.66,
                 (t.get("gap_retention") or 0) > 0.70,
             ]),
+            "volumi_forti":  (t.get("vol_boost") or 0) >= 0.10,
             "catalyst":      catalyst_label,
             "entry":         t.get("entry_price"),
             "exit":          t.get("exit_price"),
@@ -342,11 +343,12 @@ def generate_eod_recap(
         f"Mercato: {spy_pct_str} — {spy_comment}\n\n"
         "[Per ogni trade — riga vuota tra blocchi diversi:]\n"
         "<b>[TICKER]</b> — long\n"
-        "[RIGA CONTESTO — costruiscila così, max 12 parole:\n"
-        "  • Inizia sempre con 'Gap pre-market confermato'\n"
-        "  • Se catalyst != 'nessuno': aggiungi la notizia principale in 3-4 parole (usa notizie_principali)\n"
-        "  • Termina sempre con il campo 'uscita' del trade (es. 'stop automatico (-2%)' o 'profit su VWAP')\n"
-        "  • Se catalyst == 'nessuno': non menzionare affatto le news]\n"
+        "[RIGA CONTESTO — max 12 parole, scegli il pattern più adatto:\n"
+        "  • Se volumi_forti: 'Gap pre-market confermato, volumi forti, [uscita]'\n"
+        "  • Se catalyst != 'nessuno': 'Gap pre-market confermato, [notizia in 3-4 parole], [uscita]'\n"
+        "  • Se né volumi forti né catalyst: 'Setup tecnico pulito, prezzo sopra VWAP in apertura'\n"
+        "  • Il campo uscita va sempre incluso tranne nel terzo pattern\n"
+        "  • Non menzionare mai le news se catalyst == 'nessuno']\n"
         "Entrata $[entry] → Uscita $[exit] — [uscita]\n"
         "P&L: [pnl]\n\n"
         f"Giornata: {sign_day}{daily_pnl:.2f}$ ({daily_pct:+.2%})\n"
