@@ -199,6 +199,16 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
     still_open = []
     just_closed = []
 
+    # Reconcile against Alpaca's actual positions — detect manual closes.
+    try:
+        actual_tickers = {p["ticker"] for p in fetcher.get_open_positions()}
+        orphans = [p["ticker"] for p in open_positions if p["ticker"] not in actual_tickers]
+        if orphans:
+            logger.warning(f"Manual close detected for {orphans} — removing from monitoring")
+            open_positions = [p for p in open_positions if p["ticker"] in actual_tickers]
+    except Exception as e:
+        logger.warning(f"Alpaca position reconciliation failed: {e} — skipping check")
+
     for position in open_positions:
         ticker = position["ticker"]
         try:
