@@ -10,6 +10,7 @@ from alpaca.data.enums import DataFeed
 from alpaca.data.requests import (
     StockBarsRequest,
     StockLatestQuoteRequest,
+    StockLatestTradeRequest,
     StockSnapshotRequest,
     StockLatestBarRequest,
 )
@@ -124,15 +125,11 @@ def get_opening_range_bars(ticker: str, session_date: Optional[date] = None) -> 
 
 
 def get_current_price(ticker: str) -> float:
-    """Real-time mid-price from bid/ask. Use during market hours for stop/VWAP checks."""
+    """Latest trade price. More reliable than bid/ask mid on IEX during volatile moments."""
     client = get_data_client()
-    req = StockLatestQuoteRequest(symbol_or_symbols=ticker, feed=_feed())
-    quote = _with_retry(client.get_stock_latest_quote, req)[ticker]
-    bid = float(quote.bid_price)
-    ask = float(quote.ask_price)
-    if bid > 0 and ask > 0:
-        return (bid + ask) / 2
-    return ask if ask > 0 else bid
+    req = StockLatestTradeRequest(symbol_or_symbols=ticker, feed=_feed())
+    trade = _with_retry(client.get_stock_latest_trade, req)[ticker]
+    return float(trade.price)
 
 
 def get_latest_quote(ticker: str) -> dict:

@@ -75,16 +75,31 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
     """
     account = fetcher.get_account()
     equity = account["equity"]
-    quote = fetcher.get_latest_quote(ticker)
-    entry_price = quote.get("ask") or 0.0
-    qty = calc_qty(entry_price, equity)
+    # IEX ask used only to estimate qty before the order; actual fill may differ.
+    estimated_price = fetcher.get_latest_quote(ticker).get("ask") or 0.0
+    qty = calc_qty(estimated_price, equity)
     if qty == 0:
-        logger.error(f"Cannot compute qty for {ticker} at ${entry_price}")
+        logger.error(f"Cannot compute qty for {ticker} at ${estimated_price}")
         return None
 
     order = place_market_order(ticker, qty, OrderSide.BUY)
     if not order:
         return None
+
+    # Fetch actual Alpaca fill price — market orders route via NBBO smart routing,
+    # often filling below IEX ask. Stop must be anchored to real fill, not IEX ask.
+    client = _trading_client()
+    entry_price = None
+    time.sleep(1)
+    try:
+        filled = client.get_order_by_id(order["order_id"])
+        if filled.filled_avg_price:
+            entry_price = float(filled.filled_avg_price)
+    except Exception:
+        pass
+    if entry_price is None:
+        entry_price = estimated_price  # fallback if fill not yet reflected
+        logger.warning(f"{ticker}: fill price not available yet — using IEX ask ${estimated_price:.2f} as fallback")
 
     stops = calc_stop_prices(ticker, entry_price)
     position = {
@@ -103,7 +118,10 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
         "pnl_usd": None,
         "pnl_pct": None,
     }
-    logger.info(f"Position opened: {ticker} @ ${entry_price:.2f} qty={qty} stop=${stops['stop_price']:.2f}")
+    logger.info(
+        f"Position opened: {ticker} @ ${entry_price:.2f} (est ${estimated_price:.2f})"
+        f" qty={qty} stop=${stops['stop_price']:.2f}"
+    )
     return position
 
 
