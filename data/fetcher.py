@@ -6,6 +6,7 @@ from typing import Optional
 import pandas as pd
 import pytz
 from alpaca.data import StockHistoricalDataClient
+from alpaca.data.enums import DataFeed
 from alpaca.data.requests import (
     StockBarsRequest,
     StockLatestQuoteRequest,
@@ -22,6 +23,11 @@ import config
 logger = logging.getLogger(__name__)
 
 ET = pytz.timezone("America/New_York")
+
+
+def _feed() -> DataFeed:
+    """Return configured data feed. IEX = free tier; SIP = paid tier (set ALPACA_DATA_FEED=sip)."""
+    return DataFeed.SIP if config.ALPACA_DATA_FEED.upper() == "SIP" else DataFeed.IEX
 
 
 def _with_retry(fn, *args, retries: int = 3, **kwargs):
@@ -96,6 +102,7 @@ def get_intraday_bars(ticker: str, minutes: int = 1, session_date: Optional[date
         timeframe=TimeFrame.Minute if minutes == 1 else TimeFrame(minutes, "Min"),
         start=start,
         end=end,
+        feed=_feed(),
     )
     bars = _with_retry(client.get_stock_bars, req).df
     if isinstance(bars.index, pd.MultiIndex):
@@ -117,9 +124,9 @@ def get_opening_range_bars(ticker: str, session_date: Optional[date] = None) -> 
 
 
 def get_current_price(ticker: str) -> float:
-    """Real-time mid-price from consolidated bid/ask. Use during market hours for stop/VWAP checks."""
+    """Real-time mid-price from bid/ask. Use during market hours for stop/VWAP checks."""
     client = get_data_client()
-    req = StockLatestQuoteRequest(symbol_or_symbols=ticker)
+    req = StockLatestQuoteRequest(symbol_or_symbols=ticker, feed=_feed())
     quote = _with_retry(client.get_stock_latest_quote, req)[ticker]
     bid = float(quote.bid_price)
     ask = float(quote.ask_price)
@@ -129,10 +136,10 @@ def get_current_price(ticker: str) -> float:
 
 
 def get_latest_quote(ticker: str) -> dict:
-    """Latest consolidated bid/ask for entry price estimation."""
+    """Latest bid/ask for entry price estimation."""
     client = get_data_client()
     try:
-        req = StockLatestQuoteRequest(symbol_or_symbols=ticker)
+        req = StockLatestQuoteRequest(symbol_or_symbols=ticker, feed=_feed())
         quote = _with_retry(client.get_stock_latest_quote, req)[ticker]
         bid = float(quote.bid_price) if quote.bid_price else 0.0
         ask = float(quote.ask_price) if quote.ask_price else 0.0
@@ -142,16 +149,16 @@ def get_latest_quote(ticker: str) -> dict:
         logger.warning(f"Quote unavailable for {ticker}: {e} — falling back to bar close")
 
     # Fallback: latest bar close as ask proxy
-    req = StockLatestBarRequest(symbol_or_symbols=ticker)
+    req = StockLatestBarRequest(symbol_or_symbols=ticker, feed=_feed())
     bar = _with_retry(client.get_stock_latest_bar, req)[ticker]
     close = float(bar.close)
     return {"bid": close, "ask": close, "spread_pct": 0.0}
 
 
-def get_snapshot(ticker: str) -> dict:
+def get_snapshot(ticker: str):
     """Full snapshot: latest trade, quote, daily + minute bars."""
     client = get_data_client()
-    req = StockSnapshotRequest(symbol_or_symbols=ticker)
+    req = StockSnapshotRequest(symbol_or_symbols=ticker, feed=_feed())
     snap = _with_retry(client.get_stock_snapshot, req)[ticker]
     return snap
 
@@ -294,6 +301,7 @@ def get_historical_or_volume(ticker: str, lookback_days: int = 20, session_date:
             timeframe=TimeFrame.Minute,
             start=start,
             end=end,
+            feed=_feed(),
         )
         try:
             bars = _with_retry(client.get_stock_bars, req).df

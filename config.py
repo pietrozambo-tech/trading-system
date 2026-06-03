@@ -7,6 +7,9 @@ load_dotenv()
 ALPACA_API_KEY    = os.getenv("ALPACA_API_KEY")
 ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
 ALPACA_BASE_URL   = os.getenv("ALPACA_BASE_URL", "https://paper-api.alpaca.markets")
+# Data feed: "iex" = free tier (IEX exchange only), "sip" = paid tier (consolidated tape)
+# Switch to "sip" in Railway env vars when upgrading to Alpaca Algo Trader Plus.
+ALPACA_DATA_FEED  = os.getenv("ALPACA_DATA_FEED", "iex")
 
 # === ANTHROPIC ===
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
