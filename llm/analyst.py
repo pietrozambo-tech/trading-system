@@ -261,63 +261,68 @@ def generate_eod_recap(
     """Generate the EOD Telegram message via LLM. Returns empty string if no meaningful data."""
     import json as _json
 
-    # Se non ci sono dati reali, lascia che il fallback template gestisca il messaggio
-    has_real_data = any(t.get("ticker") for t in trade_data)
-    if not has_real_data:
-        return ""
+    executed = [t for t in trade_data if t.get("exit_price")]
+    if not executed:
+        return ""  # let _fallback_message handle no-trade days
 
     total_pnl = account_equity - config.PAPER_INITIAL_EQUITY
 
     exit_labels = {
-        "eod_close":    "Fine giornata",
-        "hard_blocker": "Stop loss",
-        "atr_stop":     "Stop loss (ATR)",
-        "vwap_exit":    "Profit taker",
+        "eod_close":    "chiuso a fine giornata",
+        "hard_blocker": "stop loss",
+        "atr_stop":     "stop loss",
+        "vwap_exit":    "profit preso",
     }
 
-    # Traduci exit_reason in label user-friendly
-    clean_trades = []
-    for t in trade_data:
-        ct = dict(t)
-        raw_reason = ct.get("exit_reason", "")
-        ct["modalita_uscita"] = exit_labels.get(raw_reason, raw_reason)
-        clean_trades.append(ct)
+    # Pass only human-readable fields — strip all internal algo variable names
+    # (reason, above_vwap, or_position, gap_retention, confidence, etc.)
+    trade_rows = []
+    for t in executed:
+        pnl_usd = t.get("pnl_usd") or 0
+        pnl_pct = (t.get("pnl_pct") or 0) * 100
+        trade_rows.append({
+            "ticker":    t.get("ticker"),
+            "entry":     t.get("entry_price"),
+            "exit":      t.get("exit_price"),
+            "uscita":    exit_labels.get(t.get("exit_reason", ""), "chiuso"),
+            "pnl":       f"{'+'if pnl_usd>=0 else ''}${pnl_usd:.0f} ({pnl_pct:+.1f}%)",
+            "gap_pct":   f"{(t.get('gap_pct') or 0)*100:+.1f}%",
+        })
 
-    prompt = f"""Sei un assistente di trading. Scrivi un messaggio Telegram EOD in italiano.
-Il messaggio usa HTML di Telegram: usa <b>...</b> per il grassetto dove indicato, nessun altro tag HTML.
+    spy_pct_str = f"{spy_pct:+.2%}"
+    if spy_pct > 0.005:
+        spy_comment = "mercato positivo"
+    elif spy_pct < -0.005:
+        spy_comment = "mercato in calo"
+    else:
+        spy_comment = "mercato piatto"
 
-REGOLE:
-- Tono: diretto, amichevole, niente gergo tecnico
-- Lunghezza: max 25 righe, leggibile in 20 secondi sul telefono
-- Usa emoji ma poche (max 4 in tutto)
-- Scrivi in italiano
+    sign_day = "+" if daily_pnl >= 0 else ""
+    sign_tot = "+" if total_pnl >= 0 else ""
 
-STRUTTURA OBBLIGATORIA (esattamente in questo ordine, con le righe vuote indicate):
-
-[Data e giorno della settimana]
-[riga vuota]
-Mercato: [una frase — SPY {spy_pct:+.2%} oggi, commenta in max 6 parole]
-[riga vuota]
-Per ogni trade (con riga vuota tra un trade e l'altro):
-  <b>Trade N — TICKER long [Score: X.XX]</b>
-  [UNA riga di contesto: riassumi in max 8 parole il catalyst o segnale chiave dal campo "reason". Usa SOLO fatti già presenti in "reason" — non inventare nulla.]
-  Entrata: $X.XX
-  Uscita: $X.XX (modalita_uscita)
-  P&L: ±$XXX (±X.XX%)
-[riga vuota]
-Se nessun trade: una riga con il motivo
-[riga vuota]
-Giornata: {daily_pnl:+.2f}$
-P&L totale: {total_pnl:+.2f}$
-Saldo: ${account_equity:,.2f}
-
-DATI:
-{_json.dumps(clean_trades, indent=2, default=str)}
-"""
+    prompt = (
+        "Scrivi un messaggio Telegram di fine giornata per un bot di trading. Segui queste regole:\n"
+        "- Italiano, tono diretto e amichevole — come un amico che ti aggiorna\n"
+        "- HTML Telegram: solo <b>...</b> per il grassetto, nessun altro tag\n"
+        "- VIETATO usare nomi tecnici di variabili o campi (no: above_vwap, or_position, gap_retention, confidence, catalyst_bonus, vol_boost)\n"
+        "- Max 2 emoji in tutto, nessun underscore\n"
+        "- Scrivi le date in italiano (es. '3 giugno 2026', non '3/6/2026')\n\n"
+        "STRUTTURA ESATTA (rispetta righe vuote e ordine):\n\n"
+        "<b>📊 [giorno settimana] [giorno mese anno in italiano]</b>\n\n"
+        f"Mercato: {spy_pct_str} — {spy_comment}\n\n"
+        "[Per ogni trade, un blocco così — con riga vuota tra blocchi diversi:]\n"
+        "<b>[TICKER]</b> — [una frase semplice di max 8 parole su cosa è successo, senza termini tecnici]\n"
+        "Entrata $[entry] → Uscita $[exit] — [uscita]\n"
+        "P&L: [pnl]\n\n"
+        f"Giornata: {sign_day}{daily_pnl:.0f}$\n"
+        f"P&L totale: {sign_tot}{total_pnl:.0f}$\n"
+        f"Saldo: ${account_equity:,.0f}\n\n"
+        f"DATI TRADE:\n{_json.dumps(trade_rows, indent=2, default=str)}"
+    )
     client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
     message = client.messages.create(
         model=config.LLM_MODEL,
-        max_tokens=800,
+        max_tokens=600,
         messages=[{"role": "user", "content": prompt}],
     )
     return message.content[0].text.strip()

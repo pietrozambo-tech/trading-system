@@ -12,8 +12,8 @@ TELEGRAM_API = "https://api.telegram.org/bot{token}/sendMessage"
 EXIT_LABELS = {
     "eod_close":    "Fine giornata",
     "hard_blocker": "Stop loss",
-    "atr_stop":     "Stop loss (ATR)",
-    "vwap_exit":    "Profit taker",
+    "atr_stop":     "Stop loss",
+    "vwap_exit":    "Profit",
 }
 
 DAYS_IT = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"]
@@ -78,49 +78,39 @@ def _fallback_message(
         header = date_str
 
     spy_line = f"SPY {spy_pct:+.2%}"
-    if spy_pct > 0.01:
-        spy_line += " — giornata positiva"
-    elif spy_pct < -0.01:
-        spy_line += " — giornata negativa"
+    if spy_pct > 0.005:
+        spy_line += " — mercato positivo"
+    elif spy_pct < -0.005:
+        spy_line += " — mercato in calo"
     else:
         spy_line += " — mercato piatto"
 
-    lines = [f"📊 {header}", "", f"Mercato: {spy_line}", ""]
+    lines = [f"<b>📊 {header}</b>", "", f"Mercato: {spy_line}", ""]
 
     executed = [t for t in trade_data if t.get("exit_price")]
-    skipped  = [t for t in trade_data if not t.get("exit_price")]
 
     if not executed:
         reason = _no_trade_reason(pipeline_summary or {})
         lines += [f"Nessun trade. {reason}", ""]
     else:
-        for i, t in enumerate(executed, 1):
-            modalita   = EXIT_LABELS.get(t.get("exit_reason", ""), t.get("exit_reason", ""))
-            pnl_usd    = t.get("pnl_usd", 0)
-            pnl_pct    = t.get("pnl_pct", 0)
-            sign       = "+" if pnl_usd >= 0 else ""
-            confidence = t.get("confidence")
-            score_str  = f" [Score: {confidence:.2f}]" if confidence is not None else ""
-            trade_reason = t.get("reason") or ""
-
-            lines.append(f"<b>Trade {i} — {t['ticker']} long{score_str}</b>")
-            if trade_reason and trade_reason != "recovered after restart":
-                lines.append(html.escape(trade_reason))
+        for t in executed:
+            modalita = EXIT_LABELS.get(t.get("exit_reason", ""), "Chiuso")
+            pnl_usd  = t.get("pnl_usd") or 0
+            pnl_pct  = (t.get("pnl_pct") or 0) * 100
+            sign     = "+" if pnl_usd >= 0 else ""
             lines += [
-                f"  Entrata: ${t['entry_price']:.2f}",
-                f"  Uscita:  ${t['exit_price']:.2f} ({modalita})",
-                f"  P&L: {sign}{pnl_usd:.2f}$ ({sign}{pnl_pct:.2%})",
+                f"<b>{t['ticker']}</b> — long",
+                f"Entrata ${t['entry_price']:.2f} → Uscita ${t['exit_price']:.2f} — {modalita}",
+                f"P&L: {sign}${pnl_usd:.0f} ({pnl_pct:+.1f}%)",
                 "",
             ]
-        if skipped and len(executed) == 1:
-            lines += ["Trade 2 — nessun secondo segnale valido.", ""]
 
     sign_day = "+" if daily_pnl >= 0 else ""
     sign_tot = "+" if total_pnl >= 0 else ""
     lines += [
-        f"Giornata:    {sign_day}{daily_pnl:.2f}$",
-        f"P&L totale:  {sign_tot}{total_pnl:.2f}$",
-        f"Saldo:       ${account_equity:,.2f}",
+        f"Giornata: {sign_day}{daily_pnl:.0f}$",
+        f"P&L totale: {sign_tot}{total_pnl:.0f}$",
+        f"Saldo: ${account_equity:,.0f}",
     ]
     return "\n".join(lines)
 
