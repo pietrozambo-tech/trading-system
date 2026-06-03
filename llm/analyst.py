@@ -275,10 +275,10 @@ def generate_eod_recap(
     }
 
     exit_human = {
-        "hard_blocker": "stop automatico (-2%)",
-        "atr_stop":     "stop ATR",
-        "vwap_exit":    "profit su VWAP",
-        "eod_close":    "chiuso a fine giornata",
+        "hard_blocker": "Hard stop",
+        "atr_stop":     "ATR stop",
+        "vwap_exit":    "VWAP take-profit",
+        "eod_close":    "End-of-day close",
     }
 
     trade_rows = []

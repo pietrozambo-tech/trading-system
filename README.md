@@ -160,7 +160,7 @@ Mercato: SPY +0.42% — mercato positivo
 Trade 1 — NVDA long [Score: 1.07]
 Gap pre-market confermato, earnings beat Q1
   Entrata: $135.20
-  Uscita:  $137.85 (Profit)
+  Uscita:  $137.85 (VWAP take-profit)
   P&L: +$959.30 (+1.96%)
 
 Giornata: +$959.30 (+0.96%)
