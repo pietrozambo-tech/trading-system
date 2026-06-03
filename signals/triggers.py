@@ -62,6 +62,7 @@ def calc_confidence(
     catalyst_bonus: float,
     vol_boost: float,
     short_float: Optional[float] = None,
+    gap_pct: Optional[float] = None,
 ) -> float:
     direction_score = sum([
         post_open_advance,
@@ -72,7 +73,10 @@ def calc_confidence(
         config.SHORT_SQUEEZE_BONUS
         if short_float is not None
         and short_float >= config.SHORT_SQUEEZE_THRESHOLD
-        and catalyst_bonus > 0
+        and (
+            catalyst_bonus > 0
+            or (gap_pct is not None and gap_pct >= config.SHORT_SQUEEZE_GAP_THRESHOLD)
+        )
         else 0.0
     )
     return (direction_score / 3) + catalyst_bonus + vol_boost + squeeze_bonus
@@ -83,6 +87,7 @@ def compute_signals(
     prev_close: float,
     catalyst_bonus: float,
     short_float: Optional[float] = None,
+    gap_pct: Optional[float] = None,
     session_date: Optional[date] = None,
 ) -> dict:
     """
@@ -110,10 +115,13 @@ def compute_signals(
         config.SHORT_SQUEEZE_BONUS
         if short_float is not None
         and short_float >= config.SHORT_SQUEEZE_THRESHOLD
-        and catalyst_bonus > 0
+        and (
+            catalyst_bonus > 0
+            or (gap_pct is not None and gap_pct >= config.SHORT_SQUEEZE_GAP_THRESHOLD)
+        )
         else 0.0
     )
-    confidence = calc_confidence(post_adv, or_pos, gap_ret, catalyst_bonus, vol_boost, short_float)
+    confidence = calc_confidence(post_adv, or_pos, gap_ret, catalyst_bonus, vol_boost, short_float, gap_pct)
 
     passes   = confidence >= config.CONFIDENCE_THRESHOLD
     adv_str  = f"ADV={'✓' if post_adv else '✗'}"

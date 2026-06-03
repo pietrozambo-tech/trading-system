@@ -84,11 +84,11 @@ The confidence score factors in two additive bonuses on top of the binary signal
 
 The distinction between Tier 1 and Tier 2 matters: a **revenue beat** or **guidance raise** signals that the business is genuinely accelerating — the gap is likely to sustain. A modest EPS beat (which can come from cost cuts or buybacks) is real news but less likely to drive continuation throughout the day.
 
-**Short squeeze bonus** — applied when two conditions are both true:
-- Short float >15% (more than 15% of shares outstanding are sold short — data from FINRA biweekly reports via Yahoo Finance)
-- A catalyst is present (Tier 1, 2, or 3)
+**Short squeeze bonus** — applied when short float >15% (data from FINRA biweekly reports via Yahoo Finance) and at least one of:
+- A catalyst is present (Tier 1, 2, or 3) — news forces short sellers to cover
+- Pre-market gap ≥10% — at that magnitude the covering is already happening regardless of whether the news scraper identified a catalyst; the price action is the signal
 
-When a heavily-shorted stock receives positive news, short sellers are forced to buy back to cover their positions — on top of normal buying pressure. This amplifies the gap-and-go move and earns an additional +0.10 bonus. **Short interest alone with no catalyst does not trigger the bonus** — without a reason to cover, shorts simply hold their position.
+The bonus is +0.10 and never stacks — it's either on or off, regardless of how many conditions fire simultaneously.
 
 This means **2 out of 3 technical signals (0.667) is enough to pass on its own**, even with no news. Strong news, high volume, and a squeeze setup push the score higher and help prioritise between multiple candidates.
 

@@ -387,7 +387,7 @@ def run() -> None:
         ticker        = c["ticker"]
         news            = c["news"]
         catalyst_bonus  = analyst.classify_catalyst_from_news(news)
-        signals         = triggers.compute_signals(ticker, c["prev_close"], catalyst_bonus, c.get("short_float"))
+        signals         = triggers.compute_signals(ticker, c["prev_close"], catalyst_bonus, c.get("short_float"), c.get("gap_pct"))
         if signals:
             pl.log_signals({**signals, "gap_pct": c.get("gap_pct")})
             if signals.get("passes_threshold"):

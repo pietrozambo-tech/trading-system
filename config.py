@@ -40,8 +40,9 @@ CATALYST_NONE  = 0.00   # +0.00 — pure technical setup
 # === SHORT SQUEEZE BONUS ===
 # Applied only when short_float > threshold AND a catalyst is present.
 # Short interest alone doesn't cause a squeeze — the catalyst is what forces covering.
-SHORT_SQUEEZE_THRESHOLD = 0.15   # 15% of float sold short
-SHORT_SQUEEZE_BONUS     = 0.10   # additive bonus on top of catalyst
+SHORT_SQUEEZE_THRESHOLD     = 0.15   # 15% of float sold short
+SHORT_SQUEEZE_BONUS         = 0.10   # additive bonus (capped — never stacks)
+SHORT_SQUEEZE_GAP_THRESHOLD = 0.10   # 10% pre-market gap as standalone squeeze trigger
 
 # === RISK MANAGEMENT ===
 # Ogni trade = (equity - CASH_CUSHION_USD) / MAX_POSITIONS, arrotondato per difetto.

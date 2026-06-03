@@ -36,7 +36,7 @@ confidence = (direction_score/3) + catalyst_bonus + volume_boost + short_squeeze
 - direction_score = somma di [post_open_advance>0, or_position>0.66, gap_retention>0.70]
 - catalyst_bonus: Tier1=+0.30, Tier2=+0.20, Tier3=+0.10, Nessuno=+0.00
 - volume_boost: vol_ratio>3x → +0.10, vol_ratio 2-3x → +0.05, <2x → +0.00
-- short_squeeze_bonus: short_float_pct>15% E catalyst>0 → +0.10, altrimenti +0.00
+- short_squeeze_bonus: short_float_pct>15% E (catalyst>0 OPPURE gap_pct>10%) → +0.10, altrimenti +0.00
 - 2/3 segnali tecnici (0.667) da soli superano già la soglia 0.65
 
 PRIORITÀ NELLA SCELTA:

@@ -122,7 +122,7 @@ def run(session_date: date) -> None:
     for c in safe_candidates:
         ticker = c["ticker"]
         catalyst_bonus = analyst.classify_catalyst_from_news(c["news"])
-        signals = triggers.compute_signals(ticker, c["prev_close"], catalyst_bonus, c.get("short_float"), session_date=session_date)
+        signals = triggers.compute_signals(ticker, c["prev_close"], catalyst_bonus, c.get("short_float"), c.get("gap_pct"), session_date=session_date)
         if not signals:
             print(f"  {ticker}: nessun dato OR")
             continue
