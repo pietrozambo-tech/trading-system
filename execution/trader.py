@@ -88,20 +88,23 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
     if not order:
         return None
 
-    # Fetch actual Alpaca fill price — market orders route via NBBO smart routing,
-    # often filling below IEX ask. Stop must be anchored to real fill, not IEX ask.
+    # Fetch actual Alpaca fill price — retry up to 5 times (market orders usually fill
+    # in milliseconds but the API can take a few seconds to reflect filled_avg_price).
     client = _trading_client()
     entry_price = None
-    time.sleep(1)
-    try:
-        filled = client.get_order_by_id(order["order_id"])
-        if filled.filled_avg_price:
-            entry_price = float(filled.filled_avg_price)
-    except Exception:
-        pass
+    for attempt in range(1, 6):
+        time.sleep(attempt)  # 1s, 2s, 3s, 4s, 5s
+        try:
+            filled = client.get_order_by_id(order["order_id"])
+            if filled.filled_avg_price:
+                entry_price = float(filled.filled_avg_price)
+                logger.info(f"{ticker}: fill confirmed @ ${entry_price:.2f} (attempt {attempt})")
+                break
+        except Exception:
+            pass
     if entry_price is None:
-        entry_price = estimated_price  # fallback if fill not yet reflected
-        logger.warning(f"{ticker}: fill price not available yet — using IEX ask ${estimated_price:.2f} as fallback")
+        entry_price = estimated_price
+        logger.warning(f"{ticker}: fill price unavailable after 5 attempts — using IEX ask ${estimated_price:.2f} as fallback")
 
     stops = calc_stop_prices(ticker, entry_price)
     position = {
