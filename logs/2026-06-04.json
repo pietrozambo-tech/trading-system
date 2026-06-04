@@ -7,278 +7,97 @@
       "stage": "universe",
       "count": 60,
       "tickers": [
-        "AAPL",
-        "MSFT",
-        "NVDA",
-        "AMZN",
-        "META",
-        "GOOGL",
-        "TSLA",
-        "AMD",
-        "NFLX",
-        "CRM",
-        "ORCL",
-        "ADBE",
-        "INTC",
-        "QCOM",
-        "MU",
-        "AVGO",
-        "TXN",
-        "AMAT",
-        "MRVL",
-        "JPM",
-        "BAC",
-        "GS",
-        "MS",
-        "C",
-        "WFC",
-        "BLK",
-        "SCHW",
-        "UNH",
-        "JNJ",
-        "PFE",
-        "ABBV",
-        "MRK",
-        "BMY",
-        "MRNA",
-        "XOM",
-        "CVX",
-        "SLB",
-        "HAL",
-        "OXY",
-        "ENPH",
-        "NKE",
-        "LMT",
-        "MSTR",
-        "DAL",
-        "AAL",
-        "NCLH",
-        "CCL",
-        "RKLB",
-        "ASTS",
-        "BKSY",
-        "RDW",
-        "LUNR",
-        "UUUU",
-        "CCJ",
-        "NNE",
-        "SMR",
-        "IONQ",
-        "QBTS",
-        "QUBT",
-        "RGTI"
+        "AAPL", "MSFT", "NVDA", "AMZN", "META", "GOOGL", "TSLA", "AMD", "NFLX",
+        "CRM", "ORCL", "ADBE", "INTC", "QCOM", "MU", "AVGO", "TXN", "AMAT", "MRVL",
+        "JPM", "BAC", "GS", "MS", "C", "WFC", "BLK", "SCHW",
+        "UNH", "JNJ", "PFE", "ABBV", "MRK", "BMY", "MRNA",
+        "XOM", "CVX", "SLB", "HAL", "OXY", "ENPH", "NKE", "LMT", "MSTR",
+        "DAL", "AAL", "NCLH", "CCL",
+        "RKLB", "ASTS", "BKSY", "RDW", "LUNR",
+        "UUUU", "CCJ", "NNE", "SMR",
+        "IONQ", "QBTS", "QUBT", "RGTI"
       ]
     },
     {
       "stage": "premarket_scan",
       "count": 8,
-      "tickers": [
-        "NCLH",
-        "UNH",
-        "MSTR",
-        "MSFT",
-        "AMZN",
-        "PFE",
-        "AAPL",
-        "NFLX"
-      ],
+      "tickers": ["NCLH", "UNH", "MSTR", "MSFT", "AMZN", "PFE", "AAPL", "NFLX"],
       "note": "gap>+0.5%"
     },
     {
       "stage": "binary_filters_L1",
       "count": 8,
-      "tickers": [
-        "NCLH",
-        "UNH",
-        "MSTR",
-        "MSFT",
-        "AMZN",
-        "PFE",
-        "AAPL",
-        "NFLX"
-      ]
+      "tickers": ["NCLH", "UNH", "MSTR", "MSFT", "AMZN", "PFE", "AAPL", "NFLX"]
     },
     {
       "stage": "L2_signals_passed",
       "count": 3,
-      "tickers": [
-        "UNH",
-        "AMZN",
-        "PFE"
-      ],
+      "tickers": ["UNH", "AMZN", "PFE"],
       "note": "confidence>=0.65"
     }
   ],
   "premarket_candidates": [
-    {
-      "ticker": "NCLH",
-      "gap_pct": 4.35,
-      "adv_m": 22.8,
-      "short_float_pct": 17.6,
-      "dist_from_3m_high_pct": -14.8
-    },
-    {
-      "ticker": "UNH",
-      "gap_pct": 3.13,
-      "adv_m": 7.8,
-      "short_float_pct": 2.1,
-      "dist_from_3m_high_pct": -3.8
-    },
-    {
-      "ticker": "MSTR",
-      "gap_pct": 1.92,
-      "adv_m": 17.6,
-      "short_float_pct": 12.0,
-      "dist_from_3m_high_pct": -34.5
-    },
-    {
-      "ticker": "MSFT",
-      "gap_pct": 1.47,
-      "adv_m": 35.7,
-      "short_float_pct": 1.0,
-      "dist_from_3m_high_pct": -7.0
-    },
-    {
-      "ticker": "AMZN",
-      "gap_pct": 1.43,
-      "adv_m": 44.9,
-      "short_float_pct": 1.1,
-      "dist_from_3m_high_pct": -9.0
-    },
-    {
-      "ticker": "PFE",
-      "gap_pct": 1.14,
-      "adv_m": 35.3,
-      "short_float_pct": 2.8,
-      "dist_from_3m_high_pct": -10.8
-    },
-    {
-      "ticker": "AAPL",
-      "gap_pct": 0.88,
-      "adv_m": 45.8,
-      "short_float_pct": 0.9,
-      "dist_from_3m_high_pct": -1.2
-    },
-    {
-      "ticker": "NFLX",
-      "gap_pct": 0.54,
-      "adv_m": 38.0,
-      "short_float_pct": 2.3,
-      "dist_from_3m_high_pct": -24.8
-    }
+    {"ticker": "NCLH",  "gap_pct": 4.35, "adv_m": 22.8, "short_float_pct": 17.6, "dist_from_3m_high_pct": -14.8},
+    {"ticker": "UNH",   "gap_pct": 3.13, "adv_m": 7.8,  "short_float_pct": 2.1,  "dist_from_3m_high_pct": -3.8},
+    {"ticker": "MSTR",  "gap_pct": 1.92, "adv_m": 17.6, "short_float_pct": 12.0, "dist_from_3m_high_pct": -34.5},
+    {"ticker": "MSFT",  "gap_pct": 1.47, "adv_m": 35.7, "short_float_pct": 1.0,  "dist_from_3m_high_pct": -7.0},
+    {"ticker": "AMZN",  "gap_pct": 1.43, "adv_m": 44.9, "short_float_pct": 1.1,  "dist_from_3m_high_pct": -9.0},
+    {"ticker": "PFE",   "gap_pct": 1.14, "adv_m": 35.3, "short_float_pct": 2.8,  "dist_from_3m_high_pct": -10.8},
+    {"ticker": "AAPL",  "gap_pct": 0.88, "adv_m": 45.8, "short_float_pct": 0.9,  "dist_from_3m_high_pct": -1.2},
+    {"ticker": "NFLX",  "gap_pct": 0.54, "adv_m": 38.0, "short_float_pct": 2.3,  "dist_from_3m_high_pct": -24.8}
   ],
   "l1_rejects": [],
   "signals": [
     {
-      "ticker": "NCLH",
-      "confidence": 0.05,
-      "passes_threshold": false,
-      "post_open_advance": false,
-      "or_position": 0.1379,
-      "gap_retention": 0.641,
-      "vol_boost": 0.05,
-      "catalyst_bonus": 0.0,
-      "short_float": 0.17559999,
-      "short_squeeze_bonus": 0.0,
-      "gap_pct": 0.04352617079889822
+      "ticker": "NCLH", "confidence": 0.05, "passes_threshold": false,
+      "post_open_advance": false, "or_position": 0.1379, "gap_retention": 0.641,
+      "vol_boost": 0.05, "catalyst_bonus": 0.0, "short_float": 0.17559999,
+      "short_squeeze_bonus": 0.0, "gap_pct": 0.04352617079889822
     },
     {
-      "ticker": "UNH",
-      "confidence": 1.3,
-      "passes_threshold": true,
-      "post_open_advance": true,
-      "or_position": 1.0,
-      "gap_retention": 0.9271,
-      "vol_boost": 0.1,
-      "catalyst_bonus": 0.2,
-      "short_float": 0.0214,
-      "short_squeeze_bonus": 0.0,
-      "gap_pct": 0.03129973474801064
+      "ticker": "UNH", "confidence": 1.3, "passes_threshold": true,
+      "post_open_advance": true, "or_position": 1.0, "gap_retention": 0.9271,
+      "vol_boost": 0.1, "catalyst_bonus": 0.2, "short_float": 0.0214,
+      "short_squeeze_bonus": 0.0, "gap_pct": 0.03129973474801064
     },
     {
-      "ticker": "MSTR",
-      "confidence": 0.3833,
-      "passes_threshold": false,
-      "post_open_advance": true,
-      "or_position": 0.6517,
-      "gap_retention": -16.7778,
-      "vol_boost": 0.05,
-      "catalyst_bonus": 0.0,
-      "short_float": 0.1196,
-      "short_squeeze_bonus": 0.0,
-      "gap_pct": 0.019242166818127845
+      "ticker": "MSTR", "confidence": 0.3833, "passes_threshold": false,
+      "post_open_advance": true, "or_position": 0.6517, "gap_retention": -16.7778,
+      "vol_boost": 0.05, "catalyst_bonus": 0.0, "short_float": 0.1196,
+      "short_squeeze_bonus": 0.0, "gap_pct": 0.019242166818127845
     },
     {
-      "ticker": "MSFT",
-      "confidence": 0.0,
-      "passes_threshold": false,
-      "post_open_advance": false,
-      "or_position": 0.0978,
-      "gap_retention": 0.2078,
-      "vol_boost": 0.0,
-      "catalyst_bonus": 0.0,
-      "short_float": 0.0104,
-      "short_squeeze_bonus": 0.0,
-      "gap_pct": 0.01474235971357704
+      "ticker": "MSFT", "confidence": 0.0, "passes_threshold": false,
+      "post_open_advance": false, "or_position": 0.0978, "gap_retention": 0.2078,
+      "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0104,
+      "short_squeeze_bonus": 0.0, "gap_pct": 0.01474235971357704
     },
     {
-      "ticker": "AMZN",
-      "confidence": 0.6667,
-      "passes_threshold": true,
-      "post_open_advance": true,
-      "or_position": 0.84,
-      "gap_retention": 0.5665,
-      "vol_boost": 0.0,
-      "catalyst_bonus": 0.0,
-      "short_float": 0.0106,
-      "short_squeeze_bonus": 0.0,
-      "gap_pct": 0.014318854491640604
+      "ticker": "AMZN", "confidence": 0.6667, "passes_threshold": true,
+      "post_open_advance": true, "or_position": 0.84, "gap_retention": 0.5665,
+      "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0106,
+      "short_squeeze_bonus": 0.0, "gap_pct": 0.014318854491640604
     },
     {
-      "ticker": "PFE",
-      "confidence": 0.6667,
-      "passes_threshold": true,
-      "post_open_advance": true,
-      "or_position": 0.5312,
-      "gap_retention": 1.0,
-      "vol_boost": 0.0,
-      "catalyst_bonus": 0.0,
-      "short_float": 0.0276,
-      "short_squeeze_bonus": 0.0,
-      "gap_pct": 0.011444356748224117
+      "ticker": "PFE", "confidence": 0.6667, "passes_threshold": true,
+      "post_open_advance": true, "or_position": 0.5312, "gap_retention": 1.0,
+      "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0276,
+      "short_squeeze_bonus": 0.0, "gap_pct": 0.011444356748224117
     },
     {
-      "ticker": "AAPL",
-      "confidence": 0.0,
-      "passes_threshold": false,
-      "post_open_advance": false,
-      "or_position": 0.0528,
-      "gap_retention": 0.122,
-      "vol_boost": 0.0,
-      "catalyst_bonus": 0.0,
-      "short_float": 0.0095,
-      "short_squeeze_bonus": 0.0,
-      "gap_pct": 0.008799071746277375
+      "ticker": "AAPL", "confidence": 0.0, "passes_threshold": false,
+      "post_open_advance": false, "or_position": 0.0528, "gap_retention": 0.122,
+      "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0095,
+      "short_squeeze_bonus": 0.0, "gap_pct": 0.008799071746277375
     },
     {
-      "ticker": "NFLX",
-      "confidence": 0.4333,
-      "passes_threshold": false,
-      "post_open_advance": false,
-      "or_position": 0.25,
-      "gap_retention": 0.8011,
-      "vol_boost": 0.1,
-      "catalyst_bonus": 0.0,
-      "short_float": 0.0234,
-      "short_squeeze_bonus": 0.0,
-      "gap_pct": 0.005397448478900856
+      "ticker": "NFLX", "confidence": 0.4333, "passes_threshold": false,
+      "post_open_advance": false, "or_position": 0.25, "gap_retention": 0.8011,
+      "vol_boost": 0.1, "catalyst_bonus": 0.0, "short_float": 0.0234,
+      "short_squeeze_bonus": 0.0, "gap_pct": 0.005397448478900856
     }
   ],
-  "llm_input": [
-    "UNH",
-    "AMZN",
-    "PFE"
-  ],
+  "llm_input": ["UNH", "AMZN", "PFE"],
   "llm_output": {
     "trade_1": {
       "ticker": "UNH",
@@ -289,5 +108,22 @@
     "trade_2": null,
     "no_trade_reason": "AMZN: gap_retention insufficiente (0.5665 < 0.70) e nessun catalyst diretto identificabile; confidence troppo bassa per un secondo trade. PFE: or_position debole (0.53) e nessuna news recente; segnale puramente tecnico con soli 2/3 criteri, senza catalyst a supporto."
   },
-  "trades": []
+  "trades": [
+    {
+      "ticker": "UNH",
+      "qty": 124,
+      "entry_price": 397.35,
+      "entry_time": "09:35:29",
+      "direction": "long",
+      "confidence": 1.3,
+      "reason": "Multipli upgrade da analisti (KeyBanc, BofA con PT a $450) costituiscono un catalyst Tier 2 solido. Tutti e tre i segnali tecnici attivi (post_open_advance, or_position=1.0, gap_retention=0.93), vol_boost +0.10, titolo a soli -3.8% dai massimi 3 mesi.",
+      "order_id": "7143f67f-1978-4f83-a2d8-d6bf4c7aabd3",
+      "exit_price": 399.155887,
+      "exit_time": "15:49:27",
+      "exit_reason": "manual_close",
+      "pnl_usd": 223.93,
+      "pnl_pct": 0.0045,
+      "_note": "Bot exited early due to false manual-close detection (bug fixed). Position closed manually by user on Alpaca. Entry price is actual Alpaca fill (bot logged $396.00 fallback due to fill-fetch timing bug, also fixed)."
+    }
+  ]
 }
