@@ -58,7 +58,7 @@ def _no_trade_reason(pipeline: dict) -> str:
         return f"{l1} titoli ai filtri, nessuno con segnali tecnici sufficienti. Meglio aspettare un setup pulito."
     tickers_str = ", ".join(l2_tickers) if l2_tickers else f"{l2} candidat{'o' if l2 == 1 else 'i'}"
     if llm_reason:
-        return f"{tickers_str} — {llm_reason}"
+        return f"{tickers_str} — {html.escape(llm_reason)}"
     return f"{tickers_str} arrivati al LLM ma nessuna entry selezionata."
 
 
@@ -157,7 +157,7 @@ def send_eod_recap(
     llm_text: str = "",
     pipeline_summary: dict | None = None,
 ) -> None:
-    text = llm_text if llm_text else _fallback_message(
+    text = html.escape(llm_text) if llm_text else _fallback_message(
         trade_data, spy_pct, daily_pnl, account_equity, date_str, pipeline_summary
     )
     send_message(text)
