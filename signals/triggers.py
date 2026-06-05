@@ -107,6 +107,16 @@ def compute_signals(
         logger.info(f"{ticker}: opened below prev_close (gap reversed at open) — excluding")
         return {}
 
+    # Pre-market gap mostly eaten before the open — skip faded setups
+    if gap_pct and gap_pct > 0:
+        pm_gap_open_retention = (open_930 - prev_close) / (prev_close * gap_pct)
+        if pm_gap_open_retention < config.PM_OPEN_RETENTION:
+            logger.info(
+                f"{ticker}: pre-market gap eaten at open "
+                f"({pm_gap_open_retention:.0%} of pm gap retained) — excluding"
+            )
+            return {}
+
     post_adv      = s1_post_open_advance(open_930, price_935)
     or_pos        = s2_or_position(bars_or, price_935)
     gap_ret       = s3_gap_retention(bars_or, open_930, prev_close)

@@ -186,29 +186,40 @@ def get_atr14(ticker: str) -> float:
 
 
 def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict:
-    """Most recent trade price at ~9:25 ET via snapshot.
-    Only accepts trades from today — stale prints from yesterday are discarded.
+    """Pre-market price at ~9:25 ET.
+    Primary: yfinance (multi-exchange coverage).
+    Fallback: Alpaca IEX snapshot (today's trades only).
     """
     if session_date is None:
         session_date = datetime.now(ET).date()
 
-    pm_price = None
+    # Primary: yfinance — aggregates pre-market prints from all exchanges
+    try:
+        import yfinance as yf
+        info = yf.Ticker(ticker).fast_info
+        pm_price = getattr(info, "pre_market_price", None)
+        if pm_price is not None:
+            logger.debug(f"{ticker}: pre-market price from yfinance ${pm_price:.2f}")
+            return {"premarket_price": float(pm_price)}
+    except Exception as e:
+        logger.debug(f"{ticker}: yfinance pre-market failed ({e}) — trying Alpaca")
+
+    # Fallback: Alpaca IEX snapshot — only accept trades from today
     try:
         snap = get_snapshot(ticker)
         if snap.latest_trade:
             trade_ts = snap.latest_trade.timestamp
-            if hasattr(trade_ts, "date"):
-                trade_date = trade_ts.astimezone(ET).date() if trade_ts.tzinfo else trade_ts.date()
-            else:
-                trade_date = None
+            trade_date = trade_ts.astimezone(ET).date() if trade_ts.tzinfo else trade_ts.date()
             if trade_date == session_date:
                 pm_price = float(snap.latest_trade.price)
+                logger.debug(f"{ticker}: pre-market price from Alpaca IEX ${pm_price:.2f}")
+                return {"premarket_price": pm_price}
             else:
-                logger.debug(f"{ticker}: latest_trade from {trade_date}, not today — skipping")
+                logger.debug(f"{ticker}: Alpaca latest_trade from {trade_date}, not today — skipping")
     except Exception as e:
-        logger.warning(f"Snapshot price error for {ticker}: {e}")
+        logger.warning(f"{ticker}: snapshot price error ({e})")
 
-    return {"premarket_price": pm_price}
+    return {"premarket_price": None}
 
 
 def get_news(ticker: str, start: Optional[datetime] = None, limit: int = 10) -> list[dict]:

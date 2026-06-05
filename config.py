@@ -23,6 +23,7 @@ TELEGRAM_CHAT_ID   = os.getenv("TELEGRAM_CHAT_ID")
 MIN_ADV               = 5_000_000         # 5M shares/day consolidated (SIP)
 MIN_PREMARKET_GAP     = 0.005            # +0.5% — gap meaningfully above yesterday's close
 SPY_BLOCK_THRESHOLD   = -0.020          # -2.0%
+PM_OPEN_RETENTION     = 0.50            # min fraction of pre-market gap still intact at 9:30 open
 
 # === SIGNAL THRESHOLDS (L2) ===
 OR_POSITION_THRESHOLD   = 0.66
