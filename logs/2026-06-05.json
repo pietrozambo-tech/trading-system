@@ -1,0 +1,131 @@
+{
+  "date": "2026-06-05",
+  "spy_pct": -0.00575980554051021,
+  "blocked": "nessun candidato sopra soglia confidence",
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 60,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "TXN",
+        "AMAT",
+        "MRVL",
+        "JPM",
+        "BAC",
+        "GS",
+        "MS",
+        "C",
+        "WFC",
+        "BLK",
+        "SCHW",
+        "UNH",
+        "JNJ",
+        "PFE",
+        "ABBV",
+        "MRK",
+        "BMY",
+        "MRNA",
+        "XOM",
+        "CVX",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "NKE",
+        "LMT",
+        "MSTR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 2,
+      "tickers": [
+        "RDW",
+        "SMR"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 2,
+      "tickers": [
+        "RDW",
+        "SMR"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 0,
+      "tickers": [],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "RDW",
+      "gap_pct": 3.03,
+      "adv_m": 37.1,
+      "short_float_pct": 18.0,
+      "dist_from_3m_high_pct": -17.1
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 2.17,
+      "adv_m": 33.5,
+      "short_float_pct": 19.6,
+      "dist_from_3m_high_pct": -14.3
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "SMR",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.2794,
+      "gap_retention": -1.6154,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.19629999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02166666666666665
+    }
+  ],
+  "llm_input": [],
+  "llm_output": {},
+  "trades": []
+}
