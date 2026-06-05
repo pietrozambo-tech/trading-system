@@ -186,7 +186,9 @@ def get_atr14(ticker: str) -> float:
 
 
 def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict:
-    """Most recent trade price at ~9:25 ET via snapshot."""
+    """Most recent trade price at ~9:25 ET via snapshot.
+    Only accepts trades from today — stale prints from yesterday are discarded.
+    """
     if session_date is None:
         session_date = datetime.now(ET).date()
 
@@ -194,7 +196,15 @@ def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict
     try:
         snap = get_snapshot(ticker)
         if snap.latest_trade:
-            pm_price = float(snap.latest_trade.price)
+            trade_ts = snap.latest_trade.timestamp
+            if hasattr(trade_ts, "date"):
+                trade_date = trade_ts.astimezone(ET).date() if trade_ts.tzinfo else trade_ts.date()
+            else:
+                trade_date = None
+            if trade_date == session_date:
+                pm_price = float(snap.latest_trade.price)
+            else:
+                logger.debug(f"{ticker}: latest_trade from {trade_date}, not today — skipping")
     except Exception as e:
         logger.warning(f"Snapshot price error for {ticker}: {e}")
 
