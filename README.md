@@ -26,6 +26,8 @@ The complete list is in the [Appendix — Watchlist (60 stocks)](#the-watchlist-
 
 The bot scans all 60 stocks looking for ones **gapping up at least +0.5%** above yesterday's close. That's the only filter here — a meaningful overnight move signals that something happened (earnings, news, an upgrade) worth investigating further. Stocks that drifted up 0.2% on no news don't qualify.
 
+Pre-market prices are fetched from **Yahoo Finance** (primary), with Alpaca IEX as fallback. Yahoo Finance aggregates prints from all exchanges (NYSE, NASDAQ, CBOE, etc.), giving full pre-market coverage. Alpaca's free IEX feed only sees ~15–20% of pre-market volume — relying on it alone would miss gappers that trade on other venues.
+
 Pre-market volume is intentionally not filtered here — it's noisy and unreliable in thin pre-market hours. Volume gets measured properly in Stage 3 using the first 5 minutes of real market trading.
 
 ### 2. Quality check — 9:35 AM
@@ -48,8 +50,10 @@ For each stock that passes the quality check, the bot scores 4 signals based on 
 |--------|--------------|---------------------|
 | **Post-open advance** | Did the stock actually move up in the first 5 minutes? | Compare the 9:35 price (last bar close) to the 9:30 open. True if the stock is higher than where it opened — confirming that the gap led to real continuation, not an immediate fade. |
 | **Opening range position** | Is the stock pushing toward the top of its early range, not the bottom? | Take the highest and lowest price between 9:30 and 9:35. Calculate where the current price sits within that range as a percentage (0% = at the low, 100% = at the high). We require ≥66% — meaning the stock is in the upper third. |
-| **Gap retention** | Is the pre-market gap holding, or is it already being sold off? | Compare the size of the gap at open (today's open minus yesterday's close) with how much of it has been "eaten" by sellers during the first 5 minutes (measured by how far the price dipped from the open). We require ≥70% of the gap still intact. |
+| **Gap retention** | Is the open gap holding, or is it already being sold off? | Compare the size of the gap at open (today's open minus yesterday's close) with how much of it has been "eaten" by sellers during the first 5 minutes (measured by how far the price dipped from the open). We require ≥70% of the gap still intact. |
 | **Volume boost** | Is today unusually active in the first 5 minutes? | Total shares traded 9:30–9:35 today, divided by the average of the same 9:30–9:35 window over the past 20 trading days. >3× average = +0.10 bonus, 2–3× = +0.05, below 2× = no bonus. |
+
+Before these four signals are computed, there is an additional **pre-open gate**: if less than 50% of the pre-market gap is still intact at the 9:30 open, the stock is excluded immediately. A stock gapping +5% pre-market but opening at only +1% has already lost most of its momentum before the market even opened — that is not a gap-and-go setup, and entering it would mean chasing a faded move.
 
 The first three signals (Post-open advance, Opening Range, Gap Retention) are **binary and equally weighted** — each one is either true or false, and each contributes exactly 1/3 to the base score. Volume boost and catalyst are additive bonuses on top.
 
@@ -296,6 +300,25 @@ The JSON contains:
   "trades": [ ... ]
 }
 ```
+
+---
+
+## Live trading — first week (June 2026)
+
+The system went live on **June 4, 2026** (paper trading). Notes from the first two sessions:
+
+**June 4 — UNH long, +$223.93 (+0.45%)**
+UNH gapped +3.1% on multiple analyst upgrades (KeyBanc, BofA PT $450). Confidence 1.30 — all three signals, Tier 2 catalyst, vol boost. Three bugs surfaced and were fixed same day:
+
+- **False manual-close detection:** Alpaca paper trading can take up to 3 minutes to reflect a fill in `get_all_positions()`. The first monitoring cycle (60s after entry) found the position "missing" and removed it from tracking. Fix: 3-minute grace period before reconciliation runs on any newly opened position.
+- **Wrong entry price in log:** After placing a market order, the bot waited only 1 second for `filled_avg_price` via API — not enough. The actual fill ($397.35) was logged as the pre-order IEX ask ($396.00), so the stop was anchored to the wrong price. Fix: retry up to 5 times (1s, 2s, 3s, 4s, 5s) before falling back to the IEX estimate.
+- **Telegram 400 error:** LLM-generated `no_trade_reason` text contained `(0.57 < 0.70)` — the `<` character breaks Telegram's HTML parse mode. Fix: `html.escape()` on all LLM-generated text before sending.
+
+**June 5 — no trade**
+SPY −0.58%, only RDW (+3.0%) and SMR (+2.2%) in pre-market. Both failed L2 — SMR gap fully reversed at open (gap_retention −1.6), RDW had insufficient IEX bar data. Two structural improvements shipped:
+
+- **Pre-market data source:** switched from Alpaca IEX (15–20% of volume) to Yahoo Finance as primary source, IEX as fallback. Yahoo aggregates all exchanges, eliminating the risk of missing gappers that trade on non-IEX venues.
+- **Pre-open gate:** new filter in `compute_signals` — if less than 50% of the pre-market gap is intact at the 9:30 open, the ticker is excluded before L2 signals are computed. Catches setups where the gap faded in the minutes before the open.
 
 ---
 
