@@ -157,6 +157,18 @@ tr:hover td {{ background: rgba(255,255,255,.025); }}
 
 /* SVG charts */
 svg text {{ font-family: -apple-system, sans-serif; }}
+
+/* Filter bar */
+.filter-bar {{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px; padding:12px 16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r); }}
+.filter-label {{ font-size:11px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.05em; }}
+.qbtn {{ background:transparent; border:1px solid var(--border); color:var(--muted); padding:4px 13px; border-radius:20px; font-size:12px; cursor:pointer; transition:all .15s; white-space:nowrap; }}
+.qbtn:hover {{ border-color:var(--blue); color:var(--text); }}
+.qbtn.active {{ background:var(--blue); border-color:var(--blue); color:#fff; font-weight:600; }}
+.filter-sep {{ width:1px; height:20px; background:var(--border); margin:0 4px; }}
+.filter-bar label {{ font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px; }}
+.filter-bar input[type=date] {{ background:var(--bg); border:1px solid var(--border); color:var(--text); padding:4px 8px; border-radius:6px; font-size:12px; cursor:pointer; }}
+.apply-btn {{ background:var(--blue); border:none; color:#fff; padding:5px 13px; border-radius:6px; font-size:12px; cursor:pointer; font-weight:500; }}
+.apply-btn:hover {{ opacity:.85; }}
 </style>
 </head>
 <body>
@@ -164,6 +176,19 @@ svg text {{ font-family: -apple-system, sans-serif; }}
 <div class="header">
   <h1>📈 Trading Dashboard — Gap &amp; Go</h1>
   <span class="updated">Aggiornato: {updated}</span>
+</div>
+
+<!-- Filter bar -->
+<div class="filter-bar">
+  <span class="filter-label">Periodo</span>
+  <button class="qbtn active" data-days="0">Tutto</button>
+  <button class="qbtn" data-days="7">7 giorni</button>
+  <button class="qbtn" data-days="30">30 giorni</button>
+  <button class="qbtn" data-days="90">90 giorni</button>
+  <div class="filter-sep"></div>
+  <label>Dal <input type="date" id="dateFrom"></label>
+  <label>Al&nbsp; <input type="date" id="dateTo"></label>
+  <button class="apply-btn" id="applyRange">Applica</button>
 </div>
 
 <!-- KPI cards -->
@@ -252,209 +277,253 @@ const EXIT_LABELS = {{
   vwap_exit:"VWAP take-profit", eod_close:"EOD close", manual_close:"Manual close"
 }};
 
-// ── Micro helpers ─────────────────────────────────────────────────────────────
-const fu  = (n,d=2) => n==null ? "—" : parseFloat(n).toFixed(d);
-const fpm = (n,d=2) => n==null ? "—" : (n>=0?"+":"")+parseFloat(n).toFixed(d);
-const pct = n       => n==null ? "—" : (n*100).toFixed(1)+"%";
-const tk  = v       => v ? '<span class="tk">✓</span>' : '<span class="cx">✗</span>';
-const cls = n       => n>0?"pos":n<0?"neg":"neu";
-
-function badge(t,c){{ return `<span class="b ${{c}}">${{t}}</span>`; }}
-function confBar(c){{
-  const w = Math.min(Math.round((c||0)/1.53*56),56);
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const fu  = (n,d=2) => n==null?"—":parseFloat(n).toFixed(d);
+const fpm = (n,d=2) => n==null?"—":(n>=0?"+":"")+parseFloat(n).toFixed(d);
+const tk  = v => v?'<span class="tk">✓</span>':'<span class="cx">✗</span>';
+const cls = n => n>0?"pos":n<0?"neg":"neu";
+const badge = (t,c) => `<span class="b ${{c}}">${{t}}</span>`;
+const confBar = c => {{
+  const w=Math.min(Math.round((c||0)/1.53*56),56);
   return `<span class="cb" style="width:${{w}}px"></span>${{fu(c,3)}}`;
+}};
+
+// ── Stats (recomputed on filtered subset) ─────────────────────────────────────
+function computeStats(logs) {{
+  const trades = logs.flatMap(r=>r.trades);
+  const totalPnl = +trades.reduce((s,t)=>s+(t.pnl_usd||0),0).toFixed(2);
+  const wins     = trades.filter(t=>(t.pnl_usd||0)>0);
+  const losses   = trades.filter(t=>(t.pnl_usd||0)<=0);
+  return {{
+    total_pnl:      totalPnl,
+    total_pnl_pct:  +(totalPnl/STATS.initial_equity*100).toFixed(3),
+    win_rate:       trades.length?+(wins.length/trades.length*100).toFixed(1):0,
+    n_trades:       trades.length,
+    n_wins:         wins.length,
+    n_losses:       losses.length,
+    avg_win:        wins.length  ?+(wins.reduce((s,t)=>s+(t.pnl_usd||0),0)/wins.length).toFixed(2):0,
+    avg_loss:       losses.length?+(losses.reduce((s,t)=>s+(t.pnl_usd||0),0)/losses.length).toFixed(2):0,
+    avg_conf:       trades.length?+(trades.reduce((s,t)=>s+(t.confidence||0),0)/trades.length).toFixed(2):0,
+    trade_days:     logs.filter(r=>r.trades.length>0).length,
+    total_days:     logs.length,
+    initial_equity: STATS.initial_equity,
+  }};
 }}
 
 // ── KPIs ──────────────────────────────────────────────────────────────────────
-const kpis = [
-  {{ l:"P&L totale",         v:(STATS.total_pnl>=0?"+$":"−$")+Math.abs(STATS.total_pnl).toFixed(2),           c:cls(STATS.total_pnl),         s:`${{STATS.trade_days}} trade days / ${{STATS.total_days}} giorni` }},
-  {{ l:"P&L % portafoglio",  v:STATS.n_trades?(STATS.total_pnl_pct>=0?"+":"")+STATS.total_pnl_pct.toFixed(3)+"%":"—", c:cls(STATS.total_pnl_pct), s:`su equity iniziale ${{(STATS.initial_equity/1000).toFixed(0)}}k` }},
-  {{ l:"Win rate",           v:STATS.n_trades?STATS.win_rate+"%":"—",                                          c:"neu",                        s:`${{STATS.n_wins}}W · ${{STATS.n_losses}}L · ${{STATS.n_trades}} trade` }},
-  {{ l:"Avg win",            v:STATS.n_wins  ?"+$"+STATS.avg_win.toFixed(2):"—",                               c:"pos",                        s:"per trade vincente" }},
-  {{ l:"Avg loss",           v:STATS.n_losses?"−$"+Math.abs(STATS.avg_loss).toFixed(2):"—",                    c:STATS.n_losses?"neg":"mut",   s:"per trade perdente" }},
-  {{ l:"Avg confidence",     v:STATS.n_trades?STATS.avg_conf.toFixed(2):"—",                                   c:"neu",                        s:"soglia min: 0.65" }},
-];
-document.getElementById("kpis").innerHTML = kpis.map(k=>
-  `<div class="kpi"><div class="lbl">${{k.l}}</div><div class="val ${{k.c}}">${{k.v}}</div><div class="sub">${{k.s}}</div></div>`
-).join("");
+function renderKpis(st) {{
+  const kpis = [
+    {{ l:"P&L totale",        v:(st.total_pnl>=0?"+$":"−$")+Math.abs(st.total_pnl).toFixed(2),                    c:cls(st.total_pnl),       s:`${{st.trade_days}} trade days / ${{st.total_days}} giorni` }},
+    {{ l:"P&L % portafoglio", v:st.n_trades?(st.total_pnl_pct>=0?"+":"")+st.total_pnl_pct.toFixed(3)+"%":"—",     c:cls(st.total_pnl_pct),   s:`su equity iniziale ${{(st.initial_equity/1000).toFixed(0)}}k` }},
+    {{ l:"Win rate",          v:st.n_trades?st.win_rate+"%":"—",                                                    c:"neu",                   s:`${{st.n_wins}}W · ${{st.n_losses}}L · ${{st.n_trades}} trade` }},
+    {{ l:"Avg win",           v:st.n_wins  ?"+$"+st.avg_win.toFixed(2):"—",                                        c:"pos",                   s:"per trade vincente" }},
+    {{ l:"Avg loss",          v:st.n_losses?"−$"+Math.abs(st.avg_loss).toFixed(2):"—",                             c:st.n_losses?"neg":"mut", s:"per trade perdente" }},
+    {{ l:"Avg confidence",    v:st.n_trades?st.avg_conf.toFixed(2):"—",                                            c:"neu",                   s:"soglia min: 0.65" }},
+  ];
+  document.getElementById("kpis").innerHTML=kpis.map(k=>
+    `<div class="kpi"><div class="lbl">${{k.l}}</div><div class="val ${{k.c}}">${{k.v}}</div><div class="sub">${{k.s}}</div></div>`
+  ).join("");
+}}
 
-// ── SVG bar chart — P&L giornaliero ──────────────────────────────────────────
-(function(){{
-  const W=560, H=160, pad={{t:10,r:10,b:30,l:52}};
-  const iW=W-pad.l-pad.r, iH=H-pad.t-pad.b;
-  const vals = LOGS.map(r=>r.daily_pnl);
-  const dates = LOGS.map(r=>r.date.slice(5));
-  const maxAbs = Math.max(...vals.map(Math.abs), 1);
-  const barW = Math.max(6, Math.floor(iW/vals.length*0.6));
-  const zero = pad.t + iH/2;
-
-  // y-axis labels
-  const yLabels = [-maxAbs, -maxAbs/2, 0, maxAbs/2, maxAbs].map(v=>{{
-    const y = pad.t + iH/2 - (v/maxAbs)*(iH/2);
-    const label = v===0?"$0":(v>0?"+$":"-$")+Math.abs(v).toFixed(0);
-    return `<text x="${{pad.l-6}}" y="${{y+4}}" text-anchor="end" fill="#8892a4" font-size="10">${{label}}</text>
+// ── P&L bar chart ─────────────────────────────────────────────────────────────
+function renderPnlChart(logs) {{
+  const el=document.getElementById("chartPnl");
+  if(!logs.length){{el.innerHTML='<p style="color:var(--muted);padding:20px 0;font-size:12px">Nessun dato</p>';return;}}
+  const W=560,H=160,pad={{t:10,r:10,b:30,l:52}};
+  const iW=W-pad.l-pad.r,iH=H-pad.t-pad.b;
+  const vals=logs.map(r=>r.daily_pnl), dates=logs.map(r=>r.date.slice(5));
+  const maxAbs=Math.max(...vals.map(Math.abs),1);
+  const barW=Math.max(6,Math.floor(iW/vals.length*0.6));
+  const zero=pad.t+iH/2;
+  const yLabels=[-maxAbs,-maxAbs/2,0,maxAbs/2,maxAbs].map(v=>{{
+    const y=pad.t+iH/2-(v/maxAbs)*(iH/2);
+    const lbl=v===0?"$0":(v>0?"+$":"-$")+Math.abs(v).toFixed(0);
+    return `<text x="${{pad.l-6}}" y="${{y+4}}" text-anchor="end" fill="#8892a4" font-size="10">${{lbl}}</text>
             <line x1="${{pad.l}}" y1="${{y}}" x2="${{W-pad.r}}" y2="${{y}}" stroke="#2a2d3a" stroke-width="1"/>`;
   }}).join("");
-
-  const bars = vals.map((v,i)=>{{
-    const x = pad.l + (i+0.5)*iW/vals.length - barW/2;
-    const bH = Math.abs(v)/maxAbs*(iH/2);
-    const y  = v>=0 ? zero-bH : zero;
-    const fill = v>0?"#22c55e":v<0?"#ef4444":"#8892a4";
-    return `<rect x="${{x.toFixed(1)}}" y="${{y.toFixed(1)}}" width="${{barW}}" height="${{Math.max(bH,1).toFixed(1)}}" fill="${{fill}}" rx="3"/>`;
+  const bars=vals.map((v,i)=>{{
+    const x=pad.l+(i+0.5)*iW/vals.length-barW/2;
+    const bH=Math.abs(v)/maxAbs*(iH/2);
+    const y=v>=0?zero-bH:zero;
+    return `<rect x="${{x.toFixed(1)}}" y="${{y.toFixed(1)}}" width="${{barW}}" height="${{Math.max(bH,1).toFixed(1)}}" fill="${{v>0?"#22c55e":v<0?"#ef4444":"#8892a4"}}" rx="3"/>`;
   }}).join("");
-
-  const xLabels = dates.map((d,i)=>{{
-    const x = pad.l + (i+0.5)*iW/vals.length;
+  const xLabels=dates.map((d,i)=>{{
+    const x=pad.l+(i+0.5)*iW/vals.length;
     return `<text x="${{x.toFixed(1)}}" y="${{H-4}}" text-anchor="middle" fill="#8892a4" font-size="10">${{d}}</text>`;
   }}).join("");
-
-  const el = document.getElementById("chartPnl");
-  el.innerHTML = `<svg viewBox="0 0 ${{W}} ${{H}}" style="width:100%;max-width:${{W}}px;display:block">
+  el.innerHTML=`<svg viewBox="0 0 ${{W}} ${{H}}" style="width:100%;max-width:${{W}}px;display:block">
     ${{yLabels}}
     <line x1="${{pad.l}}" y1="${{zero}}" x2="${{W-pad.r}}" y2="${{zero}}" stroke="#4a4d5a" stroke-width="1"/>
-    ${{bars}}${{xLabels}}
-  </svg>`;
-}})();
+    ${{bars}}${{xLabels}}</svg>`;
+}}
 
-// ── SVG donut — Exit reasons ──────────────────────────────────────────────────
-(function(){{
-  const counts = {{}};
-  LOGS.forEach(r=>r.trades.forEach(t=>{{
-    const k = EXIT_LABELS[t.exit_reason]||t.exit_reason||"Unknown";
+// ── Exit donut ────────────────────────────────────────────────────────────────
+function renderExitDonut(logs) {{
+  const counts={{}};
+  logs.forEach(r=>r.trades.forEach(t=>{{
+    const k=EXIT_LABELS[t.exit_reason]||t.exit_reason||"Unknown";
     counts[k]=(counts[k]||0)+1;
   }}));
-  const keys = Object.keys(counts);
-  if(!keys.length){{
-    document.getElementById("chartExit").innerHTML='<p style="color:var(--muted);font-size:12px;padding:20px 0">Nessun trade chiuso</p>';
-    return;
-  }}
-  const total = keys.reduce((s,k)=>s+counts[k],0);
+  const keys=Object.keys(counts);
+  if(!keys.length){{document.getElementById("chartExit").innerHTML='<p style="color:var(--muted);font-size:12px;padding:20px 0">Nessun trade chiuso</p>';return;}}
+  const total=keys.reduce((s,k)=>s+counts[k],0);
   const colors=["#3b82f6","#22c55e","#f59e0b","#ef4444","#8b5cf6","#8892a4"];
-  const R=60,cx=80,cy=80,r2=30;
-  let angle=-Math.PI/2;
-  const slices = keys.map((k,i)=>{{
-    const frac = counts[k]/total;
-    const a1=angle, a2=angle+frac*2*Math.PI;
-    angle=a2;
-    const x1=cx+R*Math.cos(a1),y1=cy+R*Math.sin(a1);
-    const x2=cx+R*Math.cos(a2),y2=cy+R*Math.sin(a2);
-    const large=frac>0.5?1:0;
-    return `<path d="M${{cx}},${{cy}} L${{x1.toFixed(1)}},${{y1.toFixed(1)}} A${{R}},${{R}} 0 ${{large}},1 ${{x2.toFixed(1)}},${{y2.toFixed(1)}} Z" fill="${{colors[i%colors.length]}}"/>`;
+  const R=60,cx=80,cy=80; let angle=-Math.PI/2;
+  const slices=keys.map((k,i)=>{{
+    const frac=counts[k]/total,a1=angle,a2=angle+frac*2*Math.PI; angle=a2;
+    const x1=cx+R*Math.cos(a1),y1=cy+R*Math.sin(a1),x2=cx+R*Math.cos(a2),y2=cy+R*Math.sin(a2);
+    return `<path d="M${{cx}},${{cy}} L${{x1.toFixed(1)}},${{y1.toFixed(1)}} A${{R}},${{R}} 0 ${{frac>0.5?1:0}},1 ${{x2.toFixed(1)}},${{y2.toFixed(1)}} Z" fill="${{colors[i%colors.length]}}"/>`;
   }}).join("");
-  // hole
-  const hole=`<circle cx="${{cx}}" cy="${{cy}}" r="${{r2}}" fill="var(--surface)"/>`;
-  // legend
-  const legend = keys.map((k,i)=>
+  const legend=keys.map((k,i)=>
     `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
       <span style="width:10px;height:10px;border-radius:2px;background:${{colors[i%colors.length]}};flex-shrink:0"></span>
-      <span style="font-size:12px;color:var(--text)">${{k}} (${{counts[k]}})</span>
-    </div>`
-  ).join("");
+      <span style="font-size:12px">${{k}} (${{counts[k]}})</span></div>`).join("");
   document.getElementById("chartExit").innerHTML=
     `<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-      <svg viewBox="0 0 160 160" style="width:120px;flex-shrink:0"><circle cx="${{cx}}" cy="${{cy}}" r="${{R}}" fill="var(--border)"/>${{slices}}${{hole}}</svg>
-      <div>${{legend}}</div>
-    </div>`;
-}})();
+      <svg viewBox="0 0 160 160" style="width:120px;flex-shrink:0">
+        <circle cx="${{cx}}" cy="${{cy}}" r="${{R}}" fill="var(--border)"/>
+        ${{slices}}<circle cx="${{cx}}" cy="${{cy}}" r="30" fill="var(--surface)"/>
+      </svg><div>${{legend}}</div></div>`;
+}}
 
 // ── Trade log ─────────────────────────────────────────────────────────────────
-const tradeRows=[];
-LOGS.forEach(r=>{{
-  r.trades.forEach(t=>{{
-    const pnl=t.pnl_usd??null, pp=t.pnl_pct??null;
-    const sc=cls(pnl);
+function renderTradeLog(logs) {{
+  const rows=[];
+  logs.forEach(r=>r.trades.forEach(t=>{{
+    const pnl=t.pnl_usd??null,pp=t.pnl_pct??null,sc=cls(pnl);
     const cat=t.catalyst_bonus>=0.30?"T1":t.catalyst_bonus>=0.20?"T2":t.catalyst_bonus>=0.10?"T3":"—";
-    const catC=t.catalyst_bonus>=0.20?"bb":t.catalyst_bonus>=0.10?"bb":"bmu";
-    tradeRows.push(`<tr>
-      <td>${{r.date.slice(5)}}</td>
-      <td><strong>${{t.ticker}}</strong></td>
+    rows.push(`<tr>
+      <td>${{r.date.slice(5)}}</td><td><strong>${{t.ticker}}</strong></td>
       <td>${{t.entry_price!=null?"$"+fu(t.entry_price):"—"}}</td>
       <td>${{t.exit_price !=null?"$"+fu(t.exit_price) :"—"}}</td>
       <td>${{t.qty??"—"}}</td>
       <td class="${{sc}}">${{pnl!=null?(pnl>=0?"+$":"−$")+Math.abs(pnl).toFixed(2):"—"}}</td>
-      <td class="${{sc}}">${{pp!=null?(pp>=0?"+":"")+( pp*100).toFixed(2)+"%":"—"}}</td>
-      <td>${{badge(EXIT_LABELS[t.exit_reason]||t.exit_reason||"—", sc==="pos"?"bg":sc==="neg"?"br":"bmu")}}</td>
+      <td class="${{sc}}">${{pp!=null?(pp>=0?"+":"")+(pp*100).toFixed(2)+"%":"—"}}</td>
+      <td>${{badge(EXIT_LABELS[t.exit_reason]||t.exit_reason||"—",sc==="pos"?"bg":sc==="neg"?"br":"bmu")}}</td>
       <td>${{confBar(t.confidence)}}</td>
       <td class="pos">${{t.gap_pct!=null?fpm(t.gap_pct*100,1)+"%":"—"}}</td>
-      <td>${{badge(cat,catC)}}</td>
+      <td>${{badge(cat,t.catalyst_bonus>=0.20?"bb":t.catalyst_bonus>=0.10?"bb":"bmu")}}</td>
       <td>${{t.vol_boost?"+"+parseFloat(t.vol_boost).toFixed(2):"—"}}</td>
       <td>${{t.short_float!=null?(t.short_float*100).toFixed(1)+"%":"—"}}</td>
     </tr>`);
-  }});
-}});
-document.getElementById("tradeRows").innerHTML=tradeRows.length
-  ?tradeRows.join("")
-  :'<tr><td colspan="13" style="color:var(--muted);text-align:center;padding:24px">Nessun trade ancora</td></tr>';
+  }}));
+  document.getElementById("tradeRows").innerHTML=rows.length
+    ?rows.join("")
+    :'<tr><td colspan="13" style="color:var(--muted);text-align:center;padding:24px">Nessun trade ancora</td></tr>';
+}}
 
 // ── Funnel ────────────────────────────────────────────────────────────────────
-document.getElementById("funnelRows").innerHTML=LOGS.map(r=>{{
-  const sc=cls(r.daily_pnl);
-  const note=r.blocked||(r.trades.length?"✓ trade eseguito":"LLM: nessuna entry");
-  return `<tr>
-    <td>${{r.date.slice(5)}}</td>
-    <td class="${{cls(r.spy_pct)}}">${{fpm(r.spy_pct*100,2)}}%</td>
-    <td>60</td>
-    <td>${{r.premarket_count}}</td>
-    <td>${{r.l1_count}}</td>
-    <td>${{r.l2_count}}</td>
-    <td>${{r.llm_input.length}}</td>
-    <td>${{r.trades.length}}</td>
-    <td class="${{sc}}">${{r.daily_pnl!==0?(r.daily_pnl>0?"+$":"−$")+Math.abs(r.daily_pnl).toFixed(2):"—"}}</td>
-    <td class="mut" style="font-size:12px;white-space:normal;max-width:200px">${{note}}</td>
-  </tr>`;
-}}).join("");
+function renderFunnel(logs) {{
+  document.getElementById("funnelRows").innerHTML=logs.map(r=>{{
+    const sc=cls(r.daily_pnl);
+    const note=r.blocked||(r.trades.length?"✓ trade eseguito":"LLM: nessuna entry");
+    return `<tr>
+      <td>${{r.date.slice(5)}}</td>
+      <td class="${{cls(r.spy_pct)}}">${{fpm(r.spy_pct*100,2)}}%</td>
+      <td>60</td><td>${{r.premarket_count}}</td><td>${{r.l1_count}}</td>
+      <td>${{r.l2_count}}</td><td>${{r.llm_input.length}}</td><td>${{r.trades.length}}</td>
+      <td class="${{sc}}">${{r.daily_pnl!==0?(r.daily_pnl>0?"+$":"−$")+Math.abs(r.daily_pnl).toFixed(2):"—"}}</td>
+      <td class="mut" style="font-size:12px;white-space:normal;max-width:200px">${{note}}</td>
+    </tr>`;
+  }}).join("");
+}}
 
 // ── L2 signals ────────────────────────────────────────────────────────────────
-const sigRows=[];
-LOGS.forEach(r=>{{
-  const tradedTickers=r.trades.map(t=>t.ticker);
-  r.signals.forEach(s=>{{
-    const pass=s.passes_threshold;
-    const traded=tradedTickers.includes(s.ticker);
-    sigRows.push(`<tr>
-      <td>${{r.date.slice(5)}}</td>
-      <td><strong>${{s.ticker}}</strong></td>
-      <td>${{confBar(s.confidence)}}</td>
-      <td>${{tk(s.post_open_advance)}}</td>
-      <td class="${{(s.or_position||0)>0.66?"pos":"neg"}}">${{fu(s.or_position,2)}}</td>
-      <td class="${{(s.gap_retention||0)>0.70?"pos":"neg"}}">${{fu(s.gap_retention,2)}}</td>
-      <td>${{s.vol_boost?"+"+parseFloat(s.vol_boost).toFixed(2):"—"}}</td>
-      <td>${{s.catalyst_bonus?"+"+parseFloat(s.catalyst_bonus).toFixed(2):"—"}}</td>
-      <td>${{s.short_float!=null?(s.short_float*100).toFixed(1)+"%":"—"}}</td>
-      <td>${{s.short_squeeze_bonus?badge("+"+parseFloat(s.short_squeeze_bonus).toFixed(2),"bb"):"—"}}</td>
-      <td class="pos">${{s.gap_pct!=null?fpm(s.gap_pct*100,1)+"%":"—"}}</td>
-      <td>
-        ${{badge(pass?"PASS":"REJECT",pass?"bg":"bmu")}}
-        ${{traded?badge("TRADED","bb"):""}}
-      </td>
-    </tr>`);
+function renderSignals(logs) {{
+  const rows=[];
+  logs.forEach(r=>{{
+    const tradedTickers=r.trades.map(t=>t.ticker);
+    r.signals.forEach(s=>{{
+      const pass=s.passes_threshold,traded=tradedTickers.includes(s.ticker);
+      rows.push(`<tr>
+        <td>${{r.date.slice(5)}}</td><td><strong>${{s.ticker}}</strong></td>
+        <td>${{confBar(s.confidence)}}</td>
+        <td>${{tk(s.post_open_advance)}}</td>
+        <td class="${{(s.or_position||0)>0.66?"pos":"neg"}}">${{fu(s.or_position,2)}}</td>
+        <td class="${{(s.gap_retention||0)>0.70?"pos":"neg"}}">${{fu(s.gap_retention,2)}}</td>
+        <td>${{s.vol_boost?"+"+parseFloat(s.vol_boost).toFixed(2):"—"}}</td>
+        <td>${{s.catalyst_bonus?"+"+parseFloat(s.catalyst_bonus).toFixed(2):"—"}}</td>
+        <td>${{s.short_float!=null?(s.short_float*100).toFixed(1)+"%":"—"}}</td>
+        <td>${{s.short_squeeze_bonus?badge("+"+parseFloat(s.short_squeeze_bonus).toFixed(2),"bb"):"—"}}</td>
+        <td class="pos">${{s.gap_pct!=null?fpm(s.gap_pct*100,1)+"%":"—"}}</td>
+        <td>${{badge(pass?"PASS":"REJECT",pass?"bg":"bmu")}} ${{traded?badge("TRADED","bb"):""}}</td>
+      </tr>`);
+    }});
   }});
-}});
-document.getElementById("signalRows").innerHTML=sigRows.length
-  ?sigRows.join("")
-  :'<tr><td colspan="12" style="color:var(--muted);text-align:center;padding:24px">Nessun segnale L2</td></tr>';
+  document.getElementById("signalRows").innerHTML=rows.length
+    ?rows.join("")
+    :'<tr><td colspan="12" style="color:var(--muted);text-align:center;padding:24px">Nessun segnale L2</td></tr>';
+}}
 
-// ── Pre-market candidates ─────────────────────────────────────────────────────
-const pmRows=[];
-LOGS.forEach(r=>{{
-  const l2t=r.signals.map(s=>s.ticker);
-  r.premarket_candidates.forEach(c=>{{
-    const adv=l2t.includes(c.ticker);
-    pmRows.push(`<tr>
-      <td>${{r.date.slice(5)}}</td>
-      <td><strong>${{c.ticker}}</strong></td>
-      <td class="pos">+${{fu(c.gap_pct,2)}}%</td>
-      <td>${{fu(c.adv_m,1)}}M</td>
-      <td>${{c.short_float_pct!=null?c.short_float_pct.toFixed(1)+"%":"—"}}</td>
-      <td class="${{(c.dist_from_3m_high_pct||0)>-5?"pos":"neg"}}">${{fpm(c.dist_from_3m_high_pct,1)}}%</td>
-      <td>${{badge(adv?"Sì":"No",adv?"bg":"bmu")}}</td>
-    </tr>`);
+// ── Pre-market ────────────────────────────────────────────────────────────────
+function renderPremarket(logs) {{
+  const rows=[];
+  logs.forEach(r=>{{
+    const l2t=r.signals.map(s=>s.ticker);
+    r.premarket_candidates.forEach(c=>{{
+      const adv=l2t.includes(c.ticker);
+      rows.push(`<tr>
+        <td>${{r.date.slice(5)}}</td><td><strong>${{c.ticker}}</strong></td>
+        <td class="pos">+${{fu(c.gap_pct,2)}}%</td>
+        <td>${{fu(c.adv_m,1)}}M</td>
+        <td>${{c.short_float_pct!=null?c.short_float_pct.toFixed(1)+"%":"—"}}</td>
+        <td class="${{(c.dist_from_3m_high_pct||0)>-5?"pos":"neg"}}">${{fpm(c.dist_from_3m_high_pct,1)}}%</td>
+        <td>${{badge(adv?"Sì":"No",adv?"bg":"bmu")}}</td>
+      </tr>`);
+    }});
+  }});
+  document.getElementById("pmRows").innerHTML=rows.length
+    ?rows.join("")
+    :'<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">Nessun candidato pre-market</td></tr>';
+}}
+
+// ── Master render ─────────────────────────────────────────────────────────────
+function renderAll(logs) {{
+  renderKpis(computeStats(logs));
+  renderPnlChart(logs);
+  renderExitDonut(logs);
+  renderTradeLog(logs);
+  renderFunnel(logs);
+  renderSignals(logs);
+  renderPremarket(logs);
+}}
+
+// ── Filter logic ──────────────────────────────────────────────────────────────
+function filterLogs(from, to) {{
+  return LOGS.filter(r => (!from || r.date >= from) && (!to || r.date <= to));
+}}
+
+function applyDateFilter() {{
+  const from=document.getElementById("dateFrom").value||null;
+  const to  =document.getElementById("dateTo").value  ||null;
+  document.querySelectorAll(".qbtn").forEach(b=>b.classList.remove("active"));
+  renderAll(filterLogs(from, to));
+}}
+
+document.querySelectorAll(".qbtn").forEach(btn=>{{
+  btn.addEventListener("click", ()=>{{
+    document.querySelectorAll(".qbtn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const days=+btn.dataset.days;
+    if(days===0){{
+      document.getElementById("dateFrom").value="";
+      document.getElementById("dateTo").value="";
+      renderAll(LOGS);
+    }} else {{
+      const from=new Date(); from.setDate(from.getDate()-days);
+      const fromStr=from.toISOString().slice(0,10);
+      document.getElementById("dateFrom").value=fromStr;
+      document.getElementById("dateTo").value="";
+      renderAll(filterLogs(fromStr,null));
+    }}
   }});
 }});
-document.getElementById("pmRows").innerHTML=pmRows.length
-  ?pmRows.join("")
-  :'<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">Nessun candidato pre-market</td></tr>';
+
+document.getElementById("applyRange").addEventListener("click", applyDateFilter);
+["dateFrom","dateTo"].forEach(id=>document.getElementById(id).addEventListener("change", applyDateFilter));
+
+// Initial render
+renderAll(LOGS);
 </script>
 </body>
 </html>"""
