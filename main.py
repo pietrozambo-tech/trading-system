@@ -33,6 +33,45 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
+def _push_log_to_github(date_str: str, local_path: str) -> None:
+    """Commit the daily log to GitHub via REST API so GH Actions rebuilds the dashboard."""
+    import base64
+    import requests
+
+    token = os.getenv("GITHUB_PAT")
+    if not token:
+        logger.debug("GITHUB_PAT not set — skipping GitHub log push")
+        return
+
+    repo    = "pietrozambo-tech/trading-system"
+    gh_path = f"logs/{date_str}.json"
+    url     = f"https://api.github.com/repos/{repo}/contents/{gh_path}"
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+
+    try:
+        with open(local_path, "rb") as f:
+            content = base64.b64encode(f.read()).decode()
+
+        sha = None
+        r = requests.get(url, headers=headers, timeout=10)
+        if r.status_code == 200:
+            sha = r.json().get("sha")
+
+        payload: dict = {"message": f"trading log {date_str}", "content": content, "branch": "main"}
+        if sha:
+            payload["sha"] = sha
+
+        r = requests.put(url, headers=headers, json=payload, timeout=30)
+        r.raise_for_status()
+        logger.info(f"[PIPELINE] Log pushato su GitHub: {gh_path}")
+    except Exception as e:
+        logger.error(f"[PIPELINE] GitHub push fallito (non critico): {e}")
+
 ET = pytz.timezone("America/New_York")
 
 UNIVERSE = [
@@ -119,6 +158,7 @@ class PipelineLog:
         with open(path, "w") as f:
             json.dump(payload, f, indent=2, default=str)
         logger.info(f"[PIPELINE] Log salvato in {path}")
+        _push_log_to_github(self.date, path)
 
     def summary_text(self) -> str:
         lines = [f"📋 Pipeline {self.date}"]
