@@ -1,0 +1,44 @@
+name: Deploy Dashboard
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'logs/**.json'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate dashboard
+        run: |
+          python generate_dashboard.py
+          mkdir -p _site
+          cp dashboard.html _site/index.html
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+      - uses: actions/deploy-pages@v4
+        id: deployment
