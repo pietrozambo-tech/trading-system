@@ -23,6 +23,8 @@ if not logs:
     print("No logs found in logs/. Run 'git pull' first.")
     exit(1)
 
+INITIAL_EQUITY = 100_000  # config.PAPER_INITIAL_EQUITY
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def stage_count(log, name):
     for s in log.get("pipeline", []):
@@ -82,8 +84,10 @@ STATS_JS = json.dumps({
     "avg_win":    avg_win,
     "avg_loss":   avg_loss,
     "avg_conf":   avg_conf,
-    "trade_days": trade_days,
-    "total_days": len(rows),
+    "trade_days":    trade_days,
+    "total_days":    len(rows),
+    "total_pnl_pct": round(total_pnl / INITIAL_EQUITY * 100, 3),
+    "initial_equity": INITIAL_EQUITY,
 }, ensure_ascii=False)
 
 # ── HTML ──────────────────────────────────────────────────────────────────────
@@ -213,9 +217,13 @@ svg text {{ font-family: -apple-system, sans-serif; }}
   <div class="tbl-wrap">
   <table>
     <thead><tr>
-      <th>Data</th><th>Ticker</th><th>Confidence</th><th>Post-adv</th>
-      <th>OR pos</th><th>Gap ret.</th><th>Vol</th><th>Catalyst</th>
-      <th>Short float</th><th>Squeeze</th><th>Gap %</th><th>Esito</th>
+      <th>Data</th><th>Ticker</th><th>Confidence</th>
+      <th title="Prezzo 9:35 superiore all'apertura 9:30 (momentum iniziale)">Post-open advance</th>
+      <th title="Posizione nel range di apertura 9:30–9:35 (>0.66 = top del range)">OR position</th>
+      <th title="Frazione del gap pre-market ancora intatta dopo 5 minuti (>0.70 = difeso)">Gap retention</th>
+      <th>Vol boost</th><th>Catalyst</th>
+      <th title="Percentuale del flottante venduta allo scoperto">Short float</th>
+      <th>Squeeze</th><th>Gap %</th><th>Esito</th>
     </tr></thead>
     <tbody id="signalRows"></tbody>
   </table>
@@ -259,11 +267,12 @@ function confBar(c){{
 
 // ── KPIs ──────────────────────────────────────────────────────────────────────
 const kpis = [
-  {{ l:"P&L totale",    v:(STATS.total_pnl>=0?"+$":"−$")+Math.abs(STATS.total_pnl).toFixed(2), c:cls(STATS.total_pnl), s:`${{STATS.trade_days}} trade days / ${{STATS.total_days}} giorni` }},
-  {{ l:"Win rate",      v:STATS.n_trades?STATS.win_rate+"%":"—",                                c:"neu", s:`${{STATS.n_wins}}W · ${{STATS.n_losses}}L · ${{STATS.n_trades}} trade` }},
-  {{ l:"Avg win",       v:STATS.n_wins  ?"+$"+STATS.avg_win.toFixed(2):"—",                    c:"pos", s:"per trade vincente" }},
-  {{ l:"Avg loss",      v:STATS.n_losses?"−$"+Math.abs(STATS.avg_loss).toFixed(2):"—",         c:STATS.n_losses?"neg":"mut", s:"per trade perdente" }},
-  {{ l:"Avg confidence",v:STATS.n_trades?STATS.avg_conf.toFixed(2):"—",                        c:"neu", s:"soglia min: 0.65" }},
+  {{ l:"P&L totale",         v:(STATS.total_pnl>=0?"+$":"−$")+Math.abs(STATS.total_pnl).toFixed(2),           c:cls(STATS.total_pnl),         s:`${{STATS.trade_days}} trade days / ${{STATS.total_days}} giorni` }},
+  {{ l:"P&L % portafoglio",  v:STATS.n_trades?(STATS.total_pnl_pct>=0?"+":"")+STATS.total_pnl_pct.toFixed(3)+"%":"—", c:cls(STATS.total_pnl_pct), s:`su equity iniziale ${{(STATS.initial_equity/1000).toFixed(0)}}k` }},
+  {{ l:"Win rate",           v:STATS.n_trades?STATS.win_rate+"%":"—",                                          c:"neu",                        s:`${{STATS.n_wins}}W · ${{STATS.n_losses}}L · ${{STATS.n_trades}} trade` }},
+  {{ l:"Avg win",            v:STATS.n_wins  ?"+$"+STATS.avg_win.toFixed(2):"—",                               c:"pos",                        s:"per trade vincente" }},
+  {{ l:"Avg loss",           v:STATS.n_losses?"−$"+Math.abs(STATS.avg_loss).toFixed(2):"—",                    c:STATS.n_losses?"neg":"mut",   s:"per trade perdente" }},
+  {{ l:"Avg confidence",     v:STATS.n_trades?STATS.avg_conf.toFixed(2):"—",                                   c:"neu",                        s:"soglia min: 0.65" }},
 ];
 document.getElementById("kpis").innerHTML = kpis.map(k=>
   `<div class="kpi"><div class="lbl">${{k.l}}</div><div class="val ${{k.c}}">${{k.v}}</div><div class="sub">${{k.s}}</div></div>`
