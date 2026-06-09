@@ -507,6 +507,9 @@ def run() -> None:
         # Replace LLM's 0-1 confidence with the uncapped algorithmic score
         # (e.g. 1.04 is more informative than 0.87 for the Telegram recap)
         decision["confidence"] = algo_conf
+        # Pass price_935 so open_position() uses actual bar-close price (real trades)
+        # rather than the stale IEX pre-market ask for limit order reference.
+        decision["price_935"] = algo.get("price_935")
         position = trader.open_position(decision["ticker"], decision)
         if position:
             # Enrich position with signal data needed for EOD Telegram recap

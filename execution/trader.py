@@ -7,7 +7,7 @@ _RECONCILE_GRACE_SECONDS = 180  # skip manual-close check for positions younger 
 
 import pytz
 from alpaca.trading.client import TradingClient
-from alpaca.trading.requests import MarketOrderRequest, ClosePositionRequest
+from alpaca.trading.requests import MarketOrderRequest, LimitOrderRequest, ClosePositionRequest
 from alpaca.trading.enums import OrderSide, TimeInForce
 
 import config
@@ -70,30 +70,63 @@ def place_market_order(ticker: str, qty: int, side: OrderSide = OrderSide.BUY) -
         return None
 
 
+def place_limit_order(ticker: str, qty: int, limit_price: float, side: OrderSide = OrderSide.BUY) -> Optional[dict]:
+    """Submit a limit order and return order info."""
+    client = _trading_client()
+    req = LimitOrderRequest(
+        symbol=ticker,
+        qty=qty,
+        side=side,
+        time_in_force=TimeInForce.DAY,
+        limit_price=round(limit_price, 2),
+    )
+    try:
+        order = client.submit_order(req)
+        logger.info(f"Limit order placed: {side.value} {qty} {ticker} @ ${limit_price:.2f} | id={order.id}")
+        return {
+            "order_id": str(order.id),
+            "ticker": ticker,
+            "qty": qty,
+            "side": side.value,
+            "status": order.status,
+        }
+    except Exception as e:
+        logger.error(f"Limit order error for {ticker}: {e}")
+        return None
+
+
 def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
     """
     Open a long position based on LLM decision.
-    Returns position metadata including stop prices.
+    Uses price_935 (last bar close from L2 signal computation, actual trade data)
+    as the reference price for a limit order, preventing fills at stale IEX pre-market asks.
     """
     account = fetcher.get_account()
     equity = account["equity"]
-    # IEX ask used only to estimate qty before the order; actual fill may differ.
-    estimated_price = fetcher.get_latest_quote(ticker).get("ask") or 0.0
-    qty = calc_qty(estimated_price, equity)
+
+    # price_935 is the 9:34 bar close from intraday bar data (real trades).
+    # Fall back to latest trade if not provided (e.g. recovery/late entry paths).
+    ref_price: float = llm_decision.get("price_935") or 0.0
+    if not ref_price:
+        ref_price = fetcher.get_current_price(ticker)
+
+    qty = calc_qty(ref_price, equity)
     if qty == 0:
-        logger.error(f"Cannot compute qty for {ticker} at ${estimated_price}")
+        logger.error(f"Cannot compute qty for {ticker} at ${ref_price:.2f}")
         return None
 
-    order = place_market_order(ticker, qty, OrderSide.BUY)
+    # Limit buy at ref_price +0.5% — fills immediately at the real market price
+    # but blocks Alpaca from filling at stale IEX pre-market asks (+1-2% above market).
+    limit_price = round(ref_price * 1.005, 2)
+    order = place_limit_order(ticker, qty, limit_price, OrderSide.BUY)
     if not order:
         return None
 
-    # Fetch actual Alpaca fill price — retry up to 5 times (market orders usually fill
-    # in milliseconds but the API can take a few seconds to reflect filled_avg_price).
+    # Fetch actual fill price — limit orders may settle slightly slower than market orders.
     client = _trading_client()
     entry_price = None
-    for attempt in range(1, 6):
-        time.sleep(attempt)  # 1s, 2s, 3s, 4s, 5s
+    for attempt in range(1, 7):  # up to 6 attempts (21s total)
+        time.sleep(attempt)
         try:
             filled = client.get_order_by_id(order["order_id"])
             if filled.filled_avg_price:
@@ -103,8 +136,8 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
         except Exception:
             pass
     if entry_price is None:
-        entry_price = estimated_price
-        logger.warning(f"{ticker}: fill price unavailable after 5 attempts — using IEX ask ${estimated_price:.2f} as fallback")
+        entry_price = ref_price
+        logger.warning(f"{ticker}: fill price unavailable after 6 attempts — using ref_price ${ref_price:.2f}")
 
     stops = calc_stop_prices(ticker, entry_price)
     position = {
@@ -125,7 +158,7 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
         "pnl_pct": None,
     }
     logger.info(
-        f"Position opened: {ticker} @ ${entry_price:.2f} (est ${estimated_price:.2f})"
+        f"Position opened: {ticker} @ ${entry_price:.2f} (limit ${limit_price:.2f} | ref ${ref_price:.2f})"
         f" qty={qty} stop=${stops['stop_price']:.2f}"
     )
     return position
