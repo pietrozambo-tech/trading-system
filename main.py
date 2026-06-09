@@ -273,6 +273,7 @@ def run() -> None:
     # ------------------------------------------------------------------
     wait_until(config.ORDER_TIME, now_et)
 
+    valid_tickers = {c["ticker"] for c in candidates_with_signals}
     for key in ("trade_1", "trade_2"):
         decision = llm_result.get(key)
         if not decision:
@@ -281,8 +282,31 @@ def run() -> None:
             continue
         if len(open_positions) >= config.MAX_POSITIONS:
             break
+        if decision.get("ticker") not in valid_tickers:
+            logger.error(f"LLM returned unrecognised ticker '{decision.get('ticker')}' — skipping")
+            continue
+        algo = next((c for c in candidates_with_signals if c["ticker"] == decision["ticker"]), {})
+        # Hard guard: algo confidence must be above threshold (defensive — valid_tickers already ensures this)
+        algo_conf = algo.get("confidence") or 0
+        if algo_conf < config.CONFIDENCE_THRESHOLD:
+            logger.error(
+                f"LLM picked {decision['ticker']} with algo confidence {algo_conf:.2f} "
+                f"< threshold {config.CONFIDENCE_THRESHOLD} — skipping"
+            )
+            continue
+        # Replace LLM's 0-1 confidence with the uncapped algorithmic score
+        # (e.g. 1.04 is more informative than 0.87 for the Telegram recap)
+        decision["confidence"] = algo_conf
+        # Pass price_935 so open_position() uses actual bar-close price (real trades)
+        # rather than the stale IEX pre-market ask for limit order reference.
+        decision["price_935"] = algo.get("price_935")
         position = trader.open_position(decision["ticker"], decision)
         if position:
+            # Enrich position with signal data needed for EOD Telegram recap
+            for field in ("catalyst_bonus", "vol_boost", "short_float", "short_squeeze_bonus",
+                          "post_open_advance", "or_position", "gap_retention", "gap_pct", "news"):
+                if field in algo:
+                    position[field] = algo[field]
             open_positions.append(position)
             all_trades.append(position)
             pl.log_trade(position)

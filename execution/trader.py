@@ -3,9 +3,11 @@ import time
 from datetime import datetime
 from typing import Optional
 
+_RECONCILE_GRACE_SECONDS = 180  # skip manual-close check for positions younger than 3 min
+
 import pytz
 from alpaca.trading.client import TradingClient
-from alpaca.trading.requests import MarketOrderRequest, ClosePositionRequest
+from alpaca.trading.requests import MarketOrderRequest, LimitOrderRequest, ClosePositionRequest
 from alpaca.trading.enums import OrderSide, TimeInForce
 
 import config
@@ -36,7 +38,7 @@ def calc_stop_prices(ticker: str, entry_price: float) -> dict:
 
 
 def calc_qty(entry_price: float, equity: float) -> int:
-    """Shares to buy: split investable capital (equity minus $2k cushion) across max positions."""
+    """Shares to buy: split investable capital (equity minus $1k cushion) across max positions."""
     if entry_price <= 0:
         return 0
     investable = max(0, equity - config.CASH_CUSHION_USD)
@@ -68,23 +70,74 @@ def place_market_order(ticker: str, qty: int, side: OrderSide = OrderSide.BUY) -
         return None
 
 
+def place_limit_order(ticker: str, qty: int, limit_price: float, side: OrderSide = OrderSide.BUY) -> Optional[dict]:
+    """Submit a limit order and return order info."""
+    client = _trading_client()
+    req = LimitOrderRequest(
+        symbol=ticker,
+        qty=qty,
+        side=side,
+        time_in_force=TimeInForce.DAY,
+        limit_price=round(limit_price, 2),
+    )
+    try:
+        order = client.submit_order(req)
+        logger.info(f"Limit order placed: {side.value} {qty} {ticker} @ ${limit_price:.2f} | id={order.id}")
+        return {
+            "order_id": str(order.id),
+            "ticker": ticker,
+            "qty": qty,
+            "side": side.value,
+            "status": order.status,
+        }
+    except Exception as e:
+        logger.error(f"Limit order error for {ticker}: {e}")
+        return None
+
+
 def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
     """
     Open a long position based on LLM decision.
-    Returns position metadata including stop prices.
+    Uses price_935 (last bar close from L2 signal computation, actual trade data)
+    as the reference price for a limit order, preventing fills at stale IEX pre-market asks.
     """
     account = fetcher.get_account()
     equity = account["equity"]
-    quote = fetcher.get_latest_quote(ticker)
-    entry_price = quote["ask"]
-    qty = calc_qty(entry_price, equity)
+
+    # price_935 is the 9:34 bar close from intraday bar data (real trades).
+    # Fall back to latest trade if not provided (e.g. recovery/late entry paths).
+    ref_price: float = llm_decision.get("price_935") or 0.0
+    if not ref_price:
+        ref_price = fetcher.get_current_price(ticker)
+
+    qty = calc_qty(ref_price, equity)
     if qty == 0:
-        logger.error(f"Cannot compute qty for {ticker} at ${entry_price}")
+        logger.error(f"Cannot compute qty for {ticker} at ${ref_price:.2f}")
         return None
 
-    order = place_market_order(ticker, qty, OrderSide.BUY)
+    # Limit buy at ref_price +0.5% — fills immediately at the real market price
+    # but blocks Alpaca from filling at stale IEX pre-market asks (+1-2% above market).
+    limit_price = round(ref_price * 1.005, 2)
+    order = place_limit_order(ticker, qty, limit_price, OrderSide.BUY)
     if not order:
         return None
+
+    # Fetch actual fill price — limit orders may settle slightly slower than market orders.
+    client = _trading_client()
+    entry_price = None
+    for attempt in range(1, 7):  # up to 6 attempts (21s total)
+        time.sleep(attempt)
+        try:
+            filled = client.get_order_by_id(order["order_id"])
+            if filled.filled_avg_price:
+                entry_price = float(filled.filled_avg_price)
+                logger.info(f"{ticker}: fill confirmed @ ${entry_price:.2f} (attempt {attempt})")
+                break
+        except Exception:
+            pass
+    if entry_price is None:
+        entry_price = ref_price
+        logger.warning(f"{ticker}: fill price unavailable after 6 attempts — using ref_price ${ref_price:.2f}")
 
     stops = calc_stop_prices(ticker, entry_price)
     position = {
@@ -92,6 +145,7 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
         "qty": qty,
         "entry_price": entry_price,
         "entry_time": datetime.now(ET).strftime("%H:%M:%S"),
+        "entry_ts": time.time(),
         "direction": "long",
         "confidence": llm_decision.get("confidence"),
         "reason": llm_decision.get("reason", ""),
@@ -103,17 +157,39 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
         "pnl_usd": None,
         "pnl_pct": None,
     }
-    logger.info(f"Position opened: {ticker} @ ${entry_price:.2f} qty={qty} stop=${stops['stop_price']:.2f}")
+    logger.info(
+        f"Position opened: {ticker} @ ${entry_price:.2f} (limit ${limit_price:.2f} | ref ${ref_price:.2f})"
+        f" qty={qty} stop=${stops['stop_price']:.2f}"
+    )
     return position
 
 
 def close_position(ticker: str, qty: int, reason: str) -> Optional[dict]:
-    """Close position at market. Returns exit info."""
+    """Close position at market. Returns exit info with actual fill price."""
     client = _trading_client()
     try:
-        client.close_position(ticker)
-        quote = fetcher.get_latest_quote(ticker)
-        exit_price = quote["bid"]  # sell at bid
+        order = client.close_position(ticker)
+        # Prefer actual fill price from the order object
+        exit_price = float(order.filled_avg_price) if order.filled_avg_price else None
+        if exit_price is None:
+            # Market order may not be reflected immediately — wait briefly and retry
+            time.sleep(1)
+            try:
+                refreshed = client.get_order_by_id(str(order.id))
+                if refreshed.filled_avg_price:
+                    exit_price = float(refreshed.filled_avg_price)
+            except Exception:
+                pass
+        if exit_price is None:
+            # Last resort: snapshot latest trade (our sell order should be the most recent)
+            try:
+                snap = fetcher.get_snapshot(ticker)
+                if snap.latest_trade:
+                    exit_price = float(snap.latest_trade.price)
+            except Exception:
+                pass
+        if exit_price is None:
+            exit_price = float(fetcher.get_latest_quote(ticker)["ask"])
         exit_time = datetime.now(ET).strftime("%H:%M:%S")
         logger.info(f"Position closed: {ticker} @ ${exit_price:.2f} reason={reason}")
         return {"exit_price": exit_price, "exit_time": exit_time, "exit_reason": reason}
@@ -162,6 +238,20 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
     still_open = []
     just_closed = []
 
+    # Reconcile against Alpaca's actual positions — detect manual closes.
+    # Skip positions opened within the last 3 minutes: Alpaca paper trading can lag
+    # in reflecting fills in get_all_positions(), causing false manual-close detections.
+    mature = [p for p in open_positions if time.time() - p.get("entry_ts", 0) >= _RECONCILE_GRACE_SECONDS]
+    if mature:
+        try:
+            actual_tickers = {p["ticker"] for p in fetcher.get_open_positions()}
+            orphans = [p["ticker"] for p in mature if p["ticker"] not in actual_tickers]
+            if orphans:
+                logger.warning(f"Manual close detected for {orphans} — removing from monitoring")
+                open_positions = [p for p in open_positions if p["ticker"] in actual_tickers]
+        except Exception as e:
+            logger.warning(f"Alpaca position reconciliation failed: {e} — skipping check")
+
     for position in open_positions:
         ticker = position["ticker"]
         try:
@@ -171,8 +261,7 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
                 still_open.append(position)
                 continue
 
-            quote = fetcher.get_latest_quote(ticker)
-            current_price = (quote["bid"] + quote["ask"]) / 2
+            current_price = fetcher.get_current_price(ticker)
 
             # Stop check
             stop_reason = check_stop_triggered(position, current_price)
