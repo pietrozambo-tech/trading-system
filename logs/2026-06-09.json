@@ -1,0 +1,550 @@
+{
+  "date": "2026-06-09",
+  "spy_pct": 0.005972390376537858,
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 60,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "TXN",
+        "AMAT",
+        "MRVL",
+        "JPM",
+        "BAC",
+        "GS",
+        "MS",
+        "C",
+        "WFC",
+        "BLK",
+        "SCHW",
+        "UNH",
+        "JNJ",
+        "PFE",
+        "ABBV",
+        "MRK",
+        "BMY",
+        "MRNA",
+        "XOM",
+        "CVX",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "NKE",
+        "LMT",
+        "MSTR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 13,
+      "tickers": [
+        "ASTS",
+        "MU",
+        "RKLB",
+        "MRVL",
+        "QCOM",
+        "INTC",
+        "AMD",
+        "ORCL",
+        "AVGO",
+        "TSLA",
+        "META",
+        "GOOGL",
+        "SMR"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 13,
+      "tickers": [
+        "ASTS",
+        "MU",
+        "RKLB",
+        "MRVL",
+        "QCOM",
+        "INTC",
+        "AMD",
+        "ORCL",
+        "AVGO",
+        "TSLA",
+        "META",
+        "GOOGL",
+        "SMR"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 1,
+      "tickers": [
+        "GOOGL"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "ASTS",
+      "gap_pct": 6.84,
+      "adv_m": 20.8,
+      "short_float_pct": 17.6,
+      "dist_from_3m_high_pct": -26.5
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 4.54,
+      "adv_m": 50.2,
+      "short_float_pct": 3.1,
+      "dist_from_3m_high_pct": -8.9
+    },
+    {
+      "ticker": "RKLB",
+      "gap_pct": 4.15,
+      "adv_m": 26.0,
+      "short_float_pct": 5.8,
+      "dist_from_3m_high_pct": -21.6
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 3.92,
+      "adv_m": 35.7,
+      "short_float_pct": 4.3,
+      "dist_from_3m_high_pct": -7.4
+    },
+    {
+      "ticker": "QCOM",
+      "gap_pct": 3.77,
+      "adv_m": 21.3,
+      "short_float_pct": 5.4,
+      "dist_from_3m_high_pct": -13.1
+    },
+    {
+      "ticker": "INTC",
+      "gap_pct": 2.81,
+      "adv_m": 132.8,
+      "short_float_pct": 2.8,
+      "dist_from_3m_high_pct": -14.6
+    },
+    {
+      "ticker": "AMD",
+      "gap_pct": 1.94,
+      "adv_m": 39.0,
+      "short_float_pct": 2.8,
+      "dist_from_3m_high_pct": -8.5
+    },
+    {
+      "ticker": "ORCL",
+      "gap_pct": 1.92,
+      "adv_m": 26.0,
+      "short_float_pct": 2.1,
+      "dist_from_3m_high_pct": -13.7
+    },
+    {
+      "ticker": "AVGO",
+      "gap_pct": 1.85,
+      "adv_m": 24.3,
+      "short_float_pct": 1.1,
+      "dist_from_3m_high_pct": -18.4
+    },
+    {
+      "ticker": "TSLA",
+      "gap_pct": 1.22,
+      "adv_m": 59.3,
+      "short_float_pct": 2.2,
+      "dist_from_3m_high_pct": -8.7
+    },
+    {
+      "ticker": "META",
+      "gap_pct": 0.96,
+      "adv_m": 17.8,
+      "short_float_pct": 1.5,
+      "dist_from_3m_high_pct": -14.5
+    },
+    {
+      "ticker": "GOOGL",
+      "gap_pct": 0.76,
+      "adv_m": 29.8,
+      "short_float_pct": 1.4,
+      "dist_from_3m_high_pct": -10.4
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 0.56,
+      "adv_m": 34.6,
+      "short_float_pct": 19.6,
+      "dist_from_3m_high_pct": -24.3
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "ASTS",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0484,
+      "gap_retention": 0.9098,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.176,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.06843363024114704
+    },
+    {
+      "ticker": "MU",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0225,
+      "gap_retention": 0.4841,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0313,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04538176302039445
+    },
+    {
+      "ticker": "RKLB",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0588,
+      "gap_retention": 0.6495,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0581,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.041531016278046624
+    },
+    {
+      "ticker": "MRVL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0369,
+      "gap_retention": -0.246,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0431,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.039155270901852175
+    },
+    {
+      "ticker": "INTC",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0729,
+      "gap_retention": 0.8811,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.028099999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02811281400199518
+    },
+    {
+      "ticker": "AMD",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0268,
+      "gap_retention": 0.2801,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0275,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.019395101258336205
+    },
+    {
+      "ticker": "AVGO",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.213,
+      "gap_retention": 0.4548,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0115,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.018532526475037735
+    },
+    {
+      "ticker": "META",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.6621,
+      "gap_retention": 0.4607,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0146,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.009634602572643855
+    },
+    {
+      "ticker": "GOOGL",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.949,
+      "gap_retention": 0.7598,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.014099999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.007624342847705766
+    }
+  ],
+  "llm_input": [
+    "GOOGL"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "GOOGL",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e 3 i segnali tecnici sono positivi (post_open_advance, or_position 0.95, gap_retention 0.76), con confidence_algo massima a 1.0. Le news menzionano un grosso ordine di chip AI da Google a Intel (Tier 3 speculativo), ma il segnale \u00e8 prevalentemente tecnico con momentum solido nei primi 5 minuti (+1.09%)."
+    },
+    "trade_2": null,
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "GOOGL",
+      "qty": 133,
+      "entry_price": 371.43,
+      "entry_time": "09:35:36",
+      "entry_ts": 1781012136.6095579,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e 3 i segnali tecnici sono positivi (post_open_advance, or_position 0.95, gap_retention 0.76), con confidence_algo massima a 1.0. Le news menzionano un grosso ordine di chip AI da Google a Intel (Tier 3 speculativo), ma il segnale \u00e8 prevalentemente tecnico con momentum solido nei primi 5 minuti (+1.09%).",
+      "order_id": "3d95a10c-3a8e-4764-b592-09689d2a8650",
+      "stop_atr": 361.7374,
+      "stop_pct": 364.0014,
+      "stop_price": 364.0014,
+      "atr14": 9.6926,
+      "exit_price": 363.89,
+      "exit_time": "10:48:54",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1002.82,
+      "pnl_pct": -0.0203,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.014099999,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.949,
+      "gap_retention": 0.7598,
+      "gap_pct": 0.007624342847705766,
+      "news": [
+        {
+          "author": "Erica Kollmann",
+          "content": "",
+          "created_at": "2026-06-09T13:14:06Z",
+          "headline": "MANGOS Is The New Magnificent Seven \u2014 And Half Of It Hasn't Gone Public Yet",
+          "id": 53084730,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/AI-generated-MANGOS---EK.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/AI-generated-MANGOS---EK.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/AI-generated-MANGOS---EK.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "From FAANG to Mag7 to MANGOS, Wall Street loves its acronyms\u2014each one a barometer of its era.",
+          "symbols": [
+            "AAPL",
+            "AMZN",
+            "BTCUSD",
+            "GOOG",
+            "GOOGL",
+            "META",
+            "MSFT",
+            "NFLX",
+            "NVDA",
+            "TSLA"
+          ],
+          "updated_at": "2026-06-09T13:14:07Z",
+          "url": "https://www.benzinga.com/markets/tech/26/06/53084730/mangos-the-new-magnificent-seven-and-half-of-it-hasnt-gone-public-yet"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-06-09T12:56:36Z",
+          "headline": "Why Is Intel Stock Gaining Tuesday?",
+          "id": 53083824,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Intel-Corporation.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Intel-Corporation.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Intel-Corporation.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Intel stock climbs premarket on reports of a massive Google AI chip order and packaging tests with Nvidia. Read the details.",
+          "symbols": [
+            "GOOGL",
+            "INTC",
+            "MRVL",
+            "MU",
+            "NVDA",
+            "SNDK",
+            "SOXX",
+            "TSM"
+          ],
+          "updated_at": "2026-06-09T12:56:37Z",
+          "url": "https://www.benzinga.com/markets/tech/26/06/53083824/why-is-intel-stock-gaining-tuesday"
+        },
+        {
+          "author": "Rishabh Mishra",
+          "content": "",
+          "created_at": "2026-06-09T12:01:35Z",
+          "headline": "Jim Cramer Is 'VERY Skeptical' Of Intel's 2028 Foundry Deal With Google And Nvidia: Here's Why",
+          "id": 53082349,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/New-York-City---October-5-2017-The-Brook.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/New-York-City---October-5-2017-The-Brook.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/New-York-City---October-5-2017-The-Brook.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Jim Cramer is &#34;VERY skeptical&#34; of Intel&#39;s 2028 foundry deal with Google and Nvidia. Learn why he doubts the timeline despite INTC&#39;s 10% surge.",
+          "symbols": [
+            "AVGO",
+            "GOOG",
+            "GOOGL",
+            "INTC",
+            "NVDA",
+            "TSM"
+          ],
+          "updated_at": "2026-06-09T12:01:35Z",
+          "url": "https://www.benzinga.com/markets/equities/26/06/53082349/jim-cramer-is-very-skeptical-of-intels-2028-foundry-deal-with-google-and-nvidia-heres-why"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-06-09T10:31:16Z",
+          "headline": "Apple's Biggest AI Bet Yet Runs On NVIDIA, Not Its Own Chips",
+          "id": 53080417,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Germany---June-26-2024-Apple-Intelligenc.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Germany---June-26-2024-Apple-Intelligenc.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Germany---June-26-2024-Apple-Intelligenc.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Apple WWDC 2026 brings a major Siri AI upgrade, but relies on NVIDIA chips and Google Cloud for its most advanced model.",
+          "symbols": [
+            "AAPL",
+            "GOOGL",
+            "NVDA"
+          ],
+          "updated_at": "2026-06-09T10:31:17Z",
+          "url": "https://www.benzinga.com/markets/tech/26/06/53080417/apples-biggest-ai-bet-yet-runs-on-nvidia-not-its-own-chips"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-06-09T09:28:47Z",
+          "headline": "Taiwan Semiconductor Becomes World's Ninth-Most Valuable Company",
+          "id": 53079458,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Tokyo--Japan--March-2023-an-Image-Of-Tsm.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Tokyo--Japan--March-2023-an-Image-Of-Tsm.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Tokyo--Japan--March-2023-an-Image-Of-Tsm.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Taiwan Semiconductor cracks the global top 10 as AI demand doubles its value. Get the latest TSM stock update and outlook.",
+          "symbols": [
+            "AAPL",
+            "AMZN",
+            "AVGO",
+            "GOOGL",
+            "META",
+            "MSFT",
+            "NVDA",
+            "SOXX",
+            "TSLA",
+            "TSM"
+          ],
+          "updated_at": "2026-06-09T09:31:27Z",
+          "url": "https://www.benzinga.com/markets/tech/26/06/53079458/taiwan-semiconductor-becomes-worlds-ninth-most-valuable-company"
+        }
+      ]
+    }
+  ]
+}
