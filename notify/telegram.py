@@ -157,7 +157,7 @@ def send_eod_recap(
     llm_text: str = "",
     pipeline_summary: dict | None = None,
 ) -> None:
-    text = html.escape(llm_text) if llm_text else _fallback_message(
+    text = llm_text if llm_text else _fallback_message(
         trade_data, spy_pct, daily_pnl, account_equity, date_str, pipeline_summary
     )
     send_message(text)

@@ -343,9 +343,11 @@ def generate_eod_recap(
     prompt = (
         "Scrivi un messaggio Telegram di fine giornata per un bot di trading. Segui queste regole:\n"
         "- Italiano, tono diretto e amichevole\n"
-        "- HTML Telegram: solo <b>...</b> per il grassetto, nessun altro tag\n"
+        "- HTML Telegram: solo <b>...</b> per il grassetto, nessun altro tag HTML\n"
         "- VIETATO usare nomi di variabili o campi tecnici\n"
-        "- Max 2 emoji in tutto, nessun underscore\n"
+        "- Emoji: usa SOLO il carattere Unicode 📊 nell'intestazione, ZERO altri emoji\n"
+        "- VIETATO usare la sintassi :nome_emoji: (es. :bar_chart:, :briefcase:) — solo Unicode diretto\n"
+        "- VIETATO usare i caratteri < e > salvo nei tag <b> e </b>\n"
         "- Date in italiano: '4 giugno 2026', non '4/6/2026'\n\n"
         "STRUTTURA ESATTA:\n\n"
         "<b>📊 [giorno settimana] [giorno mese anno]</b>\n\n"
