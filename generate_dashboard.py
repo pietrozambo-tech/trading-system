@@ -137,6 +137,13 @@ td {{ padding: 8px 10px; border-bottom: 1px solid var(--border); }}
 tr:last-child td {{ border-bottom: none; }}
 tr:hover td {{ background: rgba(255,255,255,.025); }}
 
+/* Scrollable table body — fixed height, sticky header */
+.scroll-wrap {{ max-height: 370px; overflow-y: auto; }}
+.scroll-wrap::-webkit-scrollbar {{ width: 6px; }}
+.scroll-wrap::-webkit-scrollbar-track {{ background: var(--bg); }}
+.scroll-wrap::-webkit-scrollbar-thumb {{ background: var(--border); border-radius: 3px; }}
+.scroll-wrap thead th {{ position: sticky; top: 0; background: var(--surface); z-index: 1; box-shadow: 0 1px 0 var(--border); }}
+
 /* Colors */
 .pos {{ color: var(--green); }} .neg {{ color: var(--red); }} .neu {{ color: var(--text); }}
 .mut {{ color: var(--muted); }}
@@ -209,7 +216,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
 <!-- Trade log -->
 <div class="card">
   <h2>Trade log</h2>
-  <div class="tbl-wrap">
+  <div class="tbl-wrap scroll-wrap">
   <table>
     <thead><tr>
       <th>Data</th><th>Ticker</th><th>Entry</th><th>Exit</th>
@@ -225,7 +232,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
 <!-- Pipeline funnel -->
 <div class="card">
   <h2>Pipeline funnel — giornaliero</h2>
-  <div class="tbl-wrap">
+  <div class="tbl-wrap scroll-wrap">
   <table>
     <thead><tr>
       <th>Data</th><th>SPY</th><th>Universe</th><th>Pre-mkt</th>
@@ -239,7 +246,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
 <!-- L2 signals -->
 <div class="card">
   <h2>Segnali L2 — tutti i candidati</h2>
-  <div class="tbl-wrap">
+  <div class="tbl-wrap scroll-wrap">
   <table>
     <thead><tr>
       <th>Data</th><th>Ticker</th><th>Confidence</th>
@@ -258,7 +265,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
 <!-- Pre-market -->
 <div class="card">
   <h2>Candidati pre-market</h2>
-  <div class="tbl-wrap">
+  <div class="tbl-wrap scroll-wrap">
   <table>
     <thead><tr>
       <th>Data</th><th>Ticker</th><th>Gap %</th><th>ADV (M)</th>
@@ -389,7 +396,7 @@ function renderExitDonut(logs) {{
 // ── Trade log ─────────────────────────────────────────────────────────────────
 function renderTradeLog(logs) {{
   const rows=[];
-  logs.forEach(r=>r.trades.forEach(t=>{{
+  [...logs].reverse().forEach(r=>r.trades.forEach(t=>{{
     const pnl=t.pnl_usd??null,pp=t.pnl_pct??null,sc=cls(pnl);
     const cat=t.catalyst_bonus>=0.30?"T1":t.catalyst_bonus>=0.20?"T2":t.catalyst_bonus>=0.10?"T3":"—";
     rows.push(`<tr>
@@ -414,7 +421,7 @@ function renderTradeLog(logs) {{
 
 // ── Funnel ────────────────────────────────────────────────────────────────────
 function renderFunnel(logs) {{
-  document.getElementById("funnelRows").innerHTML=logs.map(r=>{{
+  document.getElementById("funnelRows").innerHTML=[...logs].reverse().map(r=>{{
     const sc=cls(r.daily_pnl);
     const note=r.blocked||(r.trades.length?"✓ trade eseguito":"LLM: nessuna entry");
     return `<tr>
@@ -431,7 +438,7 @@ function renderFunnel(logs) {{
 // ── L2 signals ────────────────────────────────────────────────────────────────
 function renderSignals(logs) {{
   const rows=[];
-  logs.forEach(r=>{{
+  [...logs].reverse().forEach(r=>{{
     const tradedTickers=r.trades.map(t=>t.ticker);
     r.signals.forEach(s=>{{
       const pass=s.passes_threshold,traded=tradedTickers.includes(s.ticker);
@@ -458,7 +465,7 @@ function renderSignals(logs) {{
 // ── Pre-market ────────────────────────────────────────────────────────────────
 function renderPremarket(logs) {{
   const rows=[];
-  logs.forEach(r=>{{
+  [...logs].reverse().forEach(r=>{{
     const l2t=r.signals.map(s=>s.ticker);
     r.premarket_candidates.forEach(c=>{{
       const adv=l2t.includes(c.ticker);
