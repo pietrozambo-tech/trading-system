@@ -153,6 +153,7 @@ tr:hover td {{ background: rgba(255,255,255,.025); }}
 .bg  {{ background: rgba(34,197,94,.15);  color: var(--green); }}
 .br  {{ background: rgba(239,68,68,.15);  color: var(--red); }}
 .bb  {{ background: rgba(59,130,246,.15); color: var(--blue); }}
+.by  {{ background: rgba(245,158,11,.15); color: var(--yellow); }}
 .bmu {{ background: rgba(136,146,164,.12); color: var(--muted); }}
 
 /* Signal tick */
@@ -452,11 +453,11 @@ function renderSignals(logs) {{
       const pass=s.passes_threshold, traded=tradedTickers.includes(s.ticker);
       let esito;
       if (!pass) {{
-        esito=badge("REJECT","bmu");
+        esito=badge("REJECT","br");
       }} else if (traded) {{
         esito=badge("TRADED","bb");
       }} else if (llmTickers.length>0 && !llmTickers.includes(s.ticker)) {{
-        esito=badge("LLM: altro scelto","bmu");
+        esito=badge("LLM: altro scelto","by");
       }} else if (r.llm_output?.no_trade_reason) {{
         esito=badge("LLM: no entry","bmu");
       }} else {{
