@@ -1,0 +1,144 @@
+{
+  "date": "2026-06-10",
+  "spy_pct": -0.007095662555795267,
+  "blocked": "nessun candidato sopra soglia confidence",
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 60,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "TXN",
+        "AMAT",
+        "MRVL",
+        "JPM",
+        "BAC",
+        "GS",
+        "MS",
+        "C",
+        "WFC",
+        "BLK",
+        "SCHW",
+        "UNH",
+        "JNJ",
+        "PFE",
+        "ABBV",
+        "MRK",
+        "BMY",
+        "MRNA",
+        "XOM",
+        "CVX",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "NKE",
+        "LMT",
+        "MSTR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 2,
+      "tickers": [
+        "RDW",
+        "OXY"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 2,
+      "tickers": [
+        "RDW",
+        "OXY"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 0,
+      "tickers": [],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "RDW",
+      "gap_pct": 1.02,
+      "adv_m": 39.0,
+      "short_float_pct": 22.4,
+      "dist_from_3m_high_pct": -40.3
+    },
+    {
+      "ticker": "OXY",
+      "gap_pct": 0.62,
+      "adv_m": 13.7,
+      "short_float_pct": 0.0,
+      "dist_from_3m_high_pct": -15.6
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "RDW",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0072,
+      "gap_retention": -3.4516,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2243,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010158730158730167
+    },
+    {
+      "ticker": "OXY",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.726,
+      "gap_retention": 0.27,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0002,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.006189213085764835
+    }
+  ],
+  "llm_input": [],
+  "llm_output": {},
+  "trades": []
+}
