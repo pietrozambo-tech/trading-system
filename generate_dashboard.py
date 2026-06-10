@@ -159,6 +159,9 @@ tr:hover td {{ background: rgba(255,255,255,.025); }}
 .tk {{ color: var(--green); font-weight: 700; }}
 .cx {{ color: var(--red); font-weight: 700; }}
 
+/* Info icon on column headers */
+.iico {{ font-size: 10px; color: var(--blue); cursor: help; opacity: .75; vertical-align: middle; }}
+
 /* Conf bar */
 .cb {{ display: inline-block; height: 5px; background: var(--blue); border-radius: 3px; vertical-align: middle; margin-right: 5px; opacity: .8; }}
 
@@ -250,9 +253,9 @@ svg text {{ font-family: -apple-system, sans-serif; }}
   <table>
     <thead><tr>
       <th>Data</th><th>Ticker</th><th>Confidence</th>
-      <th title="Prezzo 9:35 superiore all'apertura 9:30 (momentum iniziale)">Post-open advance</th>
-      <th title="Posizione nel range di apertura 9:30–9:35 (>0.66 = top del range)">OR position</th>
-      <th title="Frazione del gap pre-market ancora intatta dopo 5 minuti (>0.70 = difeso)">Gap retention</th>
+      <th>Post-open advance <span title="Prezzo alle 9:35 superiore all'apertura delle 9:30 — conferma che il gap tiene nei primi 5 minuti di trading" class="iico">ⓘ</span></th>
+      <th>OR position <span title="Posizione nel range 9:30–9:35: 1.0 = massimo del range, 0.0 = minimo. Sopra 0.66 = titolo nel terzo superiore, segnale di forza" class="iico">ⓘ</span></th>
+      <th>Gap retention <span title="Frazione del gap pre-market ancora intatta alle 9:35. 1.0 = gap invariato, 0.0 = gap completamente colmato. Sopra 0.70 = gap difeso" class="iico">ⓘ</span></th>
       <th>Vol boost</th><th>Catalyst</th>
       <th title="Percentuale del flottante venduta allo scoperto">Short float</th>
       <th>Squeeze</th><th>Gap %</th><th>Esito</th>
@@ -440,8 +443,21 @@ function renderSignals(logs) {{
   const rows=[];
   [...logs].reverse().forEach(r=>{{
     const tradedTickers=r.trades.map(t=>t.ticker);
+    const llmTickers=[r.llm_output?.trade_1?.ticker,r.llm_output?.trade_2?.ticker].filter(Boolean);
     r.signals.forEach(s=>{{
-      const pass=s.passes_threshold,traded=tradedTickers.includes(s.ticker);
+      const pass=s.passes_threshold, traded=tradedTickers.includes(s.ticker);
+      let esito;
+      if (!pass) {{
+        esito=badge("REJECT","bmu");
+      }} else if (traded) {{
+        esito=badge("TRADED","bb");
+      }} else if (llmTickers.length>0 && !llmTickers.includes(s.ticker)) {{
+        esito=badge("LLM: altro scelto","bmu");
+      }} else if (r.llm_output?.no_trade_reason) {{
+        esito=badge("LLM: no entry","bmu");
+      }} else {{
+        esito=badge("PASS","bg");
+      }}
       rows.push(`<tr>
         <td>${{r.date.slice(5)}}</td><td><strong>${{s.ticker}}</strong></td>
         <td>${{confBar(s.confidence)}}</td>
@@ -453,7 +469,7 @@ function renderSignals(logs) {{
         <td>${{s.short_float!=null?(s.short_float*100).toFixed(1)+"%":"—"}}</td>
         <td>${{s.short_squeeze_bonus?badge("+"+parseFloat(s.short_squeeze_bonus).toFixed(2),"bb"):"—"}}</td>
         <td class="pos">${{s.gap_pct!=null?fpm(s.gap_pct*100,1)+"%":"—"}}</td>
-        <td>${{badge(pass?"PASS":"REJECT",pass?"bg":"bmu")}} ${{traded?badge("TRADED","bb"):""}}</td>
+        <td>${{esito}}</td>
       </tr>`);
     }});
   }});
