@@ -200,6 +200,13 @@ svg text {{ font-family: -apple-system, sans-serif; }}
   <label>Dal <input type="date" id="dateFrom"></label>
   <label>Al&nbsp; <input type="date" id="dateTo"></label>
   <button class="apply-btn" id="applyRange">Applica</button>
+  <div class="filter-sep"></div>
+  <span class="filter-label">Exit</span>
+  <button class="qbtn active" data-exit="">Tutti</button>
+  <button class="qbtn" data-exit="hard_blocker">Hard stop</button>
+  <button class="qbtn" data-exit="atr_stop">ATR stop</button>
+  <button class="qbtn" data-exit="vwap_exit">VWAP</button>
+  <button class="qbtn" data-exit="eod_close">EOD close</button>
 </div>
 
 <!-- KPI cards -->
@@ -254,6 +261,15 @@ svg text {{ font-family: -apple-system, sans-serif; }}
 <!-- L2 signals -->
 <div class="card">
   <h2>Segnali L2 — tutti i candidati</h2>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+    <span class="filter-label" style="align-self:center">Esito</span>
+    <button class="qbtn active" data-esito="">Tutti</button>
+    <button class="qbtn" data-esito="TRADED">TRADED</button>
+    <button class="qbtn" data-esito="LLM_ALTRO">LLM: altro scelto</button>
+    <button class="qbtn" data-esito="LLM_NOENTRY">LLM: no entry</button>
+    <button class="qbtn" data-esito="REJECT">REJECT</button>
+    <button class="qbtn" data-esito="PASS">PASS</button>
+  </div>
   <div class="tbl-wrap scroll-wrap">
   <table>
     <thead><tr>
@@ -444,25 +460,31 @@ function renderFunnel(logs) {{
 }}
 
 // ── L2 signals ────────────────────────────────────────────────────────────────
+function getEsitoType(s, tradedTickers, llmTickers, llm_output) {{
+  if (!s.passes_threshold) return "REJECT";
+  if (tradedTickers.includes(s.ticker)) return "TRADED";
+  if (llmTickers.length>0 && !llmTickers.includes(s.ticker)) return "LLM_ALTRO";
+  if (llm_output?.no_trade_reason) return "LLM_NOENTRY";
+  return "PASS";
+}}
+function esitoDisplay(type) {{
+  switch(type) {{
+    case "REJECT":     return badge("REJECT","br");
+    case "TRADED":     return badge("TRADED","bb");
+    case "LLM_ALTRO":  return badge("LLM: altro scelto","by");
+    case "LLM_NOENTRY":return badge("LLM: no entry","bmu");
+    default:           return badge("PASS","bg");
+  }}
+}}
 function renderSignals(logs) {{
   const rows=[];
   [...logs].reverse().forEach(r=>{{
     const tradedTickers=r.trades.map(t=>t.ticker);
     const llmTickers=[r.llm_output?.trade_1?.ticker,r.llm_output?.trade_2?.ticker].filter(Boolean);
     r.signals.forEach(s=>{{
-      const pass=s.passes_threshold, traded=tradedTickers.includes(s.ticker);
-      let esito;
-      if (!pass) {{
-        esito=badge("REJECT","br");
-      }} else if (traded) {{
-        esito=badge("TRADED","bb");
-      }} else if (llmTickers.length>0 && !llmTickers.includes(s.ticker)) {{
-        esito=badge("LLM: altro scelto","by");
-      }} else if (r.llm_output?.no_trade_reason) {{
-        esito=badge("LLM: no entry","bmu");
-      }} else {{
-        esito=badge("PASS","bg");
-      }}
+      const esitoType=getEsitoType(s,tradedTickers,llmTickers,r.llm_output);
+      if (activeSignalEsitoFilter && esitoType!==activeSignalEsitoFilter) return;
+      const esito=esitoDisplay(esitoType);
       rows.push(`<tr>
         <td>${{r.date.slice(5)}}</td><td><strong>${{s.ticker}}</strong></td>
         <td>${{confBar(s.confidence)}}</td>
@@ -506,13 +528,24 @@ function renderPremarket(logs) {{
 }}
 
 // ── Master render ─────────────────────────────────────────────────────────────
+let activeLogs = LOGS;
+let activeExitFilter = null;
+let activeSignalEsitoFilter = null;
+
+function applyExitFilter(logs, exitFilter) {{
+  if (!exitFilter) return logs;
+  return logs.map(r=>({{...r, trades:r.trades.filter(t=>t.exit_reason===exitFilter)}}));
+}}
+
 function renderAll(logs) {{
-  renderKpis(computeStats(logs));
-  renderPnlChart(logs);
-  renderExitDonut(logs);
-  renderTradeLog(logs);
-  renderFunnel(logs);
-  renderSignals(logs);
+  activeLogs = logs;
+  const ef = applyExitFilter(logs, activeExitFilter);
+  renderKpis(computeStats(ef));
+  renderPnlChart(ef);
+  renderExitDonut(ef);
+  renderTradeLog(ef);
+  renderFunnel(logs);     // funnel: pipeline counts unaffected by exit filter
+  renderSignals(logs);    // signals: uses own esito filter
   renderPremarket(logs);
 }}
 
@@ -524,13 +557,14 @@ function filterLogs(from, to) {{
 function applyDateFilter() {{
   const from=document.getElementById("dateFrom").value||null;
   const to  =document.getElementById("dateTo").value  ||null;
-  document.querySelectorAll(".qbtn").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".qbtn[data-days]").forEach(b=>b.classList.remove("active"));
   renderAll(filterLogs(from, to));
 }}
 
-document.querySelectorAll(".qbtn").forEach(btn=>{{
+// Date quick buttons
+document.querySelectorAll(".qbtn[data-days]").forEach(btn=>{{
   btn.addEventListener("click", ()=>{{
-    document.querySelectorAll(".qbtn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".qbtn[data-days]").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
     const days=+btn.dataset.days;
     if(days===0){{
@@ -544,6 +578,26 @@ document.querySelectorAll(".qbtn").forEach(btn=>{{
       document.getElementById("dateTo").value="";
       renderAll(filterLogs(fromStr,null));
     }}
+  }});
+}});
+
+// Exit reason filter buttons
+document.querySelectorAll(".qbtn[data-exit]").forEach(btn=>{{
+  btn.addEventListener("click", ()=>{{
+    document.querySelectorAll(".qbtn[data-exit]").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    activeExitFilter = btn.dataset.exit || null;
+    renderAll(activeLogs);
+  }});
+}});
+
+// L2 signal esito filter buttons
+document.querySelectorAll(".qbtn[data-esito]").forEach(btn=>{{
+  btn.addEventListener("click", ()=>{{
+    document.querySelectorAll(".qbtn[data-esito]").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    activeSignalEsitoFilter = btn.dataset.esito || null;
+    renderSignals(activeLogs);
   }});
 }});
 
