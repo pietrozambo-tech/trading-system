@@ -238,8 +238,12 @@ svg text {{ font-family: -apple-system, sans-serif; }}
   <div class="tbl-wrap scroll-wrap">
   <table>
     <thead><tr>
-      <th>Data</th><th>SPY</th><th>Universe</th><th>Pre-mkt</th>
-      <th>L1 ✓</th><th>L2 ✓</th><th>→ LLM</th><th>Trade</th><th>P&amp;L</th><th>Note</th>
+      <th>Data</th><th>SPY</th><th>Universe</th>
+      <th>Pre-mkt <span title="Ticker con gap ≥ 0.5% in pre-market rispetto alla chiusura precedente" class="iico">ⓘ</span></th>
+      <th>L1 ✓ <span title="Superano i filtri binari di qualità: liquidità (ADV), spread, prezzo minimo, asset tradabile su Alpaca" class="iico">ⓘ</span></th>
+      <th>L2 ✓ <span title="Superano la soglia di confidence algoritmica (≥ 0.65) basata su segnali tecnici: post-open advance, OR position, gap retention, vol boost, catalyst" class="iico">ⓘ</span></th>
+      <th>→ LLM <span title="Candidati inviati al modello LLM per la selezione finale del trade, dopo aver superato tutti i filtri algoritmici" class="iico">ⓘ</span></th>
+      <th>Trade</th><th>P&amp;L</th><th>Note</th>
     </tr></thead>
     <tbody id="funnelRows"></tbody>
   </table>
