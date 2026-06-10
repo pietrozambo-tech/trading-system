@@ -86,7 +86,7 @@ STATS_JS = json.dumps({
     "avg_conf":   avg_conf,
     "trade_days":    trade_days,
     "total_days":    len(rows),
-    "total_pnl_pct": round(total_pnl / INITIAL_EQUITY * 100, 3),
+    "total_pnl_pct": round(total_pnl / INITIAL_EQUITY * 100, 2),
     "initial_equity": INITIAL_EQUITY,
 }, ensure_ascii=False)
 
@@ -306,7 +306,7 @@ function computeStats(logs) {{
   const losses   = trades.filter(t=>(t.pnl_usd||0)<=0);
   return {{
     total_pnl:      totalPnl,
-    total_pnl_pct:  +(totalPnl/STATS.initial_equity*100).toFixed(3),
+    total_pnl_pct:  +(totalPnl/STATS.initial_equity*100).toFixed(2),
     win_rate:       trades.length?+(wins.length/trades.length*100).toFixed(1):0,
     n_trades:       trades.length,
     n_wins:         wins.length,
@@ -324,7 +324,7 @@ function computeStats(logs) {{
 function renderKpis(st) {{
   const kpis = [
     {{ l:"P&L totale",        v:(st.total_pnl>=0?"+$":"−$")+Math.abs(st.total_pnl).toFixed(2),                    c:cls(st.total_pnl),       s:`${{st.trade_days}} trade days / ${{st.total_days}} giorni` }},
-    {{ l:"P&L % portafoglio", v:st.n_trades?(st.total_pnl_pct>=0?"+":"")+st.total_pnl_pct.toFixed(3)+"%":"—",     c:cls(st.total_pnl_pct),   s:`su equity iniziale ${{(st.initial_equity/1000).toFixed(0)}}k` }},
+    {{ l:"P&L % portafoglio", v:st.n_trades?(st.total_pnl_pct>=0?"+":"")+st.total_pnl_pct.toFixed(2)+"%":"—",     c:cls(st.total_pnl_pct),   s:`su equity iniziale ${{(st.initial_equity/1000).toFixed(0)}}k` }},
     {{ l:"Win rate",          v:st.n_trades?st.win_rate+"%":"—",                                                    c:"neu",                   s:`${{st.n_wins}}W · ${{st.n_losses}}L · ${{st.n_trades}} trade` }},
     {{ l:"Avg win",           v:st.n_wins  ?"+$"+st.avg_win.toFixed(2):"—",                                        c:"pos",                   s:"per trade vincente" }},
     {{ l:"Avg loss",          v:st.n_losses?"−$"+Math.abs(st.avg_loss).toFixed(2):"—",                             c:st.n_losses?"neg":"mut", s:"per trade perdente" }},
