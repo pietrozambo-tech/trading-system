@@ -136,6 +136,17 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
         except Exception:
             pass
     if entry_price is None:
+        # Order endpoint can lag on paper trading even after the fill happened.
+        # The position endpoint reflects avg_entry_price sooner — check it before
+        # falling back to ref_price (which is NOT the real fill and skews P&L).
+        try:
+            pos = client.get_open_position(ticker)
+            if pos and pos.avg_entry_price:
+                entry_price = float(pos.avg_entry_price)
+                logger.info(f"{ticker}: fill from position endpoint @ ${entry_price:.2f}")
+        except Exception:
+            pass
+    if entry_price is None:
         entry_price = ref_price
         logger.warning(f"{ticker}: fill price unavailable after 6 attempts — using ref_price ${ref_price:.2f}")
 
