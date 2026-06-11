@@ -1,0 +1,576 @@
+{
+  "date": "2026-06-11",
+  "spy_pct": 0.002391190495879177,
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 60,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "TXN",
+        "AMAT",
+        "MRVL",
+        "JPM",
+        "BAC",
+        "GS",
+        "MS",
+        "C",
+        "WFC",
+        "BLK",
+        "SCHW",
+        "UNH",
+        "JNJ",
+        "PFE",
+        "ABBV",
+        "MRK",
+        "BMY",
+        "MRNA",
+        "XOM",
+        "CVX",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "NKE",
+        "LMT",
+        "MSTR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 15,
+      "tickers": [
+        "MRVL",
+        "INTC",
+        "RGTI",
+        "RKLB",
+        "RDW",
+        "AMD",
+        "ASTS",
+        "IONQ",
+        "MU",
+        "TSLA",
+        "QBTS",
+        "QUBT",
+        "DAL",
+        "NVDA",
+        "SMR"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 15,
+      "tickers": [
+        "MRVL",
+        "INTC",
+        "RGTI",
+        "RKLB",
+        "RDW",
+        "AMD",
+        "ASTS",
+        "IONQ",
+        "MU",
+        "TSLA",
+        "QBTS",
+        "QUBT",
+        "DAL",
+        "NVDA",
+        "SMR"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 4,
+      "tickers": [
+        "MRVL",
+        "INTC",
+        "AMD",
+        "NVDA"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "MRVL",
+      "gap_pct": 4.92,
+      "adv_m": 37.8,
+      "short_float_pct": 4.7,
+      "dist_from_3m_high_pct": -18.2
+    },
+    {
+      "ticker": "INTC",
+      "gap_pct": 4.74,
+      "adv_m": 135.1,
+      "short_float_pct": 2.7,
+      "dist_from_3m_high_pct": -15.6
+    },
+    {
+      "ticker": "RGTI",
+      "gap_pct": 2.7,
+      "adv_m": 42.9,
+      "short_float_pct": 18.8,
+      "dist_from_3m_high_pct": -28.8
+    },
+    {
+      "ticker": "RKLB",
+      "gap_pct": 2.53,
+      "adv_m": 25.9,
+      "short_float_pct": 5.5,
+      "dist_from_3m_high_pct": -28.7
+    },
+    {
+      "ticker": "RDW",
+      "gap_pct": 2.42,
+      "adv_m": 39.3,
+      "short_float_pct": 22.4,
+      "dist_from_3m_high_pct": -42.8
+    },
+    {
+      "ticker": "AMD",
+      "gap_pct": 2.33,
+      "adv_m": 38.7,
+      "short_float_pct": 2.7,
+      "dist_from_3m_high_pct": -15.3
+    },
+    {
+      "ticker": "ASTS",
+      "gap_pct": 2.15,
+      "adv_m": 21.1,
+      "short_float_pct": 18.4,
+      "dist_from_3m_high_pct": -33.4
+    },
+    {
+      "ticker": "IONQ",
+      "gap_pct": 2.03,
+      "adv_m": 33.3,
+      "short_float_pct": 15.6,
+      "dist_from_3m_high_pct": -21.6
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 1.96,
+      "adv_m": 50.8,
+      "short_float_pct": 3.3,
+      "dist_from_3m_high_pct": -16.5
+    },
+    {
+      "ticker": "TSLA",
+      "gap_pct": 1.06,
+      "adv_m": 59.1,
+      "short_float_pct": 2.3,
+      "dist_from_3m_high_pct": -14.9
+    },
+    {
+      "ticker": "QBTS",
+      "gap_pct": 0.95,
+      "adv_m": 36.0,
+      "short_float_pct": 16.8,
+      "dist_from_3m_high_pct": -25.6
+    },
+    {
+      "ticker": "QUBT",
+      "gap_pct": 0.94,
+      "adv_m": 21.8,
+      "short_float_pct": 29.7,
+      "dist_from_3m_high_pct": -33.4
+    },
+    {
+      "ticker": "DAL",
+      "gap_pct": 0.88,
+      "adv_m": 8.8,
+      "short_float_pct": 3.7,
+      "dist_from_3m_high_pct": -8.0
+    },
+    {
+      "ticker": "NVDA",
+      "gap_pct": 0.76,
+      "adv_m": 163.5,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -14.6
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 0.65,
+      "adv_m": 35.2,
+      "short_float_pct": 20.0,
+      "dist_from_3m_high_pct": -34.6
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "MRVL",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9274,
+      "gap_retention": 0.9585,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0471,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04921018250920455
+    },
+    {
+      "ticker": "INTC",
+      "confidence": 1.2,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9606,
+      "gap_retention": 0.8486,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0269,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04736547085201787
+    },
+    {
+      "ticker": "RKLB",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": true,
+      "or_position": 0.4947,
+      "gap_retention": 0.4027,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0551,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.025321275583055657
+    },
+    {
+      "ticker": "AMD",
+      "confidence": 1.2,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.92,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0271,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.023253757736516445
+    },
+    {
+      "ticker": "MU",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.4112,
+      "gap_retention": 0.3449,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0334,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.019576624658025784
+    },
+    {
+      "ticker": "TSLA",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0111,
+      "gap_retention": -0.0714,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.023,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010561073403391153
+    },
+    {
+      "ticker": "NVDA",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.3912,
+      "gap_retention": 0.7802,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.012200001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.007584073445763948
+    }
+  ],
+  "llm_input": [
+    "MRVL",
+    "INTC",
+    "AMD",
+    "NVDA"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "INTC",
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Upgrade di B of A Securities a Buy con target $135 (Tier 2 catalyst) e price target raise su potenziale rally del 26%. Tutti e tre i segnali tecnici attivi (post_open_advance, or_position 0.96, gap_retention 0.85) con momentum intraday forte (+1.95% nei primi 5 minuti).",
+      "price_935": 115.59
+    },
+    "trade_2": {
+      "ticker": "AMD",
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "BofA mantiene Buy e alza il target a $560 nominandola top pick CPU sull'AI agentiva (Tier 2 catalyst). Tutti e tre i segnali tecnici attivi con or_position al massimo assoluto (1.0) e gap_retention 0.92, indicando forza sostenuta post-apertura.",
+      "price_935": 466.62
+    },
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "INTC",
+      "qty": 424,
+      "entry_price": 115.59,
+      "entry_time": "09:35:56",
+      "entry_ts": 1781184956.013805,
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Upgrade di B of A Securities a Buy con target $135 (Tier 2 catalyst) e price target raise su potenziale rally del 26%. Tutti e tre i segnali tecnici attivi (post_open_advance, or_position 0.96, gap_retention 0.85) con momentum intraday forte (+1.95% nei primi 5 minuti).",
+      "order_id": "6a0e5694-968a-4233-acbc-708a07963fa8",
+      "stop_atr": 106.6752,
+      "stop_pct": 113.2782,
+      "stop_price": 113.2782,
+      "atr14": 8.9149,
+      "exit_price": 113.13,
+      "exit_time": "10:57:55",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1043.04,
+      "pnl_pct": -0.0213,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.0,
+      "short_float": 0.0269,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9606,
+      "gap_retention": 0.8486,
+      "gap_pct": 0.04736547085201787,
+      "news": [
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-06-11T12:05:16Z",
+          "headline": "This Henry Schein Analyst Turns Bullish; Here Are Top 5 Upgrades For Thursday",
+          "id": 53137604,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/Henry-Schein-Inc.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/Henry-Schein-Inc.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/Henry-Schein-Inc.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Wall Street analysts change outlook for top stocks. See upgrades, downgrades, and initiations on analyst ratings page. HSIC stock analysis.",
+          "symbols": [
+            "BKH",
+            "CME",
+            "DHR",
+            "HSIC",
+            "INTC",
+            "SNSE",
+            "TROX"
+          ],
+          "updated_at": "2026-06-11T12:05:16Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/upgrades/26/06/53137604/this-henry-schein-analyst-turns-bullish-here-are-top-5-upgrades-for-thursday"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-06-11T11:49:27Z",
+          "headline": "Intel To Rally Around 26%? Here Are 10 Top Analyst Forecasts For Thursday",
+          "id": 53137117,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/New-York-City--New-York---September-18-2.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/New-York-City--New-York---September-18-2.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/New-York-City--New-York---September-18-2.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Top Wall Street analysts changed outlook on top names. See full list of rating changes on analyst ratings page: CHEF, NAVN, INTC, HOOD, GPCR, OTLK, ORCL.",
+          "symbols": [
+            "BKH",
+            "CHEF",
+            "CHWY",
+            "GPCR",
+            "HOOD",
+            "INTC",
+            "NAVN",
+            "ORCL",
+            "OTLK",
+            "RBRK",
+            "TEAD",
+            "TYRA"
+          ],
+          "updated_at": "2026-06-11T11:49:28Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/price-target/26/06/53137117/intel-to-rally-around-26-here-are-10-top-analyst-forecasts-for-thursday"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-11T10:28:05Z",
+          "headline": "B of A Securities Upgrades Intel to Buy, Raises Price Target to $135",
+          "id": 53135511,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "INTC"
+          ],
+          "updated_at": "2026-06-11T10:28:06Z",
+          "url": "https://www.benzinga.com/news/26/06/53135511/b-of-a-securities-upgrades-intel-to-buy-raises-price-target-to-135"
+        },
+        {
+          "author": "Opeyemi Babalola",
+          "content": "",
+          "created_at": "2026-06-10T21:56:53Z",
+          "headline": "AI Government Equity Stake Moves Toward Reality",
+          "id": 53131802,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/10/OpenAI.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/10/OpenAI.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/10/OpenAI.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Talks between the White House and AI companies signal a new era of state involvement that could reshape the IPO math for OpenAI and Anthropic.",
+          "symbols": [
+            "INTC"
+          ],
+          "updated_at": "2026-06-10T21:56:54Z",
+          "url": "https://www.benzinga.com/Opinion/26/06/53131802/ai-government-equity-stake-moves-toward-reality"
+        }
+      ]
+    },
+    {
+      "ticker": "AMD",
+      "qty": 105,
+      "entry_price": 466.62,
+      "entry_time": "09:36:17",
+      "entry_ts": 1781184977.7517152,
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "BofA mantiene Buy e alza il target a $560 nominandola top pick CPU sull'AI agentiva (Tier 2 catalyst). Tutti e tre i segnali tecnici attivi con or_position al massimo assoluto (1.0) e gap_retention 0.92, indicando forza sostenuta post-apertura.",
+      "order_id": "5e151b87-cad7-4c0b-9724-aedfaca7aac0",
+      "stop_atr": 432.9829,
+      "stop_pct": 457.2876,
+      "stop_price": 457.2876,
+      "atr14": 33.6371,
+      "exit_price": 488.25,
+      "exit_time": "15:45:25",
+      "exit_reason": "eod_close",
+      "pnl_usd": 2271.15,
+      "pnl_pct": 0.0464,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.0,
+      "short_float": 0.0271,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.92,
+      "gap_pct": 0.023253757736516445,
+      "news": [
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-06-11T12:54:15Z",
+          "headline": "What's Going On With AMD Stock Thursday?",
+          "id": 53138970,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/The-AMD-Trade.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/The-AMD-Trade.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/The-AMD-Trade.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "AMD stock jumps premarket as BofA names it top CPU pick and raises its price target to $560, citing massive agentic AI growth.",
+          "symbols": [
+            "AMD",
+            "ARKW",
+            "ARTY",
+            "NVDA",
+            "SOXX"
+          ],
+          "updated_at": "2026-06-11T12:54:16Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/reiteration/26/06/53138970/whats-going-on-with-amd-stock-thursday-6"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-11T12:01:49Z",
+          "headline": "B of A Securities Maintains Buy on Advanced Micro Devices, Raises Price Target to $560",
+          "id": 53137460,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "AMD"
+          ],
+          "updated_at": "2026-06-11T12:01:49Z",
+          "url": "https://www.benzinga.com/news/26/06/53137460/b-of-a-securities-maintains-buy-on-advanced-micro-devices-raises-price-target-to-560"
+        }
+      ]
+    }
+  ]
+}
