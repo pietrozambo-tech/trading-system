@@ -1,0 +1,488 @@
+{
+  "date": "2026-06-12",
+  "spy_pct": 0.001016714791166782,
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 60,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "TXN",
+        "AMAT",
+        "MRVL",
+        "JPM",
+        "BAC",
+        "GS",
+        "MS",
+        "C",
+        "WFC",
+        "BLK",
+        "SCHW",
+        "UNH",
+        "JNJ",
+        "PFE",
+        "ABBV",
+        "MRK",
+        "BMY",
+        "MRNA",
+        "XOM",
+        "CVX",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "NKE",
+        "LMT",
+        "MSTR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 9,
+      "tickers": [
+        "SMR",
+        "QUBT",
+        "RKLB",
+        "GOOGL",
+        "ASTS",
+        "AMD",
+        "CCL",
+        "GS",
+        "MSFT"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 8,
+      "tickers": [
+        "SMR",
+        "QUBT",
+        "RKLB",
+        "GOOGL",
+        "ASTS",
+        "AMD",
+        "CCL",
+        "MSFT"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 1,
+      "tickers": [
+        "AMD"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "SMR",
+      "gap_pct": 3.03,
+      "adv_m": 35.2,
+      "short_float_pct": 20.0,
+      "dist_from_3m_high_pct": -31.1
+    },
+    {
+      "ticker": "QUBT",
+      "gap_pct": 1.31,
+      "adv_m": 21.6,
+      "short_float_pct": 29.7,
+      "dist_from_3m_high_pct": -30.5
+    },
+    {
+      "ticker": "RKLB",
+      "gap_pct": 1.07,
+      "adv_m": 25.9,
+      "short_float_pct": 5.5,
+      "dist_from_3m_high_pct": -23.2
+    },
+    {
+      "ticker": "GOOGL",
+      "gap_pct": 1.01,
+      "adv_m": 29.6,
+      "short_float_pct": 1.4,
+      "dist_from_3m_high_pct": -11.6
+    },
+    {
+      "ticker": "ASTS",
+      "gap_pct": 0.9,
+      "adv_m": 21.1,
+      "short_float_pct": 18.4,
+      "dist_from_3m_high_pct": -26.5
+    },
+    {
+      "ticker": "AMD",
+      "gap_pct": 0.81,
+      "adv_m": 38.6,
+      "short_float_pct": 2.7,
+      "dist_from_3m_high_pct": -9.9
+    },
+    {
+      "ticker": "CCL",
+      "gap_pct": 0.75,
+      "adv_m": 27.5,
+      "short_float_pct": 3.3,
+      "dist_from_3m_high_pct": -6.1
+    },
+    {
+      "ticker": "GS",
+      "gap_pct": 0.67,
+      "adv_m": 2.1,
+      "short_float_pct": 2.6,
+      "dist_from_3m_high_pct": -5.1
+    },
+    {
+      "ticker": "MSFT",
+      "gap_pct": 0.58,
+      "adv_m": 35.6,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -15.8
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "GS",
+      "reason": "adv_2,090,905<min_5,000,000"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "SMR",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.2778,
+      "gap_retention": 0.5217,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1997,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.030303030303030214,
+      "price_935": 9.74,
+      "open_930": 9.8
+    },
+    {
+      "ticker": "RKLB",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0204,
+      "gap_retention": -2.4131,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0551,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010716152639832758,
+      "price_935": 108.71,
+      "open_930": 117.37
+    },
+    {
+      "ticker": "GOOGL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0082,
+      "gap_retention": 0.4652,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.014199999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010090281465746188,
+      "price_935": 360.045,
+      "open_930": 362.585
+    },
+    {
+      "ticker": "AMD",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.502,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0271,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.008148223973794694,
+      "price_935": 501.74,
+      "open_930": 499.685
+    },
+    {
+      "ticker": "CCL",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": true,
+      "or_position": 0.6,
+      "gap_retention": 0.6667,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.033299997,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.007467994310099477,
+      "price_935": 28.965,
+      "open_930": 28.87
+    },
+    {
+      "ticker": "MSFT",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0,
+      "gap_retention": -5.6599,
+      "vol_boost": 0.0,
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0119,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.005764205564379772,
+      "price_935": 383.35,
+      "open_930": 391.575
+    }
+  ],
+  "llm_input": [
+    "AMD"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "AMD",
+      "direction": "long",
+      "confidence": 0.6667,
+      "reason": "Citi e BofA alzano i price target su AMD per crescita AI, fornendo un catalyst Tier 2 (+0.20) che supporta il movimento. Tecnicamente il titolo \u00e8 in cima all'OR (or_position=1.0) con post_open_advance positivo, ma gap_retention debole (0.50) e vol_ratio assente limitano la fiducia.",
+      "price_935": 501.74
+    },
+    "trade_2": null,
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "AMD",
+      "qty": 98,
+      "entry_price": 501.74,
+      "entry_time": "09:35:51",
+      "entry_ts": 1781271351.9460068,
+      "direction": "long",
+      "confidence": 0.6667,
+      "reason": "Citi e BofA alzano i price target su AMD per crescita AI, fornendo un catalyst Tier 2 (+0.20) che supporta il movimento. Tecnicamente il titolo \u00e8 in cima all'OR (or_position=1.0) con post_open_advance positivo, ma gap_retention debole (0.50) e vol_ratio assente limitano la fiducia.",
+      "order_id": "f22cb0ea-ef92-4263-a3d0-05e86e8ff826",
+      "stop_atr": 466.7843,
+      "stop_pct": 491.7052,
+      "stop_price": 491.7052,
+      "atr14": 34.9557,
+      "exit_price": 511.28,
+      "exit_time": "15:31:37",
+      "exit_reason": "vwap_exit",
+      "pnl_usd": 934.92,
+      "pnl_pct": 0.019,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.0271,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.502,
+      "gap_pct": 0.008148223973794694,
+      "news": [
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-06-12T13:07:21Z",
+          "headline": "Why Is AMD Stock Gaining Friday?",
+          "id": 53164121,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Chipmakers-Rally-on-Clearance.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Chipmakers-Rally-on-Clearance.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Chipmakers-Rally-on-Clearance.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "AMD stock continues to rally in premarket trading as Citi and BofA lift price targets on massive AI growth. Get the technical layout.",
+          "symbols": [
+            "AMD",
+            "AMDL",
+            "ARKW",
+            "META",
+            "MSFT",
+            "NVDA",
+            "SONY",
+            "SOXX"
+          ],
+          "updated_at": "2026-06-12T13:07:21Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/upgrades/26/06/53164121/why-is-amd-stock-gaining-friday"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-06-12T12:23:14Z",
+          "headline": "What's Going On With Intel Stock Friday?",
+          "id": 53163195,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Santa-Clara--Ca--Usa---Nov-22--2023-Inte.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Santa-Clara--Ca--Usa---Nov-22--2023-Inte.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Santa-Clara--Ca--Usa---Nov-22--2023-Inte.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Intel ($INTC) edges lower in premarket despite a bullish tech backdrop. Is the rally pausing, or is a breakout ahead? Read our analysis.",
+          "symbols": [
+            "AMD",
+            "INTC",
+            "INTW",
+            "NVDA",
+            "SOXX",
+            "VLUE"
+          ],
+          "updated_at": "2026-06-12T12:24:54Z",
+          "url": "https://www.benzinga.com/markets/tech/26/06/53163195/whats-going-on-with-intel-stock-friday-3"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-06-12T12:13:39Z",
+          "headline": "NVIDIA Obliterates The Boring PC Era",
+          "id": 53163096,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Nvidia-AI.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Nvidia-AI.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Nvidia-AI.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "NVIDIA unveils the RTX Spark Superchip, aiming to transform traditional PCs into high-performance local AI inference machines.",
+          "symbols": [
+            "AAPL",
+            "AMD",
+            "ARM",
+            "INTC",
+            "MSFT",
+            "NVDA",
+            "QCOM"
+          ],
+          "updated_at": "2026-06-12T12:14:57Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/analyst-color/26/06/53163096/nvidia-obliterates-the-boring-pc-era"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-06-12T10:06:33Z",
+          "headline": "Chinese Customers Can Now Order NVIDIA's Vera CPUs: Report",
+          "id": 53161253,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Nvidia-in-China.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Nvidia-in-China.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Nvidia-in-China.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "NVIDIA pitches new Vera AI CPU to Chinese clients, stock climbs premarket. Read the key technical levels to watch for NVDA today.",
+          "symbols": [
+            "AIPI",
+            "AMD",
+            "BABA",
+            "INTC",
+            "NVDA",
+            "ROM",
+            "USNZ"
+          ],
+          "updated_at": "2026-06-12T10:06:33Z",
+          "url": "https://www.benzinga.com/markets/tech/26/06/53161253/chinese-customers-can-now-order-nvidias-vera-cpus-report"
+        },
+        {
+          "author": "Eva Mathew",
+          "content": "",
+          "created_at": "2026-06-12T08:36:03Z",
+          "headline": "Stock Market: Will S&P 500 Open Up Or Down Today?",
+          "id": 53160378,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Tallinn--Estonia---August-4th-2023---Com.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Tallinn--Estonia---August-4th-2023---Com.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Tallinn--Estonia---August-4th-2023---Com.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "June 12, 2026: Polymarket traders bet on an S&amp;P 500 gain at open as Iran deal optimism grows before SpaceX&#39;s IPO.",
+          "symbols": [
+            "AMD",
+            "INTC",
+            "MU",
+            "ORCL",
+            "SOXX"
+          ],
+          "updated_at": "2026-06-12T08:36:03Z",
+          "url": "https://www.benzinga.com/markets/prediction-markets/26/06/53160378/sp500-june-12-open-up-or-down-polymarket-spacex-ipo-iran-deal"
+        }
+      ]
+    }
+  ]
+}
