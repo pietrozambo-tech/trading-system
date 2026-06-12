@@ -373,6 +373,14 @@ Non-oracle results (profit factor, YTD 2025–2026):
 
 **Prerequisito prima di qualsiasi implementazione:** backtest su almeno 4–6 settimane di log reali per misurare l'impatto di ciascuna variante su win rate, avg win, avg loss e profit factor. L'obiettivo è capire quanti trade come INTC sarebbero stati salvati senza sacrificare trade come AMD.
 
+### Soglie vol_boost — ricalibrare coi dati (giugno 2026)
+
+**Osservazione del 12 giugno:** il vol_boost è scattato su 4 candidati su 8 il 4 giugno, poi 0.0 su 35 dei 36 candidati successivi — incluso INTC l'8 giugno con gap +12%, dove un volume d'apertura sotto il doppio della media è improbabile. Le soglie attuali (ratio > 2× per +0.05, > 3× per +0.10) sono severe, e sui volumi IEX (15–20% del volume reale, rumorosi su finestre di 5 minuti) probabilmente doppiamente severe.
+
+**Proposta in valutazione:** abbassare a **+0.05 se ratio > 1.5×** e **+0.10 se ratio > 2×**.
+
+**Criterio di verifica prima di cambiare:** dal 12 giugno il `vol_ratio` grezzo è loggato per ogni candidato L2 (e un warning segnala quando lo storico volumi non è disponibile — prima era uno 0.0 silenzioso). Guardare la distribuzione dei ratio della settimana del 15–19 giugno: (1) se i ratio sono spesso `null` → problema di feed, le soglie non c'entrano; (2) se i ratio reali si concentrano sotto 2× anche su giornate con gap forti → adottare le nuove soglie, eventualmente tarandole sul quartile alto della distribuzione osservata. Il vol_boost entra nella confidence che decide chi passa L2, quindi il cambio va trattato come modifica di strategia, non cosmetica.
+
 ### Migrazione a live trading — cambi all'esecuzione (giugno 2026)
 
 I limit order con conferma fill (sezione 5) sono un workaround per un problema specifico del **paper trading**: Alpaca paper simula i market order all'ask IEX, che alle 9:35 può essere ancora la quote pre-market stantia (+1–2% sopra il mercato reale). Su un account live gli ordini vanno al mercato vero e il problema non esiste. Quando si passa a live:
