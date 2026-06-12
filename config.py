@@ -62,6 +62,13 @@ ENTRY_TIME           = "09:35"
 MONITORING_INTERVAL  = 60        # seconds between position checks
 EOD_CLOSE_TIME       = "15:45"
 
+# === ORDER FILL CONFIRMATION ===
+# L'ask IEX stantio può tenere il limit order pendente per minuti (12 giugno: 2m18s).
+# La posizione viene creata SOLO dopo fill confermato; allo scadere del timeout
+# l'ordine viene cancellato (fill parziale → si tiene la qty eseguita).
+FILL_CONFIRM_TIMEOUT_S = 240     # attesa massima fill del limit order
+FILL_POLL_INTERVAL_S   = 5       # intervallo polling stato ordine
+
 # === GENERAL ===
 MAX_CANDIDATES_TO_LLM  = 15
 TIMEZONE               = "America/New_York"

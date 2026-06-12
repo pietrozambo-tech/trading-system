@@ -12,6 +12,7 @@ from alpaca.trading.enums import OrderSide, TimeInForce
 
 import config
 from data import fetcher
+from notify import telegram
 from signals.triggers import calc_vwap
 
 logger = logging.getLogger(__name__)
@@ -95,11 +96,30 @@ def place_limit_order(ticker: str, qty: int, limit_price: float, side: OrderSide
         return None
 
 
+def _fill_price_from_position(client: TradingClient, ticker: str) -> Optional[float]:
+    """Position endpoint fallback — on paper trading it can reflect avg_entry_price
+    before the order endpoint exposes filled_avg_price."""
+    try:
+        pos = client.get_open_position(ticker)
+        if pos and pos.avg_entry_price:
+            return float(pos.avg_entry_price)
+    except Exception:
+        pass
+    return None
+
+
 def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
     """
     Open a long position based on LLM decision.
     Uses price_935 (last bar close from L2 signal computation, actual trade data)
     as the reference price for a limit order, preventing fills at stale IEX pre-market asks.
+
+    The position dict is created ONLY after the fill is confirmed. A limit order can
+    sit unfilled for minutes when the IEX ask is above our limit (June 12: 2m18s) —
+    creating the position before the fill produces phantom positions, wrong entry
+    prices/stops, and a race with the reconciliation check in monitor_positions().
+    If the order is not fully filled within FILL_CONFIRM_TIMEOUT_S it is cancelled:
+    a partial fill is kept with the actual executed qty, a zero fill skips the trade.
     """
     account = fetcher.get_account()
     equity = account["equity"]
@@ -115,40 +135,66 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
         logger.error(f"Cannot compute qty for {ticker} at ${ref_price:.2f}")
         return None
 
-    # Limit buy at ref_price +0.5% — fills immediately at the real market price
-    # but blocks Alpaca from filling at stale IEX pre-market asks (+1-2% above market).
+    # Limit buy at ref_price +0.5% — caps the fill at the real market price,
+    # blocking Alpaca from filling at stale IEX pre-market asks (+1-2% above market).
     limit_price = round(ref_price * 1.005, 2)
     order = place_limit_order(ticker, qty, limit_price, OrderSide.BUY)
     if not order:
         return None
 
-    # Fetch actual fill price — limit orders may settle slightly slower than market orders.
     client = _trading_client()
     entry_price = None
-    for attempt in range(1, 7):  # up to 6 attempts (21s total)
-        time.sleep(attempt)
+    filled_qty = 0
+    deadline = time.time() + config.FILL_CONFIRM_TIMEOUT_S
+    while time.time() < deadline:
+        time.sleep(config.FILL_POLL_INTERVAL_S)
         try:
-            filled = client.get_order_by_id(order["order_id"])
-            if filled.filled_avg_price:
-                entry_price = float(filled.filled_avg_price)
-                logger.info(f"{ticker}: fill confirmed @ ${entry_price:.2f} (attempt {attempt})")
+            o = client.get_order_by_id(order["order_id"])
+        except Exception as e:
+            logger.warning(f"{ticker}: order poll error: {e}")
+            continue
+        status = str(getattr(o, "status", "")).lower()
+        if any(s in status for s in ("canceled", "rejected", "expired")):
+            logger.error(f"{ticker}: order {status} before fill")
+            break
+        filled_qty = int(float(o.filled_qty or 0))
+        if filled_qty >= qty:
+            entry_price = float(o.filled_avg_price) if o.filled_avg_price else _fill_price_from_position(client, ticker)
+            if entry_price:
+                logger.info(f"{ticker}: fill confirmed @ ${entry_price:.2f} ({filled_qty} shares)")
                 break
-        except Exception:
-            pass
+
     if entry_price is None:
-        # Order endpoint can lag on paper trading even after the fill happened.
-        # The position endpoint reflects avg_entry_price sooner — check it before
-        # falling back to ref_price (which is NOT the real fill and skews P&L).
+        # Not (fully) filled in time — cancel so no orphan order can fill later, unmonitored.
         try:
-            pos = client.get_open_position(ticker)
-            if pos and pos.avg_entry_price:
-                entry_price = float(pos.avg_entry_price)
-                logger.info(f"{ticker}: fill from position endpoint @ ${entry_price:.2f}")
-        except Exception:
-            pass
+            client.cancel_order_by_id(order["order_id"])
+            logger.warning(f"{ticker}: limit ${limit_price:.2f} not filled within {config.FILL_CONFIRM_TIMEOUT_S}s — order cancelled")
+        except Exception as e:
+            logger.warning(f"{ticker}: order cancel failed (may already be terminal): {e}")
+        # Re-check final state: the cancel can race with a (partial) fill.
+        time.sleep(2)
+        try:
+            o = client.get_order_by_id(order["order_id"])
+            filled_qty = int(float(o.filled_qty or 0))
+            if filled_qty > 0:
+                entry_price = float(o.filled_avg_price) if o.filled_avg_price else _fill_price_from_position(client, ticker)
+                if entry_price is None:
+                    # We OWN these shares — never abandon them unmonitored. The limit
+                    # price is the worst possible fill, so it's a conservative estimate.
+                    entry_price = limit_price
+                    logger.error(f"{ticker}: {filled_qty} shares filled but no price available — assuming limit ${limit_price:.2f}")
+                qty = filled_qty
+                logger.warning(f"{ticker}: partial fill kept — {qty} shares @ ${entry_price:.2f}")
+        except Exception as e:
+            logger.error(f"{ticker}: final order check failed: {e}")
+
     if entry_price is None:
-        entry_price = ref_price
-        logger.warning(f"{ticker}: fill price unavailable after 6 attempts — using ref_price ${ref_price:.2f}")
+        logger.warning(f"{ticker}: entry skipped — limit ${limit_price:.2f} never filled (ref ${ref_price:.2f})")
+        telegram.send_message(
+            f"⚠️ <b>{ticker}</b>: entry saltata — limit ${limit_price:.2f} non eseguito entro "
+            f"{config.FILL_CONFIRM_TIMEOUT_S}s (ref ${ref_price:.2f}). Nessuna posizione aperta."
+        )
+        return None
 
     stops = calc_stop_prices(ticker, entry_price)
     position = {
