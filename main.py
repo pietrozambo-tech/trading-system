@@ -117,6 +117,7 @@ class PipelineLog:
             "or_position":         signals.get("or_position"),
             "gap_retention":       signals.get("gap_retention"),
             "vol_boost":           signals.get("vol_boost"),
+            "vol_ratio":           signals.get("vol_ratio"),
             "catalyst_bonus":      signals.get("catalyst_bonus"),
             "short_float":         signals.get("short_float"),
             "short_squeeze_bonus": signals.get("short_squeeze_bonus"),
@@ -450,11 +451,12 @@ def run() -> None:
         all_trades.append({"reason": llm_result["no_trade_reason"]})
 
     valid_tickers = {c["ticker"] for c in candidates_with_signals}
+    pending_entries: list[dict] = []
     for key in ("trade_1", "trade_2"):
         decision = llm_result.get(key)
         if not decision:
             continue
-        if len(open_positions) >= config.MAX_POSITIONS:
+        if len(open_positions) + len(pending_entries) >= config.MAX_POSITIONS:
             break
         if decision.get("ticker") not in valid_tickers:
             logger.error(f"LLM returned unrecognised ticker '{decision.get('ticker')}' — skipping")
@@ -471,10 +473,20 @@ def run() -> None:
         # Replace LLM's 0-1 confidence with the uncapped algorithmic score
         # (e.g. 1.04 is more informative than 0.87 for the Telegram recap)
         decision["confidence"] = algo_conf
-        # Pass price_935 so open_position() uses actual bar-close price (real trades)
-        # rather than the stale IEX pre-market ask for limit order reference.
+        # Pass price_935 so the limit order references the actual bar-close price
+        # (real trades) rather than the stale IEX pre-market ask.
         decision["price_935"] = algo.get("price_935")
-        position = trader.open_position(decision["ticker"], decision)
+        ctx = trader.place_entry_order(decision["ticker"], decision)
+        if ctx:
+            ctx["algo"] = algo
+            pending_entries.append(ctx)
+
+    # Confirm fills only after every order is placed: the FILL_CONFIRM_TIMEOUT_S
+    # deadlines are anchored to each order's placed_ts, so on a two-trade day the
+    # waits overlap instead of delaying the second entry by up to 4 minutes.
+    for ctx in pending_entries:
+        algo = ctx.pop("algo")
+        position = trader.confirm_entry_fill(ctx)
         if position:
             # Enrich position with signal data needed for EOD Telegram recap
             for field in ("catalyst_bonus", "vol_boost", "short_float", "short_squeeze_bonus", "post_open_advance", "or_position", "gap_retention", "gap_pct", "news"):

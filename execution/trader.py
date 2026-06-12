@@ -108,19 +108,10 @@ def _fill_price_from_position(client: TradingClient, ticker: str) -> Optional[fl
     return None
 
 
-def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
-    """
-    Open a long position based on LLM decision.
-    Uses price_935 (last bar close from L2 signal computation, actual trade data)
-    as the reference price for a limit order, preventing fills at stale IEX pre-market asks.
-
-    The position dict is created ONLY after the fill is confirmed. A limit order can
-    sit unfilled for minutes when the IEX ask is above our limit (June 12: 2m18s) —
-    creating the position before the fill produces phantom positions, wrong entry
-    prices/stops, and a race with the reconciliation check in monitor_positions().
-    If the order is not fully filled within FILL_CONFIRM_TIMEOUT_S it is cancelled:
-    a partial fill is kept with the actual executed qty, a zero fill skips the trade.
-    """
+def place_entry_order(ticker: str, llm_decision: dict) -> Optional[dict]:
+    """Phase 1 of entry: size and submit the limit order without waiting for the fill.
+    Returns an order context for confirm_entry_fill(). Keeping the two phases separate
+    lets multiple trades poll their fills concurrently instead of back-to-back."""
     account = fetcher.get_account()
     equity = account["equity"]
 
@@ -141,15 +132,48 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
     order = place_limit_order(ticker, qty, limit_price, OrderSide.BUY)
     if not order:
         return None
+    return {
+        "ticker": ticker,
+        "order_id": order["order_id"],
+        "qty": qty,
+        "limit_price": limit_price,
+        "ref_price": ref_price,
+        "placed_ts": time.time(),
+        "llm_decision": llm_decision,
+    }
+
+
+def confirm_entry_fill(ctx: dict) -> Optional[dict]:
+    """Phase 2 of entry: poll the order until filled, cancel on timeout.
+
+    The position dict is created ONLY after the fill is confirmed. A limit order can
+    sit unfilled for minutes when the IEX ask is above our limit (June 12: 2m18s) —
+    creating the position before the fill produces phantom positions, wrong entry
+    prices/stops, and a race with the reconciliation check in monitor_positions().
+    If the order is not fully filled within FILL_CONFIRM_TIMEOUT_S of placement it is
+    cancelled: a partial fill is kept with the actual executed qty, a zero fill skips
+    the trade. The deadline is anchored to placed_ts, so with two pending orders the
+    waits overlap instead of adding up.
+    """
+    ticker       = ctx["ticker"]
+    order_id     = ctx["order_id"]
+    qty          = ctx["qty"]
+    limit_price  = ctx["limit_price"]
+    ref_price    = ctx["ref_price"]
+    llm_decision = ctx["llm_decision"]
 
     client = _trading_client()
     entry_price = None
     filled_qty = 0
-    deadline = time.time() + config.FILL_CONFIRM_TIMEOUT_S
-    while time.time() < deadline:
+    deadline = ctx["placed_ts"] + config.FILL_CONFIRM_TIMEOUT_S
+    # Always poll at least once: with two pending orders this one may have filled
+    # (deadline even expired) while we were confirming the previous one.
+    first_check = True
+    while first_check or time.time() < deadline:
+        first_check = False
         time.sleep(config.FILL_POLL_INTERVAL_S)
         try:
-            o = client.get_order_by_id(order["order_id"])
+            o = client.get_order_by_id(order_id)
         except Exception as e:
             logger.warning(f"{ticker}: order poll error: {e}")
             continue
@@ -167,14 +191,14 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
     if entry_price is None:
         # Not (fully) filled in time — cancel so no orphan order can fill later, unmonitored.
         try:
-            client.cancel_order_by_id(order["order_id"])
+            client.cancel_order_by_id(order_id)
             logger.warning(f"{ticker}: limit ${limit_price:.2f} not filled within {config.FILL_CONFIRM_TIMEOUT_S}s — order cancelled")
         except Exception as e:
             logger.warning(f"{ticker}: order cancel failed (may already be terminal): {e}")
         # Re-check final state: the cancel can race with a (partial) fill.
         time.sleep(2)
         try:
-            o = client.get_order_by_id(order["order_id"])
+            o = client.get_order_by_id(order_id)
             filled_qty = int(float(o.filled_qty or 0))
             if filled_qty > 0:
                 entry_price = float(o.filled_avg_price) if o.filled_avg_price else _fill_price_from_position(client, ticker)
@@ -206,7 +230,7 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
         "direction": "long",
         "confidence": llm_decision.get("confidence"),
         "reason": llm_decision.get("reason", ""),
-        "order_id": order["order_id"],
+        "order_id": order_id,
         **stops,
         "exit_price": None,
         "exit_time": None,
@@ -219,6 +243,14 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
         f" qty={qty} stop=${stops['stop_price']:.2f}"
     )
     return position
+
+
+def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
+    """Single-trade entry: place the order and wait for the confirmed fill."""
+    ctx = place_entry_order(ticker, llm_decision)
+    if not ctx:
+        return None
+    return confirm_entry_fill(ctx)
 
 
 def close_position(ticker: str, qty: int, reason: str) -> Optional[dict]:

@@ -490,8 +490,8 @@ function renderSignals(logs) {{
         <td>${{confBar(s.confidence)}}</td>
         <td>${{tk(s.post_open_advance)}}</td>
         <td class="${{(s.or_position||0)>0.66?"pos":"neg"}}">${{fu(s.or_position,2)}}</td>
-        <td class="${{(s.gap_retention||0)>0.70?"pos":"neg"}}">${{fu(s.gap_retention,2)}}</td>
-        <td>${{s.vol_boost?"+"+parseFloat(s.vol_boost).toFixed(2):"—"}}</td>
+        <td class="${{(s.gap_retention||0)>0.70?"pos":"neg"}}" title="${{fu(s.gap_retention,2)}}">${{(s.gap_retention??0)<-1?"≤ −1":fu(s.gap_retention,2)}}</td>
+        <td>${{s.vol_ratio!=null?parseFloat(s.vol_ratio).toFixed(1)+"×"+(s.vol_boost?" (+"+parseFloat(s.vol_boost).toFixed(2)+")":""):(s.vol_boost?"+"+parseFloat(s.vol_boost).toFixed(2):"—")}}</td>
         <td>${{s.catalyst_bonus?"+"+parseFloat(s.catalyst_bonus).toFixed(2):"—"}}</td>
         <td>${{s.short_float!=null?(s.short_float*100).toFixed(1)+"%":"—"}}</td>
         <td>${{s.short_squeeze_bonus?badge("+"+parseFloat(s.short_squeeze_bonus).toFixed(2),"bb"):"—"}}</td>

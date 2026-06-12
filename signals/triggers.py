@@ -41,18 +41,21 @@ def s3_gap_retention(bars_or: pd.DataFrame, open_930: float, prev_close: float) 
     return 1.0 - (gap_eaten / gap_size)
 
 
-def s4_volume_boost(ticker: str, bars_or: pd.DataFrame, session_date: Optional[date] = None) -> float:
-    """S4: Volume in opening range vs historical average same window."""
+def s4_volume_boost(ticker: str, bars_or: pd.DataFrame, session_date: Optional[date] = None) -> tuple[float, Optional[float]]:
+    """S4: Volume in opening range vs historical average same window.
+    Returns (boost, raw ratio). Ratio is None when historical data is unavailable —
+    distinct from a genuine low-volume ratio, which previously looked identical."""
     vol_today = float(bars_or["volume"].sum())
     vol_avg   = fetcher.get_historical_or_volume(ticker, lookback_days=20, session_date=session_date)
     if vol_avg == 0:
-        return 0.0
+        logger.warning(f"{ticker}: historical OR volume unavailable (vol_avg=0) — vol_boost skipped")
+        return 0.0, None
     ratio = vol_today / vol_avg
     if ratio > config.VOL_RATIO_HIGH:
-        return 0.10
+        return 0.10, ratio
     elif ratio > config.VOL_RATIO_MID:
-        return 0.05
-    return 0.0
+        return 0.05, ratio
+    return 0.0, ratio
 
 
 def calc_confidence(
@@ -120,7 +123,7 @@ def compute_signals(
     post_adv      = s1_post_open_advance(open_930, price_935)
     or_pos        = s2_or_position(bars_or, price_935)
     gap_ret       = s3_gap_retention(bars_or, open_930, prev_close)
-    vol_boost     = s4_volume_boost(ticker, bars_or, session_date)
+    vol_boost, vol_ratio = s4_volume_boost(ticker, bars_or, session_date)
     squeeze_bonus = (
         config.SHORT_SQUEEZE_BONUS
         if short_float is not None
@@ -137,7 +140,7 @@ def compute_signals(
     adv_str  = f"ADV={'✓' if post_adv else '✗'}"
     or_str   = f"OR={or_pos:.2f}{'✓' if or_pos > config.OR_POSITION_THRESHOLD else f'✗(need>{config.OR_POSITION_THRESHOLD})'}"
     gr_str   = f"GR={gap_ret:.2f}{'✓' if gap_ret > config.GAP_RETENTION_THRESHOLD else f'✗(need>{config.GAP_RETENTION_THRESHOLD})'}"
-    vol_str  = f"vol=+{vol_boost:.2f}"
+    vol_str  = f"vol={vol_ratio:.2f}x(+{vol_boost:.2f})" if vol_ratio is not None else f"vol=n/d(+{vol_boost:.2f})"
     cat_str  = f"catalyst=+{catalyst_bonus:.2f}"
     sq_str   = f" squeeze=+{squeeze_bonus:.2f}" if squeeze_bonus > 0 else ""
     conf_str = f"confidence={confidence:.3f}{'✓' if passes else f'✗(need≥{config.CONFIDENCE_THRESHOLD})'}"
@@ -157,6 +160,7 @@ def compute_signals(
         "or_position":          round(or_pos, 4),
         "gap_retention":        round(gap_ret, 4),
         "vol_boost":            vol_boost,
+        "vol_ratio":            round(vol_ratio, 3) if vol_ratio is not None else None,
         "catalyst_bonus":       catalyst_bonus,
         "short_float":          short_float,
         "short_squeeze_bonus":  squeeze_bonus,
