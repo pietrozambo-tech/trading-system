@@ -161,8 +161,12 @@ tr:hover td {{ background: rgba(255,255,255,.025); }}
 .tk {{ color: var(--green); font-weight: 700; }}
 .cx {{ color: var(--red); font-weight: 700; }}
 
-/* Info icon on column headers */
-.iico {{ font-size: 10px; color: var(--blue); cursor: help; opacity: .75; vertical-align: middle; }}
+/* Info icon on column headers — padded for a comfortable tap target on touch devices */
+.iico {{ font-size: 12px; color: var(--blue); cursor: pointer; opacity: .85; vertical-align: middle; padding: 3px 5px; margin: -3px -2px; display: inline-block; }}
+[data-tip] {{ cursor: pointer; }}
+
+/* Tap/hover tooltip popover (works on iPad — no native title hover needed) */
+.tip-pop {{ position: fixed; z-index: 1000; max-width: 270px; background: #0b0d13; border: 1px solid var(--border); color: var(--text); font-size: 12px; line-height: 1.45; padding: 9px 12px; border-radius: 7px; box-shadow: 0 6px 22px rgba(0,0,0,.55); display: none; }}
 
 /* Conf bar */
 .cb {{ display: inline-block; height: 5px; background: var(--blue); border-radius: 3px; vertical-align: middle; margin-right: 5px; opacity: .8; }}
@@ -248,10 +252,10 @@ svg text {{ font-family: -apple-system, sans-serif; }}
   <table>
     <thead><tr>
       <th>Data</th><th>SPY</th><th>Universe</th>
-      <th>Pre-mkt <span title="Ticker con gap ≥ 0.5% in pre-market rispetto alla chiusura precedente" class="iico">ⓘ</span></th>
-      <th>L1 ✓ <span title="Superano i filtri binari di qualità: liquidità (ADV), spread, prezzo minimo, asset tradabile su Alpaca" class="iico">ⓘ</span></th>
-      <th>L2 ✓ <span title="Superano la soglia di confidence algoritmica (≥ 0.65) basata su segnali tecnici: post-open advance, OR position, gap retention, vol boost, catalyst" class="iico">ⓘ</span></th>
-      <th>→ LLM <span title="Candidati inviati al modello LLM per la selezione finale del trade, dopo aver superato tutti i filtri algoritmici" class="iico">ⓘ</span></th>
+      <th>Pre-mkt <span data-tip="Ticker con gap ≥ 0.5% in pre-market rispetto alla chiusura precedente" class="iico">ⓘ</span></th>
+      <th>L1 ✓ <span data-tip="Superano i filtri binari di qualità: liquidità (ADV), spread, prezzo minimo, asset tradabile su Alpaca" class="iico">ⓘ</span></th>
+      <th>L2 ✓ <span data-tip="Superano la soglia di confidence algoritmica (≥ 0.65) basata su segnali tecnici: post-open advance, OR position, gap retention, vol boost, catalyst" class="iico">ⓘ</span></th>
+      <th>→ LLM <span data-tip="Candidati inviati al modello LLM per la selezione finale del trade, dopo aver superato tutti i filtri algoritmici" class="iico">ⓘ</span></th>
       <th>Trade</th><th>P&amp;L</th><th>Note</th>
     </tr></thead>
     <tbody id="funnelRows"></tbody>
@@ -275,11 +279,11 @@ svg text {{ font-family: -apple-system, sans-serif; }}
   <table>
     <thead><tr>
       <th>Data</th><th>Ticker</th><th>Confidence</th>
-      <th>Post-open advance <span title="Prezzo alle 9:35 superiore all'apertura delle 9:30 — conferma che il gap tiene nei primi 5 minuti di trading" class="iico">ⓘ</span></th>
-      <th>OR position <span title="Posizione nel range 9:30–9:35: 1.0 = massimo del range, 0.0 = minimo. Sopra 0.66 = titolo nel terzo superiore, segnale di forza" class="iico">ⓘ</span></th>
-      <th>Gap retention <span title="Frazione del gap pre-market ancora intatta alle 9:35. 1.0 = gap invariato, 0.0 = gap completamente colmato. Sopra 0.70 = gap difeso" class="iico">ⓘ</span></th>
-      <th>Vol boost <span title="Volume nei primi 5 minuti (9:30–9:35) rapportato alla media storica della stessa finestra. >3× → +0.10, 2–3× → +0.05. Passa il mouse sulla cella per i volumi grezzi (oggi vs media)" class="iico">ⓘ</span></th><th>Catalyst</th>
-      <th title="Percentuale del flottante venduta allo scoperto">Short float</th>
+      <th>Post-open advance <span data-tip="Prezzo alle 9:35 superiore all'apertura delle 9:30 — conferma che il gap tiene nei primi 5 minuti di trading" class="iico">ⓘ</span></th>
+      <th>OR position <span data-tip="Posizione nel range 9:30–9:35: 1.0 = massimo del range, 0.0 = minimo. Sopra 0.66 = titolo nel terzo superiore, segnale di forza" class="iico">ⓘ</span></th>
+      <th>Gap retention <span data-tip="Frazione del gap pre-market ancora intatta alle 9:35. 1.0 = gap invariato, 0.0 = gap completamente colmato. Sopra 0.70 = gap difeso" class="iico">ⓘ</span></th>
+      <th>Vol boost <span data-tip="Volume nei primi 5 minuti (9:30–9:35) rapportato alla media storica della stessa finestra. >3× → +0.10, 2–3× → +0.05. Passa il mouse sulla cella per i volumi grezzi (oggi vs media)" class="iico">ⓘ</span></th><th>Catalyst</th>
+      <th data-tip="Percentuale del flottante venduta allo scoperto">Short float</th>
       <th>Squeeze</th><th>Gap %</th><th>Esito</th>
     </tr></thead>
     <tbody id="signalRows"></tbody>
@@ -303,7 +307,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
 
 <!-- Pre-open gate exclusions -->
 <div class="card">
-  <h2>Esclusioni pre-open gate <span title="Candidati scartati alle 9:35 prima del calcolo dei segnali: gap invertito all'apertura, o gap pre-market eroso sotto la soglia di ritenzione. Non raggiungono mai lo scoring L2" class="iico">ⓘ</span></h2>
+  <h2>Esclusioni pre-open gate <span data-tip="Candidati scartati alle 9:35 prima del calcolo dei segnali: gap invertito all'apertura, o gap pre-market eroso sotto la soglia di ritenzione. Non raggiungono mai lo scoring L2" class="iico">ⓘ</span></h2>
   <div class="tbl-wrap scroll-wrap">
   <table>
     <thead><tr>
@@ -322,6 +326,52 @@ const EXIT_LABELS = {{
   vwap_exit:"VWAP take-profit", eod_close:"EOD close", manual_close:"Manual close"
 }};
 
+// ── Tap/hover tooltips (iPad-friendly) ──────────────────────────────────────────
+// Native title= tooltips never appear on touch devices. We replace them with a
+// popover: tap an element with data-tip to pin it (tap again or elsewhere to close);
+// on desktop it also follows mouse hover when nothing is pinned.
+const tipPop = document.createElement("div");
+tipPop.className = "tip-pop";
+document.body.appendChild(tipPop);
+let tipPinned = false, tipCurrent = null;
+function placeTip(el) {{
+  const txt = el.getAttribute("data-tip");
+  if (!txt) return false;
+  tipPop.innerHTML = txt;
+  tipPop.style.display = "block";
+  const r = el.getBoundingClientRect();
+  const pw = tipPop.offsetWidth, ph = tipPop.offsetHeight;
+  let left = Math.max(8, Math.min(r.left, window.innerWidth - pw - 8));
+  let top = r.bottom + 6;
+  if (top + ph > window.innerHeight - 8) top = r.top - ph - 6;  // flip above if no room below
+  tipPop.style.left = left + "px";
+  tipPop.style.top = Math.max(8, top) + "px";
+  tipCurrent = el;
+  return true;
+}}
+function hideTip() {{ tipPop.style.display = "none"; tipCurrent = null; tipPinned = false; }}
+document.addEventListener("click", e => {{
+  const el = e.target.closest("[data-tip]");
+  if (el) {{
+    e.preventDefault(); e.stopPropagation();
+    if (tipPinned && tipCurrent === el) {{ hideTip(); }}
+    else {{ placeTip(el); tipPinned = true; }}
+  }} else if (!e.target.closest(".tip-pop")) {{
+    hideTip();
+  }}
+}});
+document.addEventListener("mouseover", e => {{
+  if (tipPinned) return;
+  const el = e.target.closest("[data-tip]");
+  if (el && el !== tipCurrent) placeTip(el);
+}});
+document.addEventListener("mouseout", e => {{
+  if (tipPinned) return;
+  const el = e.target.closest("[data-tip]");
+  if (el && tipCurrent === el) hideTip();
+}});
+window.addEventListener("scroll", () => {{ if (!tipPinned) hideTip(); }}, true);
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const fu  = (n,d=2) => n==null?"—":parseFloat(n).toFixed(d);
 const fpm = (n,d=2) => n==null?"—":(n>=0?"+":"")+parseFloat(n).toFixed(d);
@@ -332,7 +382,9 @@ const confBar = c => {{
   const w=Math.min(Math.round((c||0)/1.53*56),56);
   return `<span class="cb" style="width:${{w}}px"></span>${{fu(c,3)}}`;
 }};
-const fint = n => n==null?"—":Math.round(n).toLocaleString("it-IT");
+const fint = n => n==null?"—":Math.round(n).toLocaleString("en-US");
+// Money with thousands separator (comma) + 2 decimals: 1,234.56
+const money = (n,d=2) => Math.abs(n||0).toLocaleString("en-US",{{minimumFractionDigits:d,maximumFractionDigits:d}});
 const volTip = s => {{
   if(s.vol_today==null && s.vol_avg==null) return "Volume storico non disponibile";
   return `Volume 9:30–9:35 oggi: ${{fint(s.vol_today)}} · media storica: ${{fint(s.vol_avg)}}`;
@@ -373,11 +425,11 @@ function computeStats(logs) {{
 // ── KPIs ──────────────────────────────────────────────────────────────────────
 function renderKpis(st) {{
   const kpis = [
-    {{ l:"P&L totale",        v:(st.total_pnl>=0?"+$":"−$")+Math.abs(st.total_pnl).toFixed(2),                    c:cls(st.total_pnl),       s:`${{st.trade_days}} trade days / ${{st.total_days}} giorni` }},
+    {{ l:"P&L totale",        v:(st.total_pnl>=0?"+$":"−$")+money(st.total_pnl),                                   c:cls(st.total_pnl),       s:`${{st.trade_days}} trade days / ${{st.total_days}} giorni` }},
     {{ l:"P&L % portafoglio", v:st.n_trades?(st.total_pnl_pct>=0?"+":"")+st.total_pnl_pct.toFixed(2)+"%":"—",     c:cls(st.total_pnl_pct),   s:`su equity iniziale ${{(st.initial_equity/1000).toFixed(0)}}k` }},
     {{ l:"Win rate",          v:st.n_trades?st.win_rate+"%":"—",                                                    c:"neu",                   s:`${{st.n_wins}}W · ${{st.n_losses}}L · ${{st.n_trades}} trade` }},
-    {{ l:"Avg win",           v:st.n_wins  ?"+$"+st.avg_win.toFixed(2):"—",                                        c:"pos",                   s:"per trade vincente" }},
-    {{ l:"Avg loss",          v:st.n_losses?"−$"+Math.abs(st.avg_loss).toFixed(2):"—",                             c:st.n_losses?"neg":"mut", s:"per trade perdente" }},
+    {{ l:"Avg win",           v:st.n_wins  ?"+$"+money(st.avg_win):"—",                                            c:"pos",                   s:"per trade vincente" }},
+    {{ l:"Avg loss",          v:st.n_losses?"−$"+money(st.avg_loss):"—",                                           c:st.n_losses?"neg":"mut", s:"per trade perdente" }},
     {{ l:"Avg confidence",    v:st.n_trades?st.avg_conf.toFixed(2):"—",                                            c:"neu",                   s:"soglia min: 0.65" }},
   ];
   document.getElementById("kpis").innerHTML=kpis.map(k=>
@@ -397,7 +449,7 @@ function renderPnlChart(logs) {{
   const zero=pad.t+iH/2;
   const yLabels=[-maxAbs,-maxAbs/2,0,maxAbs/2,maxAbs].map(v=>{{
     const y=pad.t+iH/2-(v/maxAbs)*(iH/2);
-    const lbl=v===0?"$0":(v>0?"+$":"-$")+Math.abs(v).toFixed(0);
+    const lbl=v===0?"$0":(v>0?"+$":"-$")+money(v,0);
     return `<text x="${{pad.l-6}}" y="${{y+4}}" text-anchor="end" fill="#8892a4" font-size="10">${{lbl}}</text>
             <line x1="${{pad.l}}" y1="${{y}}" x2="${{W-pad.r}}" y2="${{y}}" stroke="#2a2d3a" stroke-width="1"/>`;
   }}).join("");
@@ -457,7 +509,7 @@ function renderTradeLog(logs) {{
       <td>${{t.entry_price!=null?"$"+fu(t.entry_price):"—"}}</td>
       <td>${{t.exit_price !=null?"$"+fu(t.exit_price) :"—"}}</td>
       <td>${{t.qty??"—"}}</td>
-      <td class="${{sc}}">${{pnl!=null?(pnl>=0?"+$":"−$")+Math.abs(pnl).toFixed(2):"—"}}</td>
+      <td class="${{sc}}">${{pnl!=null?(pnl>=0?"+$":"−$")+money(pnl):"—"}}</td>
       <td class="${{sc}}">${{pp!=null?(pp>=0?"+":"")+(pp*100).toFixed(2)+"%":"—"}}</td>
       <td>${{badge(EXIT_LABELS[t.exit_reason]||t.exit_reason||"—",sc==="pos"?"bg":sc==="neg"?"br":"bmu")}}</td>
       <td>${{confBar(t.confidence)}}</td>
@@ -482,7 +534,7 @@ function renderFunnel(logs) {{
       <td class="${{cls(r.spy_pct)}}">${{fpm(r.spy_pct*100,2)}}%</td>
       <td>60</td><td>${{r.premarket_count}}</td><td>${{r.l1_count}}</td>
       <td>${{r.l2_count}}</td><td>${{r.llm_input.length}}</td><td>${{r.trades.length}}</td>
-      <td class="${{sc}}">${{r.daily_pnl!==0?(r.daily_pnl>0?"+$":"−$")+Math.abs(r.daily_pnl).toFixed(2):"—"}}</td>
+      <td class="${{sc}}">${{r.daily_pnl!==0?(r.daily_pnl>0?"+$":"−$")+money(r.daily_pnl):"—"}}</td>
       <td class="mut" style="font-size:12px;white-space:normal;max-width:200px">${{note}}</td>
     </tr>`;
   }}).join("");
@@ -519,8 +571,8 @@ function renderSignals(logs) {{
         <td>${{confBar(s.confidence)}}</td>
         <td>${{tk(s.post_open_advance)}}</td>
         <td class="${{(s.or_position||0)>0.66?"pos":"neg"}}">${{fu(s.or_position,2)}}</td>
-        <td class="${{(s.gap_retention||0)>0.70?"pos":"neg"}}" title="${{fu(s.gap_retention,2)}}">${{(s.gap_retention??0)<-1?"≤ −1":fu(s.gap_retention,2)}}</td>
-        <td title="${{volTip(s)}}">${{s.vol_ratio!=null?parseFloat(s.vol_ratio).toFixed(1)+"×"+(s.vol_boost?" (+"+parseFloat(s.vol_boost).toFixed(2)+")":""):(s.vol_boost?"+"+parseFloat(s.vol_boost).toFixed(2):"—")}}</td>
+        <td class="${{(s.gap_retention||0)>0.70?"pos":"neg"}}" data-tip="${{fu(s.gap_retention,2)}}">${{(s.gap_retention??0)<-1?"≤ −1":fu(s.gap_retention,2)}}</td>
+        <td data-tip="${{volTip(s)}}">${{s.vol_ratio!=null?parseFloat(s.vol_ratio).toFixed(1)+"×"+(s.vol_boost?" (+"+parseFloat(s.vol_boost).toFixed(2)+")":""):(s.vol_boost?"+"+parseFloat(s.vol_boost).toFixed(2):"—")}}</td>
         <td>${{s.catalyst_bonus?"+"+parseFloat(s.catalyst_bonus).toFixed(2):"—"}}</td>
         <td>${{s.short_float!=null?(s.short_float*100).toFixed(1)+"%":"—"}}</td>
         <td>${{s.short_squeeze_bonus?badge("+"+parseFloat(s.short_squeeze_bonus).toFixed(2),"bb"):"—"}}</td>
