@@ -52,6 +52,7 @@ for log in logs:
         "daily_pnl":            daily_pnl,
         "trades":               trades,
         "signals":              log.get("signals", []),
+        "l1_rejects":           log.get("l1_rejects", []),
         "premarket_candidates": log.get("premarket_candidates", []),
         "llm_output":           log.get("llm_output", {}),
         "universe_count":       stage_count(log, "universe"),
@@ -277,7 +278,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
       <th>Post-open advance <span title="Prezzo alle 9:35 superiore all'apertura delle 9:30 — conferma che il gap tiene nei primi 5 minuti di trading" class="iico">ⓘ</span></th>
       <th>OR position <span title="Posizione nel range 9:30–9:35: 1.0 = massimo del range, 0.0 = minimo. Sopra 0.66 = titolo nel terzo superiore, segnale di forza" class="iico">ⓘ</span></th>
       <th>Gap retention <span title="Frazione del gap pre-market ancora intatta alle 9:35. 1.0 = gap invariato, 0.0 = gap completamente colmato. Sopra 0.70 = gap difeso" class="iico">ⓘ</span></th>
-      <th>Vol boost</th><th>Catalyst</th>
+      <th>Vol boost <span title="Volume nei primi 5 minuti (9:30–9:35) rapportato alla media storica della stessa finestra. >3× → +0.10, 2–3× → +0.05. Passa il mouse sulla cella per i volumi grezzi (oggi vs media)" class="iico">ⓘ</span></th><th>Catalyst</th>
       <th title="Percentuale del flottante venduta allo scoperto">Short float</th>
       <th>Squeeze</th><th>Gap %</th><th>Esito</th>
     </tr></thead>
@@ -300,6 +301,19 @@ svg text {{ font-family: -apple-system, sans-serif; }}
   </div>
 </div>
 
+<!-- Pre-open gate exclusions -->
+<div class="card">
+  <h2>Esclusioni pre-open gate <span title="Candidati scartati alle 9:35 prima del calcolo dei segnali: gap invertito all'apertura, o gap pre-market eroso sotto la soglia di ritenzione. Non raggiungono mai lo scoring L2" class="iico">ⓘ</span></h2>
+  <div class="tbl-wrap scroll-wrap">
+  <table>
+    <thead><tr>
+      <th>Data</th><th>Ticker</th><th>Motivo</th>
+    </tr></thead>
+    <tbody id="gateRows"></tbody>
+  </table>
+  </div>
+</div>
+
 <script>
 const LOGS  = {DATA_JS};
 const STATS = {STATS_JS};
@@ -318,6 +332,21 @@ const confBar = c => {{
   const w=Math.min(Math.round((c||0)/1.53*56),56);
   return `<span class="cb" style="width:${{w}}px"></span>${{fu(c,3)}}`;
 }};
+const fint = n => n==null?"—":Math.round(n).toLocaleString("it-IT");
+const volTip = s => {{
+  if(s.vol_today==null && s.vol_avg==null) return "Volume storico non disponibile";
+  return `Volume 9:30–9:35 oggi: ${{fint(s.vol_today)}} · media storica: ${{fint(s.vol_avg)}}`;
+}};
+
+// Pre-open gate exclusion reasons — surfaced separately from L1 binary rejects
+const GATE_REASONS = ["gap_reversed_at_open", "pm_gap_eaten_at_open"];
+const isGateReject = r => GATE_REASONS.some(g => (r.reason||"").startsWith(g));
+function gateLabel(reason) {{
+  if(reason==="gap_reversed_at_open") return "Gap invertito all'apertura (open &lt; prev close)";
+  const m=(reason||"").match(/^pm_gap_eaten_at_open_(.+)$/);
+  if(m) return `Gap pre-market eroso all'apertura (${{m[1]}} rimasto)`;
+  return reason||"—";
+}}
 
 // ── Stats (recomputed on filtered subset) ─────────────────────────────────────
 function computeStats(logs) {{
@@ -491,7 +520,7 @@ function renderSignals(logs) {{
         <td>${{tk(s.post_open_advance)}}</td>
         <td class="${{(s.or_position||0)>0.66?"pos":"neg"}}">${{fu(s.or_position,2)}}</td>
         <td class="${{(s.gap_retention||0)>0.70?"pos":"neg"}}" title="${{fu(s.gap_retention,2)}}">${{(s.gap_retention??0)<-1?"≤ −1":fu(s.gap_retention,2)}}</td>
-        <td>${{s.vol_ratio!=null?parseFloat(s.vol_ratio).toFixed(1)+"×"+(s.vol_boost?" (+"+parseFloat(s.vol_boost).toFixed(2)+")":""):(s.vol_boost?"+"+parseFloat(s.vol_boost).toFixed(2):"—")}}</td>
+        <td title="${{volTip(s)}}">${{s.vol_ratio!=null?parseFloat(s.vol_ratio).toFixed(1)+"×"+(s.vol_boost?" (+"+parseFloat(s.vol_boost).toFixed(2)+")":""):(s.vol_boost?"+"+parseFloat(s.vol_boost).toFixed(2):"—")}}</td>
         <td>${{s.catalyst_bonus?"+"+parseFloat(s.catalyst_bonus).toFixed(2):"—"}}</td>
         <td>${{s.short_float!=null?(s.short_float*100).toFixed(1)+"%":"—"}}</td>
         <td>${{s.short_squeeze_bonus?badge("+"+parseFloat(s.short_squeeze_bonus).toFixed(2),"bb"):"—"}}</td>
@@ -527,6 +556,22 @@ function renderPremarket(logs) {{
     :'<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">Nessun candidato pre-market</td></tr>';
 }}
 
+// ── Pre-open gate exclusions ────────────────────────────────────────────────────
+function renderGateExclusions(logs) {{
+  const rows=[];
+  [...logs].reverse().forEach(r=>{{
+    (r.l1_rejects||[]).filter(isGateReject).forEach(rj=>{{
+      rows.push(`<tr>
+        <td>${{r.date.slice(5)}}</td><td><strong>${{rj.ticker}}</strong></td>
+        <td>${{badge(gateLabel(rj.reason),"by")}}</td>
+      </tr>`);
+    }});
+  }});
+  document.getElementById("gateRows").innerHTML=rows.length
+    ?rows.join("")
+    :'<tr><td colspan="3" style="color:var(--muted);text-align:center;padding:24px">Nessuna esclusione pre-open gate</td></tr>';
+}}
+
 // ── Master render ─────────────────────────────────────────────────────────────
 let activeLogs = LOGS;
 let activeExitFilter = null;
@@ -547,6 +592,7 @@ function renderAll(logs) {{
   renderFunnel(logs);     // funnel: pipeline counts unaffected by exit filter
   renderSignals(logs);    // signals: uses own esito filter
   renderPremarket(logs);
+  renderGateExclusions(logs);
 }}
 
 // ── Filter logic ──────────────────────────────────────────────────────────────
