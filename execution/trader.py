@@ -7,8 +7,8 @@ _RECONCILE_GRACE_SECONDS = 180  # skip manual-close check for positions younger 
 
 import pytz
 from alpaca.trading.client import TradingClient
-from alpaca.trading.requests import MarketOrderRequest, LimitOrderRequest, ClosePositionRequest
-from alpaca.trading.enums import OrderSide, TimeInForce
+from alpaca.trading.requests import MarketOrderRequest, LimitOrderRequest, ClosePositionRequest, GetOrdersRequest
+from alpaca.trading.enums import OrderSide, TimeInForce, QueryOrderStatus
 
 import config
 from data import fetcher
@@ -19,9 +19,44 @@ logger = logging.getLogger(__name__)
 
 ET = pytz.timezone("America/New_York")
 
+# Set by main.py at startup — lets long polls (fill confirmation) abort on SIGTERM
+# instead of sleeping through it and dying with a live order on the book.
+_shutdown_event = None
+
+# Reconciliation miss counters per ticker (module-level so they survive across
+# monitor cycles without polluting the position dicts that end up in the log).
+_reconcile_misses: dict[str, int] = {}
+
+
+def register_shutdown_event(event) -> None:
+    global _shutdown_event
+    _shutdown_event = event
+
 
 def _trading_client() -> TradingClient:
     return fetcher.get_trading_client()
+
+
+def cancel_all_open_orders() -> list[str]:
+    """Cancel every open order at startup. A crash during fill confirmation leaves an
+    orphan DAY limit order that nothing tracks — it can fill hours later, unmonitored,
+    and the position-based recovery never sees it. Returns descriptions of cancelled orders."""
+    client = _trading_client()
+    try:
+        open_orders = client.get_orders(GetOrdersRequest(status=QueryOrderStatus.OPEN))
+    except Exception as e:
+        logger.error(f"Cannot list open orders at startup: {e}")
+        return []
+    cancelled = []
+    for o in open_orders:
+        try:
+            client.cancel_order_by_id(str(o.id))
+            desc = f"{o.symbol} {o.side.value if hasattr(o.side, 'value') else o.side} qty={o.qty}"
+            cancelled.append(desc)
+            logger.warning(f"Orphan order cancelled at startup: {desc}")
+        except Exception as e:
+            logger.error(f"Cancel failed for order {o.id} ({o.symbol}): {e}")
+    return cancelled
 
 
 def calc_stop_prices(ticker: str, entry_price: float) -> dict:
@@ -171,7 +206,14 @@ def confirm_entry_fill(ctx: dict) -> Optional[dict]:
     first_check = True
     while first_check or time.time() < deadline:
         first_check = False
-        time.sleep(config.FILL_POLL_INTERVAL_S)
+        if _shutdown_event is not None:
+            # Interruptible sleep: on SIGTERM stop waiting and fall through to the
+            # cancel path — never die with a live order on the book.
+            if _shutdown_event.wait(timeout=config.FILL_POLL_INTERVAL_S):
+                logger.warning(f"{ticker}: shutdown during fill confirmation — cancelling order")
+                break
+        else:
+            time.sleep(config.FILL_POLL_INTERVAL_S)
         try:
             o = client.get_order_by_id(order_id)
         except Exception as e:
@@ -253,38 +295,63 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
     return confirm_entry_fill(ctx)
 
 
-def close_position(ticker: str, qty: int, reason: str) -> Optional[dict]:
-    """Close position at market. Returns exit info with actual fill price."""
+def close_position(ticker: str, qty: int, reason: str, fallback_price: Optional[float] = None) -> Optional[dict]:
+    """Close position at market. Returns exit info with actual fill price.
+
+    Returns None ONLY if the close order itself failed. Once Alpaca accepts the
+    close, a price-lookup failure must not be reported as a failed close — the
+    caller would mis-book the trade and reconciliation would later drop it with
+    no PnL. In that case exit_price falls back to `fallback_price` (typically the
+    entry price) flagged with exit_price_estimated.
+    """
     client = _trading_client()
     try:
         order = client.close_position(ticker)
-        # Prefer actual fill price from the order object
-        exit_price = float(order.filled_avg_price) if order.filled_avg_price else None
-        if exit_price is None:
-            # Market order may not be reflected immediately — wait briefly and retry
-            time.sleep(1)
-            try:
-                refreshed = client.get_order_by_id(str(order.id))
-                if refreshed.filled_avg_price:
-                    exit_price = float(refreshed.filled_avg_price)
-            except Exception:
-                pass
-        if exit_price is None:
-            # Last resort: snapshot latest trade (our sell order should be the most recent)
-            try:
-                snap = fetcher.get_snapshot(ticker)
-                if snap.latest_trade:
-                    exit_price = float(snap.latest_trade.price)
-            except Exception:
-                pass
-        if exit_price is None:
-            exit_price = float(fetcher.get_latest_quote(ticker)["ask"])
-        exit_time = datetime.now(ET).strftime("%H:%M:%S")
-        logger.info(f"Position closed: {ticker} @ ${exit_price:.2f} reason={reason}")
-        return {"exit_price": exit_price, "exit_time": exit_time, "exit_reason": reason}
     except Exception as e:
         logger.error(f"Close position error for {ticker}: {e}")
         return None
+
+    # Best-effort fill price chain — the close itself has already succeeded.
+    exit_price = float(order.filled_avg_price) if order.filled_avg_price else None
+    if exit_price is None:
+        # Market order may not be reflected immediately — wait briefly and retry
+        time.sleep(1)
+        try:
+            refreshed = client.get_order_by_id(str(order.id))
+            if refreshed.filled_avg_price:
+                exit_price = float(refreshed.filled_avg_price)
+        except Exception:
+            pass
+    if exit_price is None:
+        # Snapshot latest trade (our sell order should be the most recent print)
+        try:
+            snap = fetcher.get_snapshot(ticker)
+            if snap.latest_trade:
+                exit_price = float(snap.latest_trade.price)
+        except Exception:
+            pass
+    if exit_price is None:
+        try:
+            exit_price = float(fetcher.get_latest_quote(ticker)["ask"])
+        except Exception:
+            pass
+
+    estimated = False
+    if exit_price is None:
+        estimated = True
+        exit_price = fallback_price if fallback_price else 0.0
+        logger.error(f"{ticker}: closed on Alpaca but NO exit price available — booked at estimate ${exit_price:.2f}")
+        telegram.send_message(
+            f"⚠️ <b>{ticker}</b> chiusa su Alpaca ma prezzo di uscita non disponibile — "
+            f"registrata a ${exit_price:.2f} (stima). Verifica il fill reale su Alpaca."
+        )
+
+    exit_time = datetime.now(ET).strftime("%H:%M:%S")
+    logger.info(f"Position closed: {ticker} @ ${exit_price:.2f} reason={reason}")
+    info = {"exit_price": exit_price, "exit_time": exit_time, "exit_reason": reason}
+    if estimated:
+        info["exit_price_estimated"] = True
+    return info
 
 
 def check_stop_triggered(position: dict, current_price: float) -> Optional[str]:
@@ -334,10 +401,30 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
     if mature:
         try:
             actual_tickers = {p["ticker"] for p in fetcher.get_open_positions()}
-            orphans = [p["ticker"] for p in mature if p["ticker"] not in actual_tickers]
-            if orphans:
-                logger.warning(f"Manual close detected for {orphans} — removing from monitoring")
-                open_positions = [p for p in open_positions if p["ticker"] in actual_tickers]
+            for p in mature:
+                t = p["ticker"]
+                if t not in actual_tickers:
+                    _reconcile_misses[t] = _reconcile_misses.get(t, 0) + 1
+                    if _reconcile_misses[t] >= config.RECONCILE_MISS_LIMIT:
+                        logger.warning(
+                            f"{t}: absent from Alpaca for {_reconcile_misses[t]} consecutive cycles "
+                            "— treating as manually closed"
+                        )
+                        telegram.send_message(
+                            f"⚠️ <b>{t}</b>: posizione non trovata su Alpaca per "
+                            f"{_reconcile_misses[t]} cicli consecutivi — rimossa dal monitoring. "
+                            "Verifica su Alpaca."
+                        )
+                    else:
+                        logger.warning(
+                            f"{t}: absent from Alpaca (miss {_reconcile_misses[t]}/{config.RECONCILE_MISS_LIMIT}) "
+                            "— will remove next cycle if still missing"
+                        )
+                else:
+                    _reconcile_misses.pop(t, None)
+            to_remove = {t for t, n in _reconcile_misses.items() if n >= config.RECONCILE_MISS_LIMIT}
+            if to_remove:
+                open_positions = [p for p in open_positions if p["ticker"] not in to_remove]
         except Exception as e:
             logger.warning(f"Alpaca position reconciliation failed: {e} — skipping check")
 
@@ -355,7 +442,7 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
             # Stop check
             stop_reason = check_stop_triggered(position, current_price)
             if stop_reason:
-                exit_info = close_position(ticker, position["qty"], stop_reason)
+                exit_info = close_position(ticker, position["qty"], stop_reason, fallback_price=position["entry_price"])
                 if exit_info:
                     pnl = (exit_info["exit_price"] - position["entry_price"]) * position["qty"]
                     position.update(exit_info)
@@ -369,7 +456,7 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
 
             # VWAP trailing exit
             if check_vwap_exit(ticker, position, current_price):
-                exit_info = close_position(ticker, position["qty"], "vwap_exit")
+                exit_info = close_position(ticker, position["qty"], "vwap_exit", fallback_price=position["entry_price"])
                 if exit_info:
                     pnl = (exit_info["exit_price"] - position["entry_price"]) * position["qty"]
                     position.update(exit_info)
@@ -391,11 +478,18 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
 
 
 def close_all_positions_eod(open_positions: list[dict], daily_pnl: float) -> tuple[list[dict], float]:
-    """Force-close all open positions at 15:45 ET. No exceptions."""
+    """Force-close all open positions at 15:45 ET. Retries up to EOD_CLOSE_ATTEMPTS times."""
     closed = []
     for position in open_positions:
         ticker = position["ticker"]
-        exit_info = close_position(ticker, position["qty"], "eod_close")
+        exit_info = None
+        for attempt in range(config.EOD_CLOSE_ATTEMPTS):
+            exit_info = close_position(ticker, position["qty"], "eod_close", fallback_price=position["entry_price"])
+            if exit_info:
+                break
+            if attempt < config.EOD_CLOSE_ATTEMPTS - 1:
+                logger.warning(f"{ticker}: EOD close attempt {attempt + 1} failed — retrying in 2s")
+                time.sleep(2)
         if exit_info:
             pnl = (exit_info["exit_price"] - position["entry_price"]) * position["qty"]
             position.update(exit_info)
@@ -405,6 +499,12 @@ def close_all_positions_eod(open_positions: list[dict], daily_pnl: float) -> tup
             )
             daily_pnl += pnl
             closed.append(position)
+        else:
+            logger.error(f"{ticker}: EOD close FAILED after {config.EOD_CLOSE_ATTEMPTS} attempts — manual action required")
+            telegram.send_message(
+                f"🚨 <b>{ticker}</b>: chiusura EOD fallita dopo {config.EOD_CLOSE_ATTEMPTS} tentativi! "
+                "Chiudi manualmente su Alpaca."
+            )
     return closed, daily_pnl
 
 

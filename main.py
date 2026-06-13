@@ -118,12 +118,17 @@ class PipelineLog:
             "gap_retention":       signals.get("gap_retention"),
             "vol_boost":           signals.get("vol_boost"),
             "vol_ratio":           signals.get("vol_ratio"),
+            "vol_today":           signals.get("vol_today"),
+            "vol_avg":             signals.get("vol_avg"),
+            "or_bar_count":        signals.get("or_bar_count"),
+            "or_last_bar":         signals.get("or_last_bar"),
             "catalyst_bonus":      signals.get("catalyst_bonus"),
             "short_float":         signals.get("short_float"),
             "short_squeeze_bonus": signals.get("short_squeeze_bonus"),
             "gap_pct":             signals.get("gap_pct"),
             "price_935":           signals.get("price_935"),
             "open_930":            signals.get("open_930"),
+            "prev_close":          signals.get("prev_close"),
         })
 
     def log_l1_rejects(self, rejects: list[dict]) -> None:
@@ -252,20 +257,20 @@ def run() -> None:
     today_str = now_et.strftime("%Y-%m-%d")
     logger.info(f"=== Trading session start: {today_str} ===")
 
-    # Guard 1: if started after the entry window, the session is over — abort.
-    # Scheduled Railway runs land at 09:00; anything past 10:00 is a manual/late start.
-    cutoff_dt = ET.localize(datetime.combine(now_et.date(), datetime.strptime("10:00", "%H:%M").time()))
-    if now_et >= cutoff_dt:
-        triggered_at = now_et.strftime("%H:%M")
-        logger.warning(
-            f"Bot started at {triggered_at} ET — past entry window (cut-off 10:00). "
-            "No orders will be placed. Use the scheduled Railway run for live trading."
+    # Startup: register shutdown event + cancel any orphan orders left by a previous crash
+    # (a SIGTERM during fill polling can leave a live DAY limit order on the book).
+    trader.register_shutdown_event(_shutdown_event)
+    cancelled = trader.cancel_all_open_orders()
+    if cancelled:
+        telegram.send_message(
+            "⚠️ Ordini orfani cancellati all'avvio:\n"
+            + "\n".join(f"• {d}" for d in cancelled)
         )
-        telegram.send_late_start_warning(triggered_at, today_str)
-        return
 
-    # Guard 2: if positions are already open, skip the pipeline and jump straight
+    # Guard 1: if positions are already open, skip the pipeline and jump straight
     # to the monitoring loop — handles crash-and-restart without leaving positions unmonitored.
+    # Run BEFORE the late-start guard: a post-crash restart with open positions must always
+    # enter the recovery path, even when it's past 10:00.
     # If the API call fails we cannot know whether positions are open, so we abort rather than
     # risk opening duplicate positions on top of an existing unmonitored trade.
     try:
@@ -334,6 +339,18 @@ def run() -> None:
         _send_eod(pl.trades, daily_pnl, today_str, spy_pct_final, pl)
         return
 
+    # Guard 2: if started after the entry window with NO open positions, abort.
+    # Scheduled Railway runs land at 09:00; anything past 10:00 is a manual/late start.
+    cutoff_dt = ET.localize(datetime.combine(now_et.date(), datetime.strptime("10:00", "%H:%M").time()))
+    if now_et >= cutoff_dt:
+        triggered_at = now_et.strftime("%H:%M")
+        logger.warning(
+            f"Bot started at {triggered_at} ET — past entry window (cut-off 10:00). "
+            "No orders will be placed. Use the scheduled Railway run for live trading."
+        )
+        telegram.send_late_start_warning(triggered_at, today_str)
+        return
+
     pl           = PipelineLog(today_str)
     daily_pnl    = 0.0
     open_positions: list[dict] = []
@@ -400,14 +417,20 @@ def run() -> None:
     # L2 signals
     candidates_with_signals = []
     for c in candidates:
-        ticker        = c["ticker"]
-        news            = c["news"]
-        catalyst_bonus  = analyst.classify_catalyst_from_news(news)
-        signals         = triggers.compute_signals(ticker, c["prev_close"], catalyst_bonus, c.get("short_float"), c.get("gap_pct"))
-        if signals:
-            pl.log_signals({**signals, "gap_pct": c.get("gap_pct")})
-            if signals.get("passes_threshold"):
-                candidates_with_signals.append({**c, **signals})
+        ticker         = c["ticker"]
+        news           = c["news"]
+        catalyst_bonus = analyst.classify_catalyst_from_news(news)
+        signals        = triggers.compute_signals(ticker, c["prev_close"], catalyst_bonus, c.get("short_float"), c.get("gap_pct"))
+        if not signals:
+            continue
+        if signals.get("excluded_reason"):
+            reason = signals["excluded_reason"]
+            logger.info(f"Pre-open gate reject: {ticker} — {reason}")
+            pl.log_l1_rejects([{"ticker": ticker, "reason": reason}])
+            continue
+        pl.log_signals({**signals, "gap_pct": c.get("gap_pct")})
+        if signals.get("passes_threshold"):
+            candidates_with_signals.append({**c, **signals})
 
     pl.log_stage("L2_signals_passed", [c["ticker"] for c in candidates_with_signals],
                  f"confidence>={config.CONFIDENCE_THRESHOLD}")
@@ -594,4 +617,14 @@ def _send_eod(
 
 
 if __name__ == "__main__":
-    run()
+    try:
+        run()
+    except Exception as e:
+        logger.exception(f"Unhandled exception in run(): {e}")
+        try:
+            telegram.send_message(
+                f"🚨 Errore critico nel bot: {type(e).__name__}: {e}\n"
+                "Verifica i log e le posizioni su Alpaca."
+            )
+        except Exception:
+            pass

@@ -6,7 +6,7 @@ from typing import Optional
 import pandas as pd
 import pytz
 from alpaca.data import StockHistoricalDataClient
-from alpaca.data.enums import DataFeed
+from alpaca.data.enums import Adjustment, DataFeed
 from alpaca.data.requests import (
     StockBarsRequest,
     StockLatestQuoteRequest,
@@ -76,15 +76,22 @@ def get_trading_client() -> TradingClient:
 
 
 def get_daily_bars(ticker: str, lookback_days: int = 25) -> pd.DataFrame:
-    """Daily OHLCV bars for ATR and ADV calculation."""
+    """Daily OHLCV bars for ATR and ADV calculation.
+
+    adjustment=ALL: raw bars across a split/dividend produce fake gaps, garbage ATR
+    for 14 days, and ADV in the wrong share count.
+    Buffer is 1.6x calendar days: lookback_days are TRADING days (the old +10 buffer
+    returned ~50 rows when 65 were requested).
+    """
     client = get_data_client()
     end = datetime.now(ET).date()
-    start = end - timedelta(days=lookback_days + 10)
+    start = end - timedelta(days=int(lookback_days * 1.6) + 7)
     req = StockBarsRequest(
         symbol_or_symbols=ticker,
         timeframe=TimeFrame.Day,
         start=start,
         end=end,
+        adjustment=Adjustment.ALL,
     )
     bars = _with_retry(client.get_stock_bars, req).df
     if isinstance(bars.index, pd.MultiIndex):
@@ -126,10 +133,31 @@ def get_opening_range_bars(ticker: str, session_date: Optional[date] = None) -> 
 
 
 def get_current_price(ticker: str) -> float:
-    """Latest trade price. More reliable than bid/ask mid on IEX during volatile moments."""
+    """Latest trade price, validated for staleness.
+
+    On thin-IEX tickers the last print can be minutes old while the consolidated
+    tape has moved — a stop checked against a stale price is silently missed.
+    If the trade is older than PRICE_MAX_AGE_S, fall back to the close of the
+    latest 1-minute bar (bounded ~1 min of delay).
+    """
     client = get_data_client()
     req = StockLatestTradeRequest(symbol_or_symbols=ticker, feed=_feed())
     trade = _with_retry(client.get_stock_latest_trade, req)[ticker]
+    ts = trade.timestamp
+    age_s = None
+    if ts is not None:
+        ts_utc = ts if ts.tzinfo else pytz.UTC.localize(ts)
+        age_s = (datetime.now(pytz.UTC) - ts_utc).total_seconds()
+    if age_s is None or age_s <= config.PRICE_MAX_AGE_S:
+        return float(trade.price)
+    try:
+        bars = get_intraday_bars(ticker, minutes=1)
+        if not bars.empty:
+            logger.warning(f"{ticker}: latest trade {age_s:.0f}s old — using last 1-min bar close")
+            return float(bars["close"].iloc[-1])
+    except Exception:
+        pass
+    logger.warning(f"{ticker}: latest trade {age_s:.0f}s old and no bar fallback — using stale price")
     return float(trade.price)
 
 
@@ -161,8 +189,10 @@ def get_snapshot(ticker: str):
     return snap
 
 
-def get_adv(ticker: str, lookback: int = 20) -> float:
-    """Average daily volume over last N trading days."""
+def get_adv(ticker: str, lookback: int = 65) -> float:
+    """Average daily volume over last N trading days.
+    Default 65 to match the watchlist ADV definition (eligibility uses 65-day bars) —
+    the L1 filter must not use two different windows depending on the code path."""
     bars = get_daily_bars(ticker, lookback_days=lookback)
     if bars.empty:
         return 0.0
@@ -325,17 +355,25 @@ def get_short_float(ticker: str) -> Optional[float]:
 
 
 def get_historical_or_volume(ticker: str, lookback_days: int = 20, session_date: Optional[date] = None) -> float:
-    """Average volume in 9:30–ENTRY_TIME opening-range window over past N trading days (for S4)."""
+    """Average volume in the 9:30–ENTRY_TIME opening-range window over past N trading days (for S4).
+
+    The end bound is EXCLUSIVE (bars.index < end): Alpaca includes both endpoints in
+    the request, so without the filter the historical window contained one extra
+    minute (the ENTRY_TIME bar) vs today's window — inflating vol_avg ~15-25% and
+    systematically deflating the vol_ratio.
+    Holidays/empty days don't consume a sample slot (bounded at 2x lookback attempts).
+    """
     client = get_data_client()
     if session_date is None:
         session_date = datetime.now(ET).date()
     totals = []
-    days_checked = 0
+    attempts = 0
     check_date = session_date - timedelta(days=1)
-    while days_checked < lookback_days and len(totals) < lookback_days:
+    while attempts < lookback_days * 2 and len(totals) < lookback_days:
         if check_date.weekday() >= 5:
             check_date -= timedelta(days=1)
             continue
+        attempts += 1
         start = ET.localize(datetime.combine(check_date, datetime.strptime("09:30", "%H:%M").time()))
         end   = ET.localize(datetime.combine(check_date, datetime.strptime(config.ENTRY_TIME, "%H:%M").time()))
         req = StockBarsRequest(
@@ -350,9 +388,13 @@ def get_historical_or_volume(ticker: str, lookback_days: int = 20, session_date:
             if isinstance(bars.index, pd.MultiIndex):
                 bars = bars.xs(ticker, level="symbol")
             if not bars.empty:
-                totals.append(int(bars["volume"].sum()))
+                bars.index = bars.index.tz_convert(ET)
+                bars = bars[bars.index < end]
+                if not bars.empty:
+                    totals.append(int(bars["volume"].sum()))
         except Exception:
             pass
         check_date -= timedelta(days=1)
-        days_checked += 1
+    if len(totals) < lookback_days:
+        logger.debug(f"{ticker}: historical OR volume from {len(totals)}/{lookback_days} days")
     return float(sum(totals) / len(totals)) if totals else 0.0

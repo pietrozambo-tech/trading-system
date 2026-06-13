@@ -252,7 +252,11 @@ def analyze_candidates(
         import re
         match = re.search(r"\{.*\}", raw, re.DOTALL)
         if match:
-            result = json.loads(match.group())
+            try:
+                result = json.loads(match.group())
+            except json.JSONDecodeError:
+                logger.error("Could not parse LLM JSON response (regex match also invalid)")
+                result = {"trade_1": None, "trade_2": None, "no_trade_reason": "LLM parse error"}
         else:
             logger.error("Could not parse LLM JSON response")
             result = {"trade_1": None, "trade_2": None, "no_trade_reason": "LLM parse error"}

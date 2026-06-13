@@ -62,6 +62,11 @@ ENTRY_TIME           = "09:35"
 MONITORING_INTERVAL  = 60        # seconds between position checks
 EOD_CLOSE_TIME       = "15:45"
 
+# === DATA QUALITY / ROBUSTEZZA ===
+PRICE_MAX_AGE_S      = 120   # età massima dell'ultimo trade IEX per i check degli stop
+EOD_CLOSE_ATTEMPTS   = 3     # tentativi di chiusura per posizione alle 15:45
+RECONCILE_MISS_LIMIT = 2     # cicli consecutivi di assenza prima di rimuovere una posizione
+
 # === ORDER FILL CONFIRMATION ===
 # L'ask IEX stantio può tenere il limit order pendente per minuti (12 giugno: 2m18s).
 # La posizione viene creata SOLO dopo fill confermato; allo scadere del timeout
