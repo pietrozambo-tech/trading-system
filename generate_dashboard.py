@@ -11,6 +11,7 @@ import json
 import glob
 import os
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # ── Load logs ─────────────────────────────────────────────────────────────────
 log_files = sorted(glob.glob(os.path.join(os.path.dirname(__file__), "logs/*.json")))
@@ -73,7 +74,9 @@ avg_win    = round(sum((t.get("pnl_usd") or 0) for t in wins)   / len(wins),   2
 avg_loss   = round(sum((t.get("pnl_usd") or 0) for t in losses) / len(losses), 2) if losses else 0
 trade_days = sum(1 for r in rows if r["trades"])
 
-updated = datetime.now().strftime("%d/%m/%Y %H:%M")
+# Madrid local time — the GitHub Actions runner is UTC, so anchor explicitly
+# (ZoneInfo handles CET/CEST DST automatically).
+updated = datetime.now(ZoneInfo("Europe/Madrid")).strftime("%d/%m/%Y %H:%M %Z")
 
 DATA_JS  = json.dumps(rows,  ensure_ascii=False, default=str)
 STATS_JS = json.dumps({
