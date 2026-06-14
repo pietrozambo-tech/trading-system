@@ -142,8 +142,9 @@ Every minute the bot checks each open position. It closes a trade if any of thes
 |----------|------|---------|----------------------|
 | 1 | **Hard stop** | Price falls ≥2.0% from entry | The absolute floor — simple, predictable, immune to data issues. On a ~$49.5k position, 2% = ~$990 max loss per trade. Always checked first. |
 | 2 | **ATR stop** | Price falls ≥1× ATR14 from entry | ATR (Average True Range) measures how much a stock typically moves in a day over the past 14 days. Setting the stop exactly at ATR14 below entry means you exit if the move against you exceeds the stock's typical daily range — a signal that something is genuinely wrong, not just noise. On calm stocks (ATR ~1%) this fires at -1%, tighter than the hard stop. On volatile stocks (ATR >2%) the hard stop at -2% fires first. Whichever is tighter (higher price) wins. |
-| 3 | **VWAP take-profit** | Price drops below VWAP *and* profit ≥1.5% | This is a profit-protecting exit, not a stop loss. If the stock was running but has now fallen back below the average price of the day, momentum has likely shifted. The 1.5% minimum is there so we don't exit a trade that barely moved — we only lock in profit when there's real gain to protect. |
-| 4 | **End-of-day close** | 3:45 PM ET, no exceptions | We never hold overnight. Gaps at open, earnings after hours, macro news — too much can happen. Everything is flat before the close, every single day. |
+| 3 | **Break-even stop** | Peak gain reaches +0.5%, then price falls back to entry | Once a trade has shown +0.5% of profit at any point, the stop is ratcheted up to the entry price — the trade can no longer close at a full loss. Protects the downside without forcing an early exit on a small profit (so it never cuts the winners). Backtested over 624 trades: P&L +5.7% and max drawdown −36% vs. the prior two-stop system. The stop only ratchets up, never loosens. |
+| 4 | **VWAP take-profit** | Price drops below VWAP *and* profit ≥1.5% | This is a profit-protecting exit, not a stop loss. If the stock was running but has now fallen back below the average price of the day, momentum has likely shifted. The 1.5% minimum is there so we don't exit a trade that barely moved — we only lock in profit when there's real gain to protect. |
+| 5 | **End-of-day close** | 3:45 PM ET, no exceptions | We never hold overnight. Gaps at open, earnings after hours, macro news — too much can happen. Everything is flat before the close, every single day. |
 
 The 1.5% minimum for the VWAP take-profit gives the condition room to fire: during a reversal VWAP lags the current price, so by the time price crosses below VWAP the profit has often already eroded — a 2.5% threshold was too tight and never fired in backtesting.
 
@@ -228,6 +229,7 @@ The trade header (`Trade N — TICKER long [Score: X.XX]`) is **bold** in Telegr
 | Example on $100k | ($100,000 − $1,000) ÷ 2 = $49,500/trade |
 | Hard stop per trade | -2.0% from entry (~$990 on $49.5k position) |
 | ATR stop per trade | -1× ATR14 from entry (tighter than hard stop on low-vol stocks) |
+| Break-even stop trigger | +0.5% peak gain → stop raised to entry price |
 | VWAP take-profit threshold | 1.5% profit minimum |
 
 ---
@@ -359,17 +361,17 @@ Non-oracle results (profit factor, YTD 2025–2026):
 
 **Decisione:** Opzione B quando ci sono abbastanza dati per calibrare i nuovi pesi. **Prerequisito:** almeno 3–4 settimane di log reali per confrontare quanti trade buoni sarebbero stati catturati con la nuova formula vs. quanti falsi positivi sarebbero entrati. Nel frattempo il sistema rimane invariato.
 
-### Strategia di uscita in profitto — backtest necessario (giugno 2026)
+### Strategia di uscita in profitto — backtest completato, break-even adottato (giugno 2026)
 
 **Osservazione emersa l'11 giugno 2026 (trade INTC):** il sistema ha due soli meccanismi di uscita intraday: hard blocker (−2% dall'entry) e VWAP exit (attivo solo se profit ≥ 1.5%). Quando un trade va brevemente in profitto (+0.5–1%) e poi inverte senza raggiungere la soglia VWAP, non scatta nessuna protezione — il trade continua a deteriorarsi fino all'hard blocker. Risultato: un potenziale +0.8% si trasforma in un −2.1%.
 
 **Tre opzioni da valutare con backtest:**
 
-- **Break-even stop:** una volta raggiunto un profitto soglia (es. +0.5%), sposta lo stop al prezzo di entry. Costo zero sui trade che continuano a salire (AMD dell'11/6 non sarebbe stato impattato), elimina il rischio di trasformare un vincitore in perdente.
+- **Break-even stop:** una volta raggiunto un profitto soglia (es. +0.5%), sposta lo stop al prezzo di entry. Costo zero sui trade che continuano a salire (AMD dell'11/6 non sarebbe stato impattato), elimina il rischio di trasformare un vincitore in perdente. — **TESTATA E ADOTTATA a +0.5% (14 giugno 2026).**
 
 - **Abbassare la soglia VWAP da 1.5% a ~0.8–1.0%:** ~~più aggressivo nel prendere profitti parziali~~ — **TESTATA E RESPINTA (14 giugno 2026).**
 
-- **Trailing stop post-profitto:** una volta superato un profitto soglia (es. +0.8%), trascina lo stop a −X% dal massimo intraday raggiunto. Il più sofisticato: richiede di tracciare `peak_price` per posizione nel monitoring loop.
+- **Trailing stop post-profitto:** una volta superato un profitto soglia (es. +0.8%), trascina lo stop a −X% dal massimo intraday raggiunto. — **TESTATA E RESPINTA (14 giugno 2026):** P&L sempre sotto la baseline, taglia troppo gli avg win.
 
 #### Risultati backtest VWAP exit (14 giugno 2026)
 
@@ -387,9 +389,40 @@ Backtest su `--vwap` (gen 2025 → giu 2026, 60 ticker, 624 trade, stesse entry 
 
 **Conclusione:** abbassare la soglia **peggiora** il sistema. Da 1.5% → 0.8% il profit factor scende 1.25 → 1.14 e il P&L quasi si dimezza ($50.5k → $26.6k). Meccanismo: soglie più basse triplicano le uscite VWAP (55 → 148) e alzano il win rate (48.4% → 51.8%), ma l'avg win crolla ($832 → $668) — si tagliano i vincitori sul nascere. L'effetto è monotòno nella direzione opposta: alzare la soglia migliora PF e P&L fino a 3.0% (dove però la VWAP exit è quasi vestigiale, 14 trade su 624). **La soglia attuale dell'1.5% resta ragionevole; semmai i dati suggeriscono di alzarla verso 2.0%, non abbassarla.** **Decisione (14 giugno 2026): si tiene 1.5%.** Il guadagno teorico di P&L alzando a 2.0% deriva dal tenere le posizioni più a lungo in un backtest in-sample senza costi — non abbastanza solido da giustificare il cambio ora. Eventuale revisione futura con più dati live.
 
-**Implicazione per il caso INTC:** la VWAP exit **non** è lo strumento per il problema "piccolo profitto → inversione" — abbassarla per catturarlo costa troppo sul resto del portafoglio. Quel caso va risolto col **break-even stop**, che protegge il downside senza forzare l'uscita a un piccolo profitto (quindi senza tagliare i vincitori). Prossimo backtest: `--exit` (confronto break-even e trailing).
+**Implicazione per il caso INTC:** la VWAP exit **non** è lo strumento per il problema "piccolo profitto → inversione" — abbassarla per catturarlo costa troppo sul resto del portafoglio. Quel caso va risolto col **break-even stop**, che protegge il downside senza forzare l'uscita a un piccolo profitto (quindi senza tagliare i vincitori). Confronto effettuato con `--exit` — risultati sotto.
 
-**Nota metodologica:** il backtest è in-sample, con stop valutati sul close del minuto, dati IEX (15–20% del volume reale), senza costi di transazione/slippage. La direzione del risultato è netta e monotòna, ma i valori assoluti vanno presi come indicativi.
+#### Risultati backtest exit strategy (14 giugno 2026)
+
+Backtest su `--exit` (gen 2025 → giu 2026, 624 trade, **stesse identiche entry** — cambia solo la logica di uscita). La baseline è il sistema attuale (VWAP 1.5% + hard stop −2%). Break-even = una volta toccato +X% di picco, lo stop sale all'entry. Trailing = una volta toccato +X% di picco, lo stop insegue il massimo a distanza fissa.
+
+| Variante | P&L totale | Max DD | Win rate | PF | Avg win | Avg loss | Hard stop | Exit break-even |
+|----------|-----------|--------|----------|-----|---------|----------|-----------|-----------------|
+| **baseline (VWAP 1.5%)** | $50.548 | $18.859 | 48.4% | 1.25 | $832 | −$641 | 153 | 0 |
+| break-even +0.3% | $51.422 | $11.617 | 23.2% | 1.56 | $983 | −$747 | 76 | 352 |
+| **break-even +0.5%** ✅ | **$53.409** | **$12.048** | 30.3% | 1.45 | $913 | −$713 | 95 | 262 |
+| break-even +0.8% | $46.761 | $15.197 | 35.4% | 1.32 | $874 | −$681 | 115 | 180 |
+| trailing +0.8% / dist 1.0% | $40.025 | $13.496 | 55.9% | 1.27 | $542 | −$556 | 115 | 0 |
+| trailing +1.0% / dist 1.0% | $40.431 | $14.876 | 59.9% | 1.25 | $536 | −$659 | 123 | 0 |
+| trailing +1.0% / dist 0.5% | $48.531 | $13.141 | 60.6% | 1.30 | $552 | −$664 | 123 | 0 |
+| combo break-even +0.5% + VWAP 1.0% | $48.013 | $12.048 | 32.5% | 1.40 | $823 | −$713 | 95 | 248 |
+
+**Conclusione: si adotta il break-even stop +0.5%** (in aggiunta alla VWAP exit 1.5%, che resta invariata — i due meccanismi convivono). Risultati vs baseline:
+
+- **P&L +5,7%** ($50.548 → $53.409).
+- **Max drawdown −36%** ($18.859 → $12.048) — è questo il vero guadagno: ogni trade che tocca +0.5% non può più chiudere in perdita piena.
+- **Hard stop quasi dimezzati** (153 → 95): 262 trade escono a break-even (≈0%) invece di colpire lo stop a −2%.
+- **I vincitori non vengono tagliati:** avg win sale ($832 → $913) e le uscite VWAP restano sostanzialmente invariate (55 → 49). Questa è la differenza cruciale rispetto all'abbassare la VWAP: il break-even tocca solo il lato perdente.
+
+Perché l'avg loss *sale* (−$641 → −$713)? È un effetto di selezione, non un peggioramento: il break-even cattura i trade che erano arrivati a +0.5% prima di invertire; i 95 hard stop rimasti sono i "perdenti puri" che non hanno mai superato +0.5%, quindi la loro perdita media è intrinsecamente maggiore. Il P&L totale e il drawdown — che contano davvero — migliorano entrambi.
+
+Scartate:
+- **Trailing stop (tutte le varianti):** alzano il win rate al 55–61% ma il P&L è sempre **sotto** la baseline (−$2k a −$10k), perché tagliano l'avg win a ~$540. Stessa trappola della VWAP bassa: premiano il numero di vincite invece del P&L.
+- **break-even +0.3%:** troppo aggressivo, 352/624 trade escono a zero, margine extra minimo (+$874) e win rate crollato al 23%.
+- **combo break-even + VWAP 1.0%:** il VWAP a 1.0% taglia i vincitori grandi e annulla il beneficio del break-even (vedi backtest VWAP sopra).
+
+**Implementazione (14 giugno 2026):** `config.BREAKEVEN_TRIGGER_PCT = 0.005`. Nel monitoring loop, `trader.update_dynamic_stop()` traccia `peak_price` per posizione e, al primo ciclo in cui il picco raggiunge +0.5%, alza `stop_price` al prezzo di entry (ratchet solo verso l'alto, mai allentato). L'uscita risultante è etichettata `breakeven_stop` (distinta da `hard_blocker`/`atr_stop` in dashboard, Telegram e statistiche). Una guardia sul prezzo (`current_price > 0` e finito) impedisce a un print stantio/anomalo di armare il break-even o far scattare uno stop. Le posizioni recuperate dopo un riavvio funzionano senza i nuovi campi (default difensivi).
+
+**Nota metodologica:** il backtest è in-sample, con stop valutati sul close del minuto, dati IEX (15–20% del volume reale), senza costi di transazione/slippage. La direzione del risultato è netta, ma i valori assoluti vanno presi come indicativi.
 
 ### Soglie vol_boost — ricalibrare coi dati (giugno 2026)
 

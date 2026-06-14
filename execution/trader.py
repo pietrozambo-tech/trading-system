@@ -1,4 +1,5 @@
 import logging
+import math
 import time
 from datetime import datetime
 from typing import Optional
@@ -274,6 +275,8 @@ def confirm_entry_fill(ctx: dict) -> Optional[dict]:
         "reason": llm_decision.get("reason", ""),
         "order_id": order_id,
         **stops,
+        "peak_price": entry_price,      # highest price seen — drives the break-even ratchet
+        "breakeven_armed": False,       # True once the stop has been raised to entry
         "exit_price": None,
         "exit_time": None,
         "exit_reason": None,
@@ -355,13 +358,63 @@ def close_position(ticker: str, qty: int, reason: str, fallback_price: Optional[
 
 
 def check_stop_triggered(position: dict, current_price: float) -> Optional[str]:
-    """Return exit reason if any stop is triggered, else None."""
+    """Return exit reason if any stop is triggered, else None.
+
+    Once the break-even ratchet has armed (stop_price raised to entry), a touch of
+    the stop is a break-even exit — labelled distinctly so the dashboard/stats don't
+    mis-book it as a full hard/ATR stop. The order of checks matters: breakeven_armed
+    is evaluated first because at that point stop_price == entry, so the drop-based
+    hard_blocker test below would never fire anyway.
+    """
     if current_price <= position["stop_price"]:
+        if position.get("breakeven_armed"):
+            return "breakeven_stop"
         entry = position["entry_price"]
         if (entry - current_price) / entry >= config.HARD_BLOCKER_PCT:
             return "hard_blocker"
         return "atr_stop"
     return None
+
+
+def update_dynamic_stop(position: dict, current_price: float) -> None:
+    """Ratchet the stop up to break-even once peak gain reaches BREAKEVEN_TRIGGER_PCT.
+
+    Mirrors the backtested 'breakeven +0.5%' variant exactly: track the highest price
+    seen, and the first time peak gain ≥ trigger move the stop to the entry price. The
+    stop only ever ratchets UP — it is never loosened, and once armed it stays armed.
+
+    Mutates `position` in place (peak_price, stop_price, breakeven_armed). The caller
+    must pass a validated, positive current_price (monitor_positions guards this) so a
+    stale/garbage print can never set a phantom peak or arm break-even prematurely.
+    """
+    if config.BREAKEVEN_TRIGGER_PCT is None:
+        return
+    entry = position["entry_price"]
+    if entry <= 0:
+        return
+
+    # Track the running peak (defensive .get for positions recovered after a restart,
+    # which are reconstructed without this field).
+    peak = max(position.get("peak_price", entry), current_price)
+    position["peak_price"] = peak
+
+    if position.get("breakeven_armed"):
+        return  # already at break-even — nothing left to ratchet
+
+    peak_gain = (peak - entry) / entry
+    if peak_gain >= config.BREAKEVEN_TRIGGER_PCT and position["stop_price"] < entry:
+        old_stop = position["stop_price"]
+        position["stop_price"] = round(entry, 4)
+        position["breakeven_armed"] = True
+        ticker = position["ticker"]
+        logger.info(
+            f"{ticker}: break-even armed — peak gain {peak_gain * 100:.2f}% "
+            f"≥ {config.BREAKEVEN_TRIGGER_PCT * 100:.1f}%, stop ${old_stop:.2f} → ${entry:.2f}"
+        )
+        telegram.send_message(
+            f"🛡️ <b>{ticker}</b>: break-even attivato (picco +{peak_gain * 100:.2f}%). "
+            f"Stop alzato a ${entry:.2f} — il trade non può più chiudere in perdita."
+        )
 
 
 def check_vwap_exit(ticker: str, position: dict, current_price: float) -> bool:
@@ -438,6 +491,18 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
                 continue
 
             current_price = fetcher.get_current_price(ticker)
+
+            # Price sanity gate: a non-positive or non-finite print must never drive a
+            # stop, a VWAP exit, or the break-even ratchet. We had real incidents where
+            # bad/stale data mis-booked trades — hold the position and retry next cycle.
+            if not (isinstance(current_price, (int, float)) and current_price > 0 and math.isfinite(current_price)):
+                logger.warning(f"{ticker}: invalid current price ({current_price!r}) — skipping checks this cycle")
+                still_open.append(position)
+                continue
+
+            # Ratchet the stop up to break-even before evaluating it, so a price that
+            # both arms break-even and then dips this same cycle is handled correctly.
+            update_dynamic_stop(position, current_price)
 
             # Stop check
             stop_reason = check_stop_triggered(position, current_price)

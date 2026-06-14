@@ -34,11 +34,12 @@ def stage_count(log, name):
     return 0
 
 EXIT_LABELS = {
-    "hard_blocker": "Hard stop",
-    "atr_stop":     "ATR stop",
-    "vwap_exit":    "VWAP take-profit",
-    "eod_close":    "EOD close",
-    "manual_close": "Manual close",
+    "hard_blocker":   "Hard stop",
+    "atr_stop":       "ATR stop",
+    "breakeven_stop": "Break-even stop",
+    "vwap_exit":      "VWAP take-profit",
+    "eod_close":      "EOD close",
+    "manual_close":   "Manual close",
 }
 
 # ── Build rows ────────────────────────────────────────────────────────────────
@@ -213,6 +214,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
   <button class="qbtn active" data-exit="">Tutti</button>
   <button class="qbtn" data-exit="hard_blocker">Hard stop</button>
   <button class="qbtn" data-exit="atr_stop">ATR stop</button>
+  <button class="qbtn" data-exit="breakeven_stop">Break-even</button>
   <button class="qbtn" data-exit="vwap_exit">VWAP</button>
   <button class="qbtn" data-exit="eod_close">EOD close</button>
 </div>
@@ -325,7 +327,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
 const LOGS  = {DATA_JS};
 const STATS = {STATS_JS};
 const EXIT_LABELS = {{
-  hard_blocker:"Hard stop", atr_stop:"ATR stop",
+  hard_blocker:"Hard stop", atr_stop:"ATR stop", breakeven_stop:"Break-even stop",
   vwap_exit:"VWAP take-profit", eod_close:"EOD close", manual_close:"Manual close"
 }};
 

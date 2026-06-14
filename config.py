@@ -55,6 +55,12 @@ MAX_DAILY_LOSS_USD       = None    # disabilitato — ogni trade ha il proprio h
 
 # === EXIT RULES ===
 VWAP_EXIT_MIN_PROFIT_PCT = 0.015   # VWAP exit solo se profit >= 1.5%
+# Break-even stop: quando il guadagno di picco raggiunge questa soglia, lo stop
+# viene alzato al prezzo di entrata. Da quel momento il trade non può più chiudere
+# in perdita piena. Backtest (624 trade, gen 2025–giu 2026): +0.5% è l'ottimo —
+# P&L +5.7% e max drawdown −36% vs baseline, senza intaccare i VWAP take-profit.
+# Imposta a None per disabilitare (ripristina il comportamento solo-hard-stop).
+BREAKEVEN_TRIGGER_PCT    = 0.005   # +0.5% di picco → stop spostato a break-even
 
 # === TIMING (ET) ===
 WATCHLIST_TIME       = "09:25"

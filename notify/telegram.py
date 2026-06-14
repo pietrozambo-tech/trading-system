@@ -10,10 +10,11 @@ logger = logging.getLogger(__name__)
 TELEGRAM_API = "https://api.telegram.org/bot{token}/sendMessage"
 
 EXIT_LABELS = {
-    "hard_blocker": "Hard stop",
-    "atr_stop":     "ATR stop",
-    "vwap_exit":    "VWAP take-profit",
-    "eod_close":    "End-of-day close",
+    "hard_blocker":   "Hard stop",
+    "atr_stop":       "ATR stop",
+    "breakeven_stop": "Break-even stop",
+    "vwap_exit":      "VWAP take-profit",
+    "eod_close":      "End-of-day close",
 }
 
 DAYS_IT = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"]
