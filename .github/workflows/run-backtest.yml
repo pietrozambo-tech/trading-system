@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "Modalità: 'standard', 'timing', 'timing-true', 'sensitivity', 'vwap', 'hardstop'"
+        description: "Modalità: 'standard', 'timing', 'timing-true', 'sensitivity', 'vwap', 'hardstop', 'exit'"
         required: false
         default: "standard"
 
@@ -59,6 +59,10 @@ jobs:
       - name: Run backtest (hard stop sensitivity)
         if: ${{ github.event.inputs.mode == 'hardstop' }}
         run: python run_backtest.py --hardstop
+
+      - name: Run backtest (exit strategy comparison)
+        if: ${{ github.event.inputs.mode == 'exit' }}
+        run: python run_backtest.py --exit
 
       - name: Upload results
         uses: actions/upload-artifact@v4

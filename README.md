@@ -367,11 +367,29 @@ Non-oracle results (profit factor, YTD 2025–2026):
 
 - **Break-even stop:** una volta raggiunto un profitto soglia (es. +0.5%), sposta lo stop al prezzo di entry. Costo zero sui trade che continuano a salire (AMD dell'11/6 non sarebbe stato impattato), elimina il rischio di trasformare un vincitore in perdente.
 
-- **Abbassare la soglia VWAP da 1.5% a ~0.8–1.0%:** più aggressivo nel prendere profitti parziali. Rischio: trigger prematuro su trade che avrebbero continuato a salire (falsa uscita in un trend forte).
+- **Abbassare la soglia VWAP da 1.5% a ~0.8–1.0%:** ~~più aggressivo nel prendere profitti parziali~~ — **TESTATA E RESPINTA (14 giugno 2026).**
 
 - **Trailing stop post-profitto:** una volta superato un profitto soglia (es. +0.8%), trascina lo stop a −X% dal massimo intraday raggiunto. Il più sofisticato: richiede di tracciare `peak_price` per posizione nel monitoring loop.
 
-**Prerequisito prima di qualsiasi implementazione:** backtest su almeno 4–6 settimane di log reali per misurare l'impatto di ciascuna variante su win rate, avg win, avg loss e profit factor. L'obiettivo è capire quanti trade come INTC sarebbero stati salvati senza sacrificare trade come AMD.
+#### Risultati backtest VWAP exit (14 giugno 2026)
+
+Backtest su `--vwap` (gen 2025 → giu 2026, 60 ticker, 624 trade, stesse entry — cambia solo la soglia):
+
+| VWAP exit | Win rate | Profit factor | Avg win | Avg loss | P&L totale |
+|-----------|----------|---------------|---------|----------|------------|
+| 0.8%  | 51.8% | 1.14 | $668 | −$643 | $26.559 |
+| 1.0%  | 50.0% | 1.19 | $741 | −$641 | $36.884 |
+| 1.2%  | 48.7% | 1.18 | $774 | −$644 | $35.075 |
+| **1.5% (attuale)** | 48.4% | 1.25 | $832 | −$641 | $50.548 |
+| 2.0%  | 48.4% | 1.30 | $866 | −$641 | $60.839 |
+| 2.5%  | 48.1% | 1.30 | $878 | −$643 | $60.984 |
+| 3.0%  | 48.1% | 1.33 | $899 | −$643 | $67.238 |
+
+**Conclusione:** abbassare la soglia **peggiora** il sistema. Da 1.5% → 0.8% il profit factor scende 1.25 → 1.14 e il P&L quasi si dimezza ($50.5k → $26.6k). Meccanismo: soglie più basse triplicano le uscite VWAP (55 → 148) e alzano il win rate (48.4% → 51.8%), ma l'avg win crolla ($832 → $668) — si tagliano i vincitori sul nascere. L'effetto è monotòno nella direzione opposta: alzare la soglia migliora PF e P&L fino a 3.0% (dove però la VWAP exit è quasi vestigiale, 14 trade su 624). **La soglia attuale dell'1.5% resta ragionevole; semmai i dati suggeriscono di alzarla verso 2.0%, non abbassarla.**
+
+**Implicazione per il caso INTC:** la VWAP exit **non** è lo strumento per il problema "piccolo profitto → inversione" — abbassarla per catturarlo costa troppo sul resto del portafoglio. Quel caso va risolto col **break-even stop**, che protegge il downside senza forzare l'uscita a un piccolo profitto (quindi senza tagliare i vincitori). Prossimo backtest: `--exit` (confronto break-even e trailing).
+
+**Nota metodologica:** il backtest è in-sample, con stop valutati sul close del minuto, dati IEX (15–20% del volume reale), senza costi di transazione/slippage. La direzione del risultato è netta e monotòna, ma i valori assoluti vanno presi come indicativi.
 
 ### Soglie vol_boost — ricalibrare coi dati (giugno 2026)
 
