@@ -260,7 +260,7 @@ def main():
         hardstop_sensitivity()
 
     elif args.vwap:
-        thresholds = [0.010, 0.015, 0.020, 0.025, 0.030]
+        thresholds = [0.008, 0.010, 0.0125, 0.015, 0.020, 0.025, 0.030]
         print(f"VWAP sensitivity: {[f'{t:.1%}' for t in thresholds]}")
         print(f"Periodo: {START_DATE} → {END_DATE} | {len(BACKTEST_UNIVERSE)} ticker\n")
         vwap_df = vwap_sensitivity_analysis(BACKTEST_UNIVERSE, START_DATE, END_DATE, thresholds)
