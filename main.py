@@ -53,30 +53,39 @@ def _handle_signal(signum, frame):
 signal.signal(signal.SIGTERM, _handle_signal)
 signal.signal(signal.SIGINT,  _handle_signal)
 
+# Universo pre-validato di nomi liquidi su cui lo scanner gira ogni mattina (gap %,
+# RVOL, spread, prezzo). NON è una lista di "nomi da tradare comunque": in un gap-and-go
+# il watchlist vero è dinamico — i gapper del mattino sono la lista. Questo elenco serve
+# solo a dare più "lanci" allo scanner, quindi privilegia nomi ad alto beta che gappano
+# spesso ed evita mega/large cap "lente" che passano i filtri di liquidità ma non scattano
+# mai su una soglia momentum. I filtri runtime (mkt cap, ADV, spread, halt) restano l'ultima
+# parola: i micro più volatili (quantum/space/nuclear) restano solo finché li superano.
 UNIVERSE = [
     # Tech / Growth
     "AAPL", "MSFT", "NVDA", "AMZN", "META", "GOOGL", "TSLA", "AMD", "NFLX",
-    "CRM", "ORCL", "ADBE", "INTC", "QCOM", "MU", "AVGO", "TXN", "AMAT", "MRVL",
-    # Finance
-    "JPM", "BAC", "GS", "MS", "C", "WFC", "BLK", "SCHW",
+    "CRM", "ORCL", "ADBE", "INTC", "QCOM", "MU", "AVGO", "AMAT", "MRVL",
+    # AI / Datacenter / Semi
+    "PLTR", "SMCI", "ARM", "VRT", "APP", "CRWV", "CBRS", "DELL",
+    # Finance (solo proxy macro/earnings — le banche gappano solo sugli earnings)
+    "JPM", "BAC", "GS",
+    # Fintech / Consumer Growth
+    "SOFI", "AFRM", "DKNG", "SHOP", "CVNA",
     # Healthcare
-    "UNH", "JNJ", "PFE", "ABBV", "MRK", "BMY", "MRNA",
+    "UNH", "ABBV", "MRNA",
     # Energy
-    "XOM", "CVX", "SLB", "HAL", "OXY",
+    "SLB", "HAL", "OXY",
     # Clean Energy
     "ENPH",
-    # Consumer
-    "NKE",
-    # Defense
-    "LMT",
-    # Crypto Proxy
-    "MSTR",
+    # Crypto Proxy / Miner
+    "MSTR", "COIN", "HOOD", "MARA", "RIOT", "CIFR",
     # Airlines / Crociere
     "DAL", "AAL", "NCLH", "CCL",
+    # EV / China (gap overnight su headline cinesi — profilo di rischio diverso)
+    "RIVN", "NIO",
     # Space
     "RKLB", "ASTS", "BKSY", "RDW", "LUNR",
-    # Nucleare / Uranio
-    "UUUU", "CCJ", "NNE", "SMR",
+    # Nucleare / Power / Uranio
+    "UUUU", "CCJ", "NNE", "SMR", "OKLO", "CEG", "VST", "LEU",
     # Quantum Computing
     "IONQ", "QBTS", "QUBT", "RGTI",
 ]

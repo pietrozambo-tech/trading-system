@@ -36,30 +36,35 @@ from backtest.engine import (
 # ---------------------------------------------------------------------------
 # Universe — full production universe (same as main.py)
 # ---------------------------------------------------------------------------
+# Tiene allineato l'universo del backtest a main.UNIVERSE (rebalance giugno 2026).
+# Nota: alcuni nomi aggiunti hanno IPO recenti (ARM, OKLO, CRWV, CBRS, RDW…) → storia
+# parziale sul periodo di backtest; il prefetch li salta automaticamente dove mancano i dati.
 BACKTEST_UNIVERSE = [
     # Tech / Growth
     "AAPL", "MSFT", "NVDA", "AMZN", "META", "GOOGL", "TSLA", "AMD", "NFLX",
-    "CRM", "ORCL", "ADBE", "INTC", "QCOM", "MU", "AVGO", "TXN", "AMAT", "MRVL",
+    "CRM", "ORCL", "ADBE", "INTC", "QCOM", "MU", "AVGO", "AMAT", "MRVL",
+    # AI / Datacenter / Semi
+    "PLTR", "SMCI", "ARM", "VRT", "APP", "CRWV", "CBRS", "DELL",
     # Finance
-    "JPM", "BAC", "GS", "MS", "C", "WFC", "BLK", "SCHW",
+    "JPM", "BAC", "GS",
+    # Fintech / Consumer Growth
+    "SOFI", "AFRM", "DKNG", "SHOP", "CVNA",
     # Healthcare
-    "UNH", "JNJ", "PFE", "ABBV", "MRK", "BMY", "MRNA",
+    "UNH", "ABBV", "MRNA",
     # Energy
-    "XOM", "CVX", "SLB", "HAL", "OXY",
+    "SLB", "HAL", "OXY",
     # Clean Energy
     "ENPH",
-    # Consumer
-    "NKE",
-    # Defense
-    "LMT",
-    # Crypto Proxy
-    "MSTR",
+    # Crypto Proxy / Miner
+    "MSTR", "COIN", "HOOD", "MARA", "RIOT", "CIFR",
     # Airlines / Crociere
     "DAL", "AAL", "NCLH", "CCL",
+    # EV / China
+    "RIVN", "NIO",
     # Space
     "RKLB", "ASTS", "BKSY", "RDW", "LUNR",
-    # Nucleare / Uranio
-    "UUUU", "CCJ", "NNE", "SMR",
+    # Nucleare / Power / Uranio
+    "UUUU", "CCJ", "NNE", "SMR", "OKLO", "CEG", "VST", "LEU",
     # Quantum Computing
     "IONQ", "QBTS", "QUBT", "RGTI",
 ]

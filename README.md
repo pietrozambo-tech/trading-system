@@ -8,15 +8,15 @@ No manual intervention needed.
 
 ## The universe: 60 curated stocks
 
-The bot doesn't scan the entire US stock market — it operates on a fixed watchlist of **60 hand-picked stocks**. Scanning thousands of tickers is technically possible but strategically counterproductive.
+The bot doesn't scan the entire US stock market — it operates on a fixed watchlist of **70 hand-picked stocks**. Scanning thousands of tickers is technically possible but strategically counterproductive.
 
 **Why a curated universe instead of the full market:**
 
 - **Institutional volume.** Every stock on the list trades at least 5 million shares per day on average. A $50k position doesn't move the price, and the bid-ask spread is tight enough that slippage is negligible. Thinly traded names are excluded entirely.
 - **Sectors with momentum.** Tech (semis, cloud, AI), healthcare, energy, financials, space, and nuclear — sectors with active institutional participation and frequent catalyst-driven moves. Consumer staples and utilities are intentionally excluded: they gap rarely, and when they do, the moves are small.
-- **Pipeline speed.** With 60 stocks, the full pre-market scan completes in under 90 seconds. Scaling to 5,000 stocks would require hours of API calls — far past the 9:25 AM window when pre-market data is still relevant.
+- **Pipeline speed.** With 70 stocks, the full pre-market scan completes in well under 2 minutes. Scaling to 5,000 stocks would require hours of API calls — far past the 9:25 AM window when pre-market data is still relevant.
 
-The complete list is in the [Appendix — Watchlist (60 stocks)](#the-watchlist-60-stocks).
+The complete list is in the [Appendix — Watchlist (70 stocks)](#the-watchlist-70-stocks).
 
 ---
 
@@ -24,7 +24,7 @@ The complete list is in the [Appendix — Watchlist (60 stocks)](#the-watchlist-
 
 ### 1. Pre-market scan — 9:25 AM New York time
 
-The bot scans all 60 stocks looking for ones **gapping up at least +0.5%** above yesterday's close. That's the only filter here — a meaningful overnight move signals that something happened (earnings, news, an upgrade) worth investigating further. Stocks that drifted up 0.2% on no news don't qualify.
+The bot scans all 70 stocks looking for ones **gapping up at least +0.5%** above yesterday's close. That's the only filter here — a meaningful overnight move signals that something happened (earnings, news, an upgrade) worth investigating further. Stocks that drifted up 0.2% on no news don't qualify.
 
 Pre-market prices are fetched from **Yahoo Finance** (primary), with Alpaca IEX as fallback. Yahoo Finance aggregates prints from all exchanges (NYSE, NASDAQ, CBOE, etc.), giving full pre-market coverage. Alpaca's free IEX feed only sees ~15–20% of pre-market volume — relying on it alone would miss gappers that trade on other venues.
 
@@ -234,21 +234,26 @@ The trade header (`Trade N — TICKER long [Score: X.XX]`) is **bold** in Telegr
 
 ---
 
-## Appendix — The watchlist (60 stocks)
+## Appendix — The watchlist (70 stocks)
+
+This is a **pre-validated universe of liquid names**, not a list of stocks the bot trades regardless. In a gap-and-go strategy the real watchlist is dynamic — the morning gappers *are* the list. This universe just gives the scanner more "shots" each day, so it's tilted toward high-beta names that gap often and away from "slow" mega/large caps that pass the liquidity filters but never trip a momentum threshold. The runtime filters (market cap, ADV, spread, halt) always have the final say: the most volatile micro caps (quantum/space/nuclear) stay only as long as they clear them.
+
+**June 2026 rebalance (net +10):** dropped 14 liquid-but-rarely-gapping names (banks C/WFC/BLK/SCHW/MS, defensive healthcare JNJ/MRK/BMY/PFE, oil majors XOM/CVX, plus LMT/TXN/NKE) and added 24 high-beta names that gap frequently (crypto miners, AI/datacenter, fintech growth, nuclear/power, EV/China).
 
 | Sector | Tickers |
 |--------|---------|
-| Tech / Growth | AAPL, MSFT, NVDA, AMZN, META, GOOGL, TSLA, AMD, NFLX, CRM, ORCL, ADBE, INTC, QCOM, MU, AVGO, TXN, AMAT, MRVL |
-| Finance | JPM, BAC, GS, MS, C, WFC, BLK, SCHW |
-| Healthcare | UNH, JNJ, PFE, ABBV, MRK, BMY, MRNA |
-| Energy | XOM, CVX, SLB, HAL, OXY |
+| Tech / Growth | AAPL, MSFT, NVDA, AMZN, META, GOOGL, TSLA, AMD, NFLX, CRM, ORCL, ADBE, INTC, QCOM, MU, AVGO, AMAT, MRVL |
+| AI / Datacenter / Semi | PLTR, SMCI, ARM, VRT, APP, CRWV, CBRS, DELL |
+| Finance | JPM, BAC, GS |
+| Fintech / Consumer Growth | SOFI, AFRM, DKNG, SHOP, CVNA |
+| Healthcare | UNH, ABBV, MRNA |
+| Energy | SLB, HAL, OXY |
 | Clean Energy | ENPH |
-| Consumer | NKE |
-| Defense | LMT |
-| Crypto Proxy | MSTR |
+| Crypto Proxy / Miner | MSTR, COIN, HOOD, MARA, RIOT, CIFR |
 | Airlines / Cruises | DAL, AAL, NCLH, CCL |
+| EV / China | RIVN, NIO |
 | Space | RKLB, ASTS, BKSY, RDW, LUNR |
-| Nuclear / Uranium | UUUU, CCJ, NNE, SMR |
+| Nuclear / Power / Uranium | UUUU, CCJ, NNE, SMR, OKLO, CEG, VST, LEU |
 | Quantum Computing | IONQ, QBTS, QUBT, RGTI |
 
 ---
