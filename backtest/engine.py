@@ -45,6 +45,10 @@ class BacktestParams:
     position_size_usd:       float = 49_000.0  # (100k - 2k cushion) / 2 trades
     max_positions:           int   = 2
     catalyst_bonus:          float = 0.10   # conservative proxy (Tier 3) — no real news in backtest
+    # --- Exit-strategy experiments (None = disabled → identical to current live behavior) ---
+    breakeven_trigger_pct:   Optional[float] = None   # once peak gain ≥ this, move stop up to entry
+    trailing_trigger_pct:    Optional[float] = None   # once peak gain ≥ this, activate a trailing stop
+    trailing_distance_pct:   float = 0.010             # trailing stop sits this far below the intraday peak
 
 
 # ---------------------------------------------------------------------------
@@ -344,6 +348,13 @@ def _simulate_day(
     exit_price  = entry_price
     exit_reason = "eod_close"
     cumvol, cumtpvol = 0.0, 0.0
+    # Dynamic stop ratchets UP only. Starts at the ATR/hard stop; break-even and
+    # trailing (when enabled) can raise it. With both disabled, dyn_stop never
+    # moves and the loop behaves exactly like the current live system.
+    base_label = "hard_blocker" if stop_pct >= stop_atr else "atr_stop"
+    dyn_stop   = stop_price
+    stop_label = base_label
+    peak       = entry_price
 
     for ts, bar in post_bars.iterrows():
         if ts.hour == 15 and ts.minute >= 45:
@@ -352,10 +363,22 @@ def _simulate_day(
             break
 
         price = float(bar["close"])
+        peak  = max(peak, price)
+        peak_gain = (peak - entry_price) / entry_price
 
-        if price <= stop_price:
-            exit_price = max(price, stop_price)
-            exit_reason = "hard_blocker" if stop_pct >= stop_atr else "atr_stop"
+        # Break-even: once the trade has shown enough profit, never let the stop sit below entry
+        if params.breakeven_trigger_pct is not None and peak_gain >= params.breakeven_trigger_pct:
+            if entry_price > dyn_stop:
+                dyn_stop, stop_label = entry_price, "breakeven_stop"
+        # Trailing: pull the stop to peak − distance once activated (ratchets up with new highs)
+        if params.trailing_trigger_pct is not None and peak_gain >= params.trailing_trigger_pct:
+            trail = peak * (1 - params.trailing_distance_pct)
+            if trail > dyn_stop:
+                dyn_stop, stop_label = trail, "trailing_stop"
+
+        if price <= dyn_stop:
+            exit_price  = max(price, dyn_stop)
+            exit_reason = stop_label
             break
 
         tp = (float(bar["high"]) + float(bar["low"]) + price) / 3
@@ -537,6 +560,70 @@ def vwap_sensitivity_analysis(
             "stop_exits":      sum(v for k, v in exit_counts.items() if "stop" in k or "blocker" in k),
         })
         logger.info(f"  {threshold:.1%} → PF={s['profit_factor']:.2f} WR={s['win_rate']:.1%} PnL=${s['total_pnl_usd']:+.2f}")
+
+    return pd.DataFrame(rows)
+
+
+def exit_strategy_analysis(
+    universe: list[str],
+    start_date: date,
+    end_date: date,
+) -> pd.DataFrame:
+    """
+    Compare exit-strategy variants on the SAME set of entries.
+
+    Entries are identical across variants (same signal filter), so trade count is
+    constant — only the exit logic differs. This isolates the effect of break-even
+    and trailing stops on win rate, avg loss, and profit factor: exactly the
+    "how many INTC-type trades get saved without cutting AMD-type winners" question.
+    """
+    logger.info("Exit strategy analysis — pre-fetching data …")
+    all_cache = prefetch_universe(universe, start_date, end_date)
+    days      = _trading_days(start_date, end_date)
+
+    variants = [
+        ("baseline (VWAP 1.5%)",            BacktestParams()),
+        ("breakeven +0.3%",                 BacktestParams(breakeven_trigger_pct=0.003)),
+        ("breakeven +0.5%",                 BacktestParams(breakeven_trigger_pct=0.005)),
+        ("breakeven +0.8%",                 BacktestParams(breakeven_trigger_pct=0.008)),
+        ("trailing +0.8% / dist 1.0%",      BacktestParams(trailing_trigger_pct=0.008, trailing_distance_pct=0.010)),
+        ("trailing +1.0% / dist 1.0%",      BacktestParams(trailing_trigger_pct=0.010, trailing_distance_pct=0.010)),
+        ("trailing +1.0% / dist 0.5%",      BacktestParams(trailing_trigger_pct=0.010, trailing_distance_pct=0.005)),
+        ("breakeven +0.5% + VWAP 1.0%",     BacktestParams(breakeven_trigger_pct=0.005, vwap_exit_min_profit=0.010)),
+    ]
+
+    rows = []
+    for name, p in variants:
+        res = BacktestResults()
+        for day in days:
+            day_trades = 0
+            for ticker in universe:
+                if day_trades >= p.max_positions or ticker not in all_cache:
+                    continue
+                trade = _simulate_day(ticker, day, all_cache[ticker], p)
+                if trade:
+                    res.trades.append(trade)
+                    day_trades += 1
+
+        s  = res.summary()
+        df = res.to_dataframe() if res.trades else pd.DataFrame()
+        ec = df["exit_reason"].value_counts().to_dict() if not df.empty else {}
+        rows.append({
+            "variant":       name,
+            "trades":        s["total_trades"],
+            "win_rate":      f"{s['win_rate']:.1%}",
+            "profit_factor": s["profit_factor"],
+            "avg_win_usd":   s["avg_win_usd"],
+            "avg_loss_usd":  s["avg_loss_usd"],
+            "total_pnl_usd": s["total_pnl_usd"],
+            "max_dd_usd":    s["max_drawdown_usd"],
+            "vwap_exits":      ec.get("vwap_exit", 0),
+            "breakeven_exits": ec.get("breakeven_stop", 0),
+            "trailing_exits":  ec.get("trailing_stop", 0),
+            "hardstop_exits":  ec.get("hard_blocker", 0) + ec.get("atr_stop", 0),
+            "eod_exits":       ec.get("eod_close", 0),
+        })
+        logger.info(f"  {name}: PF={s['profit_factor']:.2f} WR={s['win_rate']:.1%} PnL=${s['total_pnl_usd']:+.0f}")
 
     return pd.DataFrame(rows)
 

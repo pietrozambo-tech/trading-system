@@ -8,6 +8,7 @@ Usage:
   python run_backtest.py --sensitivity   # griglia completa di parametri
   python run_backtest.py --vwap          # sensitivity solo su VWAP exit threshold
   python run_backtest.py --hardstop      # sensitivity solo su hard stop (1.0%–2.5%)
+  python run_backtest.py --exit          # confronto strategie di uscita (break-even, trailing)
 """
 import argparse
 import logging
@@ -27,6 +28,7 @@ logging.basicConfig(
 from backtest.engine import (
     BacktestParams, BacktestResults,
     run_backtest, sensitivity_analysis, vwap_sensitivity_analysis,
+    exit_strategy_analysis,
     run_entry_timing_backtest, run_true_entry_timing_backtest,
     prefetch_universe, _trading_days, _simulate_day,
 )
@@ -222,6 +224,7 @@ def main():
     parser.add_argument("--sensitivity", action="store_true", help="Griglia completa parametri")
     parser.add_argument("--vwap",        action="store_true", help="Sensitivity solo VWAP exit threshold")
     parser.add_argument("--hardstop",    action="store_true", help="Sensitivity solo hard stop (1.0%–2.5%)")
+    parser.add_argument("--exit", dest="exit_strategy", action="store_true", help="Confronto strategie di uscita (break-even, trailing)")
     args = parser.parse_args()
 
     if args.timing:
@@ -255,6 +258,22 @@ def main():
                          "stop_pct_exits": sum(v for k,v in ec.items() if "stop" in k or "blocker" in k)/n if n else 0})
         pd.DataFrame(rows).to_csv("backtest/results/entry_timing_true.csv", index=False)
         print("Risultati salvati in: backtest/results/entry_timing_true.csv")
+
+    elif args.exit_strategy:
+        print(f"Confronto strategie di uscita: {START_DATE} → {END_DATE} | {len(BACKTEST_UNIVERSE)} ticker")
+        print("Stesse entry per tutte le varianti — cambia solo la logica di uscita.\n")
+        exit_df = exit_strategy_analysis(BACKTEST_UNIVERSE, START_DATE, END_DATE)
+
+        print("\n" + "=" * 110)
+        print("EXIT STRATEGY COMPARISON")
+        print("=" * 110)
+        print(exit_df.to_string(index=False))
+        print("=" * 110)
+
+        os.makedirs("backtest/results", exist_ok=True)
+        path = "backtest/results/exit_strategy.csv"
+        exit_df.to_csv(path, index=False)
+        print(f"\nRisultati salvati in: {path}")
 
     elif args.hardstop:
         hardstop_sensitivity()
