@@ -6,7 +6,7 @@ No manual intervention needed.
 
 ---
 
-## The universe: 60 curated stocks
+## The universe: 70 curated stocks
 
 The bot doesn't scan the entire US stock market — it operates on a fixed watchlist of **70 hand-picked stocks**. Scanning thousands of tickers is technically possible but strategically counterproductive.
 
@@ -380,7 +380,7 @@ Non-oracle results (profit factor, YTD 2025–2026):
 
 #### Risultati backtest VWAP exit (14 giugno 2026)
 
-Backtest su `--vwap` (gen 2025 → giu 2026, 60 ticker, 624 trade, stesse entry — cambia solo la soglia):
+Backtest su `--vwap` (gen 2025 → giu 2026, 60 ticker — universo pre-rebalance di giugno 2026 — 624 trade, stesse entry, cambia solo la soglia):
 
 | VWAP exit | Win rate | Profit factor | Avg win | Avg loss | P&L totale |
 |-----------|----------|---------------|---------|----------|------------|
@@ -398,7 +398,7 @@ Backtest su `--vwap` (gen 2025 → giu 2026, 60 ticker, 624 trade, stesse entry 
 
 #### Risultati backtest exit strategy (14 giugno 2026)
 
-Backtest su `--exit` (gen 2025 → giu 2026, 624 trade, **stesse identiche entry** — cambia solo la logica di uscita). La baseline è il sistema attuale (VWAP 1.5% + hard stop −2%). Break-even = una volta toccato +X% di picco, lo stop sale all'entry. Trailing = una volta toccato +X% di picco, lo stop insegue il massimo a distanza fissa.
+Backtest su `--exit` (gen 2025 → giu 2026, 60 ticker — universo pre-rebalance di giugno 2026 — 624 trade, **stesse identiche entry**, cambia solo la logica di uscita). La baseline è il sistema attuale (VWAP 1.5% + hard stop −2%). Break-even = una volta toccato +X% di picco, lo stop sale all'entry. Trailing = una volta toccato +X% di picco, lo stop insegue il massimo a distanza fissa.
 
 | Variante | P&L totale | Max DD | Win rate | PF | Avg win | Avg loss | Hard stop | Exit break-even |
 |----------|-----------|--------|----------|-----|---------|----------|-----------|-----------------|
