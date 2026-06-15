@@ -1411,11 +1411,11 @@
       "atr14": 35.0585,
       "peak_price": 557.55,
       "breakeven_armed": true,
-      "exit_price": 548.12,
+      "exit_price": 547.806703,
       "exit_time": "10:00:05",
       "exit_reason": "breakeven_stop",
-      "pnl_usd": -46.41,
-      "pnl_pct": -0.0009,
+      "pnl_usd": -74.92,
+      "pnl_pct": -0.0015,
       "catalyst_bonus": 0.1,
       "vol_boost": 0.05,
       "short_float": 0.0271,
@@ -1494,7 +1494,7 @@
           "author": "Benzinga Senior Editor",
           "content": "",
           "created_at": "2026-06-13T12:01:19Z",
-          "headline": "Benzinga Bulls And Bears: Oracle, Apple, Super Micro \u2014 And SpaceX IPO Boosts Market",
+          "headline": "Benzinga Bulls And Bears: Oracle, Apple, Super Micro — And SpaceX IPO Boosts Market",
           "id": 53183478,
           "images": [
             {
@@ -1511,7 +1511,7 @@
             }
           ],
           "source": "benzinga",
-          "summary": "Benzinga examined the prospects for many investors&#39; favorite stocks over the last week \u2014 here&#39;s a look at some of our top stories.",
+          "summary": "Benzinga examined the prospects for many investors&#39; favorite stocks over the last week — here&#39;s a look at some of our top stories.",
           "symbols": [
             "AAPL",
             "ACHC",
@@ -1608,7 +1608,8 @@
           "updated_at": "2026-06-12T17:35:25Z",
           "url": "https://www.benzinga.com/insights/options/26/06/53174857/10-information-technology-stocks-with-whale-alerts-in-todays-session"
         }
-      ]
+      ],
+      "exit_price_corrected": true
     },
     {
       "ticker": "CRWV",
@@ -1626,11 +1627,11 @@
       "atr14": 8.9274,
       "peak_price": 108.715,
       "breakeven_armed": true,
-      "exit_price": 107.59,
+      "exit_price": 107.66,
       "exit_time": "15:45:08",
       "exit_reason": "eod_close",
-      "pnl_usd": 356.51,
-      "pnl_pct": 0.0072,
+      "pnl_usd": 388.92,
+      "pnl_pct": 0.0079,
       "catalyst_bonus": 0.0,
       "vol_boost": 0.0,
       "short_float": 0.18190001,
@@ -1785,7 +1786,8 @@
           "updated_at": "2026-06-12T14:57:41Z",
           "url": "https://www.benzinga.com/news/26/06/53168948/coreweave-set-to-join-nasdaq-100-index-effective-june-22"
         }
-      ]
+      ],
+      "exit_price_corrected": true
     }
   ]
 }
