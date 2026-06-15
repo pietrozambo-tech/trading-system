@@ -152,32 +152,46 @@ def classify_catalyst_from_news(news: list[dict]) -> float:
     ]
 
     best_tier = 0
+    best_headline = ""
 
     for article in news:
-        text = (article.get("headline", "") + " " + article.get("summary", "")).lower()
+        headline = article.get("headline", "")
+        text = (headline + " " + article.get("summary", "")).lower()
 
         # Skip articles whose primary story is negative
         if _is_negative(text):
             continue
 
         # Tier 1 — return immediately, can't do better
-        if any(p in text for p in tier1_phrases):
+        matched_t1 = next((p for p in tier1_phrases if p in text), None)
+        if matched_t1:
+            logger.info(f"Catalyst Tier1 | phrase='{matched_t1}' | headline='{headline}'")
             return config.CATALYST_TIER1
 
         # Large EPS surprise (% mentioned alongside beat) → also Tier 1
         if ("eps beat" in text or "beat estimates" in text) and any(
             m in text for m in ["10%", "15%", "20%", "25%", "30%", "40%", "50%"]
         ):
+            logger.info(f"Catalyst Tier1 (large EPS) | headline='{headline}'")
             return config.CATALYST_TIER1
 
-        if any(p in text for p in tier2_phrases):
+        matched_t2 = next((p for p in tier2_phrases if p in text), None)
+        if matched_t2:
+            if best_tier < 2:
+                best_headline = headline
             best_tier = max(best_tier, 2)
-        elif any(p in text for p in tier3_phrases):
-            best_tier = max(best_tier, 3)
+        else:
+            matched_t3 = next((p for p in tier3_phrases if p in text), None)
+            if matched_t3:
+                if best_tier < 3:
+                    best_headline = headline
+                best_tier = max(best_tier, 3)
 
     if best_tier == 2:
+        logger.info(f"Catalyst Tier2 | headline='{best_headline}'")
         return config.CATALYST_TIER2
     if best_tier == 3:
+        logger.info(f"Catalyst Tier3 | headline='{best_headline}'")
         return config.CATALYST_TIER3
     return config.CATALYST_NONE
 
@@ -269,9 +283,11 @@ def generate_eod_recap(
     spy_pct: float,
     account_equity: float,
     daily_pnl: float,
+    date_str: str = "",
 ) -> str:
     """Generate the EOD Telegram message via LLM. Returns empty string if no meaningful data."""
     import json as _json
+    from datetime import datetime as _dt
 
     executed = [t for t in trade_data if t.get("exit_price")]
     if not executed:
@@ -279,18 +295,30 @@ def generate_eod_recap(
 
     total_pnl = account_equity - config.PAPER_INITIAL_EQUITY
 
+    # Build the Italian date string so the LLM never has to guess it.
+    _MONTHS_IT = ["gennaio","febbraio","marzo","aprile","maggio","giugno",
+                  "luglio","agosto","settembre","ottobre","novembre","dicembre"]
+    _DAYS_IT   = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"]
+    try:
+        _d = _dt.strptime(date_str, "%Y-%m-%d")
+        date_it = f"{_DAYS_IT[_d.weekday()]} {_d.day} {_MONTHS_IT[_d.month - 1]} {_d.year}"
+    except Exception:
+        date_it = date_str  # fallback: raw string, still better than nothing
+
     exit_labels = {
-        "eod_close":    "chiuso a fine giornata",
-        "hard_blocker": "stop loss",
-        "atr_stop":     "stop loss",
-        "vwap_exit":    "profit preso",
+        "eod_close":      "chiuso a fine giornata",
+        "hard_blocker":   "stop loss",
+        "atr_stop":       "stop loss",
+        "vwap_exit":      "profit preso",
+        "breakeven_stop": "break-even",
     }
 
     exit_human = {
-        "hard_blocker": "Hard stop",
-        "atr_stop":     "ATR stop",
-        "vwap_exit":    "VWAP take-profit",
-        "eod_close":    "End-of-day close",
+        "hard_blocker":   "Hard stop",
+        "atr_stop":       "ATR stop",
+        "vwap_exit":      "VWAP take-profit",
+        "eod_close":      "End-of-day close",
+        "breakeven_stop": "Break-even stop",
     }
 
     trade_rows = []
@@ -354,7 +382,7 @@ def generate_eod_recap(
         "- VIETATO usare i caratteri < e > salvo nei tag <b> e </b>\n"
         "- Date in italiano: '4 giugno 2026', non '4/6/2026'\n\n"
         "STRUTTURA ESATTA:\n\n"
-        "<b>📊 [giorno settimana] [giorno mese anno]</b>\n\n"
+        f"<b>📊 {date_it}</b>\n\n"
         f"Mercato: {spy_pct_str} — {spy_comment}\n\n"
         "[Per ogni trade — riga vuota tra blocchi diversi:]\n"
         "<b>Trade [N] — [TICKER] long [Score: [score]]</b>\n"

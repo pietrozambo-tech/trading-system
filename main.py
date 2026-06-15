@@ -431,6 +431,8 @@ def run() -> None:
         catalyst_bonus = analyst.classify_catalyst_from_news(news)
         signals        = triggers.compute_signals(ticker, c["prev_close"], catalyst_bonus, c.get("short_float"), c.get("gap_pct"))
         if not signals:
+            logger.warning(f"L2 skip {ticker}: no signals returned (insufficient intraday bar data)")
+            pl.log_l1_rejects([{"ticker": ticker, "reason": "insufficient_intraday_data"}])
             continue
         if signals.get("excluded_reason"):
             reason = signals["excluded_reason"]
@@ -584,7 +586,7 @@ def _send_eod(
         llm_text = ""  # skip LLM on shutdown — not enough time before SIGKILL
     else:
         try:
-            llm_text = analyst.generate_eod_recap(all_trades, spy_pct, equity, daily_pnl)
+            llm_text = analyst.generate_eod_recap(all_trades, spy_pct, equity, daily_pnl, today_str)
         except Exception as e:
             logger.warning(f"LLM EOD recap failed: {e}")
             llm_text = ""

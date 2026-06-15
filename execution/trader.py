@@ -411,10 +411,6 @@ def update_dynamic_stop(position: dict, current_price: float) -> None:
             f"{ticker}: break-even armed — peak gain {peak_gain * 100:.2f}% "
             f"≥ {config.BREAKEVEN_TRIGGER_PCT * 100:.1f}%, stop ${old_stop:.2f} → ${entry:.2f}"
         )
-        telegram.send_message(
-            f"🛡️ <b>{ticker}</b>: break-even attivato (picco +{peak_gain * 100:.2f}%). "
-            f"Stop alzato a ${entry:.2f} — il trade non può più chiudere in perdita."
-        )
 
 
 def check_vwap_exit(ticker: str, position: dict, current_price: float) -> bool:
