@@ -80,6 +80,15 @@ RECONCILE_MISS_LIMIT = 2     # cicli consecutivi di assenza prima di rimuovere u
 FILL_CONFIRM_TIMEOUT_S = 240     # attesa massima fill del limit order
 FILL_POLL_INTERVAL_S   = 5       # intervallo polling stato ordine
 
+# === CHIUSURA POSIZIONE ===
+# Il prezzo di uscita REALE è filled_avg_price dell'ordine di chiusura, che Alpaca
+# può impiegare qualche secondo a pubblicare. Si fa polling sull'ordine prima di
+# ripiegare su snapshot/quote — questi NON riflettono il fill reale e falsano il PnL
+# (15 giugno: AMD registrata a 548.12 da snapshot vs fill reale 547.81, −$28 nascosti;
+# CRWV 107.59 vs 107.66 reale). 6×1s = 6s, ampi per un market order.
+CLOSE_FILL_POLL_ATTEMPTS   = 6   # tentativi di lettura del fill price dell'ordine di chiusura
+CLOSE_FILL_POLL_INTERVAL_S = 1   # secondi tra i tentativi
+
 # === GENERAL ===
 MAX_CANDIDATES_TO_LLM  = 15
 TIMEZONE               = "America/New_York"

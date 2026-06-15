@@ -299,13 +299,20 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
 
 
 def close_position(ticker: str, qty: int, reason: str, fallback_price: Optional[float] = None) -> Optional[dict]:
-    """Close position at market. Returns exit info with actual fill price.
+    """Close position at market. Returns exit info with the ACTUAL fill price.
 
     Returns None ONLY if the close order itself failed. Once Alpaca accepts the
     close, a price-lookup failure must not be reported as a failed close — the
     caller would mis-book the trade and reconciliation would later drop it with
     no PnL. In that case exit_price falls back to `fallback_price` (typically the
     entry price) flagged with exit_price_estimated.
+
+    The close order's own filled_avg_price is the ONLY price that reflects the real
+    execution. A market order can take a few seconds to report it, so we POLL the
+    order before ever falling back to market-data snapshots — those lag the real
+    fill and silently mis-state the realised PnL (June 15: AMD booked at 548.12 from
+    a snapshot vs the real 547.81 fill, hiding ~$28 of loss; CRWV 107.59 vs 107.66).
+    Snapshot/quote are used only if the order never reports a fill price.
     """
     client = _trading_client()
     try:
@@ -314,19 +321,27 @@ def close_position(ticker: str, qty: int, reason: str, fallback_price: Optional[
         logger.error(f"Close position error for {ticker}: {e}")
         return None
 
-    # Best-effort fill price chain — the close itself has already succeeded.
+    order_id = str(getattr(order, "id", "") or "")
     exit_price = float(order.filled_avg_price) if order.filled_avg_price else None
+
+    # Authoritative source: poll the close order until it publishes filled_avg_price.
+    if exit_price is None and order_id:
+        for attempt in range(config.CLOSE_FILL_POLL_ATTEMPTS):
+            time.sleep(config.CLOSE_FILL_POLL_INTERVAL_S)
+            try:
+                refreshed = client.get_order_by_id(order_id)
+                if refreshed.filled_avg_price:
+                    exit_price = float(refreshed.filled_avg_price)
+                    break
+            except Exception as e:
+                logger.warning(f"{ticker}: close order poll error (attempt {attempt + 1}): {e}")
+
+    # Market-data fallback ONLY if the order never reported its own fill price.
     if exit_price is None:
-        # Market order may not be reflected immediately — wait briefly and retry
-        time.sleep(1)
-        try:
-            refreshed = client.get_order_by_id(str(order.id))
-            if refreshed.filled_avg_price:
-                exit_price = float(refreshed.filled_avg_price)
-        except Exception:
-            pass
-    if exit_price is None:
-        # Snapshot latest trade (our sell order should be the most recent print)
+        logger.warning(
+            f"{ticker}: close order reported no filled_avg_price after "
+            f"{config.CLOSE_FILL_POLL_ATTEMPTS} polls — falling back to market data (may mis-state PnL)"
+        )
         try:
             snap = fetcher.get_snapshot(ticker)
             if snap.latest_trade:
