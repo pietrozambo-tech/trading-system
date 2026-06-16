@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trading Dashboard</title>
+<style>
+:root {
+  --bg:      #0f1117;
+  --surface: #1a1d27;
+  --border:  #2a2d3a;
+  --text:    #e2e8f0;
+  --muted:   #8892a4;
+  --green:   #22c55e;
+  --red:     #ef4444;
+  --blue:    #3b82f6;
+  --yellow:  #f59e0b;
+  --r:       8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; padding: 20px; }
+h2 { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 14px; }
+.header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+.header h1 { font-size: 18px; font-weight: 700; }
+.updated { font-size: 12px; color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 18px; margin-bottom: 16px; }
+
+/* KPI grid */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; }
+.kpi .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
+.kpi .val { font-size: 20px; font-weight: 700; line-height: 1.2; }
+.kpi .sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+/* Charts row */
+.charts { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; margin-bottom: 16px; }
+@media (max-width: 700px) { .charts { grid-template-columns: 1fr; } }
+
+/* Tables */
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; }
+th { padding: 8px 10px; font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--border); text-align: left; }
+td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,.025); }
+
+/* Scrollable table body — fixed height, sticky header */
+.scroll-wrap { max-height: 370px; overflow-y: auto; }
+.scroll-wrap::-webkit-scrollbar { width: 6px; }
+.scroll-wrap::-webkit-scrollbar-track { background: var(--bg); }
+.scroll-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.scroll-wrap thead th { position: sticky; top: 0; background: var(--surface); z-index: 1; box-shadow: 0 1px 0 var(--border); }
+
+/* Colors */
+.pos { color: var(--green); } .neg { color: var(--red); } .neu { color: var(--text); }
+.mut { color: var(--muted); }
+
+/* Badge */
+.b { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.bg  { background: rgba(34,197,94,.15);  color: var(--green); }
+.br  { background: rgba(239,68,68,.15);  color: var(--red); }
+.bb  { background: rgba(59,130,246,.15); color: var(--blue); }
+.by  { background: rgba(245,158,11,.15); color: var(--yellow); }
+.bmu { background: rgba(136,146,164,.12); color: var(--muted); }
+
+/* Signal tick */
+.tk { color: var(--green); font-weight: 700; }
+.cx { color: var(--red); font-weight: 700; }
+
+/* Info icon on column headers — padded for a comfortable tap target on touch devices */
+.iico { font-size: 12px; color: var(--blue); cursor: pointer; opacity: .85; vertical-align: middle; padding: 3px 5px; margin: -3px -2px; display: inline-block; }
+[data-tip] { cursor: pointer; }
+
+/* Tap/hover tooltip popover (works on iPad — no native title hover needed) */
+.tip-pop { position: fixed; z-index: 1000; max-width: 270px; background: #0b0d13; border: 1px solid var(--border); color: var(--text); font-size: 12px; line-height: 1.45; padding: 9px 12px; border-radius: 7px; box-shadow: 0 6px 22px rgba(0,0,0,.55); display: none; }
+
+/* Conf bar */
+.cb { display: inline-block; height: 5px; background: var(--blue); border-radius: 3px; vertical-align: middle; margin-right: 5px; opacity: .8; }
+
+/* SVG charts */
+svg text { font-family: -apple-system, sans-serif; }
+
+/* Filter bar */
+.filter-bar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px; padding:12px 16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r); }
+.filter-label { font-size:11px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+.qbtn { background:transparent; border:1px solid var(--border); color:var(--muted); padding:4px 13px; border-radius:20px; font-size:12px; cursor:pointer; transition:all .15s; white-space:nowrap; }
+.qbtn:hover { border-color:var(--blue); color:var(--text); }
+.qbtn.active { background:var(--blue); border-color:var(--blue); color:#fff; font-weight:600; }
+.filter-sep { width:1px; height:20px; background:var(--border); margin:0 4px; }
+.filter-bar label { font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px; }
+.filter-bar input[type=date] { background:var(--bg); border:1px solid var(--border); color:var(--text); padding:4px 8px; border-radius:6px; font-size:12px; cursor:pointer; }
+.apply-btn { background:var(--blue); border:none; color:#fff; padding:5px 13px; border-radius:6px; font-size:12px; cursor:pointer; font-weight:500; }
+.apply-btn:hover { opacity:.85; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📈 Trading Dashboard — Gap &amp; Go</h1>
+  <span class="updated">Aggiornato: 16/06/2026 22:21 CEST</span>
+</div>
+
+<!-- Filter bar -->
+<div class="filter-bar">
+  <span class="filter-label">Periodo</span>
+  <button class="qbtn active" data-days="0">Tutto</button>
+  <button class="qbtn" data-days="7">7 giorni</button>
+  <button class="qbtn" data-days="30">30 giorni</button>
+  <button class="qbtn" data-days="90">90 giorni</button>
+  <div class="filter-sep"></div>
+  <label>Dal <input type="date" id="dateFrom"></label>
+  <label>Al&nbsp; <input type="date" id="dateTo"></label>
+  <button class="apply-btn" id="applyRange">Applica</button>
+  <div class="filter-sep"></div>
+  <span class="filter-label">Exit</span>
+  <button class="qbtn active" data-exit="">Tutti</button>
+  <button class="qbtn" data-exit="hard_blocker">Hard stop</button>
+  <button class="qbtn" data-exit="atr_stop">ATR stop</button>
+  <button class="qbtn" data-exit="breakeven_stop">Break-even</button>
+  <button class="qbtn" data-exit="vwap_exit">VWAP</button>
+  <button class="qbtn" data-exit="eod_close">EOD close</button>
+</div>
+
+<!-- KPI cards -->
+<div class="kpis" id="kpis"></div>
+
+<!-- Charts -->
+<div class="charts">
+  <div class="card">
+    <h2>P&amp;L giornaliero ($)</h2>
+    <div id="chartPnl"></div>
+  </div>
+  <div class="card">
+    <h2>Exit reasons</h2>
+    <div id="chartExit"></div>
+  </div>
+</div>
+
+<!-- Trade log -->
+<div class="card">
+  <h2>Trade log</h2>
+  <div class="tbl-wrap scroll-wrap">
+  <table>
+    <thead><tr>
+      <th>Data</th><th>Ticker</th><th>Entry</th><th>Exit</th>
+      <th>Shares</th><th>P&amp;L $</th><th>P&amp;L %</th>
+      <th>Uscita</th><th>Conf.</th><th>Gap %</th>
+      <th>Catalyst</th><th>Vol boost</th><th>Short float</th>
+    </tr></thead>
+    <tbody id="tradeRows"></tbody>
+  </table>
+  </div>
+</div>
+
+<!-- Pipeline funnel -->
+<div class="card">
+  <h2>Pipeline funnel — giornaliero</h2>
+  <div class="tbl-wrap scroll-wrap">
+  <table>
+    <thead><tr>
+      <th>Data</th><th>SPY</th><th>Universe</th>
+      <th>Pre-mkt <span data-tip="Ticker con gap ≥ 0.5% in pre-market rispetto alla chiusura precedente" class="iico">ⓘ</span></th>
+      <th>L1 ✓ <span data-tip="Superano i filtri binari di qualità: liquidità (ADV), spread, prezzo minimo, asset tradabile su Alpaca" class="iico">ⓘ</span></th>
+      <th>L2 ✓ <span data-tip="Superano la soglia di confidence algoritmica (≥ 0.65) basata su segnali tecnici: post-open advance, OR position, gap retention, vol boost, catalyst" class="iico">ⓘ</span></th>
+      <th>→ LLM <span data-tip="Candidati inviati al modello LLM per la selezione finale del trade, dopo aver superato tutti i filtri algoritmici" class="iico">ⓘ</span></th>
+      <th>Trade</th><th>P&amp;L</th><th>P&amp;L %</th><th>Note</th>
+    </tr></thead>
+    <tbody id="funnelRows"></tbody>
+  </table>
+  </div>
+</div>
+
+<!-- L2 signals -->
+<div class="card">
+  <h2>Segnali L2 — tutti i candidati</h2>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+    <span class="filter-label" style="align-self:center">Esito</span>
+    <button class="qbtn active" data-esito="">Tutti</button>
+    <button class="qbtn" data-esito="TRADED">TRADED</button>
+    <button class="qbtn" data-esito="LLM_ALTRO">LLM: altro scelto</button>
+    <button class="qbtn" data-esito="LLM_NOENTRY">LLM: no entry</button>
+    <button class="qbtn" data-esito="REJECT">REJECT</button>
+    <button class="qbtn" data-esito="PASS">PASS</button>
+  </div>
+  <div class="tbl-wrap scroll-wrap">
+  <table>
+    <thead><tr>
+      <th>Data</th><th>Ticker</th><th>Confidence</th>
+      <th>Post-open advance <span data-tip="Prezzo alle 9:35 superiore all'apertura delle 9:30 — conferma che il gap tiene nei primi 5 minuti di trading" class="iico">ⓘ</span></th>
+      <th>OR position <span data-tip="Posizione nel range 9:30–9:35: 1.0 = massimo del range, 0.0 = minimo. Sopra 0.66 = titolo nel terzo superiore, segnale di forza" class="iico">ⓘ</span></th>
+      <th>Gap retention <span data-tip="Frazione del gap pre-market ancora intatta alle 9:35. 1.0 = gap invariato, 0.0 = gap completamente colmato. Sopra 0.70 = gap difeso" class="iico">ⓘ</span></th>
+      <th>Vol boost <span data-tip="Volume nei primi 5 minuti (9:30–9:35) rapportato alla media storica della stessa finestra. >3× → +0.10, 2–3× → +0.05. Passa il mouse sulla cella per i volumi grezzi (oggi vs media)" class="iico">ⓘ</span></th><th>Catalyst</th>
+      <th data-tip="Percentuale del flottante venduta allo scoperto">Short float</th>
+      <th>Squeeze</th><th>Gap %</th><th>Esito</th>
+    </tr></thead>
+    <tbody id="signalRows"></tbody>
+  </table>
+  </div>
+</div>
+
+<!-- Pre-market -->
+<div class="card">
+  <h2>Candidati pre-market</h2>
+  <div class="tbl-wrap scroll-wrap">
+  <table>
+    <thead><tr>
+      <th>Data</th><th>Ticker</th><th>Gap %</th><th>ADV (M)</th>
+      <th>Short float</th><th>Dist. 3M high</th><th>→ L2</th>
+    </tr></thead>
+    <tbody id="pmRows"></tbody>
+  </table>
+  </div>
+</div>
+
+<!-- Pre-open gate exclusions -->
+<div class="card">
+  <h2>Esclusioni pre-open gate <span data-tip="Candidati scartati alle 9:35 prima del calcolo dei segnali: gap invertito all'apertura, o gap pre-market eroso sotto la soglia di ritenzione. Non raggiungono mai lo scoring L2" class="iico">ⓘ</span></h2>
+  <div class="tbl-wrap scroll-wrap">
+  <table>
+    <thead><tr>
+      <th>Data</th><th>Ticker</th><th>Motivo</th>
+    </tr></thead>
+    <tbody id="gateRows"></tbody>
+  </table>
+  </div>
+</div>
+
+<script>
+const LOGS  = [{"date": "2026-06-04", "spy_pct": -0.0016972075631811673, "blocked": null, "daily_pnl": 223.93, "trades": [{"ticker": "UNH", "qty": 124, "entry_price": 397.35, "entry_time": "09:35:29", "direction": "long", "confidence": 1.3, "reason": "Multipli upgrade da analisti (KeyBanc, BofA con PT a $450) costituiscono un catalyst Tier 2 solido. Tutti e tre i segnali tecnici attivi (post_open_advance, or_position=1.0, gap_retention=0.93), vol_boost +0.10, titolo a soli -3.8% dai massimi 3 mesi.", "order_id": "7143f67f-1978-4f83-a2d8-d6bf4c7aabd3", "exit_price": 399.155887, "exit_time": "15:49:27", "exit_reason": "manual_close", "pnl_usd": 223.93, "pnl_pct": 0.0045, "_note": "Bot exited early due to false manual-close detection (bug fixed). Position closed manually by user on Alpaca. Entry price is actual Alpaca fill (bot logged $396.00 fallback due to fill-fetch timing bug, also fixed)."}], "signals": [{"ticker": "NCLH", "confidence": 0.05, "passes_threshold": false, "post_open_advance": false, "or_position": 0.1379, "gap_retention": 0.641, "vol_boost": 0.05, "catalyst_bonus": 0.0, "short_float": 0.17559999, "short_squeeze_bonus": 0.0, "gap_pct": 0.04352617079889822}, {"ticker": "UNH", "confidence": 1.3, "passes_threshold": true, "post_open_advance": true, "or_position": 1.0, "gap_retention": 0.9271, "vol_boost": 0.1, "catalyst_bonus": 0.2, "short_float": 0.0214, "short_squeeze_bonus": 0.0, "gap_pct": 0.03129973474801064}, {"ticker": "MSTR", "confidence": 0.3833, "passes_threshold": false, "post_open_advance": true, "or_position": 0.6517, "gap_retention": -16.7778, "vol_boost": 0.05, "catalyst_bonus": 0.0, "short_float": 0.1196, "short_squeeze_bonus": 0.0, "gap_pct": 0.019242166818127845}, {"ticker": "MSFT", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0978, "gap_retention": 0.2078, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0104, "short_squeeze_bonus": 0.0, "gap_pct": 0.01474235971357704}, {"ticker": "AMZN", "confidence": 0.6667, "passes_threshold": true, "post_open_advance": true, "or_position": 0.84, "gap_retention": 0.5665, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0106, "short_squeeze_bonus": 0.0, "gap_pct": 0.014318854491640604}, {"ticker": "PFE", "confidence": 0.6667, "passes_threshold": true, "post_open_advance": true, "or_position": 0.5312, "gap_retention": 1.0, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0276, "short_squeeze_bonus": 0.0, "gap_pct": 0.011444356748224117}, {"ticker": "AAPL", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0528, "gap_retention": 0.122, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0095, "short_squeeze_bonus": 0.0, "gap_pct": 0.008799071746277375}, {"ticker": "NFLX", "confidence": 0.4333, "passes_threshold": false, "post_open_advance": false, "or_position": 0.25, "gap_retention": 0.8011, "vol_boost": 0.1, "catalyst_bonus": 0.0, "short_float": 0.0234, "short_squeeze_bonus": 0.0, "gap_pct": 0.005397448478900856}], "l1_rejects": [], "premarket_candidates": [{"ticker": "NCLH", "gap_pct": 4.35, "adv_m": 22.8, "short_float_pct": 17.6, "dist_from_3m_high_pct": -14.8}, {"ticker": "UNH", "gap_pct": 3.13, "adv_m": 7.8, "short_float_pct": 2.1, "dist_from_3m_high_pct": -3.8}, {"ticker": "MSTR", "gap_pct": 1.92, "adv_m": 17.6, "short_float_pct": 12.0, "dist_from_3m_high_pct": -34.5}, {"ticker": "MSFT", "gap_pct": 1.47, "adv_m": 35.7, "short_float_pct": 1.0, "dist_from_3m_high_pct": -7.0}, {"ticker": "AMZN", "gap_pct": 1.43, "adv_m": 44.9, "short_float_pct": 1.1, "dist_from_3m_high_pct": -9.0}, {"ticker": "PFE", "gap_pct": 1.14, "adv_m": 35.3, "short_float_pct": 2.8, "dist_from_3m_high_pct": -10.8}, {"ticker": "AAPL", "gap_pct": 0.88, "adv_m": 45.8, "short_float_pct": 0.9, "dist_from_3m_high_pct": -1.2}, {"ticker": "NFLX", "gap_pct": 0.54, "adv_m": 38.0, "short_float_pct": 2.3, "dist_from_3m_high_pct": -24.8}], "llm_output": {"trade_1": {"ticker": "UNH", "direction": "long", "confidence": 1.3, "reason": "Multipli upgrade da analisti (KeyBanc, BofA con PT a $450) costituiscono un catalyst Tier 2 solido. Tutti e tre i segnali tecnici attivi (post_open_advance, or_position=1.0, gap_retention=0.93), vol_boost +0.10, titolo a soli -3.8% dai massimi 3 mesi."}, "trade_2": null, "no_trade_reason": "AMZN: gap_retention insufficiente (0.5665 < 0.70) e nessun catalyst diretto identificabile; confidence troppo bassa per un secondo trade. PFE: or_position debole (0.53) e nessuna news recente; segnale puramente tecnico con soli 2/3 criteri, senza catalyst a supporto."}, "universe_count": 60, "premarket_count": 8, "l1_count": 8, "l2_count": 3, "llm_input": ["UNH", "AMZN", "PFE"]}, {"date": "2026-06-05", "spy_pct": -0.00575980554051021, "blocked": "nessun candidato sopra soglia confidence", "daily_pnl": 0, "trades": [], "signals": [{"ticker": "SMR", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.2794, "gap_retention": -1.6154, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.19629999, "short_squeeze_bonus": 0.0, "gap_pct": 0.02166666666666665}], "l1_rejects": [], "premarket_candidates": [{"ticker": "RDW", "gap_pct": 3.03, "adv_m": 37.1, "short_float_pct": 18.0, "dist_from_3m_high_pct": -17.1}, {"ticker": "SMR", "gap_pct": 2.17, "adv_m": 33.5, "short_float_pct": 19.6, "dist_from_3m_high_pct": -14.3}], "llm_output": {}, "universe_count": 60, "premarket_count": 2, "l1_count": 2, "l2_count": 0, "llm_input": []}, {"date": "2026-06-08", "spy_pct": 0.006427554410468518, "blocked": "nessun candidato sopra soglia confidence", "daily_pnl": 0, "trades": [], "signals": [{"ticker": "INTC", "confidence": 0.3333, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0167, "gap_retention": 0.7698, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.028099999, "short_squeeze_bonus": 0.0, "gap_pct": 0.12070182514873448}, {"ticker": "MRVL", "confidence": 0.3833, "passes_threshold": false, "post_open_advance": false, "or_position": 0.2791, "gap_retention": 0.848, "vol_boost": 0.05, "catalyst_bonus": 0.0, "short_float": 0.0431, "short_squeeze_bonus": 0.0, "gap_pct": 0.08627168178540236}, {"ticker": "MU", "confidence": 0.3333, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0145, "gap_retention": 0.9092, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0313, "short_squeeze_bonus": 0.0, "gap_pct": 0.08056619715049596}, {"ticker": "MSTR", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0408, "gap_retention": 0.6898, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.1196, "short_squeeze_bonus": 0.0, "gap_pct": 0.0594486881434739}, {"ticker": "RDW", "confidence": 0.2, "passes_threshold": false, "post_open_advance": false, "or_position": 0.2047, "gap_retention": -0.3933, "vol_boost": 0.0, "catalyst_bonus": 0.1, "short_float": 0.17959999, "short_squeeze_bonus": 0.1, "gap_pct": 0.05149051490514901}, {"ticker": "AMD", "confidence": 0.5333, "passes_threshold": false, "post_open_advance": false, "or_position": 0.5752, "gap_retention": 0.7241, "vol_boost": 0.0, "catalyst_bonus": 0.2, "short_float": 0.0275, "short_squeeze_bonus": 0.0, "gap_pct": 0.048136712551996204}, {"ticker": "IONQ", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.1484, "gap_retention": 0.4343, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.1974, "short_squeeze_bonus": 0.0, "gap_pct": 0.04473406128918632}, {"ticker": "QUBT", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0, "gap_retention": 0.0448, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.29479998, "short_squeeze_bonus": 0.0, "gap_pct": 0.043696634856855904}, {"ticker": "RKLB", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.1295, "gap_retention": 0.2039, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0581, "short_squeeze_bonus": 0.0, "gap_pct": 0.04260537790697672}, {"ticker": "UUUU", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0444, "gap_retention": 0.288, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.1575, "short_squeeze_bonus": 0.0, "gap_pct": 0.04191616766467071}, {"ticker": "RGTI", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.2137, "gap_retention": 0.1136, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.1487, "short_squeeze_bonus": 0.0, "gap_pct": 0.039168278529980595}, {"ticker": "SMR", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0909, "gap_retention": 0.2051, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.19629999, "short_squeeze_bonus": 0.0, "gap_pct": 0.038095238095238126}, {"ticker": "QBTS", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.37, "gap_retention": 0.2419, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.1548, "short_squeeze_bonus": 0.0, "gap_pct": 0.03731656184486361}, {"ticker": "AVGO", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.2838, "gap_retention": 0.5818, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0115, "short_squeeze_bonus": 0.0, "gap_pct": 0.0341430534311564}, {"ticker": "NVDA", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0651, "gap_retention": 0.6843, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0128, "short_squeeze_bonus": 0.0, "gap_pct": 0.026572403705509593}, {"ticker": "TXN", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.4419, "gap_retention": 0.3105, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0223, "short_squeeze_bonus": 0.0, "gap_pct": 0.020136111695783377}, {"ticker": "MRNA", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0, "gap_retention": -0.2069, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.17899999, "short_squeeze_bonus": 0.0, "gap_pct": 0.014123102866779126}, {"ticker": "QCOM", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.2246, "gap_retention": 0.169, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.053600002, "short_squeeze_bonus": 0.0, "gap_pct": 0.01111419838844126}], "l1_rejects": [], "premarket_candidates": [{"ticker": "INTC", "gap_pct": 12.07, "adv_m": 132.0, "short_float_pct": 2.8, "dist_from_3m_high_pct": -16.3}, {"ticker": "MRVL", "gap_pct": 8.63, "adv_m": 34.5, "short_float_pct": 4.3, "dist_from_3m_high_pct": -11.7}, {"ticker": "MU", "gap_pct": 8.06, "adv_m": 50.2, "short_float_pct": 3.1, "dist_from_3m_high_pct": -14.3}, {"ticker": "MSTR", "gap_pct": 5.94, "adv_m": 18.1, "short_float_pct": 12.0, "dist_from_3m_high_pct": -35.2}, {"ticker": "RDW", "gap_pct": 5.15, "adv_m": 38.1, "short_float_pct": 18.0, "dist_from_3m_high_pct": -27.2}, {"ticker": "AMD", "gap_pct": 4.81, "adv_m": 39.4, "short_float_pct": 2.8, "dist_from_3m_high_pct": -10.5}, {"ticker": "IONQ", "gap_pct": 4.47, "adv_m": 32.6, "short_float_pct": 19.7, "dist_from_3m_high_pct": -19.5}, {"ticker": "QUBT", "gap_pct": 4.37, "adv_m": 21.4, "short_float_pct": 29.5, "dist_from_3m_high_pct": -28.1}, {"ticker": "RKLB", "gap_pct": 4.26, "adv_m": 26.4, "short_float_pct": 5.8, "dist_from_3m_high_pct": -24.0}, {"ticker": "UUUU", "gap_pct": 4.19, "adv_m": 10.5, "short_float_pct": 15.8, "dist_from_3m_high_pct": -39.3}, {"ticker": "RGTI", "gap_pct": 3.92, "adv_m": 42.0, "short_float_pct": 14.9, "dist_from_3m_high_pct": -23.4}, {"ticker": "SMR", "gap_pct": 3.81, "adv_m": 34.4, "short_float_pct": 19.6, "dist_from_3m_high_pct": -23.8}, {"ticker": "QBTS", "gap_pct": 3.73, "adv_m": 35.3, "short_float_pct": 15.5, "dist_from_3m_high_pct": -21.6}, {"ticker": "AVGO", "gap_pct": 3.41, "adv_m": 24.0, "short_float_pct": 1.1, "dist_from_3m_high_pct": -19.4}, {"ticker": "NVDA", "gap_pct": 2.66, "adv_m": 164.7, "short_float_pct": 1.3, "dist_from_3m_high_pct": -11.0}, {"ticker": "TXN", "gap_pct": 2.01, "adv_m": 7.7, "short_float_pct": 2.2, "dist_from_3m_high_pct": -12.3}, {"ticker": "MRNA", "gap_pct": 1.41, "adv_m": 6.6, "short_float_pct": 17.9, "dist_from_3m_high_pct": -19.1}, {"ticker": "QCOM", "gap_pct": 1.11, "adv_m": 21.1, "short_float_pct": 5.4, "dist_from_3m_high_pct": -16.0}, {"ticker": "META", "gap_pct": 1.0, "adv_m": 17.6, "short_float_pct": 1.5, "dist_from_3m_high_pct": -13.4}], "llm_output": {}, "universe_count": 60, "premarket_count": 19, "l1_count": 19, "l2_count": 0, "llm_input": []}, {"date": "2026-06-09", "spy_pct": 0.005972390376537858, "blocked": null, "daily_pnl": -1002.82, "trades": [{"ticker": "GOOGL", "qty": 133, "entry_price": 371.43, "entry_time": "09:35:36", "entry_ts": 1781012136.6095579, "direction": "long", "confidence": 1.0, "reason": "Tutti e 3 i segnali tecnici sono positivi (post_open_advance, or_position 0.95, gap_retention 0.76), con confidence_algo massima a 1.0. Le news menzionano un grosso ordine di chip AI da Google a Intel (Tier 3 speculativo), ma il segnale è prevalentemente tecnico con momentum solido nei primi 5 minuti (+1.09%).", "order_id": "3d95a10c-3a8e-4764-b592-09689d2a8650", "stop_atr": 361.7374, "stop_pct": 364.0014, "stop_price": 364.0014, "atr14": 9.6926, "exit_price": 363.89, "exit_time": "10:48:54", "exit_reason": "hard_blocker", "pnl_usd": -1002.82, "pnl_pct": -0.0203, "catalyst_bonus": 0.0, "vol_boost": 0.0, "short_float": 0.014099999, "short_squeeze_bonus": 0.0, "post_open_advance": true, "or_position": 0.949, "gap_retention": 0.7598, "gap_pct": 0.007624342847705766, "news": [{"author": "Erica Kollmann", "content": "", "created_at": "2026-06-09T13:14:06Z", "headline": "MANGOS Is The New Magnificent Seven — And Half Of It Hasn't Gone Public Yet", "id": 53084730, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/AI-generated-MANGOS---EK.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/AI-generated-MANGOS---EK.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/AI-generated-MANGOS---EK.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "From FAANG to Mag7 to MANGOS, Wall Street loves its acronyms—each one a barometer of its era.", "symbols": ["AAPL", "AMZN", "BTCUSD", "GOOG", "GOOGL", "META", "MSFT", "NFLX", "NVDA", "TSLA"], "updated_at": "2026-06-09T13:14:07Z", "url": "https://www.benzinga.com/markets/tech/26/06/53084730/mangos-the-new-magnificent-seven-and-half-of-it-hasnt-gone-public-yet"}, {"author": "Anusuya Lahiri", "content": "", "created_at": "2026-06-09T12:56:36Z", "headline": "Why Is Intel Stock Gaining Tuesday?", "id": 53083824, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Intel-Corporation.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Intel-Corporation.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Intel-Corporation.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Intel stock climbs premarket on reports of a massive Google AI chip order and packaging tests with Nvidia. Read the details.", "symbols": ["GOOGL", "INTC", "MRVL", "MU", "NVDA", "SNDK", "SOXX", "TSM"], "updated_at": "2026-06-09T12:56:37Z", "url": "https://www.benzinga.com/markets/tech/26/06/53083824/why-is-intel-stock-gaining-tuesday"}, {"author": "Rishabh Mishra", "content": "", "created_at": "2026-06-09T12:01:35Z", "headline": "Jim Cramer Is 'VERY Skeptical' Of Intel's 2028 Foundry Deal With Google And Nvidia: Here's Why", "id": 53082349, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/New-York-City---October-5-2017-The-Brook.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/New-York-City---October-5-2017-The-Brook.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/New-York-City---October-5-2017-The-Brook.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Jim Cramer is &#34;VERY skeptical&#34; of Intel&#39;s 2028 foundry deal with Google and Nvidia. Learn why he doubts the timeline despite INTC&#39;s 10% surge.", "symbols": ["AVGO", "GOOG", "GOOGL", "INTC", "NVDA", "TSM"], "updated_at": "2026-06-09T12:01:35Z", "url": "https://www.benzinga.com/markets/equities/26/06/53082349/jim-cramer-is-very-skeptical-of-intels-2028-foundry-deal-with-google-and-nvidia-heres-why"}, {"author": "Anusuya Lahiri", "content": "", "created_at": "2026-06-09T10:31:16Z", "headline": "Apple's Biggest AI Bet Yet Runs On NVIDIA, Not Its Own Chips", "id": 53080417, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Germany---June-26-2024-Apple-Intelligenc.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Germany---June-26-2024-Apple-Intelligenc.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Germany---June-26-2024-Apple-Intelligenc.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Apple WWDC 2026 brings a major Siri AI upgrade, but relies on NVIDIA chips and Google Cloud for its most advanced model.", "symbols": ["AAPL", "GOOGL", "NVDA"], "updated_at": "2026-06-09T10:31:17Z", "url": "https://www.benzinga.com/markets/tech/26/06/53080417/apples-biggest-ai-bet-yet-runs-on-nvidia-not-its-own-chips"}, {"author": "Anusuya Lahiri", "content": "", "created_at": "2026-06-09T09:28:47Z", "headline": "Taiwan Semiconductor Becomes World's Ninth-Most Valuable Company", "id": 53079458, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Tokyo--Japan--March-2023-an-Image-Of-Tsm.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Tokyo--Japan--March-2023-an-Image-Of-Tsm.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/09/Tokyo--Japan--March-2023-an-Image-Of-Tsm.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Taiwan Semiconductor cracks the global top 10 as AI demand doubles its value. Get the latest TSM stock update and outlook.", "symbols": ["AAPL", "AMZN", "AVGO", "GOOGL", "META", "MSFT", "NVDA", "SOXX", "TSLA", "TSM"], "updated_at": "2026-06-09T09:31:27Z", "url": "https://www.benzinga.com/markets/tech/26/06/53079458/taiwan-semiconductor-becomes-worlds-ninth-most-valuable-company"}]}], "signals": [{"ticker": "ASTS", "confidence": 0.3333, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0484, "gap_retention": 0.9098, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.176, "short_squeeze_bonus": 0.0, "gap_pct": 0.06843363024114704}, {"ticker": "MU", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0225, "gap_retention": 0.4841, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0313, "short_squeeze_bonus": 0.0, "gap_pct": 0.04538176302039445}, {"ticker": "RKLB", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0588, "gap_retention": 0.6495, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0581, "short_squeeze_bonus": 0.0, "gap_pct": 0.041531016278046624}, {"ticker": "MRVL", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0369, "gap_retention": -0.246, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0431, "short_squeeze_bonus": 0.0, "gap_pct": 0.039155270901852175}, {"ticker": "INTC", "confidence": 0.3333, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0729, "gap_retention": 0.8811, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.028099999, "short_squeeze_bonus": 0.0, "gap_pct": 0.02811281400199518}, {"ticker": "AMD", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0268, "gap_retention": 0.2801, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0275, "short_squeeze_bonus": 0.0, "gap_pct": 0.019395101258336205}, {"ticker": "AVGO", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.213, "gap_retention": 0.4548, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0115, "short_squeeze_bonus": 0.0, "gap_pct": 0.018532526475037735}, {"ticker": "META", "confidence": 0.3333, "passes_threshold": false, "post_open_advance": false, "or_position": 0.6621, "gap_retention": 0.4607, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0146, "short_squeeze_bonus": 0.0, "gap_pct": 0.009634602572643855}, {"ticker": "GOOGL", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 0.949, "gap_retention": 0.7598, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.014099999, "short_squeeze_bonus": 0.0, "gap_pct": 0.007624342847705766}], "l1_rejects": [], "premarket_candidates": [{"ticker": "ASTS", "gap_pct": 6.84, "adv_m": 20.8, "short_float_pct": 17.6, "dist_from_3m_high_pct": -26.5}, {"ticker": "MU", "gap_pct": 4.54, "adv_m": 50.2, "short_float_pct": 3.1, "dist_from_3m_high_pct": -8.9}, {"ticker": "RKLB", "gap_pct": 4.15, "adv_m": 26.0, "short_float_pct": 5.8, "dist_from_3m_high_pct": -21.6}, {"ticker": "MRVL", "gap_pct": 3.92, "adv_m": 35.7, "short_float_pct": 4.3, "dist_from_3m_high_pct": -7.4}, {"ticker": "QCOM", "gap_pct": 3.77, "adv_m": 21.3, "short_float_pct": 5.4, "dist_from_3m_high_pct": -13.1}, {"ticker": "INTC", "gap_pct": 2.81, "adv_m": 132.8, "short_float_pct": 2.8, "dist_from_3m_high_pct": -14.6}, {"ticker": "AMD", "gap_pct": 1.94, "adv_m": 39.0, "short_float_pct": 2.8, "dist_from_3m_high_pct": -8.5}, {"ticker": "ORCL", "gap_pct": 1.92, "adv_m": 26.0, "short_float_pct": 2.1, "dist_from_3m_high_pct": -13.7}, {"ticker": "AVGO", "gap_pct": 1.85, "adv_m": 24.3, "short_float_pct": 1.1, "dist_from_3m_high_pct": -18.4}, {"ticker": "TSLA", "gap_pct": 1.22, "adv_m": 59.3, "short_float_pct": 2.2, "dist_from_3m_high_pct": -8.7}, {"ticker": "META", "gap_pct": 0.96, "adv_m": 17.8, "short_float_pct": 1.5, "dist_from_3m_high_pct": -14.5}, {"ticker": "GOOGL", "gap_pct": 0.76, "adv_m": 29.8, "short_float_pct": 1.4, "dist_from_3m_high_pct": -10.4}, {"ticker": "SMR", "gap_pct": 0.56, "adv_m": 34.6, "short_float_pct": 19.6, "dist_from_3m_high_pct": -24.3}], "llm_output": {"trade_1": {"ticker": "GOOGL", "direction": "long", "confidence": 1.0, "reason": "Tutti e 3 i segnali tecnici sono positivi (post_open_advance, or_position 0.95, gap_retention 0.76), con confidence_algo massima a 1.0. Le news menzionano un grosso ordine di chip AI da Google a Intel (Tier 3 speculativo), ma il segnale è prevalentemente tecnico con momentum solido nei primi 5 minuti (+1.09%)."}, "trade_2": null, "no_trade_reason": null}, "universe_count": 60, "premarket_count": 13, "l1_count": 13, "l2_count": 1, "llm_input": ["GOOGL"]}, {"date": "2026-06-10", "spy_pct": -0.007095662555795267, "blocked": "nessun candidato sopra soglia confidence", "daily_pnl": 0, "trades": [], "signals": [{"ticker": "RDW", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0072, "gap_retention": -3.4516, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.2243, "short_squeeze_bonus": 0.0, "gap_pct": 0.010158730158730167}, {"ticker": "OXY", "confidence": 0.3333, "passes_threshold": false, "post_open_advance": false, "or_position": 0.726, "gap_retention": 0.27, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0002, "short_squeeze_bonus": 0.0, "gap_pct": 0.006189213085764835}], "l1_rejects": [], "premarket_candidates": [{"ticker": "RDW", "gap_pct": 1.02, "adv_m": 39.0, "short_float_pct": 22.4, "dist_from_3m_high_pct": -40.3}, {"ticker": "OXY", "gap_pct": 0.62, "adv_m": 13.7, "short_float_pct": 0.0, "dist_from_3m_high_pct": -15.6}], "llm_output": {}, "universe_count": 60, "premarket_count": 2, "l1_count": 2, "l2_count": 0, "llm_input": []}, {"date": "2026-06-11", "spy_pct": 0.002391190495879177, "blocked": null, "daily_pnl": 806.43, "trades": [{"ticker": "INTC", "qty": 424, "entry_price": 116.1292, "entry_time": "09:35:56", "entry_ts": 1781184956.013805, "direction": "long", "confidence": 1.2, "reason": "Upgrade di B of A Securities a Buy con target $135 (Tier 2 catalyst) e price target raise su potenziale rally del 26%. Tutti e tre i segnali tecnici attivi (post_open_advance, or_position 0.96, gap_retention 0.85) con momentum intraday forte (+1.95% nei primi 5 minuti).", "order_id": "6a0e5694-968a-4233-acbc-708a07963fa8", "stop_atr": 106.6752, "stop_pct": 113.2782, "stop_price": 113.2782, "atr14": 8.9149, "exit_price": 113.13, "exit_time": "10:57:55", "exit_reason": "hard_blocker", "pnl_usd": -1271.64, "pnl_pct": -0.0258, "catalyst_bonus": 0.2, "vol_boost": 0.0, "short_float": 0.0269, "short_squeeze_bonus": 0.0, "post_open_advance": true, "or_position": 0.9606, "gap_retention": 0.8486, "gap_pct": 0.04736547085201787, "news": [{"author": "Avi Kapoor", "content": "", "created_at": "2026-06-11T12:05:16Z", "headline": "This Henry Schein Analyst Turns Bullish; Here Are Top 5 Upgrades For Thursday", "id": 53137604, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/Henry-Schein-Inc.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/Henry-Schein-Inc.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/Henry-Schein-Inc.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Wall Street analysts change outlook for top stocks. See upgrades, downgrades, and initiations on analyst ratings page. HSIC stock analysis.", "symbols": ["BKH", "CME", "DHR", "HSIC", "INTC", "SNSE", "TROX"], "updated_at": "2026-06-11T12:05:16Z", "url": "https://www.benzinga.com/analyst-stock-ratings/upgrades/26/06/53137604/this-henry-schein-analyst-turns-bullish-here-are-top-5-upgrades-for-thursday"}, {"author": "Avi Kapoor", "content": "", "created_at": "2026-06-11T11:49:27Z", "headline": "Intel To Rally Around 26%? Here Are 10 Top Analyst Forecasts For Thursday", "id": 53137117, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/New-York-City--New-York---September-18-2.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/New-York-City--New-York---September-18-2.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/New-York-City--New-York---September-18-2.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Top Wall Street analysts changed outlook on top names. See full list of rating changes on analyst ratings page: CHEF, NAVN, INTC, HOOD, GPCR, OTLK, ORCL.", "symbols": ["BKH", "CHEF", "CHWY", "GPCR", "HOOD", "INTC", "NAVN", "ORCL", "OTLK", "RBRK", "TEAD", "TYRA"], "updated_at": "2026-06-11T11:49:28Z", "url": "https://www.benzinga.com/analyst-stock-ratings/price-target/26/06/53137117/intel-to-rally-around-26-here-are-10-top-analyst-forecasts-for-thursday"}, {"author": "Benzinga Newsdesk", "content": "", "created_at": "2026-06-11T10:28:05Z", "headline": "B of A Securities Upgrades Intel to Buy, Raises Price Target to $135", "id": 53135511, "images": [], "source": "benzinga", "summary": "", "symbols": ["INTC"], "updated_at": "2026-06-11T10:28:06Z", "url": "https://www.benzinga.com/news/26/06/53135511/b-of-a-securities-upgrades-intel-to-buy-raises-price-target-to-135"}, {"author": "Opeyemi Babalola", "content": "", "created_at": "2026-06-10T21:56:53Z", "headline": "AI Government Equity Stake Moves Toward Reality", "id": 53131802, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/10/OpenAI.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/10/OpenAI.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/10/OpenAI.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Talks between the White House and AI companies signal a new era of state involvement that could reshape the IPO math for OpenAI and Anthropic.", "symbols": ["INTC"], "updated_at": "2026-06-10T21:56:54Z", "url": "https://www.benzinga.com/Opinion/26/06/53131802/ai-government-equity-stake-moves-toward-reality"}]}, {"ticker": "AMD", "qty": 105, "entry_price": 468.4589, "entry_time": "09:36:17", "entry_ts": 1781184977.7517152, "direction": "long", "confidence": 1.2, "reason": "BofA mantiene Buy e alza il target a $560 nominandola top pick CPU sull'AI agentiva (Tier 2 catalyst). Tutti e tre i segnali tecnici attivi con or_position al massimo assoluto (1.0) e gap_retention 0.92, indicando forza sostenuta post-apertura.", "order_id": "5e151b87-cad7-4c0b-9724-aedfaca7aac0", "stop_atr": 432.9829, "stop_pct": 457.2876, "stop_price": 457.2876, "atr14": 33.6371, "exit_price": 488.25, "exit_time": "15:45:25", "exit_reason": "eod_close", "pnl_usd": 2078.07, "pnl_pct": 0.0422, "catalyst_bonus": 0.2, "vol_boost": 0.0, "short_float": 0.0271, "short_squeeze_bonus": 0.0, "post_open_advance": true, "or_position": 1.0, "gap_retention": 0.92, "gap_pct": 0.023253757736516445, "news": [{"author": "Anusuya Lahiri", "content": "", "created_at": "2026-06-11T12:54:15Z", "headline": "What's Going On With AMD Stock Thursday?", "id": 53138970, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/The-AMD-Trade.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/The-AMD-Trade.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/11/The-AMD-Trade.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "AMD stock jumps premarket as BofA names it top CPU pick and raises its price target to $560, citing massive agentic AI growth.", "symbols": ["AMD", "ARKW", "ARTY", "NVDA", "SOXX"], "updated_at": "2026-06-11T12:54:16Z", "url": "https://www.benzinga.com/analyst-stock-ratings/reiteration/26/06/53138970/whats-going-on-with-amd-stock-thursday-6"}, {"author": "Benzinga Newsdesk", "content": "", "created_at": "2026-06-11T12:01:49Z", "headline": "B of A Securities Maintains Buy on Advanced Micro Devices, Raises Price Target to $560", "id": 53137460, "images": [], "source": "benzinga", "summary": "", "symbols": ["AMD"], "updated_at": "2026-06-11T12:01:49Z", "url": "https://www.benzinga.com/news/26/06/53137460/b-of-a-securities-maintains-buy-on-advanced-micro-devices-raises-price-target-to-560"}]}], "signals": [{"ticker": "MRVL", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 0.9274, "gap_retention": 0.9585, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0471, "short_squeeze_bonus": 0.0, "gap_pct": 0.04921018250920455}, {"ticker": "INTC", "confidence": 1.2, "passes_threshold": true, "post_open_advance": true, "or_position": 0.9606, "gap_retention": 0.8486, "vol_boost": 0.0, "catalyst_bonus": 0.2, "short_float": 0.0269, "short_squeeze_bonus": 0.0, "gap_pct": 0.04736547085201787}, {"ticker": "RKLB", "confidence": 0.3333, "passes_threshold": false, "post_open_advance": true, "or_position": 0.4947, "gap_retention": 0.4027, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0551, "short_squeeze_bonus": 0.0, "gap_pct": 0.025321275583055657}, {"ticker": "AMD", "confidence": 1.2, "passes_threshold": true, "post_open_advance": true, "or_position": 1.0, "gap_retention": 0.92, "vol_boost": 0.0, "catalyst_bonus": 0.2, "short_float": 0.0271, "short_squeeze_bonus": 0.0, "gap_pct": 0.023253757736516445}, {"ticker": "MU", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.4112, "gap_retention": 0.3449, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0334, "short_squeeze_bonus": 0.0, "gap_pct": 0.019576624658025784}, {"ticker": "TSLA", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0111, "gap_retention": -0.0714, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.023, "short_squeeze_bonus": 0.0, "gap_pct": 0.010561073403391153}, {"ticker": "NVDA", "confidence": 0.6667, "passes_threshold": true, "post_open_advance": true, "or_position": 0.3912, "gap_retention": 0.7802, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.012200001, "short_squeeze_bonus": 0.0, "gap_pct": 0.007584073445763948}], "l1_rejects": [], "premarket_candidates": [{"ticker": "MRVL", "gap_pct": 4.92, "adv_m": 37.8, "short_float_pct": 4.7, "dist_from_3m_high_pct": -18.2}, {"ticker": "INTC", "gap_pct": 4.74, "adv_m": 135.1, "short_float_pct": 2.7, "dist_from_3m_high_pct": -15.6}, {"ticker": "RGTI", "gap_pct": 2.7, "adv_m": 42.9, "short_float_pct": 18.8, "dist_from_3m_high_pct": -28.8}, {"ticker": "RKLB", "gap_pct": 2.53, "adv_m": 25.9, "short_float_pct": 5.5, "dist_from_3m_high_pct": -28.7}, {"ticker": "RDW", "gap_pct": 2.42, "adv_m": 39.3, "short_float_pct": 22.4, "dist_from_3m_high_pct": -42.8}, {"ticker": "AMD", "gap_pct": 2.33, "adv_m": 38.7, "short_float_pct": 2.7, "dist_from_3m_high_pct": -15.3}, {"ticker": "ASTS", "gap_pct": 2.15, "adv_m": 21.1, "short_float_pct": 18.4, "dist_from_3m_high_pct": -33.4}, {"ticker": "IONQ", "gap_pct": 2.03, "adv_m": 33.3, "short_float_pct": 15.6, "dist_from_3m_high_pct": -21.6}, {"ticker": "MU", "gap_pct": 1.96, "adv_m": 50.8, "short_float_pct": 3.3, "dist_from_3m_high_pct": -16.5}, {"ticker": "TSLA", "gap_pct": 1.06, "adv_m": 59.1, "short_float_pct": 2.3, "dist_from_3m_high_pct": -14.9}, {"ticker": "QBTS", "gap_pct": 0.95, "adv_m": 36.0, "short_float_pct": 16.8, "dist_from_3m_high_pct": -25.6}, {"ticker": "QUBT", "gap_pct": 0.94, "adv_m": 21.8, "short_float_pct": 29.7, "dist_from_3m_high_pct": -33.4}, {"ticker": "DAL", "gap_pct": 0.88, "adv_m": 8.8, "short_float_pct": 3.7, "dist_from_3m_high_pct": -8.0}, {"ticker": "NVDA", "gap_pct": 0.76, "adv_m": 163.5, "short_float_pct": 1.2, "dist_from_3m_high_pct": -14.6}, {"ticker": "SMR", "gap_pct": 0.65, "adv_m": 35.2, "short_float_pct": 20.0, "dist_from_3m_high_pct": -34.6}], "llm_output": {"trade_1": {"ticker": "INTC", "direction": "long", "confidence": 1.2, "reason": "Upgrade di B of A Securities a Buy con target $135 (Tier 2 catalyst) e price target raise su potenziale rally del 26%. Tutti e tre i segnali tecnici attivi (post_open_advance, or_position 0.96, gap_retention 0.85) con momentum intraday forte (+1.95% nei primi 5 minuti).", "price_935": 115.59}, "trade_2": {"ticker": "AMD", "direction": "long", "confidence": 1.2, "reason": "BofA mantiene Buy e alza il target a $560 nominandola top pick CPU sull'AI agentiva (Tier 2 catalyst). Tutti e tre i segnali tecnici attivi con or_position al massimo assoluto (1.0) e gap_retention 0.92, indicando forza sostenuta post-apertura.", "price_935": 466.62}, "no_trade_reason": null}, "universe_count": 60, "premarket_count": 15, "l1_count": 15, "l2_count": 4, "llm_input": ["MRVL", "INTC", "AMD", "NVDA"]}, {"date": "2026-06-12", "spy_pct": 0.001016714791166782, "blocked": null, "daily_pnl": 712.46, "trades": [{"ticker": "AMD", "qty": 98, "entry_price": 504.01, "entry_time": "09:37:48", "entry_ts": 1781271468.0, "direction": "long", "confidence": 0.6667, "reason": "Citi e BofA alzano i price target su AMD per crescita AI, fornendo un catalyst Tier 2 (+0.20) che supporta il movimento. Tecnicamente il titolo è in cima all'OR (or_position=1.0) con post_open_advance positivo, ma gap_retention debole (0.50) e vol_ratio assente limitano la fiducia.", "order_id": "f22cb0ea-ef92-4263-a3d0-05e86e8ff826", "stop_atr": 466.7843, "stop_pct": 491.7052, "stop_price": 491.7052, "atr14": 34.9557, "exit_price": 511.28, "exit_time": "15:31:37", "exit_reason": "vwap_exit", "pnl_usd": 712.46, "pnl_pct": 0.0144, "catalyst_bonus": 0.0, "vol_boost": 0.0, "short_float": 0.0271, "short_squeeze_bonus": 0.0, "post_open_advance": true, "or_position": 1.0, "gap_retention": 0.502, "gap_pct": 0.008148223973794694, "news": [{"author": "Anusuya Lahiri", "content": "", "created_at": "2026-06-12T13:07:21Z", "headline": "Why Is AMD Stock Gaining Friday?", "id": 53164121, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Chipmakers-Rally-on-Clearance.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Chipmakers-Rally-on-Clearance.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Chipmakers-Rally-on-Clearance.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "AMD stock continues to rally in premarket trading as Citi and BofA lift price targets on massive AI growth. Get the technical layout.", "symbols": ["AMD", "AMDL", "ARKW", "META", "MSFT", "NVDA", "SONY", "SOXX"], "updated_at": "2026-06-12T13:07:21Z", "url": "https://www.benzinga.com/analyst-stock-ratings/upgrades/26/06/53164121/why-is-amd-stock-gaining-friday"}, {"author": "Anusuya Lahiri", "content": "", "created_at": "2026-06-12T12:23:14Z", "headline": "What's Going On With Intel Stock Friday?", "id": 53163195, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Santa-Clara--Ca--Usa---Nov-22--2023-Inte.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Santa-Clara--Ca--Usa---Nov-22--2023-Inte.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Santa-Clara--Ca--Usa---Nov-22--2023-Inte.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Intel ($INTC) edges lower in premarket despite a bullish tech backdrop. Is the rally pausing, or is a breakout ahead? Read our analysis.", "symbols": ["AMD", "INTC", "INTW", "NVDA", "SOXX", "VLUE"], "updated_at": "2026-06-12T12:24:54Z", "url": "https://www.benzinga.com/markets/tech/26/06/53163195/whats-going-on-with-intel-stock-friday-3"}, {"author": "Anusuya Lahiri", "content": "", "created_at": "2026-06-12T12:13:39Z", "headline": "NVIDIA Obliterates The Boring PC Era", "id": 53163096, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Nvidia-AI.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Nvidia-AI.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Nvidia-AI.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "NVIDIA unveils the RTX Spark Superchip, aiming to transform traditional PCs into high-performance local AI inference machines.", "symbols": ["AAPL", "AMD", "ARM", "INTC", "MSFT", "NVDA", "QCOM"], "updated_at": "2026-06-12T12:14:57Z", "url": "https://www.benzinga.com/analyst-stock-ratings/analyst-color/26/06/53163096/nvidia-obliterates-the-boring-pc-era"}, {"author": "Anusuya Lahiri", "content": "", "created_at": "2026-06-12T10:06:33Z", "headline": "Chinese Customers Can Now Order NVIDIA's Vera CPUs: Report", "id": 53161253, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Nvidia-in-China.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Nvidia-in-China.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Nvidia-in-China.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "NVIDIA pitches new Vera AI CPU to Chinese clients, stock climbs premarket. Read the key technical levels to watch for NVDA today.", "symbols": ["AIPI", "AMD", "BABA", "INTC", "NVDA", "ROM", "USNZ"], "updated_at": "2026-06-12T10:06:33Z", "url": "https://www.benzinga.com/markets/tech/26/06/53161253/chinese-customers-can-now-order-nvidias-vera-cpus-report"}, {"author": "Eva Mathew", "content": "", "created_at": "2026-06-12T08:36:03Z", "headline": "Stock Market: Will S&P 500 Open Up Or Down Today?", "id": 53160378, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Tallinn--Estonia---August-4th-2023---Com.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Tallinn--Estonia---August-4th-2023---Com.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/12/Tallinn--Estonia---August-4th-2023---Com.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "June 12, 2026: Polymarket traders bet on an S&amp;P 500 gain at open as Iran deal optimism grows before SpaceX&#39;s IPO.", "symbols": ["AMD", "INTC", "MU", "ORCL", "SOXX"], "updated_at": "2026-06-12T08:36:03Z", "url": "https://www.benzinga.com/markets/prediction-markets/26/06/53160378/sp500-june-12-open-up-or-down-polymarket-spacex-ipo-iran-deal"}]}], "signals": [{"ticker": "SMR", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.2778, "gap_retention": 0.5217, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.1997, "short_squeeze_bonus": 0.0, "gap_pct": 0.030303030303030214, "price_935": 9.74, "open_930": 9.8}, {"ticker": "RKLB", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0204, "gap_retention": -2.4131, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0551, "short_squeeze_bonus": 0.0, "gap_pct": 0.010716152639832758, "price_935": 108.71, "open_930": 117.37}, {"ticker": "GOOGL", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0082, "gap_retention": 0.4652, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.014199999, "short_squeeze_bonus": 0.0, "gap_pct": 0.010090281465746188, "price_935": 360.045, "open_930": 362.585}, {"ticker": "AMD", "confidence": 0.6667, "passes_threshold": true, "post_open_advance": true, "or_position": 1.0, "gap_retention": 0.502, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0271, "short_squeeze_bonus": 0.0, "gap_pct": 0.008148223973794694, "price_935": 501.74, "open_930": 499.685}, {"ticker": "CCL", "confidence": 0.3333, "passes_threshold": false, "post_open_advance": true, "or_position": 0.6, "gap_retention": 0.6667, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.033299997, "short_squeeze_bonus": 0.0, "gap_pct": 0.007467994310099477, "price_935": 28.965, "open_930": 28.87}, {"ticker": "MSFT", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0, "gap_retention": -5.6599, "vol_boost": 0.0, "catalyst_bonus": 0.0, "short_float": 0.0119, "short_squeeze_bonus": 0.0, "gap_pct": 0.005764205564379772, "price_935": 383.35, "open_930": 391.575}], "l1_rejects": [{"ticker": "GS", "reason": "adv_2,090,905<min_5,000,000"}], "premarket_candidates": [{"ticker": "SMR", "gap_pct": 3.03, "adv_m": 35.2, "short_float_pct": 20.0, "dist_from_3m_high_pct": -31.1}, {"ticker": "QUBT", "gap_pct": 1.31, "adv_m": 21.6, "short_float_pct": 29.7, "dist_from_3m_high_pct": -30.5}, {"ticker": "RKLB", "gap_pct": 1.07, "adv_m": 25.9, "short_float_pct": 5.5, "dist_from_3m_high_pct": -23.2}, {"ticker": "GOOGL", "gap_pct": 1.01, "adv_m": 29.6, "short_float_pct": 1.4, "dist_from_3m_high_pct": -11.6}, {"ticker": "ASTS", "gap_pct": 0.9, "adv_m": 21.1, "short_float_pct": 18.4, "dist_from_3m_high_pct": -26.5}, {"ticker": "AMD", "gap_pct": 0.81, "adv_m": 38.6, "short_float_pct": 2.7, "dist_from_3m_high_pct": -9.9}, {"ticker": "CCL", "gap_pct": 0.75, "adv_m": 27.5, "short_float_pct": 3.3, "dist_from_3m_high_pct": -6.1}, {"ticker": "GS", "gap_pct": 0.67, "adv_m": 2.1, "short_float_pct": 2.6, "dist_from_3m_high_pct": -5.1}, {"ticker": "MSFT", "gap_pct": 0.58, "adv_m": 35.6, "short_float_pct": 1.2, "dist_from_3m_high_pct": -15.8}], "llm_output": {"trade_1": {"ticker": "AMD", "direction": "long", "confidence": 0.6667, "reason": "Citi e BofA alzano i price target su AMD per crescita AI, fornendo un catalyst Tier 2 (+0.20) che supporta il movimento. Tecnicamente il titolo è in cima all'OR (or_position=1.0) con post_open_advance positivo, ma gap_retention debole (0.50) e vol_ratio assente limitano la fiducia.", "price_935": 501.74}, "trade_2": null, "no_trade_reason": null}, "universe_count": 60, "premarket_count": 9, "l1_count": 8, "l2_count": 1, "llm_input": ["AMD"]}, {"date": "2026-06-15", "spy_pct": 0.014871843272614623, "blocked": null, "daily_pnl": 314.0, "trades": [{"ticker": "AMD", "qty": 91, "entry_price": 548.63, "entry_time": "09:39:50", "entry_ts": 1781530790.0873897, "direction": "long", "confidence": 1.15, "reason": "Rally tecnico con catalyst Tier 3 (sentiment settoriale positivo, buzz retail su Reddit/X, spinta dalla IPO SpaceX) e vol_boost +0.05. Segnali tecnici tutti positivi: post_open_advance, or_position 0.877, gap_retention 0.78; titolo a soli -2.2% dai massimi 3 mesi con minima resistenza sopra.", "order_id": "5651b523-4588-4d66-aa64-168481045946", "stop_atr": 513.5715, "stop_pct": 537.6574, "stop_price": 548.63, "atr14": 35.0585, "peak_price": 557.55, "breakeven_armed": true, "exit_price": 547.806703, "exit_time": "10:00:05", "exit_reason": "breakeven_stop", "pnl_usd": -74.92, "pnl_pct": -0.0015, "catalyst_bonus": 0.1, "vol_boost": 0.05, "short_float": 0.0271, "short_squeeze_bonus": 0.0, "post_open_advance": true, "or_position": 0.8765, "gap_retention": 0.7794, "gap_pct": 0.04466641906288478, "news": [{"author": "Anusuya Lahiri", "content": "", "created_at": "2026-06-15T10:49:36Z", "headline": "Why Is AMD Stock Gaining Monday?", "id": 53189543, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/15/Charlotte--North-Carolina---November-11-.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/15/Charlotte--North-Carolina---November-11-.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/15/Charlotte--North-Carolina---November-11-.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "AMD stock jumps 4% in premarket trading as a broader tech rally and geopolitical relief boost investor sentiment. Read the breakdown.", "symbols": ["AMD", "AMDL", "ARKW", "META", "SOXX"], "updated_at": "2026-06-15T10:49:36Z", "url": "https://www.benzinga.com/markets/tech/26/06/53189543/why-is-amd-stock-gaining-monday-2"}, {"author": "Benzinga Newsdesk", "content": "", "created_at": "2026-06-13T20:11:17Z", "headline": "Micron Stock Has Become Volatile, But Key Metric Hints at Further Gains", "id": 53184727, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/13/Los-Angeles--California---24-January-202.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/13/Los-Angeles--California---24-January-202.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/13/Los-Angeles--California---24-January-202.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Micron stock price has become highly volatile this month, but key valuation metrics suggest it has more gains to go.", "symbols": ["AMD", "FDS", "MRVL", "MU", "NVDA", "SNDK"], "updated_at": "2026-06-13T20:11:17Z", "url": "https://www.benzinga.com/markets/equities/26/06/53184727/micron-stock-has-become-volatile-but-key-metric-hints-at-further-gains"}, {"author": "Benzinga Senior Editor", "content": "", "created_at": "2026-06-13T12:01:19Z", "headline": "Benzinga Bulls And Bears: Oracle, Apple, Super Micro — And SpaceX IPO Boosts Market", "id": 53183478, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/13/Bulls-and-Bears-1.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/13/Bulls-and-Bears-1.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/13/Bulls-and-Bears-1.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Benzinga examined the prospects for many investors&#39; favorite stocks over the last week — here&#39;s a look at some of our top stories.", "symbols": ["AAPL", "ACHC", "AMD", "BROS", "CAR", "CBRL", "CHH", "CLSK", "FIG", "INHD", "MRVL", "ORCL", "PRMB", "RH", "SMCI", "SNDK", "SOUN", "SOXL", "SPCX", "SWMR", "TSLA", "VG"], "updated_at": "2026-06-13T12:01:20Z", "url": "https://www.benzinga.com/markets/market-summary/26/06/53183478/benzinga-bulls-and-bears-oracle-apple-super-micro-and-spacex-ipo-boosts-market"}, {"author": "Rishabh Mishra", "content": "", "created_at": "2026-06-13T10:01:26Z", "headline": "SpaceX, Super Micro Computer, Micron And More: 5 Stocks Investors Couldn't Stop Buzzing About This Week", "id": 53183366, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/13/Paris--France---February-3--2026-A-Horiz.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/13/Paris--France---February-3--2026-A-Horiz.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/13/Paris--France---February-3--2026-A-Horiz.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Retail investors talked up five hot stocks this week (June 8 to June 12) on X and Reddit&#39;s r/WallStreetBets: SPCX, SMCI, MU, UBER, AMD.", "symbols": ["AMD", "MU", "SMCI", "SPCX", "UBER"], "updated_at": "2026-06-13T10:01:27Z", "url": "https://www.benzinga.com/markets/equities/26/06/53183366/spacex-super-micro-computer-micron-and-more-5-stocks-investors-couldnt-stop-buzzing-about-this-week"}, {"author": "Benzinga Insights", "content": "", "created_at": "2026-06-12T17:35:24Z", "headline": "10 Information Technology Stocks With Whale Alerts In Today's Session", "id": 53174857, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_1.jpg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_1.jpg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_1.jpg?width=250&height=187"}], "source": "benzinga", "summary": " ", "symbols": ["AMD", "AVGO", "CRWV", "HPE", "INTC", "LRCX", "MRVL", "MSTR", "MU", "NVDA"], "updated_at": "2026-06-12T17:35:25Z", "url": "https://www.benzinga.com/insights/options/26/06/53174857/10-information-technology-stocks-with-whale-alerts-in-todays-session"}], "exit_price_corrected": true}, {"ticker": "CRWV", "qty": 463, "entry_price": 106.82, "entry_time": "09:39:55", "entry_ts": 1781530795.2301059, "direction": "long", "confidence": 1.0, "reason": "Catalyst Tier 3 (inclusione confermata nel Nasdaq 100 il 22 giugno, driver strutturale di acquisti forzati da ETF/fondi indicizzati) con segnali tecnici perfetti: gap_retention 1.0, or_position 0.987, post_open_advance_pct +3.2%; short float 18.2% aggiunge squeeze potential in caso di accelerazione.", "order_id": "2a2a17f2-d2a1-4e65-b6b0-bbb419e6e47e", "stop_atr": 97.8926, "stop_pct": 104.6836, "stop_price": 106.82, "atr14": 8.9274, "peak_price": 108.715, "breakeven_armed": true, "exit_price": 107.66, "exit_time": "15:45:08", "exit_reason": "eod_close", "pnl_usd": 388.92, "pnl_pct": 0.0079, "catalyst_bonus": 0.0, "vol_boost": 0.0, "short_float": 0.18190001, "short_squeeze_bonus": 0.0, "post_open_advance": true, "or_position": 0.9867, "gap_retention": 1.0, "gap_pct": 0.050621581302834444, "news": [{"author": "Lekha Gupta", "content": "", "created_at": "2026-06-14T11:30:28Z", "headline": "Consumer Tech News (Jun 8-12): SpaceX Debuts On Nasdaq, Big Tech Faces Political Scrutiny & More", "id": 53185374, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/14/The-Spacex-Logo-Is-Displayed-On-A-Mobile.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/14/The-Spacex-Logo-Is-Displayed-On-A-Mobile.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/14/The-Spacex-Logo-Is-Displayed-On-A-Mobile.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Global tensions rise as cyber espionage, chip export risks, and AI competition intensify across Meta, Google, NVIDIA, and OpenAI ecosystems.", "symbols": ["AAPL", "ADBE", "AMAT", "AMZN", "BABA", "CHAI", "CRWV", "GOOG", "GOOGL", "GTLB", "IDCC", "JD", "META", "MSFT", "NBIS", "NOK", "NVDA", "ORCL", "PDD", "PENG", "RKTO", "SMCI", "SPCX", "TSLA", "TSM", "UBER"], "updated_at": "2026-06-14T11:30:29Z", "url": "https://www.benzinga.com/markets/tech/26/06/53185374/consumer-tech-news-jun-8-12-spacex-debuts-on-nasdaq-big-tech-faces-political-scrutiny-more"}, {"author": "Mohd Haider", "content": "", "created_at": "2026-06-13T09:07:15Z", "headline": "Jim Cramer Says SpaceX's Mega Debut Could Unleash A Wave Of AI Deals In The Week Ahead", "id": 53183317, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/13/Jim-Cramer-At-The-Cable-Show-2010-An-Eve.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/13/Jim-Cramer-At-The-Cable-Show-2010-An-Eve.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/13/Jim-Cramer-At-The-Cable-Show-2010-An-Eve.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Jim Cramer said SpaceX&#39;s blockbuster debut could accelerate AI equity offerings from major tech funding large-scale infrastructure expansion.", "symbols": ["ACN", "ALAB", "AMZN", "CRWV", "GOOGL", "HOOD", "KR", "META", "MSFT", "NBIS", "RKLB", "SPCX", "TER"], "updated_at": "2026-06-13T09:07:16Z", "url": "https://www.benzinga.com/markets/equities/26/06/53183317/jim-cramer-says-spacexs-mega-debut-could-unleash-a-wave-of-ai-deals-in-the-week-ahead"}, {"author": "Benzinga Insights", "content": "", "created_at": "2026-06-12T17:35:24Z", "headline": "10 Information Technology Stocks With Whale Alerts In Today's Session", "id": 53174857, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_1.jpg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_1.jpg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_1.jpg?width=250&height=187"}], "source": "benzinga", "summary": " ", "symbols": ["AMD", "AVGO", "CRWV", "HPE", "INTC", "LRCX", "MRVL", "MSTR", "MU", "NVDA"], "updated_at": "2026-06-12T17:35:25Z", "url": "https://www.benzinga.com/insights/options/26/06/53174857/10-information-technology-stocks-with-whale-alerts-in-todays-session"}, {"author": "Benzinga Newsdesk", "content": "", "created_at": "2026-06-12T14:57:40Z", "headline": "CoreWeave Set To Join Nasdaq 100 Index, Effective June 22", "id": 53168948, "images": [], "source": "benzinga", "summary": "", "symbols": ["CRWV"], "updated_at": "2026-06-12T14:57:41Z", "url": "https://www.benzinga.com/news/26/06/53168948/coreweave-set-to-join-nasdaq-100-index-effective-june-22"}], "exit_price_corrected": true}], "signals": [{"ticker": "MU", "confidence": 0.4333, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0784, "gap_retention": 0.965, "vol_boost": 0.0, "vol_ratio": 1.028, "vol_today": 45129, "vol_avg": 43909, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.1, "short_float": 0.0334, "short_squeeze_bonus": 0.0, "gap_pct": 0.08017440735118829, "price_935": 1056.03, "open_930": 1056.94, "prev_close": 981.61}, {"ticker": "MSTR", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 0.9369, "gap_retention": 0.8932, "vol_boost": 0.0, "vol_ratio": 0.798, "vol_today": 13548, "vol_avg": 16973, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.113800004, "short_squeeze_bonus": 0.0, "gap_pct": 0.07542147293700084, "price_935": 134.97, "open_930": 132.96, "prev_close": 123.97}, {"ticker": "QUBT", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 1.0, "gap_retention": 0.8303, "vol_boost": 0.0, "vol_ratio": 1.021, "vol_today": 30294, "vol_avg": 29679, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.2974, "short_squeeze_bonus": 0.0, "gap_pct": 0.0715005035246728, "price_935": 11.17, "open_930": 10.755, "prev_close": 9.93}, {"ticker": "SMR", "confidence": 1.05, "passes_threshold": true, "post_open_advance": true, "or_position": 0.973, "gap_retention": 1.0, "vol_boost": 0.05, "vol_ratio": 2.746, "vol_today": 111992, "vol_avg": 40778, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.1997, "short_squeeze_bonus": 0.0, "gap_pct": 0.06167846309403432, "price_935": 11.01, "open_930": 10.65, "prev_close": 9.89}, {"ticker": "RGTI", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 1.0, "gap_retention": 0.7843, "vol_boost": 0.0, "vol_ratio": 0.59, "vol_today": 49654, "vol_avg": 84154, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.1877, "short_squeeze_bonus": 0.0, "gap_pct": 0.059103908484270655, "price_935": 23.15, "open_930": 22.51, "prev_close": 20.98}, {"ticker": "MARA", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 0.9167, "gap_retention": 0.8193, "vol_boost": 0.0, "vol_ratio": 1.711, "vol_today": 86329, "vol_avg": 50453, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.2965, "short_squeeze_bonus": 0.0, "gap_pct": 0.05894886363636364, "price_935": 15.035, "open_930": 14.91, "prev_close": 14.08}, {"ticker": "RIOT", "confidence": 0.3333, "passes_threshold": false, "post_open_advance": false, "or_position": 0.25, "gap_retention": 0.8225, "vol_boost": 0.0, "vol_ratio": 0.978, "vol_today": 20151, "vol_avg": 20608, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.17889999, "short_squeeze_bonus": 0.0, "gap_pct": 0.056369785794813984, "price_935": 28.17, "open_930": 28.385, "prev_close": 26.61}, {"ticker": "HOOD", "confidence": 1.05, "passes_threshold": true, "post_open_advance": true, "or_position": 0.8281, "gap_retention": 0.8819, "vol_boost": 0.05, "vol_ratio": 2.12, "vol_today": 64827, "vol_avg": 30574, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.044, "short_squeeze_bonus": 0.0, "gap_pct": 0.0547269020281147, "price_935": 99.95, "open_930": 98.78, "prev_close": 93.19}, {"ticker": "IONQ", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 0.995, "gap_retention": 0.8026, "vol_boost": 0.0, "vol_ratio": 0.812, "vol_today": 21613, "vol_avg": 26618, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.15609999, "short_squeeze_bonus": 0.0, "gap_pct": 0.05462402765773546, "price_935": 62.58, "open_930": 61.27, "prev_close": 57.85}, {"ticker": "CIFR", "confidence": 1.1, "passes_threshold": true, "post_open_advance": true, "or_position": 0.9136, "gap_retention": 0.9597, "vol_boost": 0.1, "vol_ratio": 3.68, "vol_today": 121372, "vol_avg": 32985, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.1567, "short_squeeze_bonus": 0.0, "gap_pct": 0.054285714285714215, "price_935": 26.55, "open_930": 25.865, "prev_close": 24.5}, {"ticker": "QBTS", "confidence": 1.1, "passes_threshold": true, "post_open_advance": true, "or_position": 0.9739, "gap_retention": 1.0, "vol_boost": 0.1, "vol_ratio": 3.008, "vol_today": 157447, "vol_avg": 52342, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.1681, "short_squeeze_bonus": 0.0, "gap_pct": 0.05305947796320062, "price_935": 26.065, "open_930": 24.945, "prev_close": 23.37}, {"ticker": "RKLB", "confidence": 0.6667, "passes_threshold": true, "post_open_advance": true, "or_position": 0.8905, "gap_retention": 0.611, "vol_boost": 0.0, "vol_ratio": 1.537, "vol_today": 36526, "vol_avg": 23769, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0551, "short_squeeze_bonus": 0.0, "gap_pct": 0.050786209590780375, "price_935": 108.27, "open_930": 108.02, "prev_close": 102.39}, {"ticker": "COIN", "confidence": 1.05, "passes_threshold": true, "post_open_advance": true, "or_position": 0.9482, "gap_retention": 0.8903, "vol_boost": 0.05, "vol_ratio": 2.252, "vol_today": 15533, "vol_avg": 6897, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.111, "short_squeeze_bonus": 0.0, "gap_pct": 0.05069470521967702, "price_935": 171.905, "open_930": 169.9, "prev_close": 159.78}, {"ticker": "CRWV", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 0.9867, "gap_retention": 1.0, "vol_boost": 0.0, "vol_ratio": 0.961, "vol_today": 35825, "vol_avg": 37264, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.18190001, "short_squeeze_bonus": 0.0, "gap_pct": 0.050621581302834444, "price_935": 107.6, "open_930": 104.25, "prev_close": 100.55}, {"ticker": "ASTS", "confidence": 0.6667, "passes_threshold": true, "post_open_advance": true, "or_position": 1.0, "gap_retention": 0.4667, "vol_boost": 0.0, "vol_ratio": 0.991, "vol_today": 23254, "vol_avg": 23465, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.1839, "short_squeeze_bonus": 0.0, "gap_pct": 0.048901832301905125, "price_935": 86.21, "open_930": 85.86, "prev_close": 82.41}, {"ticker": "MRVL", "confidence": 0.1, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0442, "gap_retention": 0.5819, "vol_boost": 0.0, "vol_ratio": 0.857, "vol_today": 56948, "vol_avg": 66437, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.1, "short_float": 0.0471, "short_squeeze_bonus": 0.0, "gap_pct": 0.04805148373257061, "price_935": 290.215, "open_930": 296.815, "prev_close": 279.7}, {"ticker": "AMD", "confidence": 1.15, "passes_threshold": true, "post_open_advance": true, "or_position": 0.8765, "gap_retention": 0.7794, "vol_boost": 0.05, "vol_ratio": 2.161, "vol_today": 75715, "vol_avg": 35039, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.1, "short_float": 0.0271, "short_squeeze_bonus": 0.0, "gap_pct": 0.04466641906288478, "price_935": 546.99, "open_930": 536.435, "prev_close": 511.57}, {"ticker": "UUUU", "confidence": 1.05, "passes_threshold": true, "post_open_advance": true, "or_position": 0.6731, "gap_retention": 1.0, "vol_boost": 0.05, "vol_ratio": 2.052, "vol_today": 19516, "vol_avg": 9510, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.1607, "short_squeeze_bonus": 0.0, "gap_pct": 0.04388297872340427, "price_935": 16.32, "open_930": 15.97, "prev_close": 15.04}, {"ticker": "CCL", "confidence": 0.9167, "passes_threshold": true, "post_open_advance": true, "or_position": 0.5487, "gap_retention": 0.9825, "vol_boost": 0.05, "vol_ratio": 2.551, "vol_today": 85058, "vol_avg": 33341, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.2, "short_float": 0.033299997, "short_squeeze_bonus": 0.0, "gap_pct": 0.04283755997258396, "price_935": 30.89, "open_930": 30.605, "prev_close": 29.18}, {"ticker": "DAL", "confidence": 1.1, "passes_threshold": true, "post_open_advance": true, "or_position": 0.708, "gap_retention": 0.8659, "vol_boost": 0.1, "vol_ratio": 3.423, "vol_today": 20364, "vol_avg": 5949, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0372, "short_squeeze_bonus": 0.0, "gap_pct": 0.04201781844449789, "price_935": 86.7, "open_930": 86.34, "prev_close": 83.06}, {"ticker": "CBRS", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0494, "gap_retention": 0.609, "vol_boost": 0.0, "vol_ratio": 0.544, "vol_today": 4369, "vol_avg": 8026, "or_bar_count": 2, "or_last_bar": "09:33", "catalyst_bonus": 0.0, "short_float": 0.1715, "short_squeeze_bonus": 0.0, "gap_pct": 0.04196261682242986, "price_935": 219.045, "open_930": 222.03, "prev_close": 214.0}, {"ticker": "VRT", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 0.7412, "gap_retention": 0.8766, "vol_boost": 0.0, "vol_ratio": 0.977, "vol_today": 7701, "vol_avg": 7879, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0373, "short_squeeze_bonus": 0.0, "gap_pct": 0.04161025065222424, "price_935": 317.49, "open_930": 315.13, "prev_close": 302.81}, {"ticker": "SMCI", "confidence": 0.8667, "passes_threshold": true, "post_open_advance": true, "or_position": 0.7913, "gap_retention": 0.668, "vol_boost": 0.0, "vol_ratio": 1.128, "vol_today": 116945, "vol_avg": 103651, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.1, "short_float": 0.16549999, "short_squeeze_bonus": 0.1, "gap_pct": 0.04136572554169396, "price_935": 31.75, "open_930": 31.71, "prev_close": 30.46}, {"ticker": "QCOM", "confidence": 0.2, "passes_threshold": false, "post_open_advance": false, "or_position": 0.5476, "gap_retention": 0.6231, "vol_boost": 0.0, "vol_ratio": 0.964, "vol_today": 22649, "vol_avg": 23483, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.2, "short_float": 0.0478, "short_squeeze_bonus": 0.0, "gap_pct": 0.039863971282826365, "price_935": 218.8, "open_930": 219.76, "prev_close": 211.72}, {"ticker": "SOFI", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 0.675, "gap_retention": 0.8214, "vol_boost": 0.0, "vol_ratio": 1.378, "vol_today": 90562, "vol_avg": 65698, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.1471, "short_squeeze_bonus": 0.0, "gap_pct": 0.0361881785283475, "price_935": 17.29, "open_930": 17.28, "prev_close": 16.58}, {"ticker": "INTC", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.6478, "gap_retention": 0.5547, "vol_boost": 0.0, "vol_ratio": 0.611, "vol_today": 75566, "vol_avg": 123696, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0269, "short_squeeze_bonus": 0.0, "gap_pct": 0.03612426748013166, "price_935": 129.06, "open_930": 129.78, "prev_close": 124.57}, {"ticker": "AVGO", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.632, "gap_retention": 0.6567, "vol_boost": 0.0, "vol_ratio": 0.75, "vol_today": 37923, "vol_avg": 50588, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0125, "short_squeeze_bonus": 0.0, "gap_pct": 0.029183133980684256, "price_935": 393.89, "open_930": 395.31, "prev_close": 382.07}, {"ticker": "AMZN", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 0.9155, "gap_retention": 0.9733, "vol_boost": 0.0, "vol_ratio": 1.432, "vol_today": 101382, "vol_avg": 70803, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0094, "short_squeeze_bonus": 0.0, "gap_pct": 0.02506811989100813, "price_935": 246.7, "open_930": 244.92, "prev_close": 238.55}, {"ticker": "ORCL", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 0.964, "gap_retention": 0.7248, "vol_boost": 0.0, "vol_ratio": 0.649, "vol_today": 17394, "vol_avg": 26797, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.020399999, "short_squeeze_bonus": 0.0, "gap_pct": 0.021723782110465432, "price_935": 190.555, "open_930": 187.455, "prev_close": 184.13}, {"ticker": "GOOGL", "confidence": 0.7667, "passes_threshold": true, "post_open_advance": true, "or_position": 0.4206, "gap_retention": 0.9944, "vol_boost": 0.0, "vol_ratio": 1.197, "vol_today": 52740, "vol_avg": 44069, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.1, "short_float": 0.014199999, "short_squeeze_bonus": 0.0, "gap_pct": 0.017737989323843403, "price_935": 369.56, "open_930": 367.765, "prev_close": 359.68}, {"ticker": "PLTR", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 0.6802, "gap_retention": 0.9388, "vol_boost": 0.0, "vol_ratio": 1.154, "vol_today": 47734, "vol_avg": 41378, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0323, "short_squeeze_bonus": 0.0, "gap_pct": 0.01757949839831248, "price_935": 131.34, "open_930": 129.95, "prev_close": 127.99}, {"ticker": "META", "confidence": 1.05, "passes_threshold": true, "post_open_advance": true, "or_position": 0.9419, "gap_retention": 0.9814, "vol_boost": 0.05, "vol_ratio": 2.252, "vol_today": 45559, "vol_avg": 20230, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0147, "short_squeeze_bonus": 0.0, "gap_pct": 0.016912348839261942, "price_935": 587.51, "open_930": 579.9, "prev_close": 566.45}, {"ticker": "NVDA", "confidence": 1.05, "passes_threshold": true, "post_open_advance": true, "or_position": 0.6719, "gap_retention": 0.9661, "vol_boost": 0.05, "vol_ratio": 2.317, "vol_today": 356375, "vol_avg": 153783, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.012200001, "short_squeeze_bonus": 0.0, "gap_pct": 0.015595301915297961, "price_935": 210.235, "open_930": 208.875, "prev_close": 205.19}, {"ticker": "MSFT", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.6309, "gap_retention": 0.3712, "vol_boost": 0.0, "vol_ratio": 0.698, "vol_today": 33068, "vol_avg": 47387, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0119, "short_squeeze_bonus": 0.0, "gap_pct": 0.013871116343348559, "price_935": 395.895, "open_930": 396.64, "prev_close": 390.74}, {"ticker": "TSLA", "confidence": 0.6667, "passes_threshold": true, "post_open_advance": true, "or_position": 0.8096, "gap_retention": 0.6655, "vol_boost": 0.0, "vol_ratio": 0.775, "vol_today": 28437, "vol_avg": 36711, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.023, "short_squeeze_bonus": 0.0, "gap_pct": 0.013680092512855848, "price_935": 414.875, "open_930": 411.93, "prev_close": 406.43}, {"ticker": "ARM", "confidence": 0.1, "passes_threshold": false, "post_open_advance": false, "or_position": 0.1091, "gap_retention": -1.2081, "vol_boost": 0.1, "vol_ratio": 3.333, "vol_today": 63214, "vol_avg": 18965, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.1274, "short_squeeze_bonus": 0.0, "gap_pct": 0.010871563246763442, "price_935": 371.73, "open_930": 390.23, "prev_close": 380.81}, {"ticker": "ADBE", "confidence": 1.15, "passes_threshold": true, "post_open_advance": true, "or_position": 0.9267, "gap_retention": 0.9663, "vol_boost": 0.05, "vol_ratio": 2.328, "vol_today": 21184, "vol_avg": 9098, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.1, "short_float": 0.051599998, "short_squeeze_bonus": 0.0, "gap_pct": 0.008773649642191902, "price_935": 210.79, "open_930": 206.84, "prev_close": 204.02}, {"ticker": "AAPL", "confidence": 0.3333, "passes_threshold": false, "post_open_advance": false, "or_position": 0.9063, "gap_retention": 0.2168, "vol_boost": 0.0, "vol_ratio": 1.22, "vol_today": 76025, "vol_avg": 62301, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0106, "short_squeeze_bonus": 0.0, "gap_pct": 0.007831552914505649, "price_935": 293.83, "open_930": 293.99, "prev_close": 291.13}, {"ticker": "NIO", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.0, "gap_retention": 0.5, "vol_boost": 0.0, "vol_ratio": 0.398, "vol_today": 42154, "vol_avg": 105966, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0757, "short_squeeze_bonus": 0.0, "gap_pct": 0.007677543186180429, "price_935": 5.225, "open_930": 5.24, "prev_close": 5.21}, {"ticker": "BAC", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.3056, "gap_retention": 0.5874, "vol_boost": 0.0, "vol_ratio": 1.492, "vol_today": 101249, "vol_avg": 67860, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0, "short_squeeze_bonus": 0.0, "gap_pct": 0.007675830060692604, "price_935": 56.55, "open_930": 56.735, "prev_close": 56.02}], "l1_rejects": [{"ticker": "CRM", "reason": "gap_reversed_at_open"}], "premarket_candidates": [{"ticker": "MU", "gap_pct": 8.02, "adv_m": 50.8, "short_float_pct": 3.3, "dist_from_3m_high_pct": -2.7}, {"ticker": "MSTR", "gap_pct": 7.54, "adv_m": 18.6, "short_float_pct": 11.4, "dist_from_3m_high_pct": -32.3}, {"ticker": "QUBT", "gap_pct": 7.15, "adv_m": 19.2, "short_float_pct": 29.7, "dist_from_3m_high_pct": -26.4}, {"ticker": "SMR", "gap_pct": 6.17, "adv_m": 32.1, "short_float_pct": 20.0, "dist_from_3m_high_pct": -26.6}, {"ticker": "RGTI", "gap_pct": 5.91, "adv_m": 39.5, "short_float_pct": 18.8, "dist_from_3m_high_pct": -20.8}, {"ticker": "MARA", "gap_pct": 5.89, "adv_m": 44.5, "short_float_pct": 29.6, "dist_from_3m_high_pct": -2.6}, {"ticker": "RIOT", "gap_pct": 5.64, "adv_m": 17.8, "short_float_pct": 17.9, "dist_from_3m_high_pct": -2.9}, {"ticker": "HOOD", "gap_pct": 5.47, "adv_m": 29.7, "short_float_pct": 4.4, "dist_from_3m_high_pct": 2.3}, {"ticker": "IONQ", "gap_pct": 5.46, "adv_m": 30.1, "short_float_pct": 15.6, "dist_from_3m_high_pct": -17.2}, {"ticker": "CIFR", "gap_pct": 5.43, "adv_m": 25.4, "short_float_pct": 15.7, "dist_from_3m_high_pct": -9.8}, {"ticker": "QBTS", "gap_pct": 5.31, "adv_m": 32.9, "short_float_pct": 16.8, "dist_from_3m_high_pct": -22.0}, {"ticker": "RKLB", "gap_pct": 5.08, "adv_m": 26.3, "short_float_pct": 5.5, "dist_from_3m_high_pct": -28.7}, {"ticker": "COIN", "gap_pct": 5.07, "adv_m": 10.1, "short_float_pct": 11.1, "dist_from_3m_high_pct": -24.5}, {"ticker": "CRWV", "gap_pct": 5.06, "adv_m": 28.8, "short_float_pct": 18.2, "dist_from_3m_high_pct": -23.6}, {"ticker": "ASTS", "gap_pct": 4.89, "adv_m": 20.0, "short_float_pct": 18.4, "dist_from_3m_high_pct": -35.4}, {"ticker": "MRVL", "gap_pct": 4.81, "adv_m": 34.4, "short_float_pct": 4.7, "dist_from_3m_high_pct": -9.6}, {"ticker": "AMD", "gap_pct": 4.47, "adv_m": 37.4, "short_float_pct": 2.7, "dist_from_3m_high_pct": -2.2}, {"ticker": "UUUU", "gap_pct": 4.39, "adv_m": 10.4, "short_float_pct": 16.1, "dist_from_3m_high_pct": -39.1}, {"ticker": "CCL", "gap_pct": 4.28, "adv_m": 28.0, "short_float_pct": 3.3, "dist_from_3m_high_pct": 1.5}, {"ticker": "DAL", "gap_pct": 4.2, "adv_m": 9.9, "short_float_pct": 3.7, "dist_from_3m_high_pct": 3.2}, {"ticker": "CBRS", "gap_pct": 4.2, "adv_m": 8.5, "short_float_pct": 17.2, "dist_from_3m_high_pct": -42.3}, {"ticker": "VRT", "gap_pct": 4.16, "adv_m": 7.2, "short_float_pct": 3.7, "dist_from_3m_high_pct": -17.0}, {"ticker": "SMCI", "gap_pct": 4.14, "adv_m": 48.9, "short_float_pct": 16.5, "dist_from_3m_high_pct": -38.3}, {"ticker": "QCOM", "gap_pct": 3.99, "adv_m": 20.4, "short_float_pct": 4.8, "dist_from_3m_high_pct": -15.0}, {"ticker": "SOFI", "gap_pct": 3.62, "adv_m": 67.6, "short_float_pct": 14.7, "dist_from_3m_high_pct": -14.6}, {"ticker": "INTC", "gap_pct": 3.61, "adv_m": 127.7, "short_float_pct": 2.7, "dist_from_3m_high_pct": -2.8}, {"ticker": "AVGO", "gap_pct": 2.92, "adv_m": 25.6, "short_float_pct": 1.2, "dist_from_3m_high_pct": -20.6}, {"ticker": "AMZN", "gap_pct": 2.51, "adv_m": 44.6, "short_float_pct": 0.9, "dist_from_3m_high_pct": -12.2}, {"ticker": "ORCL", "gap_pct": 2.17, "adv_m": 26.8, "short_float_pct": 2.0, "dist_from_3m_high_pct": -24.8}, {"ticker": "GOOGL", "gap_pct": 1.77, "adv_m": 29.6, "short_float_pct": 1.4, "dist_from_3m_high_pct": -10.4}, {"ticker": "PLTR", "gap_pct": 1.76, "adv_m": 44.3, "short_float_pct": 3.2, "dist_from_3m_high_pct": -20.4}, {"ticker": "META", "gap_pct": 1.69, "adv_m": 17.1, "short_float_pct": 1.5, "dist_from_3m_high_pct": -16.6}, {"ticker": "NVDA", "gap_pct": 1.56, "adv_m": 165.8, "short_float_pct": 1.2, "dist_from_3m_high_pct": -11.8}, {"ticker": "MSFT", "gap_pct": 1.39, "adv_m": 35.0, "short_float_pct": 1.2, "dist_from_3m_high_pct": -15.0}, {"ticker": "TSLA", "gap_pct": 1.37, "adv_m": 59.3, "short_float_pct": 2.3, "dist_from_3m_high_pct": -9.1}, {"ticker": "ARM", "gap_pct": 1.09, "adv_m": 10.5, "short_float_pct": 12.7, "dist_from_3m_high_pct": -10.1}, {"ticker": "CRM", "gap_pct": 0.96, "adv_m": 14.2, "short_float_pct": 8.6, "dist_from_3m_high_pct": -20.5}, {"ticker": "ADBE", "gap_pct": 0.88, "adv_m": 6.1, "short_float_pct": 5.2, "dist_from_3m_high_pct": -25.5}, {"ticker": "AAPL", "gap_pct": 0.78, "adv_m": 46.6, "short_float_pct": 1.1, "dist_from_3m_high_pct": -7.6}, {"ticker": "NIO", "gap_pct": 0.77, "adv_m": 39.1, "short_float_pct": 7.6, "dist_from_3m_high_pct": -25.0}, {"ticker": "BAC", "gap_pct": 0.77, "adv_m": 37.0, "short_float_pct": 0.0, "dist_from_3m_high_pct": 0.5}], "llm_output": {"trade_1": {"ticker": "AMD", "direction": "long", "confidence": 1.15, "reason": "Rally tecnico con catalyst Tier 3 (sentiment settoriale positivo, buzz retail su Reddit/X, spinta dalla IPO SpaceX) e vol_boost +0.05. Segnali tecnici tutti positivi: post_open_advance, or_position 0.877, gap_retention 0.78; titolo a soli -2.2% dai massimi 3 mesi con minima resistenza sopra.", "price_935": 546.99}, "trade_2": {"ticker": "CRWV", "direction": "long", "confidence": 1.0, "reason": "Catalyst Tier 3 (inclusione confermata nel Nasdaq 100 il 22 giugno, driver strutturale di acquisti forzati da ETF/fondi indicizzati) con segnali tecnici perfetti: gap_retention 1.0, or_position 0.987, post_open_advance_pct +3.2%; short float 18.2% aggiunge squeeze potential in caso di accelerazione.", "price_935": 107.6}, "no_trade_reason": null}, "universe_count": 70, "premarket_count": 41, "l1_count": 41, "l2_count": 28, "llm_input": ["MSTR", "QUBT", "SMR", "RGTI", "MARA", "HOOD", "IONQ", "CIFR", "QBTS", "RKLB", "COIN", "CRWV", "ASTS", "AMD", "UUUU", "CCL", "DAL", "VRT", "SMCI", "SOFI", "AMZN", "ORCL", "GOOGL", "PLTR", "META", "NVDA", "TSLA", "ADBE"]}, {"date": "2026-06-16", "spy_pct": 0.0005829744948659219, "blocked": null, "daily_pnl": 827.08, "trades": [{"ticker": "QCOM", "qty": 218, "entry_price": 229.68, "entry_time": "09:36:53", "entry_ts": 1781617013.8536813, "direction": "long", "confidence": 0.7667, "reason": "Rumor confermati da The Information su acquisizione Tenstorrent da $8-10 miliardi assegnano catalyst Tier 3 (trattativa non chiusa), con or_position molto alta (0.945) e post_open_advance positivo; settore diverso da JPM (Technology vs Financials) — penalità settoriale non applicata.", "order_id": "9783c6d1-90d6-496b-930e-a51ebecbe5be", "stop_atr": 211.2639, "stop_pct": 225.0864, "stop_price": 229.68, "atr14": 18.4161, "peak_price": 230.97, "breakeven_armed": true, "exit_price": 229.67, "exit_time": "10:02:06", "exit_reason": "breakeven_stop", "pnl_usd": -2.18, "pnl_pct": -0.0, "catalyst_bonus": 0.1, "vol_boost": 0.0, "short_float": 0.0478, "short_squeeze_bonus": 0.0, "post_open_advance": true, "or_position": 0.9452, "gap_retention": 0.5458, "gap_pct": 0.03120329695213073, "news": [{"author": "Namrata Sen", "content": "", "created_at": "2026-06-16T09:12:21Z", "headline": "Qualcomm's CEO Reveals 40+ AI Devices For A Post-App Future — Stock Gains 4% As $10 Billion Tenstorrent Deal Rumours Swirl", "id": 53216208, "images": [{"size": "large", "url": "https://cdn.benzinga.com/files/images/story/2026/06/16/Santa-Clara--Ca-Us---September-28--2025-.jpeg?width=2048&height=1536"}, {"size": "small", "url": "https://cdn.benzinga.com/files/images/story/2026/06/16/Santa-Clara--Ca-Us---September-28--2025-.jpeg?width=1024&height=768"}, {"size": "thumb", "url": "https://cdn.benzinga.com/files/images/story/2026/06/16/Santa-Clara--Ca-Us---September-28--2025-.jpeg?width=250&height=187"}], "source": "benzinga", "summary": "Qualcomm details 40+ AI device designs and reportedly explores a $10 billion Tenstorrent deal to power future AI hardware.", "symbols": ["AAPL", "QCOM", "SNAP", "SSNLF"], "updated_at": "2026-06-16T09:12:22Z", "url": "https://www.benzinga.com/markets/tech/26/06/53216208/qualcomms-ceo-reveals-40-ai-devices-for-a-post-app-future-stock-gains-4-as-10-billion-tenstorrent-deal-rumours-swirl"}, {"author": "Benzinga Newsdesk", "content": "", "created_at": "2026-06-15T20:41:23Z", "headline": "'Qualcomm in Talks to Buy Tenstorrent to Expand AI Chip Capabilities; Qualcomm And Tenstorrent Have Discussed A Potential Price Of $8 Billion To $10 Billion' - The Information", "id": 53211809, "images": [], "source": "benzinga", "summary": "", "symbols": ["QCOM"], "updated_at": "2026-06-15T20:41:24Z", "url": "https://www.benzinga.com/m-a/26/06/53211809/qualcomm-in-talks-to-buy-tenstorrent-to-expand-ai-chip-capabilities-qualcomm-and-tenstorrent-have-di"}]}, {"ticker": "JPM", "qty": 153, "entry_price": 324.97, "entry_time": "09:35:57", "entry_ts": 1781616957.8646455, "direction": "long", "confidence": 1.0, "reason": "Confidence algoritmica massima (1.0) con gap_retention perfetta e or_position elevata; le news sull'espansione europea di Chase e il progetto di clearing dell'oro a Singapore rappresentano catalyst strategici di medio termine che supportano il momentum intraday.", "order_id": "a00f673c-1b97-4921-bf08-41826d627d59", "stop_atr": 318.2339, "stop_pct": 318.4706, "stop_price": 324.97, "atr14": 6.7361, "peak_price": 331.7, "breakeven_armed": true, "exit_price": 330.39, "exit_time": "15:45:19", "exit_reason": "eod_close", "pnl_usd": 829.26, "pnl_pct": 0.0167, "catalyst_bonus": 0.0, "vol_boost": 0.0, "short_float": 0.0107, "short_squeeze_bonus": 0.0, "post_open_advance": true, "or_position": 0.7862, "gap_retention": 1.0, "gap_pct": 0.010488415779586797, "news": [{"author": "Benzinga Newsdesk", "content": "", "created_at": "2026-06-16T07:12:45Z", "headline": "'JPMorgan Plans Chase Expansion Into Europe's Largest Markets' - FT", "id": 53215480, "images": [], "source": "benzinga", "summary": "", "symbols": ["JPM"], "updated_at": "2026-06-16T07:12:46Z", "url": "https://www.benzinga.com/news/26/06/53215480/jpmorgan-plans-chase-expansion-into-europes-largest-markets-ft"}, {"author": "Benzinga Newsdesk", "content": "", "created_at": "2026-06-15T15:57:42Z", "headline": "Reported June 14: 'Singapore to Launch Gold Clearing With JPMorgan, Other Banks' - Bloomberg", "id": 53201886, "images": [], "source": "benzinga", "summary": "", "symbols": ["DB", "EWS", "JPM"], "updated_at": "2026-06-15T15:57:43Z", "url": "https://www.benzinga.com/news/26/06/53201886/reported-june-14-singapore-to-launch-gold-clearing-with-jpmorgan-other-banks-bloomberg"}]}], "signals": [{"ticker": "QCOM", "confidence": 0.7667, "passes_threshold": true, "post_open_advance": true, "or_position": 0.9452, "gap_retention": 0.5458, "vol_boost": 0.0, "vol_ratio": 0.872, "vol_today": 20501, "vol_avg": 23521, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.1, "short_float": 0.0478, "short_squeeze_bonus": 0.0, "gap_pct": 0.03120329695213073, "price_935": 228.55, "open_930": 225.83, "prev_close": 220.81}, {"ticker": "HOOD", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.1564, "gap_retention": 0.226, "vol_boost": 0.0, "vol_ratio": 1.524, "vol_today": 50011, "vol_avg": 32823, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.044, "short_squeeze_bonus": 0.0, "gap_pct": 0.023848348960456473, "price_935": 99.1, "open_930": 100.2, "prev_close": 98.12}, {"ticker": "CRWV", "confidence": 0.7167, "passes_threshold": true, "post_open_advance": true, "or_position": 0.9572, "gap_retention": 0.6039, "vol_boost": 0.05, "vol_ratio": 2.183, "vol_today": 81993, "vol_avg": 37566, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.18190001, "short_squeeze_bonus": 0.0, "gap_pct": 0.015837316090338414, "price_935": 112.11, "open_930": 108.25, "prev_close": 106.71}, {"ticker": "CCL", "confidence": 0.6667, "passes_threshold": true, "post_open_advance": true, "or_position": 0.7315, "gap_retention": 0.3036, "vol_boost": 0.0, "vol_ratio": 0.97, "vol_today": 35991, "vol_avg": 37114, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.033299997, "short_squeeze_bonus": 0.0, "gap_pct": 0.010956175298804724, "price_935": 30.685, "open_930": 30.68, "prev_close": 30.12}, {"ticker": "MU", "confidence": 0.0, "passes_threshold": false, "post_open_advance": false, "or_position": 0.5894, "gap_retention": -0.252, "vol_boost": 0.0, "vol_ratio": 0.642, "vol_today": 27259, "vol_avg": 42481, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0334, "short_squeeze_bonus": 0.0, "gap_pct": 0.010799731615180287, "price_935": 1093.525, "open_930": 1099.38, "prev_close": 1087.99}, {"ticker": "JPM", "confidence": 1.0, "passes_threshold": true, "post_open_advance": true, "or_position": 0.7862, "gap_retention": 1.0, "vol_boost": 0.0, "vol_ratio": 0.886, "vol_today": 4366, "vol_avg": 4925, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.0, "short_float": 0.0107, "short_squeeze_bonus": 0.0, "gap_pct": 0.010488415779586797, "price_935": 325.62, "open_930": 324.02, "prev_close": 319.4}, {"ticker": "AMZN", "confidence": 0.5333, "passes_threshold": false, "post_open_advance": false, "or_position": 0.7822, "gap_retention": 0.2314, "vol_boost": 0.0, "vol_ratio": 0.692, "vol_today": 50107, "vol_avg": 72412, "or_bar_count": 5, "or_last_bar": "09:34", "catalyst_bonus": 0.2, "short_float": 0.0094, "short_squeeze_bonus": 0.0, "gap_pct": 0.005446711649459407, "price_935": 247.96, "open_930": 247.965, "prev_close": 246.02}], "l1_rejects": [{"ticker": "QBTS", "reason": "gap_reversed_at_open"}], "premarket_candidates": [{"ticker": "QCOM", "gap_pct": 3.12, "adv_m": 20.5, "short_float_pct": 4.8, "dist_from_3m_high_pct": -12.1}, {"ticker": "HOOD", "gap_pct": 2.38, "adv_m": 29.9, "short_float_pct": 4.4, "dist_from_3m_high_pct": -0.4}, {"ticker": "CRWV", "gap_pct": 1.58, "adv_m": 28.9, "short_float_pct": 18.2, "dist_from_3m_high_pct": -21.6}, {"ticker": "CCL", "gap_pct": 1.1, "adv_m": 28.0, "short_float_pct": 3.3, "dist_from_3m_high_pct": -2.2}, {"ticker": "MU", "gap_pct": 1.08, "adv_m": 51.0, "short_float_pct": 3.3, "dist_from_3m_high_pct": 0.2}, {"ticker": "JPM", "gap_pct": 1.05, "adv_m": 9.0, "short_float_pct": 1.1, "dist_from_3m_high_pct": -1.0}, {"ticker": "QBTS", "gap_pct": 0.69, "adv_m": 33.2, "short_float_pct": 16.8, "dist_from_3m_high_pct": -16.2}, {"ticker": "AMZN", "gap_pct": 0.54, "adv_m": 44.6, "short_float_pct": 0.9, "dist_from_3m_high_pct": -11.2}], "llm_output": {"trade_1": {"ticker": "JPM", "direction": "long", "confidence": 1.0, "reason": "Confidence algoritmica massima (1.0) con gap_retention perfetta e or_position elevata; le news sull'espansione europea di Chase e il progetto di clearing dell'oro a Singapore rappresentano catalyst strategici di medio termine che supportano il momentum intraday.", "price_935": 325.62}, "trade_2": {"ticker": "QCOM", "direction": "long", "confidence": 0.7667, "reason": "Rumor confermati da The Information su acquisizione Tenstorrent da $8-10 miliardi assegnano catalyst Tier 3 (trattativa non chiusa), con or_position molto alta (0.945) e post_open_advance positivo; settore diverso da JPM (Technology vs Financials) — penalità settoriale non applicata.", "price_935": 228.55}, "no_trade_reason": null}, "universe_count": 70, "premarket_count": 8, "l1_count": 8, "l2_count": 4, "llm_input": ["QCOM", "CRWV", "CCL", "JPM"]}];
+const STATS = {"total_pnl": 1881.08, "win_rate": 55.6, "n_trades": 9, "n_wins": 5, "n_losses": 4, "avg_win": 846.53, "avg_loss": -587.89, "avg_conf": 1.03, "trade_days": 6, "total_days": 9, "total_pnl_pct": 1.88, "initial_equity": 100000};
+const EXIT_LABELS = {
+  hard_blocker:"Hard stop", atr_stop:"ATR stop", breakeven_stop:"Break-even stop",
+  vwap_exit:"VWAP take-profit", eod_close:"EOD close", manual_close:"Manual close"
+};
+
+// ── Tap/hover tooltips (iPad-friendly) ──────────────────────────────────────────
+// Native title= tooltips never appear on touch devices. We replace them with a
+// popover: tap an element with data-tip to pin it (tap again or elsewhere to close);
+// on desktop it also follows mouse hover when nothing is pinned.
+const tipPop = document.createElement("div");
+tipPop.className = "tip-pop";
+document.body.appendChild(tipPop);
+let tipPinned = false, tipCurrent = null;
+function placeTip(el) {
+  const txt = el.getAttribute("data-tip");
+  if (!txt) return false;
+  tipPop.innerHTML = txt;
+  tipPop.style.display = "block";
+  const r = el.getBoundingClientRect();
+  const pw = tipPop.offsetWidth, ph = tipPop.offsetHeight;
+  let left = Math.max(8, Math.min(r.left, window.innerWidth - pw - 8));
+  let top = r.bottom + 6;
+  if (top + ph > window.innerHeight - 8) top = r.top - ph - 6;  // flip above if no room below
+  tipPop.style.left = left + "px";
+  tipPop.style.top = Math.max(8, top) + "px";
+  tipCurrent = el;
+  return true;
+}
+function hideTip() { tipPop.style.display = "none"; tipCurrent = null; tipPinned = false; }
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-tip]");
+  if (el) {
+    e.preventDefault(); e.stopPropagation();
+    if (tipPinned && tipCurrent === el) { hideTip(); }
+    else { placeTip(el); tipPinned = true; }
+  } else if (!e.target.closest(".tip-pop")) {
+    hideTip();
+  }
+});
+document.addEventListener("mouseover", e => {
+  if (tipPinned) return;
+  const el = e.target.closest("[data-tip]");
+  if (el && el !== tipCurrent) placeTip(el);
+});
+document.addEventListener("mouseout", e => {
+  if (tipPinned) return;
+  const el = e.target.closest("[data-tip]");
+  if (el && tipCurrent === el) hideTip();
+});
+window.addEventListener("scroll", () => { if (!tipPinned) hideTip(); }, true);
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const fu  = (n,d=2) => n==null?"—":parseFloat(n).toFixed(d);
+const fpm = (n,d=2) => n==null?"—":(n>=0?"+":"")+parseFloat(n).toFixed(d);
+const tk  = v => v?'<span class="tk">✓</span>':'<span class="cx">✗</span>';
+const cls = n => n>0?"pos":n<0?"neg":"neu";
+const badge = (t,c) => `<span class="b ${c}">${t}</span>`;
+const confBar = c => {
+  const w=Math.min(Math.round((c||0)/1.53*56),56);
+  return `<span class="cb" style="width:${w}px"></span>${fu(c,3)}`;
+};
+const fint = n => n==null?"—":Math.round(n).toLocaleString("en-US");
+const MONTHS_EN = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const WDAYS_EN  = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const fmtDate = s => { const d=new Date(s+"T12:00:00Z"); return d.getUTCDate()+" "+MONTHS_EN[d.getUTCMonth()]+", "+WDAYS_EN[d.getUTCDay()]; };
+// Money with thousands separator (comma) + 2 decimals: 1,234.56
+const money = (n,d=2) => Math.abs(n||0).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const volTip = s => {
+  if(s.vol_today==null && s.vol_avg==null) return "Volume storico non disponibile";
+  return `Volume 9:30–9:35 oggi: ${fint(s.vol_today)} · media storica: ${fint(s.vol_avg)}`;
+};
+
+// Pre-open gate exclusion reasons — surfaced separately from L1 binary rejects
+const GATE_REASONS = ["gap_reversed_at_open", "pm_gap_eaten_at_open"];
+const isGateReject = r => GATE_REASONS.some(g => (r.reason||"").startsWith(g));
+function gateLabel(reason) {
+  if(reason==="gap_reversed_at_open") return "Gap invertito all'apertura (open &lt; prev close)";
+  const m=(reason||"").match(/^pm_gap_eaten_at_open_(.+)$/);
+  if(m) return `Gap pre-market eroso all'apertura (${m[1]} rimasto)`;
+  return reason||"—";
+}
+
+// ── Stats (recomputed on filtered subset) ─────────────────────────────────────
+function computeStats(logs) {
+  const trades = logs.flatMap(r=>r.trades);
+  const totalPnl = +trades.reduce((s,t)=>s+(t.pnl_usd||0),0).toFixed(2);
+  const wins     = trades.filter(t=>(t.pnl_usd||0)>0);
+  const losses   = trades.filter(t=>(t.pnl_usd||0)<=0);
+  return {
+    total_pnl:      totalPnl,
+    total_pnl_pct:  +(totalPnl/STATS.initial_equity*100).toFixed(2),
+    win_rate:       trades.length?+(wins.length/trades.length*100).toFixed(1):0,
+    n_trades:       trades.length,
+    n_wins:         wins.length,
+    n_losses:       losses.length,
+    avg_win:        wins.length  ?+(wins.reduce((s,t)=>s+(t.pnl_usd||0),0)/wins.length).toFixed(2):0,
+    avg_loss:       losses.length?+(losses.reduce((s,t)=>s+(t.pnl_usd||0),0)/losses.length).toFixed(2):0,
+    avg_conf:       trades.length?+(trades.reduce((s,t)=>s+(t.confidence||0),0)/trades.length).toFixed(2):0,
+    trade_days:     logs.filter(r=>r.trades.length>0).length,
+    total_days:     logs.length,
+    initial_equity: STATS.initial_equity,
+  };
+}
+
+// ── KPIs ──────────────────────────────────────────────────────────────────────
+function renderKpis(st) {
+  const kpis = [
+    { l:"P&L totale",        v:(st.total_pnl>=0?"+$":"−$")+money(st.total_pnl),                                   c:cls(st.total_pnl),       s:`${st.trade_days} trade days / ${st.total_days} giorni` },
+    { l:"P&L % portafoglio", v:st.n_trades?(st.total_pnl_pct>=0?"+":"")+st.total_pnl_pct.toFixed(2)+"%":"—",     c:cls(st.total_pnl_pct),   s:`su equity iniziale ${(st.initial_equity/1000).toFixed(0)}k` },
+    { l:"Win rate",          v:st.n_trades?st.win_rate+"%":"—",                                                    c:"neu",                   s:`${st.n_wins}W · ${st.n_losses}L · ${st.n_trades} trade` },
+    { l:"Avg win",           v:st.n_wins  ?"+$"+money(st.avg_win):"—",                                            c:"pos",                   s:"per trade vincente" },
+    { l:"Avg loss",          v:st.n_losses?"−$"+money(st.avg_loss):"—",                                           c:st.n_losses?"neg":"mut", s:"per trade perdente" },
+    { l:"Avg confidence",    v:st.n_trades?st.avg_conf.toFixed(2):"—",                                            c:"neu",                   s:"soglia min: 0.65" },
+  ];
+  document.getElementById("kpis").innerHTML=kpis.map(k=>
+    `<div class="kpi"><div class="lbl">${k.l}</div><div class="val ${k.c}">${k.v}</div><div class="sub">${k.s}</div></div>`
+  ).join("");
+}
+
+// ── P&L bar chart ─────────────────────────────────────────────────────────────
+function renderPnlChart(logs) {
+  const el=document.getElementById("chartPnl");
+  if(!logs.length){el.innerHTML='<p style="color:var(--muted);padding:20px 0;font-size:12px">Nessun dato</p>';return;}
+  const W=560,H=160,pad={t:10,r:10,b:30,l:52};
+  const iW=W-pad.l-pad.r,iH=H-pad.t-pad.b;
+  const vals=logs.map(r=>r.daily_pnl), dates=logs.map(r=>r.date.slice(5));
+  const maxAbs=Math.max(...vals.map(Math.abs),1);
+  const barW=Math.max(6,Math.floor(iW/vals.length*0.6));
+  const zero=pad.t+iH/2;
+  const yLabels=[-maxAbs,-maxAbs/2,0,maxAbs/2,maxAbs].map(v=>{
+    const y=pad.t+iH/2-(v/maxAbs)*(iH/2);
+    const lbl=v===0?"$0":(v>0?"+$":"-$")+money(v,0);
+    return `<text x="${pad.l-6}" y="${y+4}" text-anchor="end" fill="#8892a4" font-size="10">${lbl}</text>
+            <line x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}" stroke="#2a2d3a" stroke-width="1"/>`;
+  }).join("");
+  const bars=vals.map((v,i)=>{
+    const x=pad.l+(i+0.5)*iW/vals.length-barW/2;
+    const bH=Math.abs(v)/maxAbs*(iH/2);
+    const y=v>=0?zero-bH:zero;
+    return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW}" height="${Math.max(bH,1).toFixed(1)}" fill="${v>0?"#22c55e":v<0?"#ef4444":"#8892a4"}" rx="3"/>`;
+  }).join("");
+  const xLabels=dates.map((d,i)=>{
+    const x=pad.l+(i+0.5)*iW/vals.length;
+    return `<text x="${x.toFixed(1)}" y="${H-4}" text-anchor="middle" fill="#8892a4" font-size="10">${d}</text>`;
+  }).join("");
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;display:block">
+    ${yLabels}
+    <line x1="${pad.l}" y1="${zero}" x2="${W-pad.r}" y2="${zero}" stroke="#4a4d5a" stroke-width="1"/>
+    ${bars}${xLabels}</svg>`;
+}
+
+// ── Exit donut ────────────────────────────────────────────────────────────────
+function renderExitDonut(logs) {
+  const counts={}, pnlTotals={}, pnlPcts={};
+  logs.forEach(r=>r.trades.forEach(t=>{
+    const k=EXIT_LABELS[t.exit_reason]||t.exit_reason||"Unknown";
+    counts[k]=(counts[k]||0)+1;
+    pnlTotals[k]=(pnlTotals[k]||0)+(t.pnl_usd||0);
+    if(!pnlPcts[k]) pnlPcts[k]=[];
+    pnlPcts[k].push(t.pnl_pct||0);
+  }));
+  const keys=Object.keys(counts);
+  if(!keys.length){document.getElementById("chartExit").innerHTML='<p style="color:var(--muted);font-size:12px;padding:20px 0">Nessun trade chiuso</p>';return;}
+  const total=keys.reduce((s,k)=>s+counts[k],0);
+  const colors=["#3b82f6","#22c55e","#f59e0b","#ef4444","#8b5cf6","#8892a4"];
+  const R=60,cx=80,cy=80; let angle=-Math.PI/2;
+  const slices=keys.map((k,i)=>{
+    const frac=counts[k]/total,a1=angle,a2=angle+frac*2*Math.PI; angle=a2;
+    const x1=cx+R*Math.cos(a1),y1=cy+R*Math.sin(a1),x2=cx+R*Math.cos(a2),y2=cy+R*Math.sin(a2);
+    return `<path d="M${cx},${cy} L${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${frac>0.5?1:0},1 ${x2.toFixed(1)},${y2.toFixed(1)} Z" fill="${colors[i%colors.length]}"/>`;
+  }).join("");
+  const legend=keys.map((k,i)=>
+    `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+      <span style="width:10px;height:10px;border-radius:2px;background:${colors[i%colors.length]};flex-shrink:0"></span>
+      <span style="font-size:11px">${k} (${counts[k]})</span></div>`).join("");
+  const tableRows=keys.map(k=>{
+    const n=counts[k], tot=+(pnlTotals[k]||0).toFixed(2), avg=+(tot/n).toFixed(2);
+    const avgPct=pnlPcts[k].reduce((s,v)=>s+v,0)/n*100;
+    const sc=tot>=0?"pos":"neg", sa=avg>=0?"pos":"neg", sp=avgPct>=0?"pos":"neg";
+    return `<tr>
+      <td style="padding:4px 8px;font-size:11px;white-space:nowrap;border-bottom:1px solid var(--border)">${k}</td>
+      <td style="padding:4px 8px;text-align:right;border-bottom:1px solid var(--border)" class="${sc}">${tot>=0?"+$":"−$"}${money(Math.abs(tot))}</td>
+      <td style="padding:4px 8px;text-align:right;border-bottom:1px solid var(--border)" class="${sa}">${avg>=0?"+$":"−$"}${money(Math.abs(avg))}</td>
+      <td style="padding:4px 8px;text-align:right;border-bottom:1px solid var(--border)" class="${sp}">${(avgPct>=0?"+":"")+avgPct.toFixed(1)}%</td>
+      <td style="padding:4px 8px;text-align:right;border-bottom:1px solid var(--border);color:var(--muted)">${n}</td>
+    </tr>`;
+  }).join("");
+  document.getElementById("chartExit").innerHTML=
+    `<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+      <div style="flex-shrink:0">
+        <svg viewBox="0 0 160 160" style="width:110px;display:block">
+          <circle cx="${cx}" cy="${cy}" r="${R}" fill="var(--border)"/>
+          ${slices}<circle cx="${cx}" cy="${cy}" r="30" fill="var(--surface)"/>
+        </svg>
+        <div style="margin-top:8px">${legend}</div>
+      </div>
+      <div style="flex:1;min-width:220px;overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead><tr>
+            <th style="font-size:10px;font-weight:600;color:var(--muted);padding:4px 8px;text-align:left;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em">Strategia</th>
+            <th style="font-size:10px;font-weight:600;color:var(--muted);padding:4px 8px;text-align:right;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em">Tot P&amp;L</th>
+            <th style="font-size:10px;font-weight:600;color:var(--muted);padding:4px 8px;text-align:right;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em">Avg P&amp;L</th>
+            <th style="font-size:10px;font-weight:600;color:var(--muted);padding:4px 8px;text-align:right;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em">Avg %</th>
+            <th style="font-size:10px;font-weight:600;color:var(--muted);padding:4px 8px;text-align:right;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em">#</th>
+          </tr></thead>
+          <tbody>${tableRows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+// ── Trade log ─────────────────────────────────────────────────────────────────
+function renderTradeLog(logs) {
+  const rows=[];
+  [...logs].reverse().forEach(r=>r.trades.forEach(t=>{
+    const pnl=t.pnl_usd??null,pp=t.pnl_pct??null,sc=cls(pnl);
+    const cat=t.catalyst_bonus>=0.30?"T1":t.catalyst_bonus>=0.20?"T2":t.catalyst_bonus>=0.10?"T3":"—";
+    rows.push(`<tr>
+      <td>${fmtDate(r.date)}</td><td><strong>${t.ticker}</strong></td>
+      <td>${t.entry_price!=null?"$"+fu(t.entry_price):"—"}</td>
+      <td>${t.exit_price !=null?"$"+fu(t.exit_price) :"—"}</td>
+      <td>${t.qty??"—"}</td>
+      <td class="${sc}">${pnl!=null?(pnl>=0?"+$":"−$")+money(pnl):"—"}</td>
+      <td class="${sc}">${pp!=null?(pp>=0?"+":"")+(pp*100).toFixed(2)+"%":"—"}</td>
+      <td>${badge(EXIT_LABELS[t.exit_reason]||t.exit_reason||"—",sc==="pos"?"bg":sc==="neg"?"br":"bmu")}</td>
+      <td>${confBar(t.confidence)}</td>
+      <td class="pos">${t.gap_pct!=null?fpm(t.gap_pct*100,1)+"%":"—"}</td>
+      <td>${badge(cat,t.catalyst_bonus>=0.20?"bb":t.catalyst_bonus>=0.10?"bb":"bmu")}</td>
+      <td>${t.vol_boost?"+"+parseFloat(t.vol_boost).toFixed(2):"—"}</td>
+      <td>${t.short_float!=null?(t.short_float*100).toFixed(1)+"%":"—"}</td>
+    </tr>`);
+  }));
+  document.getElementById("tradeRows").innerHTML=rows.length
+    ?rows.join("")
+    :'<tr><td colspan="13" style="color:var(--muted);text-align:center;padding:24px">Nessun trade ancora</td></tr>';
+}
+
+// ── Funnel ────────────────────────────────────────────────────────────────────
+function renderFunnel(logs) {
+  document.getElementById("funnelRows").innerHTML=[...logs].reverse().map(r=>{
+    const sc=cls(r.daily_pnl);
+    const note=r.blocked||(r.trades.length?"✓ trade eseguito":"LLM: nessuna entry");
+    const totalInvested=r.trades.reduce((s,t)=>s+(t.entry_price||0)*(t.qty||0),0);
+    const dailyPct=totalInvested>0?r.daily_pnl/totalInvested*100:null;
+    return `<tr>
+      <td>${fmtDate(r.date)}</td>
+      <td class="${cls(r.spy_pct)}">${fpm(r.spy_pct*100,2)}%</td>
+      <td>60</td><td>${r.premarket_count}</td><td>${r.l1_count}</td>
+      <td>${r.l2_count}</td><td>${r.llm_input.length}</td><td>${r.trades.length}</td>
+      <td class="${sc}">${r.daily_pnl!==0?(r.daily_pnl>0?"+$":"−$")+money(r.daily_pnl):"—"}</td>
+      <td class="${sc}">${dailyPct!=null?(dailyPct>=0?"+":"")+dailyPct.toFixed(2)+"%":"—"}</td>
+      <td class="mut" style="font-size:12px;white-space:normal;max-width:200px">${note}</td>
+    </tr>`;
+  }).join("");
+}
+
+// ── L2 signals ────────────────────────────────────────────────────────────────
+function getEsitoType(s, tradedTickers, llmTickers, llm_output) {
+  if (!s.passes_threshold) return "REJECT";
+  if (tradedTickers.includes(s.ticker)) return "TRADED";
+  if (llmTickers.length>0 && !llmTickers.includes(s.ticker)) return "LLM_ALTRO";
+  if (llm_output?.no_trade_reason) return "LLM_NOENTRY";
+  return "PASS";
+}
+function esitoDisplay(type) {
+  switch(type) {
+    case "REJECT":     return badge("REJECT","br");
+    case "TRADED":     return badge("TRADED","bb");
+    case "LLM_ALTRO":  return badge("LLM: altro scelto","by");
+    case "LLM_NOENTRY":return badge("LLM: no entry","bmu");
+    default:           return badge("PASS","bg");
+  }
+}
+function renderSignals(logs) {
+  const rows=[];
+  [...logs].reverse().forEach(r=>{
+    const tradedTickers=r.trades.map(t=>t.ticker);
+    const llmTickers=[r.llm_output?.trade_1?.ticker,r.llm_output?.trade_2?.ticker].filter(Boolean);
+    r.signals.forEach(s=>{
+      const esitoType=getEsitoType(s,tradedTickers,llmTickers,r.llm_output);
+      if (activeSignalEsitoFilter && esitoType!==activeSignalEsitoFilter) return;
+      const esito=esitoDisplay(esitoType);
+      rows.push(`<tr>
+        <td>${fmtDate(r.date)}</td><td><strong>${s.ticker}</strong></td>
+        <td>${confBar(s.confidence)}</td>
+        <td>${tk(s.post_open_advance)}</td>
+        <td class="${(s.or_position||0)>0.66?"pos":"neg"}">${fu(s.or_position,2)}</td>
+        <td class="${(s.gap_retention||0)>0.70?"pos":"neg"}" data-tip="${fu(s.gap_retention,2)}">${(s.gap_retention??0)<-1?"≤ −1":fu(s.gap_retention,2)}</td>
+        <td data-tip="${volTip(s)}">${s.vol_ratio!=null?parseFloat(s.vol_ratio).toFixed(1)+"×"+(s.vol_boost?" (+"+parseFloat(s.vol_boost).toFixed(2)+")":""):(s.vol_boost?"+"+parseFloat(s.vol_boost).toFixed(2):"—")}</td>
+        <td>${s.catalyst_bonus?"+"+parseFloat(s.catalyst_bonus).toFixed(2):"—"}</td>
+        <td>${s.short_float!=null?(s.short_float*100).toFixed(1)+"%":"—"}</td>
+        <td>${s.short_squeeze_bonus?badge("+"+parseFloat(s.short_squeeze_bonus).toFixed(2),"bb"):"—"}</td>
+        <td class="pos">${s.gap_pct!=null?fpm(s.gap_pct*100,1)+"%":"—"}</td>
+        <td>${esito}</td>
+      </tr>`);
+    });
+  });
+  document.getElementById("signalRows").innerHTML=rows.length
+    ?rows.join("")
+    :'<tr><td colspan="12" style="color:var(--muted);text-align:center;padding:24px">Nessun segnale L2</td></tr>';
+}
+
+// ── Pre-market ────────────────────────────────────────────────────────────────
+function renderPremarket(logs) {
+  const rows=[];
+  [...logs].reverse().forEach(r=>{
+    const l2t=r.signals.map(s=>s.ticker);
+    r.premarket_candidates.forEach(c=>{
+      const adv=l2t.includes(c.ticker);
+      rows.push(`<tr>
+        <td>${fmtDate(r.date)}</td><td><strong>${c.ticker}</strong></td>
+        <td class="pos">+${fu(c.gap_pct,2)}%</td>
+        <td>${fu(c.adv_m,1)}M</td>
+        <td>${c.short_float_pct!=null?c.short_float_pct.toFixed(1)+"%":"—"}</td>
+        <td class="${(c.dist_from_3m_high_pct||0)>-5?"pos":"neg"}">${fpm(c.dist_from_3m_high_pct,1)}%</td>
+        <td>${badge(adv?"Sì":"No",adv?"bg":"bmu")}</td>
+      </tr>`);
+    });
+  });
+  document.getElementById("pmRows").innerHTML=rows.length
+    ?rows.join("")
+    :'<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">Nessun candidato pre-market</td></tr>';
+}
+
+// ── Pre-open gate exclusions ────────────────────────────────────────────────────
+function renderGateExclusions(logs) {
+  const rows=[];
+  [...logs].reverse().forEach(r=>{
+    (r.l1_rejects||[]).filter(isGateReject).forEach(rj=>{
+      rows.push(`<tr>
+        <td>${fmtDate(r.date)}</td><td><strong>${rj.ticker}</strong></td>
+        <td>${badge(gateLabel(rj.reason),"by")}</td>
+      </tr>`);
+    });
+  });
+  document.getElementById("gateRows").innerHTML=rows.length
+    ?rows.join("")
+    :'<tr><td colspan="3" style="color:var(--muted);text-align:center;padding:24px">Nessuna esclusione pre-open gate</td></tr>';
+}
+
+// ── Master render ─────────────────────────────────────────────────────────────
+let activeLogs = LOGS;
+let activeExitFilter = null;
+let activeSignalEsitoFilter = null;
+
+function applyExitFilter(logs, exitFilter) {
+  if (!exitFilter) return logs;
+  return logs.map(r=>({...r, trades:r.trades.filter(t=>t.exit_reason===exitFilter)}));
+}
+
+function renderAll(logs) {
+  activeLogs = logs;
+  const ef = applyExitFilter(logs, activeExitFilter);
+  renderKpis(computeStats(ef));
+  renderPnlChart(ef);
+  renderExitDonut(ef);
+  renderTradeLog(ef);
+  renderFunnel(logs);     // funnel: pipeline counts unaffected by exit filter
+  renderSignals(logs);    // signals: uses own esito filter
+  renderPremarket(logs);
+  renderGateExclusions(logs);
+}
+
+// ── Filter logic ──────────────────────────────────────────────────────────────
+function filterLogs(from, to) {
+  return LOGS.filter(r => (!from || r.date >= from) && (!to || r.date <= to));
+}
+
+function applyDateFilter() {
+  const from=document.getElementById("dateFrom").value||null;
+  const to  =document.getElementById("dateTo").value  ||null;
+  document.querySelectorAll(".qbtn[data-days]").forEach(b=>b.classList.remove("active"));
+  renderAll(filterLogs(from, to));
+}
+
+// Date quick buttons
+document.querySelectorAll(".qbtn[data-days]").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".qbtn[data-days]").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const days=+btn.dataset.days;
+    if(days===0){
+      document.getElementById("dateFrom").value="";
+      document.getElementById("dateTo").value="";
+      renderAll(LOGS);
+    } else {
+      const from=new Date(); from.setDate(from.getDate()-days);
+      const fromStr=from.toISOString().slice(0,10);
+      document.getElementById("dateFrom").value=fromStr;
+      document.getElementById("dateTo").value="";
+      renderAll(filterLogs(fromStr,null));
+    }
+  });
+});
+
+// Exit reason filter buttons
+document.querySelectorAll(".qbtn[data-exit]").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".qbtn[data-exit]").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    activeExitFilter = btn.dataset.exit || null;
+    renderAll(activeLogs);
+  });
+});
+
+// L2 signal esito filter buttons
+document.querySelectorAll(".qbtn[data-esito]").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".qbtn[data-esito]").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    activeSignalEsitoFilter = btn.dataset.esito || null;
+    renderSignals(activeLogs);
+  });
+});
+
+document.getElementById("applyRange").addEventListener("click", applyDateFilter);
+["dateFrom","dateTo"].forEach(id=>document.getElementById(id).addEventListener("change", applyDateFilter));
+
+// Initial render
+renderAll(LOGS);
+</script>
+</body>
+</html>
