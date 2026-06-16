@@ -261,7 +261,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
       <th>L1 ✓ <span data-tip="Superano i filtri binari di qualità: liquidità (ADV), spread, prezzo minimo, asset tradabile su Alpaca" class="iico">ⓘ</span></th>
       <th>L2 ✓ <span data-tip="Superano la soglia di confidence algoritmica (≥ 0.65) basata su segnali tecnici: post-open advance, OR position, gap retention, vol boost, catalyst" class="iico">ⓘ</span></th>
       <th>→ LLM <span data-tip="Candidati inviati al modello LLM per la selezione finale del trade, dopo aver superato tutti i filtri algoritmici" class="iico">ⓘ</span></th>
-      <th>Trade</th><th>P&amp;L</th><th>Note</th>
+      <th>Trade</th><th>P&amp;L</th><th>P&amp;L %</th><th>Note</th>
     </tr></thead>
     <tbody id="funnelRows"></tbody>
   </table>
@@ -388,6 +388,9 @@ const confBar = c => {{
   return `<span class="cb" style="width:${{w}}px"></span>${{fu(c,3)}}`;
 }};
 const fint = n => n==null?"—":Math.round(n).toLocaleString("en-US");
+const MONTHS_EN = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const WDAYS_EN  = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const fmtDate = s => {{ const d=new Date(s+"T12:00:00Z"); return d.getUTCDate()+" "+MONTHS_EN[d.getUTCMonth()]+", "+WDAYS_EN[d.getUTCDay()]; }};
 // Money with thousands separator (comma) + 2 decimals: 1,234.56
 const money = (n,d=2) => Math.abs(n||0).toLocaleString("en-US",{{minimumFractionDigits:d,maximumFractionDigits:d}});
 const volTip = s => {{
@@ -510,7 +513,7 @@ function renderTradeLog(logs) {{
     const pnl=t.pnl_usd??null,pp=t.pnl_pct??null,sc=cls(pnl);
     const cat=t.catalyst_bonus>=0.30?"T1":t.catalyst_bonus>=0.20?"T2":t.catalyst_bonus>=0.10?"T3":"—";
     rows.push(`<tr>
-      <td>${{r.date.slice(5)}}</td><td><strong>${{t.ticker}}</strong></td>
+      <td>${{fmtDate(r.date)}}</td><td><strong>${{t.ticker}}</strong></td>
       <td>${{t.entry_price!=null?"$"+fu(t.entry_price):"—"}}</td>
       <td>${{t.exit_price !=null?"$"+fu(t.exit_price) :"—"}}</td>
       <td>${{t.qty??"—"}}</td>
@@ -534,12 +537,15 @@ function renderFunnel(logs) {{
   document.getElementById("funnelRows").innerHTML=[...logs].reverse().map(r=>{{
     const sc=cls(r.daily_pnl);
     const note=r.blocked||(r.trades.length?"✓ trade eseguito":"LLM: nessuna entry");
+    const totalInvested=r.trades.reduce((s,t)=>s+(t.entry_price||0)*(t.qty||0),0);
+    const dailyPct=totalInvested>0?r.daily_pnl/totalInvested*100:null;
     return `<tr>
-      <td>${{r.date.slice(5)}}</td>
+      <td>${{fmtDate(r.date)}}</td>
       <td class="${{cls(r.spy_pct)}}">${{fpm(r.spy_pct*100,2)}}%</td>
       <td>60</td><td>${{r.premarket_count}}</td><td>${{r.l1_count}}</td>
       <td>${{r.l2_count}}</td><td>${{r.llm_input.length}}</td><td>${{r.trades.length}}</td>
       <td class="${{sc}}">${{r.daily_pnl!==0?(r.daily_pnl>0?"+$":"−$")+money(r.daily_pnl):"—"}}</td>
+      <td class="${{sc}}">${{dailyPct!=null?(dailyPct>=0?"+":"")+dailyPct.toFixed(2)+"%":"—"}}</td>
       <td class="mut" style="font-size:12px;white-space:normal;max-width:200px">${{note}}</td>
     </tr>`;
   }}).join("");
@@ -572,7 +578,7 @@ function renderSignals(logs) {{
       if (activeSignalEsitoFilter && esitoType!==activeSignalEsitoFilter) return;
       const esito=esitoDisplay(esitoType);
       rows.push(`<tr>
-        <td>${{r.date.slice(5)}}</td><td><strong>${{s.ticker}}</strong></td>
+        <td>${{fmtDate(r.date)}}</td><td><strong>${{s.ticker}}</strong></td>
         <td>${{confBar(s.confidence)}}</td>
         <td>${{tk(s.post_open_advance)}}</td>
         <td class="${{(s.or_position||0)>0.66?"pos":"neg"}}">${{fu(s.or_position,2)}}</td>
@@ -599,7 +605,7 @@ function renderPremarket(logs) {{
     r.premarket_candidates.forEach(c=>{{
       const adv=l2t.includes(c.ticker);
       rows.push(`<tr>
-        <td>${{r.date.slice(5)}}</td><td><strong>${{c.ticker}}</strong></td>
+        <td>${{fmtDate(r.date)}}</td><td><strong>${{c.ticker}}</strong></td>
         <td class="pos">+${{fu(c.gap_pct,2)}}%</td>
         <td>${{fu(c.adv_m,1)}}M</td>
         <td>${{c.short_float_pct!=null?c.short_float_pct.toFixed(1)+"%":"—"}}</td>
@@ -619,7 +625,7 @@ function renderGateExclusions(logs) {{
   [...logs].reverse().forEach(r=>{{
     (r.l1_rejects||[]).filter(isGateReject).forEach(rj=>{{
       rows.push(`<tr>
-        <td>${{r.date.slice(5)}}</td><td><strong>${{rj.ticker}}</strong></td>
+        <td>${{fmtDate(r.date)}}</td><td><strong>${{rj.ticker}}</strong></td>
         <td>${{badge(gateLabel(rj.reason),"by")}}</td>
       </tr>`);
     }});
