@@ -479,10 +479,13 @@ function renderPnlChart(logs) {{
 
 // ── Exit donut ────────────────────────────────────────────────────────────────
 function renderExitDonut(logs) {{
-  const counts={{}};
+  const counts={{}}, pnlTotals={{}}, pnlPcts={{}};
   logs.forEach(r=>r.trades.forEach(t=>{{
     const k=EXIT_LABELS[t.exit_reason]||t.exit_reason||"Unknown";
     counts[k]=(counts[k]||0)+1;
+    pnlTotals[k]=(pnlTotals[k]||0)+(t.pnl_usd||0);
+    if(!pnlPcts[k]) pnlPcts[k]=[];
+    pnlPcts[k].push(t.pnl_pct||0);
   }}));
   const keys=Object.keys(counts);
   if(!keys.length){{document.getElementById("chartExit").innerHTML='<p style="color:var(--muted);font-size:12px;padding:20px 0">Nessun trade chiuso</p>';return;}}
@@ -497,13 +500,41 @@ function renderExitDonut(logs) {{
   const legend=keys.map((k,i)=>
     `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
       <span style="width:10px;height:10px;border-radius:2px;background:${{colors[i%colors.length]}};flex-shrink:0"></span>
-      <span style="font-size:12px">${{k}} (${{counts[k]}})</span></div>`).join("");
+      <span style="font-size:11px">${{k}} (${{counts[k]}})</span></div>`).join("");
+  const tableRows=keys.map(k=>{{
+    const n=counts[k], tot=+(pnlTotals[k]||0).toFixed(2), avg=+(tot/n).toFixed(2);
+    const avgPct=pnlPcts[k].reduce((s,v)=>s+v,0)/n*100;
+    const sc=tot>=0?"pos":"neg", sa=avg>=0?"pos":"neg", sp=avgPct>=0?"pos":"neg";
+    return `<tr>
+      <td style="padding:4px 8px;font-size:11px;white-space:nowrap;border-bottom:1px solid var(--border)">${{k}}</td>
+      <td style="padding:4px 8px;text-align:right;border-bottom:1px solid var(--border)" class="${{sc}}">${{tot>=0?"+$":"−$"}}${{money(Math.abs(tot))}}</td>
+      <td style="padding:4px 8px;text-align:right;border-bottom:1px solid var(--border)" class="${{sa}}">${{avg>=0?"+$":"−$"}}${{money(Math.abs(avg))}}</td>
+      <td style="padding:4px 8px;text-align:right;border-bottom:1px solid var(--border)" class="${{sp}}">${{(avgPct>=0?"+":"")+avgPct.toFixed(1)}}%</td>
+      <td style="padding:4px 8px;text-align:right;border-bottom:1px solid var(--border);color:var(--muted)">${{n}}</td>
+    </tr>`;
+  }}).join("");
   document.getElementById("chartExit").innerHTML=
-    `<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-      <svg viewBox="0 0 160 160" style="width:120px;flex-shrink:0">
-        <circle cx="${{cx}}" cy="${{cy}}" r="${{R}}" fill="var(--border)"/>
-        ${{slices}}<circle cx="${{cx}}" cy="${{cy}}" r="30" fill="var(--surface)"/>
-      </svg><div>${{legend}}</div></div>`;
+    `<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+      <div style="flex-shrink:0">
+        <svg viewBox="0 0 160 160" style="width:110px;display:block">
+          <circle cx="${{cx}}" cy="${{cy}}" r="${{R}}" fill="var(--border)"/>
+          ${{slices}}<circle cx="${{cx}}" cy="${{cy}}" r="30" fill="var(--surface)"/>
+        </svg>
+        <div style="margin-top:8px">${{legend}}</div>
+      </div>
+      <div style="flex:1;min-width:220px;overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead><tr>
+            <th style="font-size:10px;font-weight:600;color:var(--muted);padding:4px 8px;text-align:left;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em">Strategia</th>
+            <th style="font-size:10px;font-weight:600;color:var(--muted);padding:4px 8px;text-align:right;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em">Tot P&amp;L</th>
+            <th style="font-size:10px;font-weight:600;color:var(--muted);padding:4px 8px;text-align:right;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em">Avg P&amp;L</th>
+            <th style="font-size:10px;font-weight:600;color:var(--muted);padding:4px 8px;text-align:right;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em">Avg %</th>
+            <th style="font-size:10px;font-weight:600;color:var(--muted);padding:4px 8px;text-align:right;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em">#</th>
+          </tr></thead>
+          <tbody>${{tableRows}}</tbody>
+        </table>
+      </div>
+    </div>`;
 }}
 
 // ── Trade log ─────────────────────────────────────────────────────────────────
