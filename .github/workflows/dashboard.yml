@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'logs/**.json'
+      - 'generate_dashboard.py'
+      - '.github/workflows/dashboard.yml'
   workflow_dispatch:
 
 permissions:
