@@ -1,0 +1,503 @@
+{
+  "date": "2026-06-16",
+  "spy_pct": 0.0005829744948659219,
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 8,
+      "tickers": [
+        "QCOM",
+        "HOOD",
+        "CRWV",
+        "CCL",
+        "MU",
+        "JPM",
+        "QBTS",
+        "AMZN"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 8,
+      "tickers": [
+        "QCOM",
+        "HOOD",
+        "CRWV",
+        "CCL",
+        "MU",
+        "JPM",
+        "QBTS",
+        "AMZN"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 4,
+      "tickers": [
+        "QCOM",
+        "CRWV",
+        "CCL",
+        "JPM"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "QCOM",
+      "gap_pct": 3.12,
+      "adv_m": 20.5,
+      "short_float_pct": 4.8,
+      "dist_from_3m_high_pct": -12.1
+    },
+    {
+      "ticker": "HOOD",
+      "gap_pct": 2.38,
+      "adv_m": 29.9,
+      "short_float_pct": 4.4,
+      "dist_from_3m_high_pct": -0.4
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 1.58,
+      "adv_m": 28.9,
+      "short_float_pct": 18.2,
+      "dist_from_3m_high_pct": -21.6
+    },
+    {
+      "ticker": "CCL",
+      "gap_pct": 1.1,
+      "adv_m": 28.0,
+      "short_float_pct": 3.3,
+      "dist_from_3m_high_pct": -2.2
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 1.08,
+      "adv_m": 51.0,
+      "short_float_pct": 3.3,
+      "dist_from_3m_high_pct": 0.2
+    },
+    {
+      "ticker": "JPM",
+      "gap_pct": 1.05,
+      "adv_m": 9.0,
+      "short_float_pct": 1.1,
+      "dist_from_3m_high_pct": -1.0
+    },
+    {
+      "ticker": "QBTS",
+      "gap_pct": 0.69,
+      "adv_m": 33.2,
+      "short_float_pct": 16.8,
+      "dist_from_3m_high_pct": -16.2
+    },
+    {
+      "ticker": "AMZN",
+      "gap_pct": 0.54,
+      "adv_m": 44.6,
+      "short_float_pct": 0.9,
+      "dist_from_3m_high_pct": -11.2
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "QBTS",
+      "reason": "gap_reversed_at_open"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "QCOM",
+      "confidence": 0.7667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9452,
+      "gap_retention": 0.5458,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.872,
+      "vol_today": 20501,
+      "vol_avg": 23521,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.1,
+      "short_float": 0.0478,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03120329695213073,
+      "price_935": 228.55,
+      "open_930": 225.83,
+      "prev_close": 220.81
+    },
+    {
+      "ticker": "HOOD",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1564,
+      "gap_retention": 0.226,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.524,
+      "vol_today": 50011,
+      "vol_avg": 32823,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.044,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.023848348960456473,
+      "price_935": 99.1,
+      "open_930": 100.2,
+      "prev_close": 98.12
+    },
+    {
+      "ticker": "CRWV",
+      "confidence": 0.7167,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9572,
+      "gap_retention": 0.6039,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.183,
+      "vol_today": 81993,
+      "vol_avg": 37566,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.18190001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015837316090338414,
+      "price_935": 112.11,
+      "open_930": 108.25,
+      "prev_close": 106.71
+    },
+    {
+      "ticker": "CCL",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7315,
+      "gap_retention": 0.3036,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.97,
+      "vol_today": 35991,
+      "vol_avg": 37114,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.033299997,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010956175298804724,
+      "price_935": 30.685,
+      "open_930": 30.68,
+      "prev_close": 30.12
+    },
+    {
+      "ticker": "MU",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.5894,
+      "gap_retention": -0.252,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.642,
+      "vol_today": 27259,
+      "vol_avg": 42481,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0334,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010799731615180287,
+      "price_935": 1093.525,
+      "open_930": 1099.38,
+      "prev_close": 1087.99
+    },
+    {
+      "ticker": "JPM",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7862,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.886,
+      "vol_today": 4366,
+      "vol_avg": 4925,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0107,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010488415779586797,
+      "price_935": 325.62,
+      "open_930": 324.02,
+      "prev_close": 319.4
+    },
+    {
+      "ticker": "AMZN",
+      "confidence": 0.5333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.7822,
+      "gap_retention": 0.2314,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.692,
+      "vol_today": 50107,
+      "vol_avg": 72412,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0094,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.005446711649459407,
+      "price_935": 247.96,
+      "open_930": 247.965,
+      "prev_close": 246.02
+    }
+  ],
+  "llm_input": [
+    "QCOM",
+    "CRWV",
+    "CCL",
+    "JPM"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "JPM",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Confidence algoritmica massima (1.0) con gap_retention perfetta e or_position elevata; le news sull'espansione europea di Chase e il progetto di clearing dell'oro a Singapore rappresentano catalyst strategici di medio termine che supportano il momentum intraday.",
+      "price_935": 325.62
+    },
+    "trade_2": {
+      "ticker": "QCOM",
+      "direction": "long",
+      "confidence": 0.7667,
+      "reason": "Rumor confermati da The Information su acquisizione Tenstorrent da $8-10 miliardi assegnano catalyst Tier 3 (trattativa non chiusa), con or_position molto alta (0.945) e post_open_advance positivo; settore diverso da JPM (Technology vs Financials) \u2014 penalit\u00e0 settoriale non applicata.",
+      "price_935": 228.55
+    },
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "QCOM",
+      "qty": 218,
+      "entry_price": 229.68,
+      "entry_time": "09:36:53",
+      "entry_ts": 1781617013.8536813,
+      "direction": "long",
+      "confidence": 0.7667,
+      "reason": "Rumor confermati da The Information su acquisizione Tenstorrent da $8-10 miliardi assegnano catalyst Tier 3 (trattativa non chiusa), con or_position molto alta (0.945) e post_open_advance positivo; settore diverso da JPM (Technology vs Financials) \u2014 penalit\u00e0 settoriale non applicata.",
+      "order_id": "9783c6d1-90d6-496b-930e-a51ebecbe5be",
+      "stop_atr": 211.2639,
+      "stop_pct": 225.0864,
+      "stop_price": 229.68,
+      "atr14": 18.4161,
+      "peak_price": 230.97,
+      "breakeven_armed": true,
+      "exit_price": 229.67,
+      "exit_time": "10:02:06",
+      "exit_reason": "breakeven_stop",
+      "pnl_usd": -2.18,
+      "pnl_pct": -0.0,
+      "catalyst_bonus": 0.1,
+      "vol_boost": 0.0,
+      "short_float": 0.0478,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9452,
+      "gap_retention": 0.5458,
+      "gap_pct": 0.03120329695213073,
+      "news": [
+        {
+          "author": "Namrata Sen",
+          "content": "",
+          "created_at": "2026-06-16T09:12:21Z",
+          "headline": "Qualcomm's CEO Reveals 40+ AI Devices For A Post-App Future \u2014 Stock Gains 4% As $10 Billion Tenstorrent Deal Rumours Swirl",
+          "id": 53216208,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/16/Santa-Clara--Ca-Us---September-28--2025-.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/16/Santa-Clara--Ca-Us---September-28--2025-.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/16/Santa-Clara--Ca-Us---September-28--2025-.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Qualcomm details 40+ AI device designs and reportedly explores a $10 billion Tenstorrent deal to power future AI hardware.",
+          "symbols": [
+            "AAPL",
+            "QCOM",
+            "SNAP",
+            "SSNLF"
+          ],
+          "updated_at": "2026-06-16T09:12:22Z",
+          "url": "https://www.benzinga.com/markets/tech/26/06/53216208/qualcomms-ceo-reveals-40-ai-devices-for-a-post-app-future-stock-gains-4-as-10-billion-tenstorrent-deal-rumours-swirl"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-15T20:41:23Z",
+          "headline": "'Qualcomm in Talks to Buy Tenstorrent to Expand AI Chip Capabilities; Qualcomm And Tenstorrent Have Discussed A Potential Price Of $8 Billion To $10 Billion' - The Information",
+          "id": 53211809,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "QCOM"
+          ],
+          "updated_at": "2026-06-15T20:41:24Z",
+          "url": "https://www.benzinga.com/m-a/26/06/53211809/qualcomm-in-talks-to-buy-tenstorrent-to-expand-ai-chip-capabilities-qualcomm-and-tenstorrent-have-di"
+        }
+      ]
+    },
+    {
+      "ticker": "JPM",
+      "qty": 153,
+      "entry_price": 324.97,
+      "entry_time": "09:35:57",
+      "entry_ts": 1781616957.8646455,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Confidence algoritmica massima (1.0) con gap_retention perfetta e or_position elevata; le news sull'espansione europea di Chase e il progetto di clearing dell'oro a Singapore rappresentano catalyst strategici di medio termine che supportano il momentum intraday.",
+      "order_id": "a00f673c-1b97-4921-bf08-41826d627d59",
+      "stop_atr": 318.2339,
+      "stop_pct": 318.4706,
+      "stop_price": 324.97,
+      "atr14": 6.7361,
+      "peak_price": 331.7,
+      "breakeven_armed": true,
+      "exit_price": 330.39,
+      "exit_time": "15:45:19",
+      "exit_reason": "eod_close",
+      "pnl_usd": 829.26,
+      "pnl_pct": 0.0167,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.0107,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.7862,
+      "gap_retention": 1.0,
+      "gap_pct": 0.010488415779586797,
+      "news": [
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-16T07:12:45Z",
+          "headline": "'JPMorgan Plans Chase Expansion Into Europe's Largest Markets' - FT",
+          "id": 53215480,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "JPM"
+          ],
+          "updated_at": "2026-06-16T07:12:46Z",
+          "url": "https://www.benzinga.com/news/26/06/53215480/jpmorgan-plans-chase-expansion-into-europes-largest-markets-ft"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-15T15:57:42Z",
+          "headline": "Reported June 14: 'Singapore to Launch Gold Clearing With JPMorgan, Other Banks' - Bloomberg",
+          "id": 53201886,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "DB",
+            "EWS",
+            "JPM"
+          ],
+          "updated_at": "2026-06-15T15:57:43Z",
+          "url": "https://www.benzinga.com/news/26/06/53201886/reported-june-14-singapore-to-launch-gold-clearing-with-jpmorgan-other-banks-bloomberg"
+        }
+      ]
+    }
+  ]
+}
