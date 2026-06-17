@@ -311,6 +311,7 @@ def generate_eod_recap(
         "atr_stop":       "stop loss",
         "vwap_exit":      "profit preso",
         "breakeven_stop": "break-even",
+        "step_stop":      "profit bloccato (trailing a gradini)",
     }
 
     exit_human = {
@@ -319,6 +320,7 @@ def generate_eod_recap(
         "vwap_exit":      "VWAP take-profit",
         "eod_close":      "End-of-day close",
         "breakeven_stop": "Break-even stop",
+        "step_stop":      "Trailing a gradini",
     }
 
     trade_rows = []

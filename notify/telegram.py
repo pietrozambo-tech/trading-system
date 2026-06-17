@@ -13,6 +13,7 @@ EXIT_LABELS = {
     "hard_blocker":   "Hard stop",
     "atr_stop":       "ATR stop",
     "breakeven_stop": "Break-even stop",
+    "step_stop":      "Trailing a gradini",
     "vwap_exit":      "VWAP take-profit",
     "eod_close":      "End-of-day close",
 }

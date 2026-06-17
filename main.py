@@ -310,6 +310,11 @@ def run() -> None:
                 "confidence": None,
                 "reason": "recovered after restart",
                 "order_id": None,
+                # Reset the step ratchet: after a restart we no longer know the
+                # intra-session peak, so re-arm from scratch on prices seen from now on.
+                "peak_price": p["entry_price"],
+                "breakeven_armed": False,
+                "stop_label": None,
                 "exit_price": None,
                 "exit_time": None,
                 "exit_reason": None,

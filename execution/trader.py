@@ -275,8 +275,9 @@ def confirm_entry_fill(ctx: dict) -> Optional[dict]:
         "reason": llm_decision.get("reason", ""),
         "order_id": order_id,
         **stops,
-        "peak_price": entry_price,      # highest price seen — drives the break-even ratchet
-        "breakeven_armed": False,       # True once the stop has been raised to entry
+        "peak_price": entry_price,      # highest price seen — drives the step ratchet
+        "breakeven_armed": False,       # True once the stop has been raised to entry or above
+        "stop_label": None,             # label of the active ratchet ("breakeven_stop"/"step_stop"); None = base ATR/hard stop
         "exit_price": None,
         "exit_time": None,
         "exit_reason": None,
@@ -375,15 +376,15 @@ def close_position(ticker: str, qty: int, reason: str, fallback_price: Optional[
 def check_stop_triggered(position: dict, current_price: float) -> Optional[str]:
     """Return exit reason if any stop is triggered, else None.
 
-    Once the break-even ratchet has armed (stop_price raised to entry), a touch of
-    the stop is a break-even exit — labelled distinctly so the dashboard/stats don't
-    mis-book it as a full hard/ATR stop. The order of checks matters: breakeven_armed
-    is evaluated first because at that point stop_price == entry, so the drop-based
-    hard_blocker test below would never fire anyway.
+    Once a ratchet step has armed, `stop_label` holds the distinct exit reason
+    ("breakeven_stop" or "step_stop") so the dashboard/stats don't mis-book a
+    protected exit as a full hard/ATR stop. When no step has armed yet (stop_label
+    is None) the stop is still the base ATR/hard stop, classified by the drop size.
     """
     if current_price <= position["stop_price"]:
-        if position.get("breakeven_armed"):
-            return "breakeven_stop"
+        label = position.get("stop_label")
+        if label:
+            return label
         entry = position["entry_price"]
         if (entry - current_price) / entry >= config.HARD_BLOCKER_PCT:
             return "hard_blocker"
@@ -392,17 +393,19 @@ def check_stop_triggered(position: dict, current_price: float) -> Optional[str]:
 
 
 def update_dynamic_stop(position: dict, current_price: float) -> None:
-    """Ratchet the stop up to break-even once peak gain reaches BREAKEVEN_TRIGGER_PCT.
+    """Ratchet the stop up through the STEP_STOPS gradini as peak gain grows.
 
-    Mirrors the backtested 'breakeven +0.5%' variant exactly: track the highest price
-    seen, and the first time peak gain ≥ trigger move the stop to the entry price. The
-    stop only ever ratchets UP — it is never loosened, and once armed it stays armed.
+    Mirrors the backtested 'Step C' variant exactly. STEP_STOPS is a list of
+    (peak_trigger_pct, stop_floor_pct) tuples relative to entry. When peak gain
+    reaches a step's trigger, the stop is raised to entry*(1+floor) — but only if
+    that is higher than the current stop. The stop only ever ratchets UP. The first
+    step (floor 0.0) is plain break-even; later steps lock in a growing slice of profit.
 
-    Mutates `position` in place (peak_price, stop_price, breakeven_armed). The caller
-    must pass a validated, positive current_price (monitor_positions guards this) so a
-    stale/garbage print can never set a phantom peak or arm break-even prematurely.
+    Mutates `position` in place (peak_price, stop_price, stop_label, breakeven_armed).
+    The caller must pass a validated, positive current_price (monitor_positions guards
+    this) so a stale/garbage print can never set a phantom peak or arm a step early.
     """
-    if config.BREAKEVEN_TRIGGER_PCT is None:
+    if config.STEP_STOPS is None:
         return
     entry = position["entry_price"]
     if entry <= 0:
@@ -412,19 +415,29 @@ def update_dynamic_stop(position: dict, current_price: float) -> None:
     # which are reconstructed without this field).
     peak = max(position.get("peak_price", entry), current_price)
     position["peak_price"] = peak
-
-    if position.get("breakeven_armed"):
-        return  # already at break-even — nothing left to ratchet
-
     peak_gain = (peak - entry) / entry
-    if peak_gain >= config.BREAKEVEN_TRIGGER_PCT and position["stop_price"] < entry:
+
+    # Find the highest step floor the peak has unlocked, then ratchet up to it.
+    # Sorted ascending so we always end on the highest qualifying floor.
+    new_stop = position["stop_price"]
+    new_label = position.get("stop_label")
+    for trigger, floor in sorted(config.STEP_STOPS):
+        if peak_gain >= trigger:
+            candidate = round(entry * (1 + floor), 4)
+            if candidate > new_stop:
+                new_stop = candidate
+                new_label = "breakeven_stop" if floor == 0.0 else "step_stop"
+
+    if new_stop > position["stop_price"]:
         old_stop = position["stop_price"]
-        position["stop_price"] = round(entry, 4)
+        position["stop_price"] = new_stop
+        position["stop_label"] = new_label
         position["breakeven_armed"] = True
         ticker = position["ticker"]
+        locked_pct = (new_stop - entry) / entry * 100
         logger.info(
-            f"{ticker}: break-even armed — peak gain {peak_gain * 100:.2f}% "
-            f"≥ {config.BREAKEVEN_TRIGGER_PCT * 100:.1f}%, stop ${old_stop:.2f} → ${entry:.2f}"
+            f"{ticker}: stop ratcheted ({new_label}) — peak gain {peak_gain * 100:.2f}%, "
+            f"stop ${old_stop:.2f} → ${new_stop:.2f} (locks {locked_pct:+.1f}% vs entry)"
         )
 
 
@@ -511,8 +524,8 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
                 still_open.append(position)
                 continue
 
-            # Ratchet the stop up to break-even before evaluating it, so a price that
-            # both arms break-even and then dips this same cycle is handled correctly.
+            # Ratchet the stop up through the step gradini before evaluating it, so a
+            # price that both arms a step and then dips this same cycle is handled correctly.
             update_dynamic_stop(position, current_price)
 
             # Stop check

@@ -55,12 +55,23 @@ MAX_DAILY_LOSS_USD       = None    # disabilitato — ogni trade ha il proprio h
 
 # === EXIT RULES ===
 VWAP_EXIT_MIN_PROFIT_PCT = 0.015   # VWAP exit solo se profit >= 1.5%
-# Break-even stop: quando il guadagno di picco raggiunge questa soglia, lo stop
-# viene alzato al prezzo di entrata. Da quel momento il trade non può più chiudere
-# in perdita piena. Backtest (624 trade, gen 2025–giu 2026): +0.5% è l'ottimo —
-# P&L +5.7% e max drawdown −36% vs baseline, senza intaccare i VWAP take-profit.
-# Imposta a None per disabilitare (ripristina il comportamento solo-hard-stop).
-BREAKEVEN_TRIGGER_PCT    = 0.005   # +0.5% di picco → stop spostato a break-even
+# Step-ratchet stop (sostituisce il break-even semplice). Lista di gradini
+# (peak_trigger_pct, stop_floor_pct) relativi al prezzo di entrata: quando il
+# guadagno di PICCO raggiunge peak_trigger_pct, lo stop viene alzato a
+# entry*(1+stop_floor_pct), ma solo se più alto dello stop corrente (ratchet
+# monotòno — lo stop non scende mai). Il primo gradino con floor 0.0 è il
+# break-even classico; i successivi bloccano una frazione crescente del profitto.
+# Backtest (631 trade, gen 2025–giu 2026, --exit): questa "Step C" è risultata
+# l'ottimo — profit factor 1.48 (il più alto di 12 varianti), max drawdown $8,990
+# (il più basso in assoluto), P&L +$56.3k vs +$48.6k del solo break-even +0.5%,
+# avg_loss invariato (i gradini toccano solo la gestione del profitto, non lo
+# stop di perdita). Convive con il VWAP take-profit, che resta attivo.
+# Imposta a None per disabilitare l'intero meccanismo (solo hard/ATR stop).
+STEP_STOPS = [
+    (0.005, 0.000),   # picco +0.5% → stop a break-even (entry)
+    (0.015, 0.010),   # picco +1.5% → blocca +1.0%
+    (0.030, 0.020),   # picco +3.0% → blocca +2.0%
+]
 
 # === TIMING (ET) ===
 WATCHLIST_TIME       = "09:25"

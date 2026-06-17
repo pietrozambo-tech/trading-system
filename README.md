@@ -142,8 +142,8 @@ Every minute the bot checks each open position. It closes a trade if any of thes
 |----------|------|---------|----------------------|
 | 1 | **Hard stop** | Price falls ≥2.0% from entry | The absolute floor — simple, predictable, immune to data issues. On a ~$49.5k position, 2% = ~$990 max loss per trade. Always checked first. |
 | 2 | **ATR stop** | Price falls ≥1× ATR14 from entry | ATR (Average True Range) measures how much a stock typically moves in a day over the past 14 days. Setting the stop exactly at ATR14 below entry means you exit if the move against you exceeds the stock's typical daily range — a signal that something is genuinely wrong, not just noise. On calm stocks (ATR ~1%) this fires at -1%, tighter than the hard stop. On volatile stocks (ATR >2%) the hard stop at -2% fires first. Whichever is tighter (higher price) wins. |
-| 3 | **Break-even stop** | Peak gain reaches +0.5%, then price falls back to entry | Once a trade has shown +0.5% of profit at any point, the stop is ratcheted up to the entry price — the trade can no longer close at a full loss. Protects the downside without forcing an early exit on a small profit (so it never cuts the winners). Backtested over 624 trades: P&L +5.7% and max drawdown −36% vs. the prior two-stop system. The stop only ratchets up, never loosens. |
-| 4 | **VWAP take-profit** | Price drops below VWAP *and* profit ≥1.5% | This is a profit-protecting exit, not a stop loss. If the stock was running but has now fallen back below the average price of the day, momentum has likely shifted. The 1.5% minimum is there so we don't exit a trade that barely moved — we only lock in profit when there's real gain to protect. |
+| 3 | **Step-ratchet stop** (trailing a gradini) | Peak gain hits +0.5% → stop to entry; +1.5% → stop locks +1.0%; +3.0% → stop locks +2.0% | A multi-step version of the break-even stop. Each gradino raises the stop floor as the peak grows, so a trade that runs up and then reverses keeps a slice of the gain instead of round-tripping all the way back to entry. The first step (+0.5% → break-even) is the original protection; the higher steps lock in profit. The stop only ratchets up, never loosens. Backtested over 631 trades (the "Step C" variant): profit factor **1.48** (highest of 12 variants), max drawdown **$8,990** (lowest of all), P&L **+$56.3k** vs +$48.6k for plain break-even +0.5% — with the average loss unchanged (steps only touch profit management, never the loss side). |
+| 4 | **VWAP take-profit** | Price drops below VWAP *and* profit ≥1.5% | This is a profit-protecting exit, not a stop loss. If the stock was running but has now fallen back below the average price of the day, momentum has likely shifted. The 1.5% minimum is there so we don't exit a trade that barely moved — we only lock in profit when there's real gain to protect. **Not made redundant by the step ratchet:** the VWAP exit fires at the *live* price on a reversal (often well above any step floor), while the steps are a fixed pavement below the peak — they protect different things and coexist (38 VWAP exits still fired under Step C in backtest). |
 | 5 | **End-of-day close** | 3:45 PM ET, no exceptions | We never hold overnight. Gaps at open, earnings after hours, macro news — too much can happen. Everything is flat before the close, every single day. |
 
 The 1.5% minimum for the VWAP take-profit gives the condition room to fire: during a reversal VWAP lags the current price, so by the time price crosses below VWAP the profit has often already eroded — a 2.5% threshold was too tight and never fired in backtesting.
@@ -229,7 +229,7 @@ The trade header (`Trade N — TICKER long [Score: X.XX]`) is **bold** in Telegr
 | Example on $100k | ($100,000 − $1,000) ÷ 2 = $49,500/trade |
 | Hard stop per trade | -2.0% from entry (~$990 on $49.5k position) |
 | ATR stop per trade | -1× ATR14 from entry (tighter than hard stop on low-vol stocks) |
-| Break-even stop trigger | +0.5% peak gain → stop raised to entry price |
+| Step-ratchet stop | +0.5% peak → entry; +1.5% peak → lock +1.0%; +3.0% peak → lock +2.0% |
 | VWAP take-profit threshold | 1.5% profit minimum |
 
 ---
@@ -428,6 +428,35 @@ Scartate:
 **Implementazione (14 giugno 2026):** `config.BREAKEVEN_TRIGGER_PCT = 0.005`. Nel monitoring loop, `trader.update_dynamic_stop()` traccia `peak_price` per posizione e, al primo ciclo in cui il picco raggiunge +0.5%, alza `stop_price` al prezzo di entry (ratchet solo verso l'alto, mai allentato). L'uscita risultante è etichettata `breakeven_stop` (distinta da `hard_blocker`/`atr_stop` in dashboard, Telegram e statistiche). Una guardia sul prezzo (`current_price > 0` e finito) impedisce a un print stantio/anomalo di armare il break-even o far scattare uno stop. Le posizioni recuperate dopo un riavvio funzionano senza i nuovi campi (default difensivi).
 
 **Nota metodologica:** il backtest è in-sample, con stop valutati sul close del minuto, dati IEX (15–20% del volume reale), senza costi di transazione/slippage. La direzione del risultato è netta, ma i valori assoluti vanno presi come indicativi.
+
+### Trailing a gradini — il break-even diventa multi-step (17 giugno 2026)
+
+**Osservazione emersa il 17 giugno 2026 (trade SOFI):** SOFI è salito fino a **+3.16%** di picco ($18.695 da un entry di $18.1219), poi ha invertito ed è uscito a **break-even** (−$61). Il VWAP take-profit non è scattato perché le sue due condizioni (profit ≥1.5% **e** prezzo < VWAP) non si sono mai sovrapposte: mentre il titolo era ≥1.5% su era *sopra* il VWAP; quando è sceso sotto il VWAP era già tornato sotto +1.5%. Il break-even +0.5% ha protetto il downside ma ha restituito **tutto** il guadagno — mancava un gradino intermedio che bloccasse il profitto già maturato.
+
+**Soluzione: il break-even diventa un ratchet a più gradini.** `STEP_STOPS` è una lista di `(peak_trigger_pct, stop_floor_pct)`: ogni volta che il picco raggiunge un trigger, lo stop sale a `entry*(1+floor)` (solo verso l'alto). Confronto `--exit` rilanciato (gen 2025 → giu 2026, **70 ticker** post-rebalance, 631 trade, stesse entry):
+
+| Variante | P&L totale | Max DD | Win rate | PF | Avg win | Avg loss | Step exits | VWAP exits |
+|----------|-----------|--------|----------|-----|---------|----------|-----------|------------|
+| break-even +0.5% (precedente) | $48.603 | $9.929 | 29.2% | 1.41 | $904 | −$750 | 0 | 63 |
+| step A — lock +0.5% @1.5% | $50.569 | $9.439 | 37.6% | 1.43 | $710 | −$750 | 74 | 57 |
+| step B — A + lock +1.5% @3.0% | $50.290 | $9.439 | 37.6% | 1.43 | $709 | −$750 | 76 | 56 |
+| **step C — lock +1.0% @1.5%, +2.0% @3.0%** ✅ | **$56.337** | **$8.990** | 37.7% | **1.48** | $732 | −$750 | 114 | 38 |
+| step D — lock +0.5% @2.0% | $51.727 | $9.929 | 32.0% | 1.44 | $839 | −$750 | 22 | 62 |
+| trailing +1.0% / dist 0.5% | $65.870 | $11.363 | 63.1% | 1.40 | $580 | −$717 | — | 2 |
+
+**Conclusione: si adotta "Step C"** — `STEP_STOPS = [(0.005, 0.0), (0.015, 0.010), (0.030, 0.020)]`. Vs break-even +0.5%:
+
+- **Profit factor 1.48** — il più alto delle 12 varianti testate.
+- **Max drawdown $8.990** — il più basso in assoluto, persino sotto il break-even semplice.
+- **P&L +$7.7k** ($48.6k → $56.3k, +16%).
+- **Avg loss invariato** (−$750): i gradini toccano solo la gestione del profitto, mai lo stop di perdita.
+- **Il VWAP non diventa superfluo:** scatta ancora 38 volte — esce al prezzo live sul reversal (sopra qualsiasi gradino), complementare al pavimento dei gradini.
+
+Su SOFI, Step C avrebbe bloccato +2.0% (picco ≥+3.0%) → uscita ~$18.48 invece di $18.10: **≈ +$1.010 invece di −$61** (2788 azioni).
+
+**Scartata — trailing +1.0% / dist 0.5% ($65.870):** P&L lordo più alto, ma PF più basso (1.40) e drawdown più alto ($11.4k), e soprattutto **poco robusto**: un trailing stretto allo 0.5% valutato sul close del minuto in backtest sovrastima molto rispetto al live (campionamento 60s su prezzi IEX stantii → whipsaw reale ben maggiore). I gradini scattano su livelli fissi lontani dal prezzo quando vengono armati, quindi molto meno sensibili a close-vs-low e cadenza 60s.
+
+**Implementazione (17 giugno 2026):** `config.STEP_STOPS` (sostituisce `BREAKEVEN_TRIGGER_PCT`). In `trader.update_dynamic_stop()` ogni ciclo si traccia `peak_price` e si alza lo stop al gradino più alto sbloccato dal picco; il campo `stop_label` sulla posizione registra l'etichetta del ratchet attivo (`breakeven_stop` per il floor 0.0, `step_stop` per i gradini superiori), letta da `check_stop_triggered()`. Le uscite `step_stop` sono distinte in dashboard, Telegram e recap. Le posizioni recuperate dopo un riavvio re-armano il ratchet da zero (default difensivi).
 
 ### Soglie vol_boost — ricalibrare coi dati (giugno 2026)
 
