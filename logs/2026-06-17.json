@@ -1,0 +1,661 @@
+{
+  "date": "2026-06-17",
+  "spy_pct": 0.00017319939246981727,
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 12,
+      "tickers": [
+        "ASTS",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "QUBT",
+        "SOFI",
+        "IONQ",
+        "SMCI",
+        "RGTI",
+        "RDW",
+        "OKLO"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 12,
+      "tickers": [
+        "ASTS",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "QUBT",
+        "SOFI",
+        "IONQ",
+        "SMCI",
+        "RGTI",
+        "RDW",
+        "OKLO"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 3,
+      "tickers": [
+        "AMAT",
+        "SOFI",
+        "RDW"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "ASTS",
+      "gap_pct": 5.23,
+      "adv_m": 20.4,
+      "short_float_pct": 18.4,
+      "dist_from_3m_high_pct": -35.3
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 3.47,
+      "adv_m": 51.1,
+      "short_float_pct": 3.3,
+      "dist_from_3m_high_pct": -4.9
+    },
+    {
+      "ticker": "AVGO",
+      "gap_pct": 3.43,
+      "adv_m": 25.7,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -21.3
+    },
+    {
+      "ticker": "AMAT",
+      "gap_pct": 3.29,
+      "adv_m": 7.4,
+      "short_float_pct": 2.5,
+      "dist_from_3m_high_pct": -2.3
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 3.19,
+      "adv_m": 35.6,
+      "short_float_pct": 4.7,
+      "dist_from_3m_high_pct": -11.3
+    },
+    {
+      "ticker": "QUBT",
+      "gap_pct": 1.78,
+      "adv_m": 19.5,
+      "short_float_pct": 29.7,
+      "dist_from_3m_high_pct": -28.7
+    },
+    {
+      "ticker": "SOFI",
+      "gap_pct": 1.58,
+      "adv_m": 68.6,
+      "short_float_pct": 14.7,
+      "dist_from_3m_high_pct": -10.6
+    },
+    {
+      "ticker": "IONQ",
+      "gap_pct": 1.46,
+      "adv_m": 30.3,
+      "short_float_pct": 15.6,
+      "dist_from_3m_high_pct": -22.8
+    },
+    {
+      "ticker": "SMCI",
+      "gap_pct": 1.4,
+      "adv_m": 50.1,
+      "short_float_pct": 16.5,
+      "dist_from_3m_high_pct": -42.4
+    },
+    {
+      "ticker": "RGTI",
+      "gap_pct": 1.02,
+      "adv_m": 39.9,
+      "short_float_pct": 18.8,
+      "dist_from_3m_high_pct": -25.7
+    },
+    {
+      "ticker": "RDW",
+      "gap_pct": 0.74,
+      "adv_m": 37.2,
+      "short_float_pct": 22.4,
+      "dist_from_3m_high_pct": -48.9
+    },
+    {
+      "ticker": "OKLO",
+      "gap_pct": 0.5,
+      "adv_m": 13.3,
+      "short_float_pct": 18.0,
+      "dist_from_3m_high_pct": -29.1
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "OKLO",
+      "reason": "gap_reversed_at_open"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "ASTS",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.4086,
+      "gap_retention": 0.3106,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.596,
+      "vol_today": 13324,
+      "vol_avg": 22351,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1839,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.05227963525835863,
+      "price_935": 84.75,
+      "open_930": 85.695,
+      "prev_close": 82.25
+    },
+    {
+      "ticker": "MU",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0794,
+      "gap_retention": 0.5266,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.558,
+      "vol_today": 23637,
+      "vol_avg": 42374,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0334,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03468983894353235,
+      "price_935": 1044.025,
+      "open_930": 1062.0,
+      "prev_close": 1020.76
+    },
+    {
+      "ticker": "AVGO",
+      "confidence": 0.4333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.048,
+      "gap_retention": 0.7074,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.835,
+      "vol_today": 43065,
+      "vol_avg": 51587,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.1,
+      "short_float": 0.0125,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03427039367152458,
+      "price_935": 385.37,
+      "open_930": 388.705,
+      "prev_close": 376.71
+    },
+    {
+      "ticker": "AMAT",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9822,
+      "gap_retention": 0.8971,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.553,
+      "vol_today": 16198,
+      "vol_avg": 10428,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0252,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.032891610791404784,
+      "price_935": 612.605,
+      "open_930": 593.945,
+      "prev_close": 568.23
+    },
+    {
+      "ticker": "MRVL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.4182,
+      "gap_retention": 0.654,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.424,
+      "vol_today": 29786,
+      "vol_avg": 70198,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0471,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.031937417016542784,
+      "price_935": 290.27,
+      "open_930": 292.89,
+      "prev_close": 278.67
+    },
+    {
+      "ticker": "QUBT",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0,
+      "gap_retention": 0.2195,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.155,
+      "vol_today": 4517,
+      "vol_avg": 29167,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2974,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01778656126482228,
+      "price_935": 10.165,
+      "open_930": 10.325,
+      "prev_close": 10.12
+    },
+    {
+      "ticker": "SOFI",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.6333,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.774,
+      "vol_today": 55759,
+      "vol_avg": 72027,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1471,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01581027667984176,
+      "price_935": 18.08,
+      "open_930": 17.86,
+      "prev_close": 17.71
+    },
+    {
+      "ticker": "IONQ",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1647,
+      "gap_retention": -0.4714,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.418,
+      "vol_today": 10903,
+      "vol_avg": 26068,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.15609999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.014627185158758478,
+      "price_935": 55.935,
+      "open_930": 56.76,
+      "prev_close": 56.06
+    },
+    {
+      "ticker": "SMCI",
+      "confidence": 0.2,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0,
+      "gap_retention": -0.0185,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.492,
+      "vol_today": 52702,
+      "vol_avg": 107175,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.1,
+      "short_float": 0.16549999,
+      "short_squeeze_bonus": 0.1,
+      "gap_pct": 0.014031485284052025,
+      "price_935": 29.21,
+      "open_930": 29.76,
+      "prev_close": 29.22
+    },
+    {
+      "ticker": "RGTI",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.3152,
+      "gap_retention": -0.1379,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.132,
+      "vol_today": 11198,
+      "vol_avg": 84521,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1877,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010174418604651203,
+      "price_935": 20.745,
+      "open_930": 20.93,
+      "prev_close": 20.64
+    },
+    {
+      "ticker": "RDW",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7206,
+      "gap_retention": 0.6923,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.452,
+      "vol_today": 30199,
+      "vol_avg": 66756,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2243,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.007407407407407381,
+      "price_935": 13.79,
+      "open_930": 13.565,
+      "prev_close": 13.5
+    }
+  ],
+  "llm_input": [
+    "AMAT",
+    "SOFI",
+    "RDW"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "AMAT",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e tre i segnali tecnici confermati (post_open_advance, or_position 0.98, gap_retention 0.90) con confidence_algo massima di 1.0. Il titolo \u00e8 a soli -2.3% dai massimi di 3 mesi, riducendo la resistenza sopra; la partnership con EssilorLuxottica su sistemi ottici AI \u00e8 un catalyst Tier 3 che non sposta il calcolo ma supporta il sentiment.",
+      "price_935": 612.605
+    },
+    "trade_2": {
+      "ticker": "SOFI",
+      "direction": "long",
+      "confidence": 0.6667,
+      "reason": "Insider buying massiccio del CEO (oltre $2.2M in 2026) rappresenta un catalyst Tier 2 (+0.20), e la narrativa crypto/stablecoin SoFiUSD mantiene momentum; segnali tecnici solidi con or_position 1.0 e post_open_advance positivo, e short_float al 14.7% aumenta la pressione al rialzo in presenza di catalyst confermato.",
+      "price_935": 18.08
+    },
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "AMAT",
+      "qty": 82,
+      "entry_price": 614.83,
+      "entry_time": "09:35:45",
+      "entry_ts": 1781703345.723733,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e tre i segnali tecnici confermati (post_open_advance, or_position 0.98, gap_retention 0.90) con confidence_algo massima di 1.0. Il titolo \u00e8 a soli -2.3% dai massimi di 3 mesi, riducendo la resistenza sopra; la partnership con EssilorLuxottica su sistemi ottici AI \u00e8 un catalyst Tier 3 che non sposta il calcolo ma supporta il sentiment.",
+      "order_id": "bfda2a76-d448-419b-89fa-7b21e8e308f4",
+      "stop_atr": 579.8747,
+      "stop_pct": 602.5334,
+      "stop_price": 614.83,
+      "atr14": 34.9553,
+      "peak_price": 621.91,
+      "breakeven_armed": true,
+      "exit_price": 614.6,
+      "exit_time": "09:50:57",
+      "exit_reason": "breakeven_stop",
+      "pnl_usd": -18.86,
+      "pnl_pct": -0.0004,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.0252,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9822,
+      "gap_retention": 0.8971,
+      "gap_pct": 0.032891610791404784,
+      "news": [
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-06-16T20:15:44Z",
+          "headline": "$1000 Invested In Applied Materials 10 Years Ago Would Be Worth This Much Today",
+          "id": 53237563,
+          "images": [],
+          "source": "benzinga",
+          "summary": " ",
+          "symbols": [
+            "AMAT"
+          ],
+          "updated_at": "2026-06-16T20:15:44Z",
+          "url": "https://www.benzinga.com/insights/news/26/06/53237563/1000-invested-in-applied-materials-10-years-ago-would-be-worth-this-much-today"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-16T16:02:09Z",
+          "headline": "EssilorLuxottica, Applied Materials Strike Joint Development Agreement Over Commercialization Of Intelligent Optical Systems For Augmented Reality, AI-Powered Smart Eyewear",
+          "id": 53229430,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "AMAT"
+          ],
+          "updated_at": "2026-06-16T16:02:10Z",
+          "url": "https://www.benzinga.com/news/26/06/53229430/essilorluxottica-applied-materials-strike-joint-development-agreement-over-commercialization-of-inte"
+        }
+      ]
+    },
+    {
+      "ticker": "SOFI",
+      "qty": 2788,
+      "entry_price": 18.121873,
+      "entry_time": "09:35:50",
+      "entry_ts": 1781703350.8733225,
+      "direction": "long",
+      "confidence": 0.6667,
+      "reason": "Insider buying massiccio del CEO (oltre $2.2M in 2026) rappresenta un catalyst Tier 2 (+0.20), e la narrativa crypto/stablecoin SoFiUSD mantiene momentum; segnali tecnici solidi con or_position 1.0 e post_open_advance positivo, e short_float al 14.7% aumenta la pressione al rialzo in presenza di catalyst confermato.",
+      "order_id": "8ab2fa95-71bd-4fe5-8456-ad3661ecba70",
+      "stop_atr": 17.0539,
+      "stop_pct": 17.7594,
+      "stop_price": 18.1219,
+      "atr14": 1.068,
+      "peak_price": 18.695,
+      "breakeven_armed": true,
+      "exit_price": 18.1,
+      "exit_time": "15:11:44",
+      "exit_reason": "breakeven_stop",
+      "pnl_usd": -60.98,
+      "pnl_pct": -0.0012,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.1471,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.6333,
+      "gap_pct": 0.01581027667984176,
+      "news": [
+        {
+          "author": "Erica Kollmann",
+          "content": "",
+          "created_at": "2026-06-17T13:09:09Z",
+          "headline": "SoFi CEO Won't Stop Buying His Own Stock",
+          "id": 53248011,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/17/San-Francisco--Ca--Usa---May-1--2022-Sof.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/17/San-Francisco--Ca--Usa---May-1--2022-Sof.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/17/San-Francisco--Ca--Usa---May-1--2022-Sof.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "SoFi CEO Anthony Noto has been buying SOFI stock, adding over $2.2 million worth of shares in 2026.",
+          "symbols": [
+            "SOFI"
+          ],
+          "updated_at": "2026-06-17T13:09:10Z",
+          "url": "https://www.benzinga.com/trading-ideas/insider-trades/26/06/53248011/sofi-ceo-wont-stop-buying-his-own-stock"
+        },
+        {
+          "author": "Shivdeep Dhaliwal",
+          "content": "",
+          "created_at": "2026-06-17T01:31:59Z",
+          "headline": "Netflix, SoFi Technologies, Snap, Moderna And Our Bond AI: Why These 5 Stocks Are On Investors' Radars Today",
+          "id": 53240692,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/16/Finger-To-The-Graph-On-The-Monitor--Team.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/16/Finger-To-The-Graph-On-The-Monitor--Team.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/16/Finger-To-The-Graph-On-The-Monitor--Team.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Major U.S. indexes closed mixed on Tuesday, with the Dow Jones Industrial Average gaining 0.6% to 51,999.67.",
+          "symbols": [
+            "MRNA",
+            "NFLX",
+            "OBAI",
+            "SNAP",
+            "SOFI"
+          ],
+          "updated_at": "2026-06-17T01:32:00Z",
+          "url": "https://www.benzinga.com/markets/equities/26/06/53240692/netflix-sofi-technologies-snap-moderna-and-our-bond-ai-why-these-5-stocks-are-on-investors-radars-today"
+        },
+        {
+          "author": "Henry Khederian",
+          "content": "",
+          "created_at": "2026-06-16T20:07:15Z",
+          "headline": "SoFi Stock Is Climbing Despite A Broader Tech Selloff: What's Going On?",
+          "id": 53237248,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/16/San-Francisco--Ca--Usa---May-1--2022-Sof.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/16/San-Francisco--Ca--Usa---May-1--2022-Sof.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/16/San-Francisco--Ca--Usa---May-1--2022-Sof.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "SoFi Technologies is trading higher on Tuesday as traders keep leaning into the company&#39;s crypto-adjacent narrative following its SoFiUSD stablecoin rollout.",
+          "symbols": [
+            "SOFI"
+          ],
+          "updated_at": "2026-06-16T20:07:16Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/06/53237248/sofi-stock-is-climbing-despite-a-broader-tech-selloff-whats-going-on"
+        }
+      ]
+    }
+  ]
+}
