@@ -49,6 +49,13 @@ class BacktestParams:
     breakeven_trigger_pct:   Optional[float] = None   # once peak gain ≥ this, move stop up to entry
     trailing_trigger_pct:    Optional[float] = None   # once peak gain ≥ this, activate a trailing stop
     trailing_distance_pct:   float = 0.010             # trailing stop sits this far below the intraday peak
+    # Multi-step ratchet: list of (peak_trigger_pct, stop_floor_pct) tuples, each relative to entry.
+    # Steps are applied in ascending trigger order; each step raises dyn_stop only if the new floor
+    # is higher than the current stop. Example: [(0.005, 0.0), (0.015, 0.005)] means:
+    #   peak ≥ +0.5% → stop at entry (break-even)
+    #   peak ≥ +1.5% → stop at entry +0.5%
+    # When step_stops is set it is processed independently of breakeven_trigger_pct / trailing.
+    step_stops:              Optional[list] = None
 
 
 # ---------------------------------------------------------------------------
@@ -375,6 +382,15 @@ def _simulate_day(
             trail = peak * (1 - params.trailing_distance_pct)
             if trail > dyn_stop:
                 dyn_stop, stop_label = trail, "trailing_stop"
+        # Multi-step ratchet: each step raises the stop floor as peak gain grows.
+        # Steps are sorted ascending so each one can only raise dyn_stop, never lower it.
+        if params.step_stops is not None:
+            for trigger, floor in sorted(params.step_stops):
+                if peak_gain >= trigger:
+                    new_stop = entry_price * (1 + floor)
+                    if new_stop > dyn_stop:
+                        dyn_stop = new_stop
+                        stop_label = "breakeven_stop" if floor == 0.0 else "step_stop"
 
         if price <= dyn_stop:
             exit_price  = max(price, dyn_stop)
@@ -582,14 +598,29 @@ def exit_strategy_analysis(
     days      = _trading_days(start_date, end_date)
 
     variants = [
+        # ── Baseline + existing break-even variants (unchanged) ──────────────────
         ("baseline (VWAP 1.5%)",            BacktestParams()),
         ("breakeven +0.3%",                 BacktestParams(breakeven_trigger_pct=0.003)),
-        ("breakeven +0.5%",                 BacktestParams(breakeven_trigger_pct=0.005)),
+        ("breakeven +0.5% [live]",          BacktestParams(breakeven_trigger_pct=0.005)),
         ("breakeven +0.8%",                 BacktestParams(breakeven_trigger_pct=0.008)),
         ("trailing +0.8% / dist 1.0%",      BacktestParams(trailing_trigger_pct=0.008, trailing_distance_pct=0.010)),
         ("trailing +1.0% / dist 1.0%",      BacktestParams(trailing_trigger_pct=0.010, trailing_distance_pct=0.010)),
         ("trailing +1.0% / dist 0.5%",      BacktestParams(trailing_trigger_pct=0.010, trailing_distance_pct=0.005)),
         ("breakeven +0.5% + VWAP 1.0%",     BacktestParams(breakeven_trigger_pct=0.005, vwap_exit_min_profit=0.010)),
+        # ── Step-ratchet variants (gradini) ──────────────────────────────────────
+        # All include +0.5%→BE as step 1; add extra steps that lock in partial profit.
+        # A: 1 extra step — at +1.5% peak, stop locks in +0.5% (covers SOFI/AMAT scenario)
+        ("step A: BE+0.5%, lock +0.5% @1.5%",
+            BacktestParams(step_stops=[(0.005, 0.0), (0.015, 0.005)])),
+        # B: 2 extra steps — at +3.0% peak, stop locks in +1.5%
+        ("step B: BE+0.5%, lock +0.5% @1.5%, +1.5% @3.0%",
+            BacktestParams(step_stops=[(0.005, 0.0), (0.015, 0.005), (0.030, 0.015)])),
+        # C: aggressive — larger lock-in at each step
+        ("step C: BE+0.5%, lock +1.0% @1.5%, +2.0% @3.0%",
+            BacktestParams(step_stops=[(0.005, 0.0), (0.015, 0.010), (0.030, 0.020)])),
+        # D: late trigger — second step fires only when peak ≥ +2.0% (less hair-trigger)
+        ("step D: BE+0.5%, lock +0.5% @2.0%",
+            BacktestParams(step_stops=[(0.005, 0.0), (0.020, 0.005)])),
     ]
 
     rows = []
@@ -619,6 +650,7 @@ def exit_strategy_analysis(
             "max_dd_usd":    s["max_drawdown_usd"],
             "vwap_exits":      ec.get("vwap_exit", 0),
             "breakeven_exits": ec.get("breakeven_stop", 0),
+            "step_exits":      ec.get("step_stop", 0),
             "trailing_exits":  ec.get("trailing_stop", 0),
             "hardstop_exits":  ec.get("hard_blocker", 0) + ec.get("atr_stop", 0),
             "eod_exits":       ec.get("eod_close", 0),
