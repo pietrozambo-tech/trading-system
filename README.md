@@ -340,6 +340,9 @@ Ideas discussed and parked — revisit when there's time.
 ### 2 vs 3 max positions
 The capital deployed is the same regardless: 2 × $49.5k or 3 × $33k both put $99k to work. The question is whether the 3rd-best setup on a given day is genuinely good or just marginal. The daily log now records `passes_threshold` per ticker — after a few weeks of data, count how many days had 3+ viable candidates above the confidence threshold and decide from there.
 
+### Monitoring interval — 60s, valutare 30s coi dati (giugno 2026)
+Controlliamo il prezzo live ogni 60s (`MONITORING_INTERVAL`), leggendo l'ultimo trade IEX (fallback al close della barra 1-min se >120s vecchio). Con un feed a ~15–20% del tape e campionamento a 60s ci sono gap inevitabili: il `peak_price` può essere sotto-registrato (gradino non armato), un breve sforamento dello stop che rimbalza entro la finestra è invisibile, e un movimento avverso rapido può riempire peggio del livello di stop (slippage non modellato nel backtest). Questi gap sono **coerenti con la granularità ~1-min del backtest**, quindi non invalidano i risultati di Step C. **Azione:** monitorare i log dei prossimi giorni; se compaiono overshoot reali sugli stop (fill peggiori del livello), scendere a 30s con dati alla mano invece che reattivamente. Alpaca regge ampiamente la frequenza maggiore.
+
 ### Entry timing — implemented (June 2026)
 Backtested entry times at 9:31, 9:33, 9:35, and 9:40 over the full 2025–2026 universe. Both oracle (signals computed at 9:40, entries at earlier times) and non-oracle (signals computed from bars available at entry time only) variants were run.
 
@@ -485,6 +488,34 @@ Alpaca's built-in reporting is too limited for meaningful analysis. The plan is 
 **Tech stack:** HTML + Chart.js (CDN, no build step). One `generate_dashboard.py` script reads `logs/*.json` and writes a single `dashboard.html` with all data embedded as `const DATA = [...]`. No server, no hosting — just open in the browser.
 
 **Pre-requisites before building:** at least 2–3 days of real trading logs in `logs/` on GitHub. The daily log already captures everything needed: all L2 signal fields (`post_open_advance`, `or_position`, `gap_retention`, `vol_boost`, `catalyst_bonus`, `short_float`, `short_squeeze_bonus`, `confidence`), trade fields (entry/exit price & time, shares, `pnl_usd`, `exit_reason`), the pipeline funnel stages, and the LLM reasoning. Resume this task once real data is available.
+
+---
+
+## Changelog — timeline dei cambiamenti
+
+Riassunti **high level** dei cambi per giorno (più recente in alto). Solo titoli — i dettagli sono nelle sezioni sopra e nei commit. Tag: `[feat]` nuova implementazione · `[fix]` bug fix · `[exp]` esperimento/decisione.
+
+### 17 giugno 2026
+- `[feat]` **Step-ratchet stop ("Step C")** sostituisce il break-even semplice: gradini +0.5%→entry, +1.5%→+1.0%, +3.0%→+2.0%. Nasce dal caso SOFI (picco +3.16% tornato a break-even). Backtest 631 trade: PF 1.48, max DD più basso, P&L +$56.3k.
+- `[feat]` Backtest engine: parametro `step_stops` + varianti A–D nel confronto `--exit`.
+
+### 16 giugno 2026
+- `[feat]` Dashboard: colonna **P&L % giornaliero** nel pipeline funnel + date in formato "16 June, Mon".
+- `[feat]` Dashboard: **tabella P&L per exit strategy** (Tot/Avg/Avg%/#) accanto al grafico a torta.
+- `[fix]` Workflow GitHub Pages: ridepoya anche quando cambia `generate_dashboard.py` (prima solo al cambio dei log → dashboard ferma a versioni vecchie).
+
+### 15 giugno 2026
+- `[fix]` **Prezzo di uscita mis-bookato**: `close_position()` ora fa polling del fill reale (6×1s) prima di ripiegare su snapshot/quote, che falsavano il P&L. Corretti retroattivamente AMD/CRWV nel log.
+- `[fix]` Data sbagliata nel recap Telegram (l'LLM la indovinava) → ora iniettata esplicitamente.
+- `[fix]` Rimosso l'alert Telegram all'arming del break-even (ridondante); aggiunto logging della headline che attiva il catalyst e degli skip per dati intraday insufficienti.
+
+### 14 giugno 2026
+- `[feat]` **Break-even stop +0.5%** adottato dopo backtest (poi evoluto in Step C il 17/6).
+- `[feat]` **Watchlist ribilanciata 60→70**: rimossi 14 nomi lenti, aggiunti 24 high-beta gappers.
+- `[exp]` Scartati: abbassare la soglia VWAP e il trailing stop a distanza fissa (tagliavano gli avg win).
+
+### 13 giugno 2026
+- `[fix]` **Calcolo volume OR**: escluso il bound di fine finestra (le 9:35) che gonfiava `vol_avg` del 15–25% e teneva il `vol_boost` a zero da giorni.
 
 ---
 
