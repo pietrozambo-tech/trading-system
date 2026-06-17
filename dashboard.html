@@ -97,7 +97,7 @@ svg text { font-family: -apple-system, sans-serif; }
 
 <div class="header">
   <h1>📈 Trading Dashboard — Gap &amp; Go</h1>
-  <span class="updated">Aggiornato: 18/06/2026 01:14 CEST</span>
+  <span class="updated">Aggiornato: 18/06/2026 01:28 CEST</span>
 </div>
 
 <!-- Filter bar -->
@@ -117,7 +117,7 @@ svg text { font-family: -apple-system, sans-serif; }
   <button class="qbtn" data-exit="hard_blocker">Hard stop</button>
   <button class="qbtn" data-exit="atr_stop">ATR stop</button>
   <button class="qbtn" data-exit="breakeven_stop">Break-even</button>
-  <button class="qbtn" data-exit="step_stop">Gradini</button>
+  <button class="qbtn" data-exit="step_stop">Gradino profitto</button>
   <button class="qbtn" data-exit="vwap_exit">VWAP</button>
   <button class="qbtn" data-exit="eod_close">EOD close</button>
 </div>
@@ -231,7 +231,7 @@ const LOGS  = [{"date": "2026-06-04", "spy_pct": -0.0016972075631811673, "blocke
 const STATS = {"total_pnl": 1801.24, "win_rate": 45.5, "n_trades": 11, "n_wins": 5, "n_losses": 6, "avg_win": 846.53, "avg_loss": -405.23, "avg_conf": 1.0, "trade_days": 7, "total_days": 10, "total_pnl_pct": 1.8, "initial_equity": 100000};
 const EXIT_LABELS = {
   hard_blocker:"Hard stop", atr_stop:"ATR stop", breakeven_stop:"Break-even stop",
-  step_stop:"Trailing a gradini",
+  step_stop:"Gradino di profitto",
   vwap_exit:"VWAP take-profit", eod_close:"EOD close", manual_close:"Manual close"
 };
 

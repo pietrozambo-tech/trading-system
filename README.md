@@ -516,6 +516,32 @@ Riassunti **high level** dei cambi per giorno (più recente in alto). Solo titol
 
 ### 13 giugno 2026
 - `[fix]` **Calcolo volume OR**: escluso il bound di fine finestra (le 9:35) che gonfiava `vol_avg` del 15–25% e teneva il `vol_boost` a zero da giorni.
+- `[fix]` **Audit robustezza**: doppia-miss prima di dichiarare manual-close, ordine delle guardie, cancellazione ordini orfani, retry chiusura EOD.
+- `[feat]` Dashboard: timestamp "ultimo aggiornamento" in ora locale Madrid, separatori delle migliaia, tooltip tap-friendly per iPad, volumi OR grezzi + esclusioni pre-open gate.
+
+### 12 giugno 2026
+- `[fix]` **Posizione creata solo dopo fill confermato**; gli ordini limit non eseguiti entro il timeout vengono cancellati (niente ordini orfani che riempiono ore dopo, non monitorati).
+- `[fix]` Loggato `vol_ratio`; parallelizzata la conferma fill di due trade (attese sovrapposte invece che in serie).
+
+### 11 giugno 2026
+- `[fix]` **Prezzo di entry loggato sbagliato**: query all'endpoint posizione prima del fallback su `ref_price`.
+- `[exp]` Documentato il gap della strategia di uscita (caso INTC: piccolo profitto → inversione senza protezione) → porterà al break-even.
+
+### 9–10 giugno 2026
+- `[feat]` Dashboard: filtri (exit reason globale + esito L2 locale), tabelle scrollabili a altezza fissa, info-icon sulle colonne, badge colorati per esito.
+- `[fix]` Prezzo di entry via limit order ancorato al bar-close reale (`price_935`); formattazione recap Telegram (HTML/emoji).
+
+### 5–7 giugno 2026
+- `[feat]` **Dashboard GitHub Pages** con auto-deploy sui log + grafici SVG e filtri data.
+- `[feat]` Rilevamento pre-market migliorato + check di ritenzione del gap all'apertura (pre-open gate).
+
+### 3–4 giugno 2026
+- `[feat]` **Log giornalieri persistiti su GitHub** (Contents API); segnale **short squeeze (S5)**; dettagli completi dei candidati pre-market nel log.
+- `[fix]` Falso positivo manual-close; retry fetch del prezzo di fill (fino a 5×).
+
+### 28 maggio – 2 giugno 2026 (genesi)
+- `[feat]` Implementazione iniziale del sistema completo; feed **IEX** (free tier); universo esteso; **PipelineLog** (traccia ogni stadio dei filtri); recap Telegram user-friendly; **backtest engine v2** (bulk fetch).
+- `[feat]` Stop ristretti (hard −2%, ATR), catalyst da moltiplicatore ad **additivo**, position sizing dinamico.
 
 ---
 
