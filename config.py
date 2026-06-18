@@ -92,12 +92,14 @@ FILL_CONFIRM_TIMEOUT_S = 240     # attesa massima fill del limit order
 FILL_POLL_INTERVAL_S   = 5       # intervallo polling stato ordine
 
 # === CHIUSURA POSIZIONE ===
-# Il prezzo di uscita REALE è filled_avg_price dell'ordine di chiusura, che Alpaca
-# può impiegare qualche secondo a pubblicare. Si fa polling sull'ordine prima di
-# ripiegare su snapshot/quote — questi NON riflettono il fill reale e falsano il PnL
-# (15 giugno: AMD registrata a 548.12 da snapshot vs fill reale 547.81, −$28 nascosti;
-# CRWV 107.59 vs 107.66 reale). 6×1s = 6s, ampi per un market order.
-CLOSE_FILL_POLL_ATTEMPTS   = 6   # tentativi di lettura del fill price dell'ordine di chiusura
+# Il prezzo di uscita REALE è filled_avg_price dell'ordine di chiusura, letto SOLO quando
+# l'ordine è COMPLETAMENTE eseguito (filled_qty >= qty), esattamente come per le entry.
+# Leggerlo al primo prezzo non-nullo registra la media di un fill PARZIALE; ripiegare
+# troppo presto su snapshot/quote registra un prezzo di mercato che NON è il fill reale —
+# entrambi falsano il PnL (15 giu: AMD 548.12 da snapshot vs 547.81 reale; 18 giu: AMAT
+# 614.60 snapshot vs 614.71 reale, MRVL 307.26 vs 307.24, INTC 133.5715 parziale vs
+# 133.5766 finale). 10×1s = 10s: ampi per il lag di pubblicazione del fill su paper trading.
+CLOSE_FILL_POLL_ATTEMPTS   = 10  # tentativi di lettura del fill (attende il fill COMPLETO)
 CLOSE_FILL_POLL_INTERVAL_S = 1   # secondi tra i tentativi
 
 # === GENERAL ===

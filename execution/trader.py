@@ -323,21 +323,42 @@ def close_position(ticker: str, qty: int, reason: str, fallback_price: Optional[
         return None
 
     order_id = str(getattr(order, "id", "") or "")
-    exit_price = float(order.filled_avg_price) if order.filled_avg_price else None
 
-    # Authoritative source: poll the close order until it publishes filled_avg_price.
-    if exit_price is None and order_id:
-        for attempt in range(config.CLOSE_FILL_POLL_ATTEMPTS):
-            time.sleep(config.CLOSE_FILL_POLL_INTERVAL_S)
-            try:
-                refreshed = client.get_order_by_id(order_id)
-                if refreshed.filled_avg_price:
-                    exit_price = float(refreshed.filled_avg_price)
+    # Authoritative exit price = the close order's filled_avg_price, read ONLY once the
+    # order is FULLY filled (filled_qty >= qty). Polling to completion — instead of bailing
+    # on the first non-null price — mirrors confirm_entry_fill, which is exactly why entries
+    # always book at the real fill. Reading too early books a partial-fill average; bailing
+    # to a market snapshot books a print that never matches the real execution. Both silently
+    # mis-state PnL (18 Jun: AMAT booked 614.60 from a snapshot vs the real 614.71 fill,
+    # ~$9 of loss hidden; MRVL 307.26 vs 307.24; INTC 133.5715 partial-avg vs 133.5766 final).
+    exit_price = None
+    last_avg = None  # most recent filled_avg_price seen, even before the fill completes
+    for attempt in range(config.CLOSE_FILL_POLL_ATTEMPTS):
+        try:
+            o = client.get_order_by_id(order_id) if order_id else order
+            status = str(getattr(o, "status", "")).lower()
+            filled_qty = int(float(getattr(o, "filled_qty", 0) or 0))
+            if o.filled_avg_price:
+                last_avg = float(o.filled_avg_price)
+                if filled_qty >= qty:
+                    exit_price = last_avg  # complete fill — authoritative
                     break
-            except Exception as e:
-                logger.warning(f"{ticker}: close order poll error (attempt {attempt + 1}): {e}")
+            if any(s in status for s in ("canceled", "rejected", "expired")):
+                logger.error(f"{ticker}: close order {status} (filled {filled_qty}/{qty})")
+                break
+        except Exception as e:
+            logger.warning(f"{ticker}: close order poll error (attempt {attempt + 1}): {e}")
+        time.sleep(config.CLOSE_FILL_POLL_INTERVAL_S)
 
-    # Market-data fallback ONLY if the order never reported its own fill price.
+    # A partial-fill average still reflects real execution far better than a market print.
+    if exit_price is None and last_avg is not None:
+        logger.warning(
+            f"{ticker}: close order not fully filled in {config.CLOSE_FILL_POLL_ATTEMPTS} polls "
+            f"— booking the partial-fill avg ${last_avg:.4f}"
+        )
+        exit_price = last_avg
+
+    # Market-data fallback ONLY if the order never reported ANY fill price.
     if exit_price is None:
         logger.warning(
             f"{ticker}: close order reported no filled_avg_price after "
