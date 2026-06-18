@@ -390,7 +390,9 @@ def _simulate_day(
                     new_stop = entry_price * (1 + floor)
                     if new_stop > dyn_stop:
                         dyn_stop = new_stop
-                        stop_label = "breakeven_stop" if floor == 0.0 else "step_stop"
+                        # floor ≤ 0 is still a protective break-even-type exit (incl. a
+                        # small sub-entry buffer); only a positive floor locks in profit.
+                        stop_label = "breakeven_stop" if floor <= 0.0 else "step_stop"
 
         if price <= dyn_stop:
             exit_price  = max(price, dyn_stop)
@@ -597,30 +599,22 @@ def exit_strategy_analysis(
     all_cache = prefetch_universe(universe, start_date, end_date)
     days      = _trading_days(start_date, end_date)
 
+    # Break-even buffer experiment (18 Jun): does placing the break-even stop a hair
+    # BELOW entry (instead of exactly at entry) absorb a full round-trip-to-entry pullback
+    # and survive the recovery (MRVL case), or does the extra room just cost more on the
+    # losers? Buffer is expressed as a negative first-step floor: (0.005, -0.002) = arm at
+    # +0.5% peak, stop at entry−0.2%. References kept inline for an apples-to-apples read.
+    STEP_C = [(0.005, 0.0), (0.015, 0.010), (0.030, 0.020)]
     variants = [
-        # ── Baseline + existing break-even variants (unchanged) ──────────────────
         ("baseline (VWAP 1.5%)",            BacktestParams()),
-        ("breakeven +0.3%",                 BacktestParams(breakeven_trigger_pct=0.003)),
-        ("breakeven +0.5% [live]",          BacktestParams(breakeven_trigger_pct=0.005)),
-        ("breakeven +0.8%",                 BacktestParams(breakeven_trigger_pct=0.008)),
-        ("trailing +0.8% / dist 1.0%",      BacktestParams(trailing_trigger_pct=0.008, trailing_distance_pct=0.010)),
-        ("trailing +1.0% / dist 1.0%",      BacktestParams(trailing_trigger_pct=0.010, trailing_distance_pct=0.010)),
-        ("trailing +1.0% / dist 0.5%",      BacktestParams(trailing_trigger_pct=0.010, trailing_distance_pct=0.005)),
-        ("breakeven +0.5% + VWAP 1.0%",     BacktestParams(breakeven_trigger_pct=0.005, vwap_exit_min_profit=0.010)),
-        # ── Step-ratchet variants (gradini) ──────────────────────────────────────
-        # All include +0.5%→BE as step 1; add extra steps that lock in partial profit.
-        # A: 1 extra step — at +1.5% peak, stop locks in +0.5% (covers SOFI/AMAT scenario)
-        ("step A: BE+0.5%, lock +0.5% @1.5%",
-            BacktestParams(step_stops=[(0.005, 0.0), (0.015, 0.005)])),
-        # B: 2 extra steps — at +3.0% peak, stop locks in +1.5%
-        ("step B: BE+0.5%, lock +0.5% @1.5%, +1.5% @3.0%",
-            BacktestParams(step_stops=[(0.005, 0.0), (0.015, 0.005), (0.030, 0.015)])),
-        # C: aggressive — larger lock-in at each step
-        ("step C: BE+0.5%, lock +1.0% @1.5%, +2.0% @3.0%",
-            BacktestParams(step_stops=[(0.005, 0.0), (0.015, 0.010), (0.030, 0.020)])),
-        # D: late trigger — second step fires only when peak ≥ +2.0% (less hair-trigger)
-        ("step D: BE+0.5%, lock +0.5% @2.0%",
-            BacktestParams(step_stops=[(0.005, 0.0), (0.020, 0.005)])),
+        # — pure break-even +0.5%, buffer sweep —
+        ("break-even +0.5% (no buffer)",    BacktestParams(step_stops=[(0.005,  0.000)])),
+        ("break-even +0.5% / buffer −0.2%", BacktestParams(step_stops=[(0.005, -0.002)])),
+        ("break-even +0.5% / buffer −0.3%", BacktestParams(step_stops=[(0.005, -0.003)])),
+        # — Step C (live) + the same buffer on its break-even floor —
+        ("Step C (live)",                   BacktestParams(step_stops=STEP_C)),
+        ("Step C / buffer −0.2%",           BacktestParams(step_stops=[(0.005, -0.002), (0.015, 0.010), (0.030, 0.020)])),
+        ("Step C / buffer −0.3%",           BacktestParams(step_stops=[(0.005, -0.003), (0.015, 0.010), (0.030, 0.020)])),
     ]
 
     rows = []
