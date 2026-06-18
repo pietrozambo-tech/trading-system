@@ -1,0 +1,1045 @@
+{
+  "date": "2026-06-18",
+  "spy_pct": 0.00642357831097675,
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 21,
+      "tickers": [
+        "INTC",
+        "MRVL",
+        "QUBT",
+        "MU",
+        "AMD",
+        "CRWV",
+        "OKLO",
+        "SMCI",
+        "QBTS",
+        "SOFI",
+        "AVGO",
+        "MARA",
+        "RIOT",
+        "SMR",
+        "NIO",
+        "COIN",
+        "IONQ",
+        "NCLH",
+        "NVDA",
+        "ASTS",
+        "APP"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 20,
+      "tickers": [
+        "INTC",
+        "MRVL",
+        "QUBT",
+        "MU",
+        "AMD",
+        "CRWV",
+        "OKLO",
+        "SMCI",
+        "QBTS",
+        "SOFI",
+        "AVGO",
+        "MARA",
+        "RIOT",
+        "SMR",
+        "NIO",
+        "COIN",
+        "IONQ",
+        "NCLH",
+        "NVDA",
+        "ASTS"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 7,
+      "tickers": [
+        "INTC",
+        "MRVL",
+        "QUBT",
+        "OKLO",
+        "SMCI",
+        "AVGO",
+        "SMR"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "INTC",
+      "gap_pct": 8.8,
+      "adv_m": 129.5,
+      "short_float_pct": 2.7,
+      "dist_from_3m_high_pct": -0.8
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 6.17,
+      "adv_m": 36.2,
+      "short_float_pct": 4.7,
+      "dist_from_3m_high_pct": -5.2
+    },
+    {
+      "ticker": "QUBT",
+      "gap_pct": 5.94,
+      "adv_m": 19.6,
+      "short_float_pct": 29.7,
+      "dist_from_3m_high_pct": -28.4
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 5.13,
+      "adv_m": 51.1,
+      "short_float_pct": 3.3,
+      "dist_from_3m_high_pct": -1.2
+    },
+    {
+      "ticker": "AMD",
+      "gap_pct": 4.16,
+      "adv_m": 37.4,
+      "short_float_pct": 2.7,
+      "dist_from_3m_high_pct": -4.4
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 3.46,
+      "adv_m": 29.3,
+      "short_float_pct": 18.2,
+      "dist_from_3m_high_pct": -13.8
+    },
+    {
+      "ticker": "OKLO",
+      "gap_pct": 3.45,
+      "adv_m": 13.4,
+      "short_float_pct": 18.0,
+      "dist_from_3m_high_pct": -25.3
+    },
+    {
+      "ticker": "SMCI",
+      "gap_pct": 3.42,
+      "adv_m": 50.5,
+      "short_float_pct": 16.5,
+      "dist_from_3m_high_pct": -44.1
+    },
+    {
+      "ticker": "QBTS",
+      "gap_pct": 3.18,
+      "adv_m": 33.4,
+      "short_float_pct": 16.8,
+      "dist_from_3m_high_pct": -25.0
+    },
+    {
+      "ticker": "SOFI",
+      "gap_pct": 3.1,
+      "adv_m": 69.4,
+      "short_float_pct": 14.7,
+      "dist_from_3m_high_pct": -10.8
+    },
+    {
+      "ticker": "AVGO",
+      "gap_pct": 2.99,
+      "adv_m": 25.9,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -18.3
+    },
+    {
+      "ticker": "MARA",
+      "gap_pct": 2.95,
+      "adv_m": 43.7,
+      "short_float_pct": 29.6,
+      "dist_from_3m_high_pct": -6.4
+    },
+    {
+      "ticker": "RIOT",
+      "gap_pct": 2.48,
+      "adv_m": 17.5,
+      "short_float_pct": 17.9,
+      "dist_from_3m_high_pct": -2.9
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 2.42,
+      "adv_m": 33.1,
+      "short_float_pct": 20.0,
+      "dist_from_3m_high_pct": -25.9
+    },
+    {
+      "ticker": "NIO",
+      "gap_pct": 2.38,
+      "adv_m": 37.7,
+      "short_float_pct": 7.6,
+      "dist_from_3m_high_pct": -26.1
+    },
+    {
+      "ticker": "COIN",
+      "gap_pct": 2.14,
+      "adv_m": 10.0,
+      "short_float_pct": 11.1,
+      "dist_from_3m_high_pct": -24.2
+    },
+    {
+      "ticker": "IONQ",
+      "gap_pct": 2.07,
+      "adv_m": 30.3,
+      "short_float_pct": 15.6,
+      "dist_from_3m_high_pct": -24.2
+    },
+    {
+      "ticker": "NCLH",
+      "gap_pct": 2.02,
+      "adv_m": 22.1,
+      "short_float_pct": 17.4,
+      "dist_from_3m_high_pct": -9.0
+    },
+    {
+      "ticker": "NVDA",
+      "gap_pct": 1.42,
+      "adv_m": 163.9,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -12.2
+    },
+    {
+      "ticker": "ASTS",
+      "gap_pct": 1.19,
+      "adv_m": 20.7,
+      "short_float_pct": 18.4,
+      "dist_from_3m_high_pct": -35.4
+    },
+    {
+      "ticker": "APP",
+      "gap_pct": 0.79,
+      "adv_m": 4.7,
+      "short_float_pct": 4.4,
+      "dist_from_3m_high_pct": -22.3
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "APP",
+      "reason": "adv_4,698,472<min_5,000,000"
+    },
+    {
+      "ticker": "ASTS",
+      "reason": "pm_gap_eaten_at_open_0%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "INTC",
+      "confidence": 1.2,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7722,
+      "gap_retention": 0.9081,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.723,
+      "vol_today": 198606,
+      "vol_avg": 115246,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0269,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.08802642444260939,
+      "price_935": 134.05,
+      "open_930": 131.815,
+      "prev_close": 121.1
+    },
+    {
+      "ticker": "MRVL",
+      "confidence": 0.8667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.5628,
+      "gap_retention": 0.8506,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.73,
+      "vol_today": 51413,
+      "vol_avg": 70451,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0471,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.061684050562961786,
+      "price_935": 308.29,
+      "open_930": 305.365,
+      "prev_close": 289.54
+    },
+    {
+      "ticker": "QUBT",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.3571,
+      "gap_retention": 0.7857,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.655,
+      "vol_today": 18854,
+      "vol_avg": 28798,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2974,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.059365404298874117,
+      "price_935": 10.25,
+      "open_930": 10.19,
+      "prev_close": 9.77
+    },
+    {
+      "ticker": "MU",
+      "confidence": 0.5333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.2013,
+      "gap_retention": 0.8592,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.716,
+      "vol_today": 29198,
+      "vol_avg": 40805,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0334,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.05130417277772983,
+      "price_935": 1102.57,
+      "open_930": 1108.39,
+      "prev_close": 1043.19
+    },
+    {
+      "ticker": "AMD",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.565,
+      "gap_retention": 0.746,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.882,
+      "vol_today": 32670,
+      "vol_avg": 37028,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0271,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.041640649391195814,
+      "price_935": 531.99,
+      "open_930": 532.05,
+      "prev_close": 512.48
+    },
+    {
+      "ticker": "CRWV",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0,
+      "gap_retention": 0.792,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.696,
+      "vol_today": 25012,
+      "vol_avg": 35931,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.18190001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.034632410381043394,
+      "price_935": 117.99,
+      "open_930": 118.72,
+      "prev_close": 115.21
+    },
+    {
+      "ticker": "OKLO",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.5675,
+      "gap_retention": 0.9917,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.534,
+      "vol_today": 4333,
+      "vol_avg": 8112,
+      "or_bar_count": 4,
+      "or_last_bar": "09:33",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.18020001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03451207072424348,
+      "price_935": 60.83,
+      "open_930": 60.02,
+      "prev_close": 58.82
+    },
+    {
+      "ticker": "SMCI",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7733,
+      "gap_retention": 0.7727,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.373,
+      "vol_today": 40504,
+      "vol_avg": 108529,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.16549999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03419726421886246,
+      "price_935": 28.58,
+      "open_930": 28.44,
+      "prev_close": 27.78
+    },
+    {
+      "ticker": "QBTS",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.4146,
+      "gap_retention": 0.4828,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.181,
+      "vol_today": 69403,
+      "vol_avg": 58759,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1681,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03184991273996496,
+      "price_935": 23.37,
+      "open_930": 23.5,
+      "prev_close": 22.92
+    },
+    {
+      "ticker": "SOFI",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0286,
+      "gap_retention": -0.1375,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.968,
+      "vol_today": 71087,
+      "vol_avg": 73416,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1471,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.030998851894374232,
+      "price_935": 17.38,
+      "open_930": 17.82,
+      "prev_close": 17.42
+    },
+    {
+      "ticker": "AVGO",
+      "confidence": 0.7667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.5141,
+      "gap_retention": 0.8869,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.544,
+      "vol_today": 28143,
+      "vol_avg": 51769,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.1,
+      "short_float": 0.0125,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0298549249172818,
+      "price_935": 409.785,
+      "open_930": 408.855,
+      "prev_close": 392.9
+    },
+    {
+      "ticker": "MARA",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0,
+      "gap_retention": 0.0116,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.465,
+      "vol_today": 22893,
+      "vol_avg": 49203,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2965,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.029454022988505756,
+      "price_935": 13.925,
+      "open_930": 14.35,
+      "prev_close": 13.92
+    },
+    {
+      "ticker": "RIOT",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0247,
+      "gap_retention": 0.455,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.384,
+      "vol_today": 7155,
+      "vol_avg": 18621,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.17889999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.024790375501275965,
+      "price_935": 27.93,
+      "open_930": 28.485,
+      "prev_close": 27.43
+    },
+    {
+      "ticker": "SMR",
+      "confidence": 1.05,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.678,
+      "gap_retention": 1.0,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.449,
+      "vol_today": 109630,
+      "vol_avg": 44768,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1997,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.024177949709864605,
+      "price_935": 10.79,
+      "open_930": 10.59,
+      "prev_close": 10.34
+    },
+    {
+      "ticker": "NIO",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0,
+      "gap_retention": 0.7917,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.412,
+      "vol_today": 44390,
+      "vol_avg": 107816,
+      "or_bar_count": 4,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0757,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.023762376237623783,
+      "price_935": 5.145,
+      "open_930": 5.17,
+      "prev_close": 5.05
+    },
+    {
+      "ticker": "COIN",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0104,
+      "gap_retention": 0.5226,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.581,
+      "vol_today": 3954,
+      "vol_avg": 6805,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.111,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.021435284843707346,
+      "price_935": 166.155,
+      "open_930": 167.24,
+      "prev_close": 164.915
+    },
+    {
+      "ticker": "IONQ",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0859,
+      "gap_retention": -0.0925,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.351,
+      "vol_today": 34332,
+      "vol_avg": 25408,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.15609999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02066191259828127,
+      "price_935": 54.74,
+      "open_930": 55.825,
+      "prev_close": 54.69
+    },
+    {
+      "ticker": "NCLH",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0896,
+      "gap_retention": 0.7391,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.519,
+      "vol_today": 14119,
+      "vol_avg": 27206,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.17379999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02017145738779638,
+      "price_935": 20.37,
+      "open_930": 20.52,
+      "prev_close": 19.83
+    },
+    {
+      "ticker": "NVDA",
+      "confidence": 0.2,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.102,
+      "gap_retention": 0.6727,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.719,
+      "vol_today": 120665,
+      "vol_avg": 167779,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.012200001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.014219398973857789,
+      "price_935": 206.65,
+      "open_930": 207.4,
+      "prev_close": 204.65
+    }
+  ],
+  "llm_input": [
+    "INTC",
+    "MRVL",
+    "QUBT",
+    "OKLO",
+    "SMCI",
+    "AVGO",
+    "SMR"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "INTC",
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Catalyst Tier 1 eccezionale: Trump annuncia pubblicamente partnership Apple-Intel per la produzione domestica di chip, con Nvidia e Tesla coinvolte, innescando un gap di +8.8% con retention >90%. Tutti e tre i segnali tecnici sono positivi (post_open_advance, or_position >0.77, gap_retention >0.90) e il titolo \u00e8 quasi ai massimi degli ultimi 3 mesi (-0.8%), senza resistenze significative sopra.",
+      "price_935": 134.05
+    },
+    "trade_2": {
+      "ticker": "MRVL",
+      "direction": "long",
+      "confidence": 0.8667,
+      "reason": "Catalyst Tier 2 solido: imminente ingresso nell'S&P 500 il 22 giugno crea pressione acquisto strutturale da fondi passivi, supportato da price target raise di KeyBanc a $385. Gap_retention >85% e post_open_advance positivo confermano momentum tecnico; settore Semiconductors distinto da INTC (fabless vs. foundry) con dinamiche di catalisi differenti.",
+      "price_935": 308.29
+    },
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "INTC",
+      "qty": 375,
+      "entry_price": 133.71,
+      "entry_time": "09:36:36",
+      "entry_ts": 1781789796.835095,
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Catalyst Tier 1 eccezionale: Trump annuncia pubblicamente partnership Apple-Intel per la produzione domestica di chip, con Nvidia e Tesla coinvolte, innescando un gap di +8.8% con retention >90%. Tutti e tre i segnali tecnici sono positivi (post_open_advance, or_position >0.77, gap_retention >0.90) e il titolo \u00e8 quasi ai massimi degli ultimi 3 mesi (-0.8%), senza resistenze significative sopra.",
+      "order_id": "fce1ec39-8a42-4ac0-8a5b-dec5dcb384bf",
+      "stop_atr": 123.4152,
+      "stop_pct": 131.0358,
+      "stop_price": 133.71,
+      "atr14": 10.2949,
+      "peak_price": 134.69,
+      "breakeven_armed": true,
+      "stop_label": "breakeven_stop",
+      "exit_price": 133.571545,
+      "exit_time": "09:41:44",
+      "exit_reason": "breakeven_stop",
+      "pnl_usd": -51.92,
+      "pnl_pct": -0.001,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.0,
+      "short_float": 0.0269,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.7722,
+      "gap_retention": 0.9081,
+      "gap_pct": 0.08802642444260939,
+      "news": [
+        {
+          "author": "Surbhi Jain",
+          "content": "",
+          "created_at": "2026-06-18T13:19:02Z",
+          "headline": "Intel Stock Soars After Trump Reveals Apple Partnership \u2014 The Chart Points To More Upside",
+          "id": 53274303,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/New-York-City--New-York---September-18-2.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/New-York-City--New-York---September-18-2.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/New-York-City--New-York---September-18-2.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Intel stock surged after President Trump revealed an Apple chip partnership and highlighted Nvidia&#39;s manufacturing plans. Here&#39;s what the latest technical signals suggest for Intel shares.",
+          "symbols": [
+            "AAPL",
+            "INTC",
+            "NVDA"
+          ],
+          "updated_at": "2026-06-18T13:19:03Z",
+          "url": "https://www.benzinga.com/trading-ideas/technicals/26/06/53274303/intel-stock-soars-after-trump-reveals-apple-partnership-the-chart-points-to-more-upside"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-06-18T11:24:31Z",
+          "headline": "Why Is Intel Stock Soaring Thursday?",
+          "id": 53271124,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/Intel-Corporation.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/Intel-Corporation.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/Intel-Corporation.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Intel stock surges 8% on Trump&#39;s announcement that Apple, NVIDIA, and Tesla will build chips domestically with Intel. Read the details.",
+          "symbols": [
+            "AAPL",
+            "INTC",
+            "NVDA",
+            "SOXX",
+            "TRFK",
+            "TSLA",
+            "TSM",
+            "VLUE"
+          ],
+          "updated_at": "2026-06-18T11:24:32Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/06/53271124/why-is-intel-stock-soaring-thursday"
+        },
+        {
+          "author": "Snigdha Gairola",
+          "content": "",
+          "created_at": "2026-06-18T09:33:15Z",
+          "headline": "Ray Dalio Says US Is 'On The Brink' As Debt And Political Risks Mount",
+          "id": 53269199,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/principles-Is-The-Latest-Book-By-Ray-Dal.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/principles-Is-The-Latest-Book-By-Ray-Dal.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/principles-Is-The-Latest-Book-By-Ray-Dal.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Ray Dalio warns of rising U.S. debt risks and political volatility between 2026\u20132028 as deficits widen and demand for Treasury debt weakens.",
+          "symbols": [
+            "INTC"
+          ],
+          "updated_at": "2026-06-18T09:33:16Z",
+          "url": "https://www.benzinga.com/news/politics/26/06/53269199/ray-dalio-says-us-is-on-the-brink-as-debt-and-political-risks-mount"
+        },
+        {
+          "author": "Namrata Sen",
+          "content": "",
+          "created_at": "2026-06-18T08:15:53Z",
+          "headline": "After Nvidia And Tesla, Trump Confirms Apple Has Agreed To Build Chips With Intel Amid US Manufacturing Push: 'When Was The Last Time...'",
+          "id": 53268744,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/Kumamoto--Japan---Mar-30-2022--Apple-Inc.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/Kumamoto--Japan---Mar-30-2022--Apple-Inc.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/Kumamoto--Japan---Mar-30-2022--Apple-Inc.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Trump says Apple will work with Intel on U.S.-made chips, joining Nvidia in a push to revive American semiconductor manufacturing.",
+          "symbols": [
+            "AAPL",
+            "INTC",
+            "NVDA",
+            "TSLA",
+            "TSM"
+          ],
+          "updated_at": "2026-06-18T08:15:53Z",
+          "url": "https://www.benzinga.com/news/26/06/53268744/after-nvidia-and-tesla-trump-confirms-apple-has-agreed-to-build-chips-with-intel-amid-us-manufacturing-push-when-was-the-last-time"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-18T06:08:03Z",
+          "headline": "President Trump Posts On Truth Social \"The Technology the World relies on was invented in America. We all remember \"Intel Inside.\" Stupid Presidents took our Economy for granted, and let Taiwan and others steal our Semiconductor Factories. They forgot to protect our Industries with TARIFFS. When I won my Second Term (Third, actually!), it was clear America needed its Semiconductor Industry to come back to the U.S.A. We design everything, but we need to BUILD it here, NOW! So I decided to help Intel...\"",
+          "id": 53267942,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "AAPL",
+            "INTC",
+            "SPY"
+          ],
+          "updated_at": "2026-06-18T06:08:04Z",
+          "url": "https://www.benzinga.com/news/26/06/53267942/president-trump-posts-on-truth-social-the-technology-the-world-relies-on-was-invented-in-america-we"
+        }
+      ]
+    },
+    {
+      "ticker": "MRVL",
+      "qty": 163,
+      "entry_price": 307.15,
+      "entry_time": "09:36:41",
+      "entry_ts": 1781789801.9852781,
+      "direction": "long",
+      "confidence": 0.8667,
+      "reason": "Catalyst Tier 2 solido: imminente ingresso nell'S&P 500 il 22 giugno crea pressione acquisto strutturale da fondi passivi, supportato da price target raise di KeyBanc a $385. Gap_retention >85% e post_open_advance positivo confermano momentum tecnico; settore Semiconductors distinto da INTC (fabless vs. foundry) con dinamiche di catalisi differenti.",
+      "order_id": "808c88c4-b973-4c87-aa61-facfe77f6b44",
+      "stop_atr": 270.3507,
+      "stop_pct": 301.007,
+      "stop_price": 307.15,
+      "atr14": 36.7993,
+      "peak_price": 310.27,
+      "breakeven_armed": true,
+      "stop_label": "breakeven_stop",
+      "exit_price": 307.26,
+      "exit_time": "09:44:46",
+      "exit_reason": "breakeven_stop",
+      "pnl_usd": 17.93,
+      "pnl_pct": 0.0004,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.0,
+      "short_float": 0.0471,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.5628,
+      "gap_retention": 0.8506,
+      "gap_pct": 0.061684050562961786,
+      "news": [
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-18T12:45:03Z",
+          "headline": "Keybanc Maintains Overweight on Marvell Technology, Raises Price Target to $385",
+          "id": 53273087,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "MRVL"
+          ],
+          "updated_at": "2026-06-18T12:45:04Z",
+          "url": "https://www.benzinga.com/news/26/06/53273087/keybanc-maintains-overweight-on-marvell-technology-raises-price-target-to-385"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-18T10:12:18Z",
+          "headline": "Tower Semiconductor Announces Shipments Of 5M+ Coherent Photonic Integrated Circuits To Marvell Global Customers",
+          "id": 53269902,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "MRVL",
+            "TSEM"
+          ],
+          "updated_at": "2026-06-18T10:12:19Z",
+          "url": "https://www.benzinga.com/news/26/06/53269902/tower-semiconductor-announces-shipments-of-5m-coherent-photonic-integrated-circuits-to-marvell-globa"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-06-18T09:40:18Z",
+          "headline": "Why Is Marvell Technology Stock Gaining Thursday?",
+          "id": 53269310,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/Kanata--Ottawa--On--Canada---October-15-.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/Kanata--Ottawa--On--Canada---October-15-.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/18/Kanata--Ottawa--On--Canada---October-15-.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "MRVL Technical Analysis: Marvell stock holds a powerful long-term uptrend near its 52-week high. Is a brief consolidation ahead?",
+          "symbols": [
+            "ARTY",
+            "FTXL",
+            "MRVL",
+            "SOXX",
+            "TSM"
+          ],
+          "updated_at": "2026-06-18T09:40:19Z",
+          "url": "https://www.benzinga.com/markets/tech/26/06/53269310/why-is-marvell-technology-stock-gaining-thursday-2"
+        },
+        {
+          "author": "Surbhi Jain",
+          "content": "",
+          "created_at": "2026-06-17T18:35:49Z",
+          "headline": "Marvell, Flex Could Be Days Away From Massive Passive-Fund Tailwind",
+          "id": 53260169,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/17/SP-500.jpeg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/17/SP-500.jpeg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/17/SP-500.jpeg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Marvell and Flex join the S&amp;P 500 on June 22, setting up potential buying from passive funds and ETFs as investors continue searching for AI infrastructure winners.",
+          "symbols": [
+            "AVGO",
+            "CPB",
+            "FLEX",
+            "IVV",
+            "MRVL",
+            "POOL",
+            "SPY",
+            "VOO"
+          ],
+          "updated_at": "2026-06-17T18:35:49Z",
+          "url": "https://www.benzinga.com/etfs/broad-u-s-equity-etfs/26/06/53260169/marvell-flex-could-be-days-away-from-massive-passive-fund-tailwind"
+        }
+      ]
+    }
+  ]
+}
