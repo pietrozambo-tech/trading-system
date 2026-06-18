@@ -491,11 +491,11 @@
       "atr14": 34.9553,
       "peak_price": 621.91,
       "breakeven_armed": true,
-      "exit_price": 614.6,
+      "exit_price": 614.712195,
       "exit_time": "09:50:57",
       "exit_reason": "breakeven_stop",
-      "pnl_usd": -18.86,
-      "pnl_pct": -0.0004,
+      "pnl_usd": -9.66,
+      "pnl_pct": -0.0002,
       "catalyst_bonus": 0.0,
       "vol_boost": 0.0,
       "short_float": 0.0252,
@@ -535,7 +535,8 @@
           "updated_at": "2026-06-16T16:02:10Z",
           "url": "https://www.benzinga.com/news/26/06/53229430/essilorluxottica-applied-materials-strike-joint-development-agreement-over-commercialization-of-inte"
         }
-      ]
+      ],
+      "exit_price_corrected": true
     },
     {
       "ticker": "SOFI",
@@ -553,10 +554,10 @@
       "atr14": 1.068,
       "peak_price": 18.695,
       "breakeven_armed": true,
-      "exit_price": 18.1,
+      "exit_price": 18.099354,
       "exit_time": "15:11:44",
       "exit_reason": "breakeven_stop",
-      "pnl_usd": -60.98,
+      "pnl_usd": -62.78,
       "pnl_pct": -0.0012,
       "catalyst_bonus": 0.0,
       "vol_boost": 0.0,
@@ -655,7 +656,8 @@
           "updated_at": "2026-06-16T20:07:16Z",
           "url": "https://www.benzinga.com/trading-ideas/movers/26/06/53237248/sofi-stock-is-climbing-despite-a-broader-tech-selloff-whats-going-on"
         }
-      ]
+      ],
+      "exit_price_corrected": true
     }
   ]
 }
