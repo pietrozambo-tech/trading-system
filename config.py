@@ -59,24 +59,24 @@ VWAP_EXIT_MIN_PROFIT_PCT = 0.015   # VWAP exit solo se profit >= 1.5%
 # (peak_trigger_pct, stop_floor_pct) relativi al prezzo di entrata: quando il
 # guadagno di PICCO raggiunge peak_trigger_pct, lo stop viene alzato a
 # entry*(1+stop_floor_pct), ma solo se più alto dello stop corrente (ratchet
-# monotòno — lo stop non scende mai). Il primo gradino con floor 0.0 è il
-# break-even classico; i successivi bloccano una frazione crescente del profitto.
-# Backtest (631 trade, gen 2025–giu 2026, --exit): questa "Step C" è risultata
-# l'ottimo — profit factor 1.48 (il più alto di 12 varianti), max drawdown $8,990
-# (il più basso in assoluto), P&L +$56.3k vs +$48.6k del solo break-even +0.5%,
-# avg_loss invariato (i gradini toccano solo la gestione del profitto, non lo
-# stop di perdita). Convive con il VWAP take-profit, che resta attivo.
-# Imposta a None per disabilitare l'intero meccanismo (solo hard/ATR stop).
+# monotòno — lo stop non scende mai). Un floor ≤ 0 è una protezione tipo break-even
+# (incluso un piccolo cuscinetto sotto l'entry); un floor > 0 blocca profitto.
+# Backtest (631 trade, gen 2025–giu 2026, --exit): "Step C + buffer −0.2%" è l'ottimo
+# per P&L — +$61.3k vs +$56.3k di Step C puro (+9%), win rate 43% vs 38%, profit
+# factor 1.45, max drawdown $10.0k. Il cuscinetto −0.2% sul primo gradino fa
+# sopravvivere i pullback che tornano esattamente all'entry (caso MRVL 18 giu) e
+# ripartire, al costo di ~$1k di drawdown in più vs Step C puro. Convive con il VWAP
+# take-profit, che resta attivo. Imposta a None per disabilitare (solo hard/ATR stop).
 STEP_STOPS = [
-    (0.005, 0.000),   # picco +0.5% → stop a break-even (entry)
-    (0.015, 0.010),   # picco +1.5% → blocca +1.0%
-    (0.030, 0.020),   # picco +3.0% → blocca +2.0%
+    (0.005, -0.002),  # picco +0.5% → stop a entry −0.2% (break-even con cuscinetto anti-rumore)
+    (0.015,  0.010),  # picco +1.5% → blocca +1.0%
+    (0.030,  0.020),  # picco +3.0% → blocca +2.0%
 ]
 
 # === TIMING (ET) ===
 WATCHLIST_TIME       = "09:25"
 ENTRY_TIME           = "09:35"
-MONITORING_INTERVAL  = 60        # seconds between position checks
+MONITORING_INTERVAL  = 30        # seconds between position checks (30s: più reattivo su stop/gradini vs i 60s iniziali)
 EOD_CLOSE_TIME       = "15:45"
 
 # === DATA QUALITY / ROBUSTEZZA ===

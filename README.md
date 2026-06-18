@@ -136,13 +136,13 @@ The $1,000 is a permanent cash cushion that never gets invested — it covers fe
 
 ### 6. Intraday monitoring
 
-Every minute the bot checks each open position. It closes a trade if any of these triggers fires, checked in this exact order:
+Every 30 seconds the bot checks each open position. It closes a trade if any of these triggers fires, checked in this exact order:
 
 | Priority | Rule | Trigger | Why this rule exists |
 |----------|------|---------|----------------------|
 | 1 | **Hard stop** | Price falls ≥2.0% from entry | The absolute floor — simple, predictable, immune to data issues. On a ~$49.5k position, 2% = ~$990 max loss per trade. Always checked first. |
 | 2 | **ATR stop** | Price falls ≥1× ATR14 from entry | ATR (Average True Range) measures how much a stock typically moves in a day over the past 14 days. Setting the stop exactly at ATR14 below entry means you exit if the move against you exceeds the stock's typical daily range — a signal that something is genuinely wrong, not just noise. On calm stocks (ATR ~1%) this fires at -1%, tighter than the hard stop. On volatile stocks (ATR >2%) the hard stop at -2% fires first. Whichever is tighter (higher price) wins. |
-| 3 | **Step-ratchet stop** (trailing a gradini) | Peak gain hits +0.5% → stop to entry; +1.5% → stop locks +1.0%; +3.0% → stop locks +2.0% | A multi-step version of the break-even stop. Each gradino raises the stop floor as the peak grows, so a trade that runs up and then reverses keeps a slice of the gain instead of round-tripping all the way back to entry. The first step (+0.5% → break-even) is the original protection; the higher steps lock in profit. The stop only ratchets up, never loosens. Backtested over 631 trades (the "Step C" variant): profit factor **1.48** (highest of 12 variants), max drawdown **$8,990** (lowest of all), P&L **+$56.3k** vs +$48.6k for plain break-even +0.5% — with the average loss unchanged (steps only touch profit management, never the loss side). |
+| 3 | **Step-ratchet stop** (trailing a gradini) | Peak gain hits +0.5% → stop to entry **−0.2%**; +1.5% → stop locks +1.0%; +3.0% → stop locks +2.0% | A multi-step version of the break-even stop. Each gradino raises the stop floor as the peak grows, so a trade that runs up and then reverses keeps a slice of the gain instead of round-tripping all the way back to entry. The first step (+0.5% peak) drops the stop to a hair **below** entry (−0.2% buffer) rather than exactly at entry — a healthy pullback that touches the entry price survives instead of getting whipsawed out (MRVL 18 Jun case); the higher steps lock in profit. The stop only ratchets up, never loosens. Backtested over 631 trades ("Step C + buffer −0.2%"): P&L **+$61.3k** (best of all variants), win rate 43%, profit factor 1.45, max drawdown $10.0k. |
 | 4 | **VWAP take-profit** | Price drops below VWAP *and* profit ≥1.5% | This is a profit-protecting exit, not a stop loss. If the stock was running but has now fallen back below the average price of the day, momentum has likely shifted. The 1.5% minimum is there so we don't exit a trade that barely moved — we only lock in profit when there's real gain to protect. **Not made redundant by the step ratchet:** the VWAP exit fires at the *live* price on a reversal (often well above any step floor), while the steps are a fixed pavement below the peak — they protect different things and coexist (38 VWAP exits still fired under Step C in backtest). |
 | 5 | **End-of-day close** | 3:45 PM ET, no exceptions | We never hold overnight. Gaps at open, earnings after hours, macro news — too much can happen. Everything is flat before the close, every single day. |
 
@@ -229,8 +229,9 @@ The trade header (`Trade N — TICKER long [Score: X.XX]`) is **bold** in Telegr
 | Example on $100k | ($100,000 − $1,000) ÷ 2 = $49,500/trade |
 | Hard stop per trade | -2.0% from entry (~$990 on $49.5k position) |
 | ATR stop per trade | -1× ATR14 from entry (tighter than hard stop on low-vol stocks) |
-| Step-ratchet stop | +0.5% peak → entry; +1.5% peak → lock +1.0%; +3.0% peak → lock +2.0% |
+| Step-ratchet stop | +0.5% peak → entry −0.2%; +1.5% peak → lock +1.0%; +3.0% peak → lock +2.0% |
 | VWAP take-profit threshold | 1.5% profit minimum |
+| Monitoring interval | every 30 seconds |
 
 ---
 
@@ -340,8 +341,8 @@ Ideas discussed and parked — revisit when there's time.
 ### 2 vs 3 max positions
 The capital deployed is the same regardless: 2 × $49.5k or 3 × $33k both put $99k to work. The question is whether the 3rd-best setup on a given day is genuinely good or just marginal. The daily log now records `passes_threshold` per ticker — after a few weeks of data, count how many days had 3+ viable candidates above the confidence threshold and decide from there.
 
-### Monitoring interval — 60s, valutare 30s coi dati (giugno 2026)
-Controlliamo il prezzo live ogni 60s (`MONITORING_INTERVAL`), leggendo l'ultimo trade IEX (fallback al close della barra 1-min se >120s vecchio). Con un feed a ~15–20% del tape e campionamento a 60s ci sono gap inevitabili: il `peak_price` può essere sotto-registrato (gradino non armato), un breve sforamento dello stop che rimbalza entro la finestra è invisibile, e un movimento avverso rapido può riempire peggio del livello di stop (slippage non modellato nel backtest). Questi gap sono **coerenti con la granularità ~1-min del backtest**, quindi non invalidano i risultati di Step C. **Azione:** monitorare i log dei prossimi giorni; se compaiono overshoot reali sugli stop (fill peggiori del livello), scendere a 30s con dati alla mano invece che reattivamente. Alpaca regge ampiamente la frequenza maggiore.
+### Monitoring interval — portato a 30s (18 giugno 2026)
+Controlliamo il prezzo live ogni **30s** (`MONITORING_INTERVAL`, prima 60s), leggendo l'ultimo trade IEX (fallback al close della barra 1-min se >120s vecchio). Con un feed a ~15–20% del tape e campionamento periodico restano gap inevitabili: il `peak_price` può essere sotto-registrato (gradino non armato), un breve sforamento dello stop che rimbalza entro la finestra è invisibile, e un movimento avverso rapido può riempire peggio del livello di stop (slippage non modellato nel backtest). A 30s questi gap si dimezzano in frequenza; il backtest resta valutato a granularità ~1-min, quindi il live è semmai *più* protettivo di quanto stimato. Alpaca regge ampiamente la frequenza maggiore (~16 chiamate/min con 2 posizioni). **Da osservare nei log:** se restano overshoot reali sugli stop si può valutare 15s, ma è probabilmente eccessivo data la frequenza di stampa IEX sui titoli sottili.
 
 ### Entry timing — implemented (June 2026)
 Backtested entry times at 9:31, 9:33, 9:35, and 9:40 over the full 2025–2026 universe. Both oracle (signals computed at 9:40, entries at earlier times) and non-oracle (signals computed from bars available at entry time only) variants were run.
@@ -459,7 +460,31 @@ Su SOFI, Step C avrebbe bloccato +2.0% (picco ≥+3.0%) → uscita ~$18.48 invec
 
 **Scartata — trailing +1.0% / dist 0.5% ($65.870):** P&L lordo più alto, ma PF più basso (1.40) e drawdown più alto ($11.4k), e soprattutto **poco robusto**: un trailing stretto allo 0.5% valutato sul close del minuto in backtest sovrastima molto rispetto al live (campionamento 60s su prezzi IEX stantii → whipsaw reale ben maggiore). I gradini scattano su livelli fissi lontani dal prezzo quando vengono armati, quindi molto meno sensibili a close-vs-low e cadenza 60s.
 
-**Implementazione (17 giugno 2026):** `config.STEP_STOPS` (sostituisce `BREAKEVEN_TRIGGER_PCT`). In `trader.update_dynamic_stop()` ogni ciclo si traccia `peak_price` e si alza lo stop al gradino più alto sbloccato dal picco; il campo `stop_label` sulla posizione registra l'etichetta del ratchet attivo (`breakeven_stop` per il floor 0.0, `step_stop` per i gradini superiori), letta da `check_stop_triggered()`. Le uscite `step_stop` sono distinte in dashboard, Telegram e recap. Le posizioni recuperate dopo un riavvio re-armano il ratchet da zero (default difensivi).
+**Implementazione (17 giugno 2026):** `config.STEP_STOPS` (sostituisce `BREAKEVEN_TRIGGER_PCT`). In `trader.update_dynamic_stop()` ogni ciclo si traccia `peak_price` e si alza lo stop al gradino più alto sbloccato dal picco; il campo `stop_label` sulla posizione registra l'etichetta del ratchet attivo (`breakeven_stop` per i floor ≤ 0, `step_stop` per i gradini di profitto), letta da `check_stop_triggered()`. Le uscite `step_stop` sono distinte in dashboard, Telegram e recap. Le posizioni recuperate dopo un riavvio re-armano il ratchet da zero (default difensivi). *(Affinato il 18 giugno col cuscinetto −0.2%, sotto.)*
+
+### Cuscinetto −0.2% sul break-even (18 giugno 2026)
+
+**Osservazione (trade MRVL, 18 giugno):** MRVL ha toccato +1.02% di picco poi è tornato **esattamente all'entry** (round-trip completo), facendo scattare il break-even (+$18, ~0%) — per poi ripartire verso +4%. Un pullback all'entry e un trade fallito sono indistinguibili in quel momento (lo stesso giorno INTC ha fatto lo stesso e *non* è ripartito), ma lo stop esattamente all'entry è vulnerabile al rumore normale di un titolo che "respira". Idea: mettere il primo gradino un soffio **sotto** l'entry per assorbire il pullback.
+
+Confronto `--exit` (stesse 631 entry), buffer espresso come floor negativo del primo gradino:
+
+| Variante | P&L totale | Max DD | Win rate | PF |
+|----------|-----------|--------|----------|-----|
+| break-even +0.5% / buffer −0.2% | $52.164 | $11.067 | 34.5% | 1.37 |
+| break-even +0.5% / buffer −0.3% | $47.339 | $12.192 | 36.3% | 1.31 |
+| Step C (no buffer) | $56.337 | **$8.990** | 37.7% | **1.48** |
+| **Step C / buffer −0.2%** ✅ | **$61.327** | $10.031 | 43.0% | 1.45 |
+| Step C / buffer −0.3% | $58.315 | $11.059 | 44.4% | 1.40 |
+
+**Conclusione: si adotta "Step C / buffer −0.2%"** — `STEP_STOPS = [(0.005, -0.002), (0.015, 0.010), (0.030, 0.020)]`. Vs Step C puro:
+
+- **P&L +$4.990 (+9%)** → il massimo di tutte le varianti testate.
+- **Win rate 43%** vs 37.7%; i break-even exit scendono da 234 a 200 (~34 trade tipo MRVL sopravvivono al pullback e ripartono).
+- **Costo:** max drawdown $10.0k vs $8.99k (+~$1k, +1% del conto) e PF 1.45 vs 1.48 — modesto.
+- `−0.3%` è dominato da `−0.2%` su ogni metrica → `−0.2%` è il punto ottimo.
+- Nota: l'`avg_loss` che "migliora" col buffer (−$750 → −$384) è un artefatto di composizione (molte piccole perdite da −0.2% diluiscono la media), non perdite realmente minori. Contano P&L e drawdown.
+
+È una scelta di appetito al rischio (P&L massimo vs drawdown minimo); si è scelto il P&L massimo, dato che il costo in drawdown è contenuto e il buffer risolve direttamente il whipsaw.
 
 ### Soglie vol_boost — ricalibrare coi dati (giugno 2026)
 
@@ -494,6 +519,11 @@ Alpaca's built-in reporting is too limited for meaningful analysis. The plan is 
 ## Changelog — timeline dei cambiamenti
 
 Riassunti **high level** dei cambi per giorno (più recente in alto). Solo titoli — i dettagli sono nelle sezioni sopra e nei commit. Tag: `[feat]` nuova implementazione · `[fix]` bug fix · `[exp]` esperimento/decisione.
+
+### 18 giugno 2026
+- `[fix]` **Prezzo di uscita mis-bookato (definitivo)**: `close_position()` ora attende il fill COMPLETO (`filled_qty >= qty`) prima di registrare `filled_avg_price`, come già fanno le entry. Prima usciva al primo prezzo parziale o ripiegava sullo snapshot (18 giu: AMAT bookato 614.60 vs 614.71 reale, MRVL 307.26 vs 307.24, INTC parziale). Budget polling 6→10×1s.
+- `[feat]` **Cuscinetto −0.2% sul break-even** (Step C → `STEP_STOPS=[(0.005,-0.002),…]`): il primo gradino va a entry−0.2% per sopravvivere ai pullback che tornano all'entry (caso MRVL). Backtest: P&L +$61.3k (+9% vs Step C), win rate 43%.
+- `[feat]` **Monitoring interval 60s → 30s**: check delle posizioni più reattivo su stop e gradini.
 
 ### 17 giugno 2026
 - `[feat]` **Step-ratchet stop ("Step C")** sostituisce il break-even semplice: gradini +0.5%→entry, +1.5%→+1.0%, +3.0%→+2.0%. Nasce dal caso SOFI (picco +3.16% tornato a break-even). Backtest 631 trade: PF 1.48, max DD più basso, P&L +$56.3k.

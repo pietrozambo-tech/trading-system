@@ -447,7 +447,9 @@ def update_dynamic_stop(position: dict, current_price: float) -> None:
             candidate = round(entry * (1 + floor), 4)
             if candidate > new_stop:
                 new_stop = candidate
-                new_label = "breakeven_stop" if floor == 0.0 else "step_stop"
+                # floor ≤ 0 is a protective break-even-type stop (incl. a small sub-entry
+                # buffer); only a positive floor locks in profit and counts as a step_stop.
+                new_label = "breakeven_stop" if floor <= 0.0 else "step_stop"
 
     if new_stop > position["stop_price"]:
         old_stop = position["stop_price"]
