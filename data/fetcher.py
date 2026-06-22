@@ -354,6 +354,25 @@ def get_short_float(ticker: str) -> Optional[float]:
     return result
 
 
+def is_market_open_today(session_date: Optional[date] = None) -> bool:
+    """Return True if NYSE is a regular trading session today.
+
+    Uses Alpaca's market calendar — authoritative for all NYSE holidays and
+    early-close days. Fails open (returns True) so that a transient API error
+    never silently blocks a real trading day.
+    """
+    from alpaca.trading.requests import GetCalendarRequest
+    if session_date is None:
+        session_date = datetime.now(ET).date()
+    client = get_trading_client()
+    try:
+        calendar = client.get_calendar(GetCalendarRequest(start=session_date, end=session_date))
+        return len(calendar) > 0
+    except Exception as e:
+        logger.warning(f"Market calendar check failed: {e} — assuming market is open")
+        return True
+
+
 def get_historical_or_volume(ticker: str, lookback_days: int = 20, session_date: Optional[date] = None) -> float:
     """Average volume in the 9:30–ENTRY_TIME opening-range window over past N trading days (for S4).
 

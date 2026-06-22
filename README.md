@@ -520,6 +520,10 @@ Alpaca's built-in reporting is too limited for meaningful analysis. The plan is 
 
 Riassunti **high level** dei cambi per giorno (più recente in alto). Solo titoli — i dettagli sono nelle sezioni sopra e nei commit. Tag: `[feat]` nuova implementazione · `[fix]` bug fix · `[exp]` esperimento/decisione.
 
+### 22 giugno 2026
+- `[fix]` **Bank holiday guard**: il bot ora verifica il calendario NYSE via Alpaca all'avvio e salta la sessione se il mercato è chiuso (es. Juneteenth 19 giu). In precedenza il bot girava uguale ma non trovava candidati, producendo un log "nessun candidato dopo L1" che gonfiava il contatore `total_days` nella dashboard.
+- `[exp]` **AMAT break-even exit**: uscita a −0.79% vs floor atteso −0.2%. Il codice funziona correttamente (stop ratcheted a $633.25 = entry×0.998). Il delta è **slippage**: AMAT scendeva veloce e tra il check a 30s che rileva la violazione e il fill del market order il prezzo era già a $629.54. Il floor −0.2% è dove lo stop scatta, non dove è garantito il fill.
+
 ### 18 giugno 2026
 - `[fix]` **Prezzo di uscita mis-bookato (definitivo)**: `close_position()` ora attende il fill COMPLETO (`filled_qty >= qty`) prima di registrare `filled_avg_price`, come già fanno le entry. Prima usciva al primo prezzo parziale o ripiegava sullo snapshot (18 giu: AMAT bookato 614.60 vs 614.71 reale, MRVL 307.26 vs 307.24, INTC parziale). Budget polling 6→10×1s.
 - `[feat]` **Cuscinetto −0.2% sul break-even** (Step C → `STEP_STOPS=[(0.005,-0.002),…]`): il primo gradino va a entry−0.2% per sopravvivere ai pullback che tornano all'entry (caso MRVL). Backtest: P&L +$61.3k (+9% vs Step C), win rate 43%.

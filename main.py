@@ -276,6 +276,13 @@ def run() -> None:
             + "\n".join(f"• {d}" for d in cancelled)
         )
 
+    # Guard 0: skip on NYSE holidays (Juneteenth, MLK Day, etc.)
+    # Alpaca's calendar is authoritative; fails open so a transient error never blocks a trading day.
+    if not fetcher.is_market_open_today():
+        logger.info(f"{today_str} is not an NYSE trading day — skipping session (bank holiday)")
+        telegram.send_message(f"📅 {today_str} — mercato chiuso (festività NYSE). Sessione saltata.")
+        return
+
     # Guard 1: if positions are already open, skip the pipeline and jump straight
     # to the monitoring loop — handles crash-and-restart without leaving positions unmonitored.
     # Run BEFORE the late-start guard: a post-crash restart with open positions must always
