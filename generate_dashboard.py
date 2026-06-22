@@ -236,22 +236,6 @@ svg text {{ font-family: -apple-system, sans-serif; }}
   </div>
 </div>
 
-<!-- Trade log -->
-<div class="card">
-  <h2>Trade log</h2>
-  <div class="tbl-wrap scroll-wrap">
-  <table>
-    <thead><tr>
-      <th>Data</th><th>Ticker</th><th>Entry</th><th>Exit</th>
-      <th>Shares</th><th>P&amp;L $</th><th>P&amp;L %</th>
-      <th>Uscita</th><th>Conf.</th><th>Gap %</th>
-      <th>Catalyst</th><th>Vol boost</th><th>Short float</th>
-    </tr></thead>
-    <tbody id="tradeRows"></tbody>
-  </table>
-  </div>
-</div>
-
 <!-- Pipeline funnel -->
 <div class="card">
   <h2>Pipeline funnel — giornaliero</h2>
@@ -266,6 +250,22 @@ svg text {{ font-family: -apple-system, sans-serif; }}
       <th>Trade</th><th>P&amp;L</th><th>P&amp;L %</th><th>Note</th>
     </tr></thead>
     <tbody id="funnelRows"></tbody>
+  </table>
+  </div>
+</div>
+
+<!-- Trade log -->
+<div class="card">
+  <h2>Trade log</h2>
+  <div class="tbl-wrap scroll-wrap">
+  <table>
+    <thead><tr>
+      <th>Data</th><th>Ticker</th><th>Entry</th><th>Exit</th>
+      <th>Shares</th><th>P&amp;L $</th><th>P&amp;L %</th>
+      <th>Uscita</th><th>Conf.</th><th>Gap %</th>
+      <th>Catalyst</th><th>Vol boost</th><th>Short float</th>
+    </tr></thead>
+    <tbody id="tradeRows"></tbody>
   </table>
   </div>
 </div>
