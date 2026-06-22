@@ -9,6 +9,7 @@ Usage:
   python run_backtest.py --vwap          # sensitivity solo su VWAP exit threshold
   python run_backtest.py --hardstop      # sensitivity solo su hard stop (1.0%–2.5%)
   python run_backtest.py --exit          # confronto strategie di uscita (break-even, trailing)
+  python run_backtest.py --positions     # confronto 1/2/3 max positions (confidence-sorted, $99k/N)
 """
 import argparse
 import logging
@@ -228,7 +229,7 @@ def main():
     parser.add_argument("--timing-true", action="store_true", help="Entry timing TRUE: signals computed at entry time")
     parser.add_argument("--sensitivity", action="store_true", help="Griglia completa parametri")
     parser.add_argument("--vwap",        action="store_true", help="Sensitivity solo VWAP exit threshold")
-    parser.add_argument("--hardstop",    action="store_true", help="Sensitivity solo hard stop (1.0%–2.5%)")
+    parser.add_argument("--hardstop",    action="store_true", help="Sensitivity solo hard stop (1.0%%–2.5%%)")
     parser.add_argument("--exit", dest="exit_strategy", action="store_true", help="Confronto strategie di uscita (break-even, trailing)")
     parser.add_argument("--positions",   action="store_true", help="Confronto 1/2/3 max positions (confidence-sorted, $99k/N per slot)")
     args = parser.parse_args()
