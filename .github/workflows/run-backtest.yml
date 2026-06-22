@@ -4,9 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "Modalità: 'standard', 'timing', 'timing-true', 'sensitivity', 'vwap', 'hardstop', 'exit'"
+        description: "Modalità del backtest"
         required: false
         default: "standard"
+        type: choice
+        options:
+          - standard
+          - timing
+          - timing-true
+          - sensitivity
+          - vwap
+          - hardstop
+          - exit
+          - positions
 
 jobs:
   backtest:
@@ -63,6 +73,10 @@ jobs:
       - name: Run backtest (exit strategy comparison)
         if: ${{ github.event.inputs.mode == 'exit' }}
         run: python run_backtest.py --exit
+
+      - name: Run backtest (max positions 1/2/3)
+        if: ${{ github.event.inputs.mode == 'positions' }}
+        run: python run_backtest.py --positions
 
       - name: Upload results
         uses: actions/upload-artifact@v4
