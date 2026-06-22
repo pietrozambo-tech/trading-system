@@ -846,6 +846,96 @@ def run_entry_timing_backtest(
 
 
 # ---------------------------------------------------------------------------
+# Max-positions analysis (1 vs 2 vs 3 slots, confidence-sorted selection)
+# ---------------------------------------------------------------------------
+
+def max_positions_analysis(
+    universe: list[str],
+    start_date: date,
+    end_date: date,
+) -> tuple["pd.DataFrame", dict]:
+    """Compare taking 1, 2, or 3 positions per day.
+
+    Selection is by confidence (highest first) so the "3rd trade" is the
+    3rd-best signal that day — not the 3rd ticker in the universe list.
+    Position size scales as $99k / N so total capital at risk stays constant.
+    Exit strategy is the live Step C + buffer −0.2%.
+    """
+    EQUITY = 99_000  # $100k − $1k cushion
+    STEP_C_BUFFER = [(0.005, -0.002), (0.015, 0.010), (0.030, 0.020)]
+
+    logger.info("Max-positions analysis — pre-fetching data …")
+    all_cache = prefetch_universe(universe, start_date, end_date)
+    days      = _trading_days(start_date, end_date)
+
+    # One pass: collect all qualifying trades per day with unit position size
+    # (exit logic is position-size-independent; qty/pnl are rescaled per scenario).
+    base_params = BacktestParams(step_stops=STEP_C_BUFFER, position_size_usd=1)
+    daily_candidates: dict[date, list[TradeResult]] = {}
+    for day in days:
+        candidates = []
+        for ticker in universe:
+            if ticker not in all_cache:
+                continue
+            t = _simulate_day(ticker, day, all_cache[ticker], base_params)
+            if t:
+                candidates.append(t)
+        # Sort best-first so [:n] always picks the top N by confidence
+        daily_candidates[day] = sorted(candidates, key=lambda x: x.confidence, reverse=True)
+
+    results_by_n: dict[int, BacktestResults] = {}
+    summary_rows = []
+
+    for n in [1, 2, 3]:
+        size = EQUITY / n
+        res  = BacktestResults()
+        for day in days:
+            for t in daily_candidates[day][:n]:
+                qty = max(1, int(size / t.entry_price))
+                pnl = (t.exit_price - t.entry_price) * qty
+                res.trades.append(TradeResult(
+                    ticker=t.ticker, date=t.date,
+                    entry_price=t.entry_price, exit_price=t.exit_price,
+                    exit_reason=t.exit_reason, qty=qty,
+                    pnl_usd=round(pnl, 2), pnl_pct=t.pnl_pct,
+                    confidence=t.confidence, post_open_advance=t.post_open_advance,
+                    or_position=t.or_position, gap_retention=t.gap_retention,
+                    entry_offset_min=t.entry_offset_min,
+                ))
+                res.daily_pnl[str(day)] = res.daily_pnl.get(str(day), 0.0) + pnl
+
+        results_by_n[n] = res
+        s  = res.summary()
+        df = res.to_dataframe() if res.trades else pd.DataFrame()
+        ec = df["exit_reason"].value_counts().to_dict() if not df.empty else {}
+        nt = s["total_trades"]
+        days_with_n = sum(1 for d in days if len(daily_candidates.get(d, [])) >= n)
+
+        logger.info(
+            f"  N={n}: {nt} trades | PF={s['profit_factor']:.2f} "
+            f"WR={s['win_rate']:.1%} P&L=${s['total_pnl_usd']:+,.0f}"
+        )
+        summary_rows.append({
+            "max_positions":    n,
+            "position_size":    f"${size:,.0f}",
+            "total_trades":     nt,
+            "days_with_N_slots": days_with_n,
+            "win_rate":         f"{s['win_rate']:.1%}",
+            "profit_factor":    round(s["profit_factor"], 2),
+            "total_pnl_usd":    s["total_pnl_usd"],
+            "avg_win_usd":      s["avg_win_usd"],
+            "avg_loss_usd":     s["avg_loss_usd"],
+            "max_dd_usd":       s["max_drawdown_usd"],
+            "trades_per_month": round(s["trades_per_month"], 1),
+            "vwap_exits":       ec.get("vwap_exit", 0),
+            "stop_exits":       sum(v for k, v in ec.items() if "stop" in k or "blocker" in k),
+            "eod_exits":        ec.get("eod_close", 0),
+        })
+
+    return pd.DataFrame(summary_rows), results_by_n
+
+
+# ---------------------------------------------------------------------------
 # True (non-oracle) entry timing analysis
 # ---------------------------------------------------------------------------
 

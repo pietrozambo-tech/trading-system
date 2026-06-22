@@ -28,7 +28,7 @@ logging.basicConfig(
 from backtest.engine import (
     BacktestParams, BacktestResults,
     run_backtest, sensitivity_analysis, vwap_sensitivity_analysis,
-    exit_strategy_analysis,
+    exit_strategy_analysis, max_positions_analysis,
     run_entry_timing_backtest, run_true_entry_timing_backtest,
     prefetch_universe, _trading_days, _simulate_day,
 )
@@ -230,6 +230,7 @@ def main():
     parser.add_argument("--vwap",        action="store_true", help="Sensitivity solo VWAP exit threshold")
     parser.add_argument("--hardstop",    action="store_true", help="Sensitivity solo hard stop (1.0%–2.5%)")
     parser.add_argument("--exit", dest="exit_strategy", action="store_true", help="Confronto strategie di uscita (break-even, trailing)")
+    parser.add_argument("--positions",   action="store_true", help="Confronto 1/2/3 max positions (confidence-sorted, $99k/N per slot)")
     args = parser.parse_args()
 
     if args.timing:
@@ -278,6 +279,51 @@ def main():
         os.makedirs("backtest/results", exist_ok=True)
         path = "backtest/results/exit_strategy.csv"
         exit_df.to_csv(path, index=False)
+        print(f"\nRisultati salvati in: {path}")
+
+    elif args.positions:
+        print(f"Max-positions analysis: {START_DATE} → {END_DATE} | {len(BACKTEST_UNIVERSE)} tickers")
+        print("Selection: top N by confidence each day. Position size = $99k / N (capital constant).")
+        print("Exit: Step C + buffer −0.2% (live config)\n")
+        summary_df, results_by_n = max_positions_analysis(BACKTEST_UNIVERSE, START_DATE, END_DATE)
+
+        print("\n" + "=" * 110)
+        print("MAX POSITIONS — 1 vs 2 vs 3")
+        print("=" * 110)
+        print(summary_df.to_string(index=False))
+        print("=" * 110)
+
+        # Marginal 3rd trade: stats for trades that would be added going 2→3
+        trades_n2 = {(t.ticker, t.date) for t in results_by_n[2].trades}
+        marginal   = [t for t in results_by_n[3].trades if (t.ticker, t.date) not in trades_n2]
+        if marginal:
+            import statistics
+            pnls    = [t.pnl_usd for t in marginal]
+            wins    = [p for p in pnls if p > 0]
+            losses  = [p for p in pnls if p <= 0]
+            pf      = sum(wins) / abs(sum(losses)) if losses and sum(losses) != 0 else float("inf")
+            confs   = [t.confidence for t in marginal]
+            print(f"\nMarginal 3rd trade (added by going N=2→N=3): {len(marginal)} trades")
+            print(f"  Win rate:       {len(wins)/len(marginal):.1%}")
+            print(f"  Profit factor:  {pf:.2f}")
+            print(f"  Total P&L:      ${sum(pnls):+,.0f}")
+            print(f"  Avg P&L:        ${sum(pnls)/len(pnls):+.0f}")
+            print(f"  Avg win:        ${sum(wins)/len(wins):+.0f}"  if wins  else "  Avg win:        n/a")
+            print(f"  Avg loss:       ${sum(losses)/len(losses):+.0f}" if losses else "  Avg loss:       n/a")
+            print(f"  Avg confidence: {sum(confs)/len(confs):.3f}")
+            from collections import Counter
+            ec = Counter(t.exit_reason for t in marginal)
+            print(f"  Exit reasons:   {dict(ec)}")
+
+        os.makedirs("backtest/results", exist_ok=True)
+        path = "backtest/results/positions_analysis.csv"
+        summary_df.to_csv(path, index=False)
+        # Also save the marginal trades detail
+        if marginal:
+            import pandas as _pd
+            _pd.DataFrame([t.__dict__ for t in marginal]).to_csv(
+                "backtest/results/positions_marginal_trades.csv", index=False
+            )
         print(f"\nRisultati salvati in: {path}")
 
     elif args.hardstop:
