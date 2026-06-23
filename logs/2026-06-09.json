@@ -1,6 +1,6 @@
 {
   "date": "2026-06-09",
-  "spy_pct": 0.005972390376537858,
+  "spy_pct": -0.00293,
   "blocked": null,
   "pipeline": [
     {
@@ -546,5 +546,6 @@
         }
       ]
     }
-  ]
+  ],
+  "spy_source": "official_close"
 }
