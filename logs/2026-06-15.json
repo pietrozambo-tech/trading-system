@@ -1,6 +1,6 @@
 {
   "date": "2026-06-15",
-  "spy_pct": 0.014871843272614623,
+  "spy_pct": 0.017639,
   "blocked": null,
   "pipeline": [
     {
@@ -1494,7 +1494,7 @@
           "author": "Benzinga Senior Editor",
           "content": "",
           "created_at": "2026-06-13T12:01:19Z",
-          "headline": "Benzinga Bulls And Bears: Oracle, Apple, Super Micro — And SpaceX IPO Boosts Market",
+          "headline": "Benzinga Bulls And Bears: Oracle, Apple, Super Micro \u2014 And SpaceX IPO Boosts Market",
           "id": 53183478,
           "images": [
             {
@@ -1511,7 +1511,7 @@
             }
           ],
           "source": "benzinga",
-          "summary": "Benzinga examined the prospects for many investors&#39; favorite stocks over the last week — here&#39;s a look at some of our top stories.",
+          "summary": "Benzinga examined the prospects for many investors&#39; favorite stocks over the last week \u2014 here&#39;s a look at some of our top stories.",
           "symbols": [
             "AAPL",
             "ACHC",
@@ -1789,5 +1789,6 @@
       ],
       "exit_price_corrected": true
     }
-  ]
+  ],
+  "spy_source": "official_close"
 }
