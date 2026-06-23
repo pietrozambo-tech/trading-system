@@ -280,24 +280,23 @@ def run() -> None:
             + "\n".join(f"• {d}" for d in cancelled)
         )
 
-    # Guard 0: skip on NYSE holidays (Juneteenth, MLK Day, etc.)
-    # Alpaca's calendar is authoritative; fails open so a transient error never blocks a trading day.
-    if not fetcher.is_market_open_today():
-        logger.info(f"{today_str} is not an NYSE trading day — skipping session (bank holiday)")
-        telegram.send_message(f"📅 {today_str} — mercato chiuso (festività NYSE). Sessione saltata.")
-        return
-
     # Backfill della chiusura UFFICIALE di SPY (S&P 500) nei log dei giorni già completati.
-    # Il valore salvato live alle 09:35 è solo il movimento di apertura; la performance di
-    # giornata piena si conosce solo dopo le 16:00 ET, quindi i giorni chiusi si correggono
-    # qui (pre-market) leggendo le barre daily. Idempotente: i giorni già "official_close"
-    # vengono saltati. I log corretti vengono ri-pubblicati su GitHub.
+    # Viene eseguito PRIMA del guard holiday: su una festività NYSE la sessione viene saltata
+    # ma i log dei giorni precedenti devono comunque essere corretti (es. venerdì prima di un
+    # lunedì festivo). Idempotente: i giorni già "official_close" vengono saltati.
     try:
         import backfill_spy
         for d in backfill_spy.backfill():
             _push_log_to_github(d, f"logs/{d}.json")
     except Exception as e:
         logger.warning(f"SPY backfill skipped: {e}")
+
+    # Guard 0: skip on NYSE holidays (Juneteenth, MLK Day, etc.)
+    # Alpaca's calendar is authoritative; fails open so a transient error never blocks a trading day.
+    if not fetcher.is_market_open_today():
+        logger.info(f"{today_str} is not an NYSE trading day — skipping session (bank holiday)")
+        telegram.send_message(f"📅 {today_str} — mercato chiuso (festività NYSE). Sessione saltata.")
+        return
 
     # Guard 1: if positions are already open, skip the pipeline and jump straight
     # to the monitoring loop — handles crash-and-restart without leaving positions unmonitored.

@@ -303,8 +303,11 @@ def get_spy_daily_returns(start: date, end: date) -> dict[str, float]:
     Returns an empty dict on error (caller leaves existing values untouched).
     """
     try:
-        # Buffer back a few extra calendar days so the first requested day has a prior close.
-        bars = get_daily_bars("SPY", lookback_days=int((end - start).days * 1.6) + 20)
+        # Anchor lookback to today→start (not end→start): get_daily_bars always anchors at
+        # today, so lookback must span from today back to start regardless of how old start is.
+        # Convert calendar days to trading days (~5/7) and add 20 for the prior-close buffer.
+        _today = datetime.now(ET).date()
+        bars = get_daily_bars("SPY", lookback_days=int((_today - start).days * 5 / 7) + 20)
     except Exception as e:
         logger.warning(f"SPY daily returns fetch error: {e}")
         return {}
