@@ -1,6 +1,6 @@
 {
   "date": "2026-06-08",
-  "spy_pct": 0.006427554410468518,
+  "spy_pct": 0.002256,
   "blocked": "nessun candidato sopra soglia confidence",
   "pipeline": [
     {
@@ -501,5 +501,6 @@
   ],
   "llm_input": [],
   "llm_output": {},
-  "trades": []
+  "trades": [],
+  "spy_source": "official_close"
 }
