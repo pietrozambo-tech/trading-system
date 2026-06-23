@@ -1,0 +1,184 @@
+{
+  "date": "2026-06-23",
+  "spy_pct": -0.013980141615273991,
+  "spy_source": "open_935",
+  "blocked": "nessun candidato sopra soglia confidence",
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 3,
+      "tickers": [
+        "MSFT",
+        "PLTR",
+        "CCJ"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 2,
+      "tickers": [
+        "MSFT",
+        "PLTR"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 0,
+      "tickers": [],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "MSFT",
+      "gap_pct": 1.38,
+      "adv_m": 36.2,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -20.1
+    },
+    {
+      "ticker": "PLTR",
+      "gap_pct": 0.9,
+      "adv_m": 44.6,
+      "short_float_pct": 3.2,
+      "dist_from_3m_high_pct": -26.3
+    },
+    {
+      "ticker": "CCJ",
+      "gap_pct": 0.72,
+      "adv_m": 3.2,
+      "short_float_pct": null,
+      "dist_from_3m_high_pct": -17.8
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "CCJ",
+      "reason": "adv_3,193,832<min_5,000,000"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "MSFT",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.278,
+      "gap_retention": 0.6692,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.931,
+      "vol_today": 44287,
+      "vol_avg": 47551,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0119,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.013829150106168784,
+      "price_935": 371.515,
+      "open_930": 372.54,
+      "prev_close": 367.34
+    },
+    {
+      "ticker": "PLTR",
+      "confidence": 0.2,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1317,
+      "gap_retention": -0.9714,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.902,
+      "vol_today": 35231,
+      "vol_avg": 39057,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0323,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.009037656903765677,
+      "price_935": 119.09,
+      "open_930": 120.2,
+      "prev_close": 119.5
+    }
+  ],
+  "llm_input": [],
+  "llm_output": {},
+  "trades": []
+}
