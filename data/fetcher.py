@@ -294,6 +294,32 @@ def get_spy_change(session_date: Optional[date] = None) -> float:
         return 0.0
 
 
+def get_spy_daily_returns(start: date, end: date) -> dict[str, float]:
+    """Official SPY daily returns (prev_close → close) keyed by 'YYYY-MM-DD'.
+
+    Used to backfill the dashboard benchmark: the value stored intraday at 09:35 is
+    only SPY's opening move, not the full-day performance. The official close is known
+    only after 16:00 ET, so each completed day is patched on a later run from daily bars.
+    Returns an empty dict on error (caller leaves existing values untouched).
+    """
+    try:
+        # Buffer back a few extra calendar days so the first requested day has a prior close.
+        bars = get_daily_bars("SPY", lookback_days=int((end - start).days * 1.6) + 20)
+    except Exception as e:
+        logger.warning(f"SPY daily returns fetch error: {e}")
+        return {}
+    if bars.empty or "close" not in bars:
+        return {}
+    closes = bars["close"]
+    rets = closes.pct_change()
+    out: dict[str, float] = {}
+    for ts, val in rets.items():
+        d = ts.date() if hasattr(ts, "date") else ts
+        if start <= d <= end and pd.notna(val):
+            out[d.strftime("%Y-%m-%d")] = float(val)
+    return out
+
+
 def get_account() -> dict:
     """Account info: cash, equity, etc."""
     client = get_trading_client()

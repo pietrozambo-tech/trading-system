@@ -242,7 +242,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
   <div class="tbl-wrap scroll-wrap">
   <table>
     <thead><tr>
-      <th>Data</th><th>SPY</th><th>Universe</th>
+      <th>Data</th><th>S&amp;P 500</th><th>Universe</th>
       <th>Pre-mkt <span data-tip="Ticker con gap ≥ 0.5% in pre-market rispetto alla chiusura precedente" class="iico">ⓘ</span></th>
       <th>L1 ✓ <span data-tip="Superano i filtri binari di qualità: liquidità (ADV), spread, prezzo minimo, asset tradabile su Alpaca" class="iico">ⓘ</span></th>
       <th>L2 ✓ <span data-tip="Superano la soglia di confidence algoritmica (≥ 0.65) basata su segnali tecnici: post-open advance, OR position, gap retention, vol boost, catalyst" class="iico">ⓘ</span></th>
@@ -576,7 +576,7 @@ function renderFunnel(logs) {{
     return `<tr>
       <td>${{fmtDate(r.date)}}</td>
       <td class="${{cls(r.spy_pct)}}">${{fpm(r.spy_pct*100,2)}}%</td>
-      <td>60</td><td>${{r.premarket_count}}</td><td>${{r.l1_count}}</td>
+      <td>${{r.universe_count}}</td><td>${{r.premarket_count}}</td><td>${{r.l1_count}}</td>
       <td>${{r.l2_count}}</td><td>${{r.llm_input.length}}</td><td>${{r.trades.length}}</td>
       <td class="${{sc}}">${{r.daily_pnl!==0?(r.daily_pnl>0?"+$":"−$")+money(r.daily_pnl):"—"}}</td>
       <td class="${{sc}}">${{dailyPct!=null?(dailyPct>=0?"+":"")+dailyPct.toFixed(2)+"%":"—"}}</td>

@@ -108,6 +108,9 @@ class PipelineLog:
         self.llm_output: dict = {}
         self.trades: list[dict] = []
         self.spy_pct: float = 0.0
+        # "open_935" = valore di apertura salvato live; sovrascritto da backfill_spy con
+        # la chiusura ufficiale ("official_close") il giorno dopo.
+        self.spy_source: str = "open_935"
         self.blocked: str | None = None
 
     def log_stage(self, name: str, tickers: list[str], note: str = "") -> None:
@@ -156,6 +159,7 @@ class PipelineLog:
         payload = {
             "date":                 self.date,
             "spy_pct":              self.spy_pct,
+            "spy_source":           self.spy_source,
             "blocked":              self.blocked,
             "pipeline":             self.stages,
             "premarket_candidates": self.premarket_candidates,
@@ -282,6 +286,18 @@ def run() -> None:
         logger.info(f"{today_str} is not an NYSE trading day — skipping session (bank holiday)")
         telegram.send_message(f"📅 {today_str} — mercato chiuso (festività NYSE). Sessione saltata.")
         return
+
+    # Backfill della chiusura UFFICIALE di SPY (S&P 500) nei log dei giorni già completati.
+    # Il valore salvato live alle 09:35 è solo il movimento di apertura; la performance di
+    # giornata piena si conosce solo dopo le 16:00 ET, quindi i giorni chiusi si correggono
+    # qui (pre-market) leggendo le barre daily. Idempotente: i giorni già "official_close"
+    # vengono saltati. I log corretti vengono ri-pubblicati su GitHub.
+    try:
+        import backfill_spy
+        for d in backfill_spy.backfill():
+            _push_log_to_github(d, f"logs/{d}.json")
+    except Exception as e:
+        logger.warning(f"SPY backfill skipped: {e}")
 
     # Guard 1: if positions are already open, skip the pipeline and jump straight
     # to the monitoring loop — handles crash-and-restart without leaving positions unmonitored.
