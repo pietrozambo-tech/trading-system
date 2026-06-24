@@ -1,0 +1,506 @@
+{
+  "date": "2026-06-24",
+  "spy_pct": 0.00434830020991786,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 7,
+      "tickers": [
+        "MU",
+        "AVGO",
+        "CCL",
+        "MRVL",
+        "SMCI",
+        "GOOGL",
+        "MARA"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 7,
+      "tickers": [
+        "MU",
+        "AVGO",
+        "CCL",
+        "MRVL",
+        "SMCI",
+        "GOOGL",
+        "MARA"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 2,
+      "tickers": [
+        "CCL",
+        "GOOGL"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "MU",
+      "gap_pct": 3.15,
+      "adv_m": 51.2,
+      "short_float_pct": 3.3,
+      "dist_from_3m_high_pct": -10.6
+    },
+    {
+      "ticker": "AVGO",
+      "gap_pct": 2.51,
+      "adv_m": 26.1,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -21.1
+    },
+    {
+      "ticker": "CCL",
+      "gap_pct": 1.67,
+      "adv_m": 28.4,
+      "short_float_pct": 3.3,
+      "dist_from_3m_high_pct": -7.6
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 1.56,
+      "adv_m": 40.9,
+      "short_float_pct": 4.7,
+      "dist_from_3m_high_pct": -14.1
+    },
+    {
+      "ticker": "SMCI",
+      "gap_pct": 0.99,
+      "adv_m": 53.4,
+      "short_float_pct": 16.5,
+      "dist_from_3m_high_pct": -34.5
+    },
+    {
+      "ticker": "GOOGL",
+      "gap_pct": 0.77,
+      "adv_m": 30.6,
+      "short_float_pct": 1.4,
+      "dist_from_3m_high_pct": -14.6
+    },
+    {
+      "ticker": "MARA",
+      "gap_pct": 0.68,
+      "adv_m": 44.0,
+      "short_float_pct": 29.6,
+      "dist_from_3m_high_pct": -9.9
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "SMCI",
+      "reason": "pm_gap_eaten_at_open_0%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "MU",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.6215,
+      "gap_retention": 0.0947,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.78,
+      "vol_today": 33501,
+      "vol_avg": 42949,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0334,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03150878994456972,
+      "price_935": 1071.805,
+      "open_930": 1082.25,
+      "prev_close": 1051.77
+    },
+    {
+      "ticker": "AVGO",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.3774,
+      "gap_retention": 0.6226,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.73,
+      "vol_today": 38712,
+      "vol_avg": 53013,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0125,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.025147967907404978,
+      "price_935": 385.39,
+      "open_930": 385.45,
+      "prev_close": 380.15
+    },
+    {
+      "ticker": "CCL",
+      "confidence": 1.2,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9204,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.836,
+      "vol_today": 33139,
+      "vol_avg": 39643,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.033299997,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.016713091922005586,
+      "price_935": 29.88,
+      "open_930": 29.36,
+      "prev_close": 28.72
+    },
+    {
+      "ticker": "MRVL",
+      "confidence": 0.2,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.3487,
+      "gap_retention": -1.4402,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.354,
+      "vol_today": 26332,
+      "vol_avg": 74448,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0471,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015624999999999844,
+      "price_935": 277.68,
+      "open_930": 281.38,
+      "prev_close": 279.04
+    },
+    {
+      "ticker": "GOOGL",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.731,
+      "gap_retention": 0.5903,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.0,
+      "vol_today": 47319,
+      "vol_avg": 47312,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.014199999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.007713864732903869,
+      "price_935": 350.67,
+      "open_930": 349.01,
+      "prev_close": 346.13
+    },
+    {
+      "ticker": "MARA",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0805,
+      "gap_retention": 0.2903,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.022,
+      "vol_today": 52148,
+      "vol_avg": 51047,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2965,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.006802721088435471,
+      "price_935": 14.825,
+      "open_930": 15.01,
+      "prev_close": 14.7
+    }
+  ],
+  "llm_input": [
+    "CCL",
+    "GOOGL"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "CCL",
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Analyst upgrade con price target raise da Susquehanna (catalyst Tier 2, +0.20) supporta il recupero dopo il calo post-earnings; tutti e 3 i segnali tecnici sono attivi (post_open_advance, or_position 0.92, gap_retention 1.0) con confidence_algo di 1.2.",
+      "formula": "direction_score=3/3=1.0 + catalyst_bonus=0.20 + vol_boost=0.00 + short_squeeze_bonus=0.00 = 1.20 \u2192 capped reasoning confidence 0.87",
+      "price_935": 29.88
+    },
+    "trade_2": null,
+    "no_trade_reason": "GOOGL escluso: gap_retention sotto soglia (0.59 < 0.70), nessun catalyst identificabile (bonus 0.00), post_open_advance debole (+0.48%), confidence_algo di soli 0.667 che non sale con i bonus disponibili \u2014 segnale insufficiente per un secondo trade."
+  },
+  "trades": [
+    {
+      "ticker": "CCL",
+      "qty": 1693,
+      "entry_price": 29.967614,
+      "entry_time": "09:35:38",
+      "entry_ts": 1782308138.595353,
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Analyst upgrade con price target raise da Susquehanna (catalyst Tier 2, +0.20) supporta il recupero dopo il calo post-earnings; tutti e 3 i segnali tecnici sono attivi (post_open_advance, or_position 0.92, gap_retention 1.0) con confidence_algo di 1.2.",
+      "order_id": "d989be1e-01ec-4f3e-bbb3-eed79400f600",
+      "stop_atr": 28.4908,
+      "stop_pct": 29.3683,
+      "stop_price": 29.3683,
+      "atr14": 1.4768,
+      "peak_price": 29.967614,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 29.32,
+      "exit_time": "09:48:44",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1096.41,
+      "pnl_pct": -0.0216,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.0,
+      "short_float": 0.033299997,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9204,
+      "gap_retention": 1.0,
+      "gap_pct": 0.016713091922005586,
+      "news": [
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-24T13:07:19Z",
+          "headline": "Susquehanna Maintains Positive on Carnival, Raises Price Target to $33",
+          "id": 60068225,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "CCL"
+          ],
+          "updated_at": "2026-06-24T13:07:19Z",
+          "url": "https://www.benzinga.com/news/26/06/60068225/susquehanna-maintains-positive-carnival-raises-price-target-33"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-24T09:23:28Z",
+          "headline": "Barclays Maintains Overweight on Carnival, Lowers Price Target to $35",
+          "id": 60063430,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "CCL"
+          ],
+          "updated_at": "2026-06-24T09:23:28Z",
+          "url": "https://www.benzinga.com/news/26/06/60063430/barclays-maintains-overweight-carnival-lowers-price-target-35"
+        },
+        {
+          "author": "Akanksha Bakshi",
+          "content": "",
+          "created_at": "2026-06-23T17:21:59Z",
+          "headline": "Carnival\u2019s Record Quarter Gets Sunk By Middle East Worries",
+          "id": 60052034,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/23/Carnival-Cruise.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/23/Carnival-Cruise.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/23/Carnival-Cruise.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Carnival stock dips 5.4% after Q2 revenue miss and weak Q3 guidance overshadow an earnings beat and strong 2026 booking demand.",
+          "symbols": [
+            "CCL"
+          ],
+          "updated_at": "2026-06-23T17:21:59Z",
+          "url": "https://www.benzinga.com/markets/earnings/26/06/60052034/carnivals-record-quarter-gets-sunk-by-middle-east-worries"
+        },
+        {
+          "author": "Piero Cingari",
+          "content": "",
+          "created_at": "2026-06-23T16:45:55Z",
+          "headline": "Chip Bloodbath Hits Nasdaq 100 As South Korea Plunges: Stock Market Today",
+          "id": 60050661,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/23/Financial-Market-Crash-Concept-With-Red-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/23/Financial-Market-Crash-Concept-With-Red-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/23/Financial-Market-Crash-Concept-With-Red-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "A global semiconductor sell-off hammered the Nasdaq on Tuesday, but a rotation into defensives and small caps kept the Dow green.",
+          "symbols": [
+            "AMAT",
+            "AXON",
+            "BBWI",
+            "BRBR",
+            "CCL",
+            "DIA",
+            "EWY",
+            "FDX",
+            "GDX",
+            "GEV",
+            "GLW",
+            "GOOGL",
+            "IBB",
+            "IWM",
+            "JETS",
+            "KBH",
+            "KIE",
+            "KLAC",
+            "LRCX",
+            "MRVL",
+            "MU",
+            "NET",
+            "NOW",
+            "NVDA",
+            "ON",
+            "PBW",
+            "QQQ",
+            "RBRK",
+            "SMH",
+            "SNDK",
+            "VKTX",
+            "VOO",
+            "VRT",
+            "XLK",
+            "XLP",
+            "XLRE",
+            "XLV"
+          ],
+          "updated_at": "2026-06-23T16:45:56Z",
+          "url": "https://www.benzinga.com/markets/equities/26/06/60050661/chip-selloff-south-korea-memory-bloodbath-micron-nasdaq-100-wall-street"
+        },
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-06-23T15:11:49Z",
+          "headline": "Carnival Reports Q2 2026 Results: Full Earnings Call Transcript",
+          "id": 60046688,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/movers_1.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/movers_1.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/movers_1.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Carnival (NYSE:CCL) held its second-quarter earnings conference call on Tuesday. Below is the complete transcript from the call.\nThis content is powered by Benzinga APIs. For comprehensive financial data and",
+          "symbols": [
+            "CCL"
+          ],
+          "updated_at": "2026-06-23T15:11:50Z",
+          "url": "https://www.benzinga.com/news/26/06/60046688/carnival-reports-q2-2026-results-full-earnings-call-transcript"
+        }
+      ]
+    }
+  ]
+}
