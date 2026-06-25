@@ -1,0 +1,961 @@
+{
+  "date": "2026-06-25",
+  "spy_pct": 0.005454644629902362,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 18,
+      "tickers": [
+        "MU",
+        "INTC",
+        "AMD",
+        "CRWV",
+        "MRVL",
+        "QUBT",
+        "QBTS",
+        "CBRS",
+        "SMCI",
+        "RGTI",
+        "MARA",
+        "AVGO",
+        "IONQ",
+        "NVDA",
+        "RKLB",
+        "OKLO",
+        "SMR",
+        "RDW"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 18,
+      "tickers": [
+        "MU",
+        "INTC",
+        "AMD",
+        "CRWV",
+        "MRVL",
+        "QUBT",
+        "QBTS",
+        "CBRS",
+        "SMCI",
+        "RGTI",
+        "MARA",
+        "AVGO",
+        "IONQ",
+        "NVDA",
+        "RKLB",
+        "OKLO",
+        "SMR",
+        "RDW"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 3,
+      "tickers": [
+        "MU",
+        "INTC",
+        "AMD"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "MU",
+      "gap_pct": 17.31,
+      "adv_m": 51.2,
+      "short_float_pct": 3.3,
+      "dist_from_3m_high_pct": 1.4,
+      "prev_day_return_pct": -0.31
+    },
+    {
+      "ticker": "INTC",
+      "gap_pct": 6.49,
+      "adv_m": 132.5,
+      "short_float_pct": 2.7,
+      "dist_from_3m_high_pct": -0.9,
+      "prev_day_return_pct": -0.48
+    },
+    {
+      "ticker": "AMD",
+      "gap_pct": 4.61,
+      "adv_m": 37.5,
+      "short_float_pct": 2.7,
+      "dist_from_3m_high_pct": -3.4,
+      "prev_day_return_pct": -0.02
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 4.57,
+      "adv_m": 30.2,
+      "short_float_pct": 18.2,
+      "dist_from_3m_high_pct": -23.7,
+      "prev_day_return_pct": -4.58
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 4.3,
+      "adv_m": 41.0,
+      "short_float_pct": 4.7,
+      "dist_from_3m_high_pct": -12.5,
+      "prev_day_return_pct": -0.84
+    },
+    {
+      "ticker": "QUBT",
+      "gap_pct": 2.68,
+      "adv_m": 20.3,
+      "short_float_pct": 29.7,
+      "dist_from_3m_high_pct": -31.1,
+      "prev_day_return_pct": -7.53
+    },
+    {
+      "ticker": "QBTS",
+      "gap_pct": 2.52,
+      "adv_m": 34.2,
+      "short_float_pct": 16.8,
+      "dist_from_3m_high_pct": -25.3,
+      "prev_day_return_pct": -8.19
+    },
+    {
+      "ticker": "CBRS",
+      "gap_pct": 2.32,
+      "adv_m": 8.4,
+      "short_float_pct": 17.2,
+      "dist_from_3m_high_pct": -51.7,
+      "prev_day_return_pct": -19.61
+    },
+    {
+      "ticker": "SMCI",
+      "gap_pct": 2.31,
+      "adv_m": 50.4,
+      "short_float_pct": 16.5,
+      "dist_from_3m_high_pct": -35.4,
+      "prev_day_return_pct": -2.61
+    },
+    {
+      "ticker": "RGTI",
+      "gap_pct": 1.89,
+      "adv_m": 40.8,
+      "short_float_pct": 18.8,
+      "dist_from_3m_high_pct": -29.1,
+      "prev_day_return_pct": -8.22
+    },
+    {
+      "ticker": "MARA",
+      "gap_pct": 1.86,
+      "adv_m": 44.0,
+      "short_float_pct": 29.6,
+      "dist_from_3m_high_pct": -13.2,
+      "prev_day_return_pct": -4.76
+    },
+    {
+      "ticker": "AVGO",
+      "gap_pct": 1.77,
+      "adv_m": 25.9,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -21.3,
+      "prev_day_return_pct": 0.51
+    },
+    {
+      "ticker": "IONQ",
+      "gap_pct": 1.55,
+      "adv_m": 30.8,
+      "short_float_pct": 15.6,
+      "dist_from_3m_high_pct": -26.1,
+      "prev_day_return_pct": -7.35
+    },
+    {
+      "ticker": "NVDA",
+      "gap_pct": 1.26,
+      "adv_m": 162.6,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -14.7,
+      "prev_day_return_pct": -0.52
+    },
+    {
+      "ticker": "RKLB",
+      "gap_pct": 1.08,
+      "adv_m": 27.2,
+      "short_float_pct": 5.5,
+      "dist_from_3m_high_pct": -42.8,
+      "prev_day_return_pct": -10.21
+    },
+    {
+      "ticker": "OKLO",
+      "gap_pct": 0.98,
+      "adv_m": 13.2,
+      "short_float_pct": 18.0,
+      "dist_from_3m_high_pct": -33.0,
+      "prev_day_return_pct": -5.47
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 0.88,
+      "adv_m": 34.4,
+      "short_float_pct": 20.0,
+      "dist_from_3m_high_pct": -28.0,
+      "prev_day_return_pct": -5.99
+    },
+    {
+      "ticker": "RDW",
+      "gap_pct": 0.53,
+      "adv_m": 38.5,
+      "short_float_pct": 22.4,
+      "dist_from_3m_high_pct": -57.1,
+      "prev_day_return_pct": -6.87
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "NVDA",
+      "reason": "pm_gap_eaten_at_open_43%"
+    },
+    {
+      "ticker": "RKLB",
+      "reason": "pm_gap_eaten_at_open_35%"
+    },
+    {
+      "ticker": "RDW",
+      "reason": "gap_reversed_at_open"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "MU",
+      "confidence": 1.15,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9134,
+      "gap_retention": 0.9551,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.3,
+      "vol_today": 94387,
+      "vol_avg": 41031,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.1,
+      "short_float": 0.0334,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.17309324660709008,
+      "price_935": 1249.99,
+      "open_930": 1228.735,
+      "prev_close": 1048.51
+    },
+    {
+      "ticker": "INTC",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7536,
+      "gap_retention": 0.9248,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.636,
+      "vol_today": 72245,
+      "vol_avg": 113644,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0269,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.06486897075579182,
+      "price_935": 140.21,
+      "open_930": 139.5,
+      "prev_close": 131.65
+    },
+    {
+      "ticker": "AMD",
+      "confidence": 1.05,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7983,
+      "gap_retention": 0.8471,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.378,
+      "vol_today": 72156,
+      "vol_avg": 30340,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0271,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.046061492284603725,
+      "price_935": 546.85,
+      "open_930": 544.035,
+      "prev_close": 519.74
+    },
+    {
+      "ticker": "CRWV",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1544,
+      "gap_retention": 0.6968,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.418,
+      "vol_today": 14866,
+      "vol_avg": 35539,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.18190001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.045697858842188736,
+      "price_935": 104.16,
+      "open_930": 104.97,
+      "prev_close": 100.88
+    },
+    {
+      "ticker": "MRVL",
+      "confidence": 0.2,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1449,
+      "gap_retention": 0.6058,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.44,
+      "vol_today": 32467,
+      "vol_avg": 73798,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0471,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04304300686664266,
+      "price_935": 286.43,
+      "open_930": 291.07,
+      "prev_close": 276.7
+    },
+    {
+      "ticker": "QUBT",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1064,
+      "gap_retention": 0.6579,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.241,
+      "vol_today": 26986,
+      "vol_avg": 21738,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2974,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.026804123711340368,
+      "price_935": 9.975,
+      "open_930": 10.08,
+      "prev_close": 9.7
+    },
+    {
+      "ticker": "QBTS",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.6184,
+      "gap_retention": 0.375,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.615,
+      "vol_today": 25845,
+      "vol_avg": 42034,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1681,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.025239338555265372,
+      "price_935": 23.395,
+      "open_930": 23.46,
+      "prev_close": 22.98
+    },
+    {
+      "ticker": "CBRS",
+      "confidence": 0.1,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0718,
+      "gap_retention": 0.1717,
+      "vol_boost": 0.1,
+      "vol_ratio": 5.292,
+      "vol_today": 34198,
+      "vol_avg": 6462,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1715,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.023153736420498186,
+      "price_935": 183.95,
+      "open_930": 189.51,
+      "prev_close": 182.26
+    },
+    {
+      "ticker": "SMCI",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0667,
+      "gap_retention": -0.4831,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.647,
+      "vol_today": 82914,
+      "vol_avg": 128230,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.16549999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.023112480739599383,
+      "price_935": 32.13,
+      "open_930": 33.34,
+      "prev_close": 32.45
+    },
+    {
+      "ticker": "RGTI",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1972,
+      "gap_retention": 0.8444,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.444,
+      "vol_today": 25124,
+      "vol_avg": 56588,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1877,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01894521249359946,
+      "price_935": 19.98,
+      "open_930": 19.98,
+      "prev_close": 19.53
+    },
+    {
+      "ticker": "MARA",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0333,
+      "gap_retention": -0.0222,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.082,
+      "vol_today": 51220,
+      "vol_avg": 47335,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2965,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.018571428571428555,
+      "price_935": 14.015,
+      "open_930": 14.45,
+      "prev_close": 14.0
+    },
+    {
+      "ticker": "AVGO",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.4862,
+      "gap_retention": 0.2597,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.787,
+      "vol_today": 39572,
+      "vol_avg": 50290,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0125,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.017666919674405215,
+      "price_935": 385.71,
+      "open_930": 386.575,
+      "prev_close": 382.07
+    },
+    {
+      "ticker": "IONQ",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.3265,
+      "gap_retention": 0.6098,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.513,
+      "vol_today": 11986,
+      "vol_avg": 23362,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.15609999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015485074626865639,
+      "price_935": 54.34,
+      "open_930": 54.42,
+      "prev_close": 53.6
+    },
+    {
+      "ticker": "OKLO",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0364,
+      "gap_retention": -0.0714,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.782,
+      "vol_today": 5735,
+      "vol_avg": 7332,
+      "or_bar_count": 4,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.18020001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.009803921568627472,
+      "price_935": 54.01,
+      "open_930": 55.6,
+      "prev_close": 54.06
+    },
+    {
+      "ticker": "SMR",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0968,
+      "gap_retention": -0.2353,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.406,
+      "vol_today": 19820,
+      "vol_avg": 48783,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1997,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.008814887365328095,
+      "price_935": 10.2,
+      "open_930": 10.38,
+      "prev_close": 10.21
+    }
+  ],
+  "llm_input": [
+    "MU",
+    "INTC",
+    "AMD"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "MU",
+      "direction": "long",
+      "confidence": 1.15,
+      "reason": "Earnings blowout confermato (Tier 1: revenue/earnings beat) con multipli analyst upgrade e price target raise massivi; segnali tecnici eccellenti con gap del 17%, or_position 0.91, gap_retention 0.96 e post-open avanzamento positivo.",
+      "price_935": 1249.99
+    },
+    "trade_2": {
+      "ticker": "INTC",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Beneficia del sentiment positivo spillover dai risultati di Micron con la notizia di Goldman Sachs che avvia la copertura e SambaNova che quintuplicano la valutazione; segnali tecnici solidi con or_position 0.75 e gap_retention 0.92, vicino ai massimi degli ultimi 3 mesi.",
+      "price_935": 140.21
+    },
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "MU",
+      "qty": 40,
+      "entry_price": 1249.8605,
+      "entry_time": "09:37:43",
+      "entry_ts": 1782394663.8301554,
+      "direction": "long",
+      "confidence": 1.15,
+      "reason": "Earnings blowout confermato (Tier 1: revenue/earnings beat) con multipli analyst upgrade e price target raise massivi; segnali tecnici eccellenti con gap del 17%, or_position 0.91, gap_retention 0.96 e post-open avanzamento positivo.",
+      "order_id": "6962acd8-cc3c-4e45-9af2-379b1723efe0",
+      "stop_atr": 1146.8698,
+      "stop_pct": 1224.8633,
+      "stop_price": 1224.8633,
+      "atr14": 102.9907,
+      "peak_price": 1249.8605,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 1217.227,
+      "exit_time": "09:43:25",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1305.34,
+      "pnl_pct": -0.0261,
+      "catalyst_bonus": 0.1,
+      "vol_boost": 0.05,
+      "short_float": 0.0334,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9134,
+      "gap_retention": 0.9551,
+      "gap_pct": 0.17309324660709008,
+      "news": [
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-25T13:21:06Z",
+          "headline": "Rosenblatt Maintains Buy on Micron Technology, Raises Price Target to $1500",
+          "id": 60096129,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "MU"
+          ],
+          "updated_at": "2026-06-25T13:21:06Z",
+          "url": "https://www.benzinga.com/news/26/06/60096129/rosenblatt-maintains-buy-micron-technology-raises-price-target-1500"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-06-25T13:19:06Z",
+          "headline": "Why Is Taiwan Semiconductor Stock Gaining Thursday?",
+          "id": 60096083,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/TSMC.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/TSMC.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/TSMC.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Taiwan Semiconductor stock jumps 4% premarket as Micron\u2019s blowout earnings fuel optimism for the massive AI infrastructure spending boom.",
+          "symbols": [
+            "BLOX",
+            "GEME",
+            "MU",
+            "OSEA",
+            "TSM"
+          ],
+          "updated_at": "2026-06-25T13:19:06Z",
+          "url": "https://www.benzinga.com/markets/tech/26/06/60096083/why-is-taiwan-semiconductor-stock-gaining-thursday"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-25T13:09:23Z",
+          "headline": "Keybanc Maintains Overweight on Micron Technology, Raises Price Target to $1600",
+          "id": 60095890,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "MU"
+          ],
+          "updated_at": "2026-06-25T13:09:23Z",
+          "url": "https://www.benzinga.com/news/26/06/60095890/keybanc-maintains-overweight-micron-technology-raises-price-target-1600"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-06-25T13:06:49Z",
+          "headline": "Micron To Rally More Than 57%? Here Are 10 Top Analyst Forecasts For Thursday",
+          "id": 60095710,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Micron-Technology-Logo-Displayed-On-A-Mo.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Micron-Technology-Logo-Displayed-On-A-Mo.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Micron-Technology-Logo-Displayed-On-A-Mo.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Top analysts changed outlook on top names. See full changes, upgrades, downgrades on analyst ratings page. See how analysts view PepsiCo, Absci, Okta, Datadog, ICON, Nike, UWM, Micron.",
+          "symbols": [
+            "ABSI",
+            "DDOG",
+            "HSY",
+            "ICLR",
+            "MU",
+            "NKE",
+            "OKTA",
+            "PEP",
+            "URI",
+            "UWMC"
+          ],
+          "updated_at": "2026-06-25T13:06:49Z",
+          "url": "https://www.benzinga.com/news/26/06/60095710/micron-to-rally-more-than-57-here-are-10-top-analyst-forecasts-for-thursday"
+        },
+        {
+          "author": "Surbhi Jain",
+          "content": "",
+          "created_at": "2026-06-25T12:58:06Z",
+          "headline": "Micron Is Spending Billions On New Fabs\u2014And Still Says It'll Return 100% Of Excess Cash To Shareholders",
+          "id": 60095272,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Los-Angeles--California---24-January-202.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Los-Angeles--California---24-January-202.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Los-Angeles--California---24-January-202.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Micron says it will return 100% of excess cash to shareholders, with fiscal 2026 capex set to reach $27 billion.",
+          "symbols": [
+            "MU"
+          ],
+          "updated_at": "2026-06-25T12:58:06Z",
+          "url": "https://www.benzinga.com/trading-ideas/long-ideas/26/06/60095272/micron-is-spending-billions-on-new-fabs-and-still-says-itll-return-100-of-excess-cash-to-shareholders"
+        }
+      ]
+    },
+    {
+      "ticker": "INTC",
+      "qty": 357,
+      "entry_price": 139.906891,
+      "entry_time": "09:37:48",
+      "entry_ts": 1782394668.9848733,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Beneficia del sentiment positivo spillover dai risultati di Micron con la notizia di Goldman Sachs che avvia la copertura e SambaNova che quintuplicano la valutazione; segnali tecnici solidi con or_position 0.75 e gap_retention 0.92, vicino ai massimi degli ultimi 3 mesi.",
+      "order_id": "1d641272-d68e-458d-ac14-09b045792c63",
+      "stop_atr": 129.2092,
+      "stop_pct": 137.1088,
+      "stop_price": 137.1088,
+      "atr14": 10.6977,
+      "peak_price": 139.906891,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 136.62,
+      "exit_time": "09:43:26",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1173.42,
+      "pnl_pct": -0.0235,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.0269,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.7536,
+      "gap_retention": 0.9248,
+      "gap_pct": 0.06486897075579182,
+      "news": [
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-06-25T12:44:44Z",
+          "headline": "This Tonix Pharmaceuticals Analyst Begins Coverage On A Bullish Note; Here Are Top 5 Initiations For Thursday",
+          "id": 60095062,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Analyst-Works-On-Personal-Computer-Showi.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Analyst-Works-On-Personal-Computer-Showi.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Analyst-Works-On-Personal-Computer-Showi.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Analysts changed outlook on top names, including Intel and Arrow Financial. See ratings page. TNXP stock may be worth considering, analysts say.",
+          "symbols": [
+            "AROW",
+            "BRUN",
+            "CSTL",
+            "INTC",
+            "TNXP"
+          ],
+          "updated_at": "2026-06-25T12:44:44Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/initiation/26/06/60095062/this-tonix-pharmaceuticals-analyst-begins-coverage-on-a-bullish-note-here-are-top-5-initiations-for-thursday"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-06-25T10:57:51Z",
+          "headline": "Why Is Intel Stock Soaring Thursday?",
+          "id": 60092085,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Intel-Corporation.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Intel-Corporation.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Intel-Corporation.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Intel (INTC) stock gains 6% on blockbuster Micron results and Goldman initiation. See the key technical levels as INTC tests resistance.",
+          "symbols": [
+            "INTC",
+            "MU",
+            "SOXX",
+            "TRFK",
+            "VLUE"
+          ],
+          "updated_at": "2026-06-25T10:57:51Z",
+          "url": "https://www.benzinga.com/markets/tech/26/06/60092085/why-is-intel-stock-soaring-thursday-2"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-25T09:21:49Z",
+          "headline": "Goldman Sachs Initiates Coverage On Intel with Neutral Rating, Announces Price Target of $150",
+          "id": 60090582,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "INTC"
+          ],
+          "updated_at": "2026-06-25T09:21:49Z",
+          "url": "https://www.benzinga.com/news/26/06/60090582/goldman-sachs-initiates-coverage-intel-neutral-rating-announces-price-target-150"
+        },
+        {
+          "author": "Rishabh Mishra",
+          "content": "",
+          "created_at": "2026-06-25T08:37:09Z",
+          "headline": "Exclusive: Trump\u2019s Intel Push Won\u2019t Kill TSMC\u2014Why The World\u2019s \u2018Indispensable Backbone\u2019 Remains A Buy",
+          "id": 60090275,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Tainan--Taiwan--November-15--2023-Close-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Tainan--Taiwan--November-15--2023-Close-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/25/Tainan--Taiwan--November-15--2023-Close-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Trump&#39;s $43B Intel push creates a U.S. champion, but analysts explain why TSM remains an indispensable buy in the AI chip war.",
+          "symbols": [
+            "AAPL",
+            "INTC",
+            "TSM"
+          ],
+          "updated_at": "2026-06-25T08:37:09Z",
+          "url": "https://www.benzinga.com/markets/equities/26/06/60090275/trumps-intel-push-tsm-why-worlds-indispensable-backbone-remains-a-buy"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-06-24T19:50:40Z",
+          "headline": "'Intel-Backed AI Chip Firm SambaNova to Quintuple Valuation to $10 Billion' - The Information",
+          "id": 60083876,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "INTC"
+          ],
+          "updated_at": "2026-06-24T19:50:40Z",
+          "url": "https://www.benzinga.com/news/26/06/60083876/intel-backed-ai-chip-firm-sambanova-quintuple-valuation-10-billion-information"
+        }
+      ]
+    }
+  ]
+}
