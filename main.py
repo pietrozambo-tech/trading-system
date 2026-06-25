@@ -410,6 +410,7 @@ def run() -> None:
             "adv_m":               round(c["adv"] / 1_000_000, 1),
             "short_float_pct":     round(c["short_float"] * 100, 1) if c.get("short_float") is not None else None,
             "dist_from_3m_high_pct": round(c["dist_from_3m_high"] * 100, 1) if c.get("dist_from_3m_high") is not None else None,
+            "prev_day_return_pct": round(c["prev_day_return"] * 100, 2) if c.get("prev_day_return") is not None else None,
         }
         for c in watchlist
     ]

@@ -25,6 +25,17 @@ REGOLE ASSOLUTE:
 - Rispondi SOLO con JSON valido, zero testo aggiuntivo
 - Il campo "reason" deve essere scritto in italiano
 
+SETUP "RIMBALZO DA SELLOFF" (prev_day_return_pct <= -3%):
+Se il titolo nella sessione PRECEDENTE ha chiuso a -3% o peggio, il gap di oggi è con alta
+probabilità un rimbalzo tecnico da ipervenduto, NON una continuazione di trend — i segnali
+tecnici a 5 minuti (or_position, gap_retention) appaiono identici a un gap genuino ma il setup
+è una potenziale bull trap. In questo caso approva il trade SOLO se:
+  - catalyst Tier 1 confermato (revenue/earnings beat, M&A, FDA approval), OPPURE
+  - catalyst Tier 2 SENZA news negative o contrastanti sullo stesso titolo nelle recent_news
+    delle ultime 24h (es. un altro analista che taglia il price target, un revenue miss).
+Un price target raise di un singolo analista subito dopo un earnings miss NON è sufficiente.
+In dubbio → no_trade. Spiega l'esclusione nel campo no_trade_reason citando prev_day_return_pct.
+
 TASSONOMIA CATALYST (bonus additivo):
 - Tier 1 (+0.30): revenue beat, guidance raised/alzata, earnings beat confermato, FDA approval, acquisizione/merger confermati
 - Tier 2 (+0.20): EPS beat modesto, analyst upgrade, price target raise, insider buying, Fed speak direzionale, partnership confermata
@@ -45,6 +56,10 @@ PRIORITÀ NELLA SCELTA:
 - La classifica algoritmica è già corretta — il tuo contributo è leggere le news, non ri-pesare i segnali tecnici
 
 CONTESTO AGGIUNTIVO:
+Il campo prev_day_return_pct indica la performance del titolo nella sessione PRECEDENTE.
+Valori molto negativi (<= -3%) attivano la regola "RIMBALZO DA SELLOFF" sopra: oggi stai
+comprando un rimbalzo dopo un calo, non un trend in continuazione. null = dato non disponibile.
+
 Il campo dist_from_3m_high_pct indica quanto % il titolo è sotto al massimo degli ultimi 3 mesi.
 0% = vicino ai massimi (poca resistenza sopra). -20% = 20% sotto i massimi (più resistenza).
 Usalo come contesto qualitativo, non come criterio di esclusione.
@@ -120,6 +135,19 @@ def classify_catalyst_from_news(news: list[dict]) -> float:
                 return True
         return False
 
+    # Azioni di analisti che CONTRADDICONO un catalyst rialzista (es. un PT raise da un
+    # analista mentre un altro taglia il PT lo stesso giorno — CCL 24/06). Non sono
+    # "negative" in senso assoluto (non bloccano l'articolo), ma se coesistono con un
+    # catalyst Tier 2 (anch'esso guidato da analisti) il segnale netto è incerto: si
+    # declassa a Tier 3 invece di prendere solo il lato positivo.
+    conflict_phrases = [
+        "lowers price target", "lowered price target", "cuts price target",
+        "cut price target", "reduces price target", "price target lowered",
+        "price target cut", "lowers pt", "cuts pt",
+        "downgrade", "downgraded", "downgrades",
+    ]
+    conflict_seen = False
+
     tier1_phrases = [
         "fda approv",                          # fda approval / fda approved
         "acquisition confirmed", "merger confirmed", "buyout confirmed",
@@ -158,6 +186,11 @@ def classify_catalyst_from_news(news: list[dict]) -> float:
         headline = article.get("headline", "")
         text = (headline + " " + article.get("summary", "")).lower()
 
+        # Conflitto rilevato su QUALSIASI articolo (anche negativi/skippati): un'azione
+        # ribassista di un analista sullo stesso titolo.
+        if any(p in text for p in conflict_phrases):
+            conflict_seen = True
+
         # Skip articles whose primary story is negative
         if _is_negative(text):
             continue
@@ -188,6 +221,11 @@ def classify_catalyst_from_news(news: list[dict]) -> float:
                 best_tier = max(best_tier, 3)
 
     if best_tier == 2:
+        # Catalyst Tier 2 (guidato da analisti) contraddetto da un'azione ribassista di
+        # un altro analista → segnale netto incerto, declassa a Tier 3.
+        if conflict_seen:
+            logger.info(f"Catalyst Tier2→Tier3 (azione analista contrastante) | headline='{best_headline}'")
+            return config.CATALYST_TIER3
         logger.info(f"Catalyst Tier2 | headline='{best_headline}'")
         return config.CATALYST_TIER2
     if best_tier == 3:
@@ -212,6 +250,7 @@ def build_candidate_payload(candidates_with_signals: list[dict]) -> list[dict]:
         ]
         dist        = c.get("dist_from_3m_high")
         short_float = c.get("short_float")
+        pdr         = c.get("prev_day_return")
         payload.append({
             "ticker":               ticker,
             "gap_pct":              round(c.get("gap_pct", 0), 4),
@@ -224,6 +263,7 @@ def build_candidate_payload(candidates_with_signals: list[dict]) -> list[dict]:
             "catalyst_bonus":       c.get("catalyst_bonus"),
             "short_float_pct":      round(short_float * 100, 1) if short_float is not None else None,
             "dist_from_3m_high_pct": round(dist * 100, 1) if dist is not None else None,
+            "prev_day_return_pct":  round(pdr * 100, 1) if pdr is not None else None,
             "recent_news":          recent_news,
         })
     return payload

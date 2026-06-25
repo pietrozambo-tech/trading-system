@@ -35,6 +35,11 @@ def build_premarket_watchlist(universe: list[str], session_date: Optional[date] 
             if len(daily_bars) < 2:
                 continue
             prev_close = float(daily_bars["close"].iloc[-1])
+            prev_prev_close = float(daily_bars["close"].iloc[-2])
+            # Rendimento della sessione PRECEDENTE: serve a distinguere un gap di
+            # continuazione da un rimbalzo tecnico dopo un calo (es. CCL 24/06: -5.4%
+            # il giorno prima → gap +1.7% = bull trap). Usato come contesto dall'LLM.
+            prev_day_return = (prev_close - prev_prev_close) / prev_prev_close if prev_prev_close else 0.0
             adv = float(daily_bars["volume"].mean())
             high_3m = float(daily_bars["high"].max())
 
@@ -55,6 +60,7 @@ def build_premarket_watchlist(universe: list[str], session_date: Optional[date] 
             candidates.append({
                 "ticker": ticker,
                 "prev_close": prev_close,
+                "prev_day_return": round(prev_day_return, 4),
                 "premarket_price": pm_price,
                 "gap_pct": gap_pct,
                 "adv": adv,
