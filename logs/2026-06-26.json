@@ -1,0 +1,183 @@
+{
+  "date": "2026-06-26",
+  "spy_pct": -0.007527306942304413,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 2,
+      "tickers": [
+        "PLTR",
+        "MSFT"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 2,
+      "tickers": [
+        "PLTR",
+        "MSFT"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 2,
+      "tickers": [
+        "PLTR",
+        "MSFT"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "PLTR",
+      "gap_pct": 1.45,
+      "adv_m": 44.8,
+      "short_float_pct": 3.6,
+      "dist_from_3m_high_pct": -33.5,
+      "prev_day_return_pct": -5.49
+    },
+    {
+      "ticker": "MSFT",
+      "gap_pct": 1.2,
+      "adv_m": 36.9,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -23.4,
+      "prev_day_return_pct": -3.46
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "PLTR",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9036,
+      "gap_retention": 0.6898,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.32,
+      "vol_today": 47518,
+      "vol_avg": 36005,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0357,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01454274261210033,
+      "price_935": 110.06,
+      "open_930": 109.14,
+      "prev_close": 107.27
+    },
+    {
+      "ticker": "MSFT",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8508,
+      "gap_retention": 0.6009,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.163,
+      "vol_today": 56408,
+      "vol_avg": 48489,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0128,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.012045460986877534,
+      "price_935": 357.56,
+      "open_930": 357.19,
+      "prev_close": 352.83
+    }
+  ],
+  "llm_input": [
+    "PLTR",
+    "MSFT"
+  ],
+  "llm_output": {
+    "trade_1": null,
+    "trade_2": null,
+    "no_trade_reason": "Entrambi i candidati attivano la regola RIMBALZO DA SELLOFF: PLTR ha chiuso a -5.5% nella sessione precedente e MSFT a -3.5%. PLTR non presenta catalyst Tier 1 o Tier 2 verificabili: il buy di Cathie Wood \u00e8 un segnale debole (Tier 3 al massimo), mentre le news dominanti riportano un calo di oltre 30% in giugno con tesi ribassista di Burry ancora attiva \u2014 nessuna notizia positiva contrasta il sentiment negativo. MSFT non presenta alcun catalyst positivo confermato: le news recenti evidenziano deflussi dal settore Magnificent Seven, analisti con target ribassisti fino a $250 e un contesto macro negativo (SPY -0.75%) \u2014 nessun Tier 1 o Tier 2 valido. In entrambi i casi, il gap odierno \u00e8 con alta probabilit\u00e0 un rimbalzo tecnico da ipervenduto in assenza di catalyst concreti, e la confidence effettiva rimane al di sotto della soglia minima di 0.65 una volta escluso il catalyst_bonus non applicabile."
+  },
+  "trades": []
+}
