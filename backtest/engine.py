@@ -616,20 +616,20 @@ def exit_strategy_analysis(
     # reali 7/12 posizioni armate sono uscite in perdita dopo un picco medio di +1.25%.
     # Il backtest che aveva eletto −0.2% era a slippage ZERO (fill esatto al livello di stop):
     # qui usiamo slippage calibrato sui fill reali per un confronto onesto.
-    SLIP = 0.06   # ATR-mult calibrato (RKLB 0.079, AMAT 0.094, PLTR 0.043 → centrale ~0.06)
     STEP_C_LIVE = [(0.005, -0.002), (0.015, 0.010), (0.030, 0.020)]  # produzione attuale
-    variants = [
-        # Riferimento: config live com'era vista dal backtest storico (slippage 0).
-        ("Step C live @ slippage 0 (rif.)", BacktestParams(step_stops=STEP_C_LIVE, slippage_atr_mult=0.0)),
-        # Stessa config, ma con slippage reale → quanto costa davvero il break-even precoce.
-        ("Step C live (arm +0.5%) +slip",   BacktestParams(step_stops=STEP_C_LIVE, slippage_atr_mult=SLIP)),
-        # Opzione A: arma più tardi (+1.5%), mantenendo un floor break-even −0.2% solo allora.
-        ("arm +1.5% / buf −0.2% +slip",     BacktestParams(step_stops=[(0.015, -0.002), (0.030, 0.020)], slippage_atr_mult=SLIP)),
-        # Opzione B: niente break-even, primo intervento = profit-lock +1.0% al picco +1.5%.
-        ("profit-lock only +slip",          BacktestParams(step_stops=[(0.015, 0.010), (0.030, 0.020)], slippage_atr_mult=SLIP)),
-        # Opzione C: nessuno step — solo hard stop −2% + VWAP take-profit.
-        ("no step (hard −2% + VWAP) +slip", BacktestParams(step_stops=None, slippage_atr_mult=SLIP)),
+    designs = [
+        ("Step C live (arm +0.5%)", STEP_C_LIVE),                       # produzione attuale
+        ("arm +1.5% / buf -0.2%",   [(0.015, -0.002), (0.030, 0.020)]), # Opz. A: arma più tardi
+        ("profit-lock only",        [(0.015,  0.010), (0.030, 0.020)]), # Opz. B: niente break-even
+        ("no step (hard -2%+VWAP)", None),                              # Opz. C: solo hard stop + VWAP
     ]
+    # Riferimento a slippage 0 (com'era visto dal backtest storico) + ogni design a DUE livelli di
+    # slippage: k=0.06 (centrale) e k=0.10 (vicino al peggiore osservato, AMAT 0.094) per testare
+    # la robustezza della conclusione alla calibrazione, che è basata su pochi fill reali.
+    variants = [("Step C live @ slip 0 (rif.)", BacktestParams(step_stops=STEP_C_LIVE, slippage_atr_mult=0.0))]
+    for k in (0.06, 0.10):
+        for name, steps in designs:
+            variants.append((f"{name} @k{k:.2f}", BacktestParams(step_stops=steps, slippage_atr_mult=k)))
 
     rows = []
     for name, p in variants:
