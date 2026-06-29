@@ -45,6 +45,12 @@ class BacktestParams:
     position_size_usd:       float = 49_000.0  # (100k - 2k cushion) / 2 trades
     max_positions:           int   = 2
     catalyst_bonus:          float = 0.10   # conservative proxy (Tier 3) — no real news in backtest
+    # Slippage sugli stop/VWAP exit, in multipli di ATR14. Lo stop è un trigger pollato ogni
+    # 30s, non un prezzo garantito: il market order riempie SOTTO il livello su un drop veloce,
+    # di un'entità che scala con la volatilità. Calibrato sui fill reali (giu 2026): slippage ≈
+    # 0.04–0.09 × ATR14 (RKLB 0.079, AMAT 0.094, PLTR 0.043). Default 0.0 = comportamento storico
+    # (fill esattamente al livello di stop), così i backtest esistenti restano invariati.
+    slippage_atr_mult:       float = 0.0
     # --- Exit-strategy experiments (None = disabled → identical to current live behavior) ---
     breakeven_trigger_pct:   Optional[float] = None   # once peak gain ≥ this, move stop up to entry
     trailing_trigger_pct:    Optional[float] = None   # once peak gain ≥ this, activate a trailing stop
@@ -395,7 +401,11 @@ def _simulate_day(
                         stop_label = "breakeven_stop" if floor <= 0.0 else "step_stop"
 
         if price <= dyn_stop:
-            exit_price  = max(price, dyn_stop)
+            # Lo stop è un trigger pollato ogni 30s, non un prezzo garantito: il market order
+            # riempie SOTTO il livello su un drop veloce, di un'entità che scala con la
+            # volatilità. Senza questo, ogni uscita break-even era sovrastimata (fill esatto
+            # al livello). Slippage calibrato sui fill reali ≈ slippage_atr_mult × ATR14.
+            exit_price  = max(price, dyn_stop) - params.slippage_atr_mult * atr14
             exit_reason = stop_label
             break
 
@@ -406,7 +416,8 @@ def _simulate_day(
 
         profit_pct = (price - entry_price) / entry_price
         if price < vwap_now and profit_pct >= params.vwap_exit_min_profit:
-            exit_price  = price
+            # Anche il VWAP exit è un market sell su un movimento al ribasso → slitta.
+            exit_price  = price - params.slippage_atr_mult * atr14
             exit_reason = "vwap_exit"
             break
 
@@ -599,22 +610,25 @@ def exit_strategy_analysis(
     all_cache = prefetch_universe(universe, start_date, end_date)
     days      = _trading_days(start_date, end_date)
 
-    # Break-even buffer experiment (18 Jun): does placing the break-even stop a hair
-    # BELOW entry (instead of exactly at entry) absorb a full round-trip-to-entry pullback
-    # and survive the recovery (MRVL case), or does the extra room just cost more on the
-    # losers? Buffer is expressed as a negative first-step floor: (0.005, -0.002) = arm at
-    # +0.5% peak, stop at entry−0.2%. References kept inline for an apples-to-apples read.
-    STEP_C = [(0.005, 0.0), (0.015, 0.010), (0.030, 0.020)]
+    # ARMING-TRIGGER experiment (29 Jun) — SOTTO SLIPPAGE REALISTICO.
+    # Domanda: il primo gradino del break-even (picco +0.5% → stop −0.2%) ci fa uscire sul
+    # primo pullback normale, trasformando vincitori in scratch/piccole perdite? Sui trade
+    # reali 7/12 posizioni armate sono uscite in perdita dopo un picco medio di +1.25%.
+    # Il backtest che aveva eletto −0.2% era a slippage ZERO (fill esatto al livello di stop):
+    # qui usiamo slippage calibrato sui fill reali per un confronto onesto.
+    SLIP = 0.06   # ATR-mult calibrato (RKLB 0.079, AMAT 0.094, PLTR 0.043 → centrale ~0.06)
+    STEP_C_LIVE = [(0.005, -0.002), (0.015, 0.010), (0.030, 0.020)]  # produzione attuale
     variants = [
-        ("baseline (VWAP 1.5%)",            BacktestParams()),
-        # — pure break-even +0.5%, buffer sweep —
-        ("break-even +0.5% (no buffer)",    BacktestParams(step_stops=[(0.005,  0.000)])),
-        ("break-even +0.5% / buffer −0.2%", BacktestParams(step_stops=[(0.005, -0.002)])),
-        ("break-even +0.5% / buffer −0.3%", BacktestParams(step_stops=[(0.005, -0.003)])),
-        # — Step C (live) + the same buffer on its break-even floor —
-        ("Step C (live)",                   BacktestParams(step_stops=STEP_C)),
-        ("Step C / buffer −0.2%",           BacktestParams(step_stops=[(0.005, -0.002), (0.015, 0.010), (0.030, 0.020)])),
-        ("Step C / buffer −0.3%",           BacktestParams(step_stops=[(0.005, -0.003), (0.015, 0.010), (0.030, 0.020)])),
+        # Riferimento: config live com'era vista dal backtest storico (slippage 0).
+        ("Step C live @ slippage 0 (rif.)", BacktestParams(step_stops=STEP_C_LIVE, slippage_atr_mult=0.0)),
+        # Stessa config, ma con slippage reale → quanto costa davvero il break-even precoce.
+        ("Step C live (arm +0.5%) +slip",   BacktestParams(step_stops=STEP_C_LIVE, slippage_atr_mult=SLIP)),
+        # Opzione A: arma più tardi (+1.5%), mantenendo un floor break-even −0.2% solo allora.
+        ("arm +1.5% / buf −0.2% +slip",     BacktestParams(step_stops=[(0.015, -0.002), (0.030, 0.020)], slippage_atr_mult=SLIP)),
+        # Opzione B: niente break-even, primo intervento = profit-lock +1.0% al picco +1.5%.
+        ("profit-lock only +slip",          BacktestParams(step_stops=[(0.015, 0.010), (0.030, 0.020)], slippage_atr_mult=SLIP)),
+        # Opzione C: nessuno step — solo hard stop −2% + VWAP take-profit.
+        ("no step (hard −2% + VWAP) +slip", BacktestParams(step_stops=None, slippage_atr_mult=SLIP)),
     ]
 
     rows = []

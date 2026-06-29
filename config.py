@@ -76,7 +76,7 @@ STEP_STOPS = [
 # === TIMING (ET) ===
 WATCHLIST_TIME       = "09:25"
 ENTRY_TIME           = "09:35"
-MONITORING_INTERVAL  = 30        # seconds between position checks (30s: più reattivo su stop/gradini vs i 60s iniziali)
+MONITORING_INTERVAL  = 15        # seconds between position checks (15s: riduce lo slippage sugli stop avvicinando il fill al trigger su titoli volatili — caso RKLB 29/06 −0.2%→−0.99%)
 EOD_CLOSE_TIME       = "15:45"
 
 # === DATA QUALITY / ROBUSTEZZA ===
