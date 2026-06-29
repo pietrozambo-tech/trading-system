@@ -68,7 +68,14 @@ VWAP_EXIT_MIN_PROFIT_PCT = 0.015   # VWAP exit solo se profit >= 1.5%
 # ripartire, al costo di ~$1k di drawdown in più vs Step C puro. Convive con il VWAP
 # take-profit, che resta attivo. Imposta a None per disabilitare (solo hard/ATR stop).
 STEP_STOPS = [
-    (0.005, -0.002),  # picco +0.5% → stop a entry −0.2% (break-even con cuscinetto anti-rumore)
+    # Break-even precoce (0.005, -0.002) RIMOSSO il 29/06 — post-mortem + backtest slippage-aware.
+    # Si armava al picco +0.5% e usciva sul primo pullback con uno stop −0.2% che, una volta
+    # scattato, slittava (RKLB 29/06: −0.2%→−0.99%). Sui trade reali 7/12 posizioni armate sono
+    # uscite in perdita dopo un picco medio +1.25%. Nel backtest erano 200 uscite break-even che
+    # erodevano tutto il margine: la config completa passava da +$61k (slippage 0, fittizio) a
+    # −$650 (slippage reale k=0.06). Tenuti i due profit-lock (tua scelta): bloccano i guadagni
+    # veri senza l'emorragia del break-even — al k centrale +8pp di win rate e −$6k di drawdown
+    # vs no-step, a costo di ~$3k di PnL. Imposta a None per solo hard/ATR stop + VWAP.
     (0.015,  0.010),  # picco +1.5% → blocca +1.0%
     (0.030,  0.020),  # picco +3.0% → blocca +2.0%
 ]
