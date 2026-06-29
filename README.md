@@ -136,13 +136,13 @@ The $1,000 is a permanent cash cushion that never gets invested — it covers fe
 
 ### 6. Intraday monitoring
 
-Every 30 seconds the bot checks each open position. It closes a trade if any of these triggers fires, checked in this exact order:
+Every 15 seconds the bot checks each open position. It closes a trade if any of these triggers fires, checked in this exact order:
 
 | Priority | Rule | Trigger | Why this rule exists |
 |----------|------|---------|----------------------|
 | 1 | **Hard stop** | Price falls ≥2.0% from entry | The absolute floor — simple, predictable, immune to data issues. On a ~$49.5k position, 2% = ~$990 max loss per trade. Always checked first. |
 | 2 | **ATR stop** | Price falls ≥1× ATR14 from entry | ATR (Average True Range) measures how much a stock typically moves in a day over the past 14 days. Setting the stop exactly at ATR14 below entry means you exit if the move against you exceeds the stock's typical daily range — a signal that something is genuinely wrong, not just noise. On calm stocks (ATR ~1%) this fires at -1%, tighter than the hard stop. On volatile stocks (ATR >2%) the hard stop at -2% fires first. Whichever is tighter (higher price) wins. |
-| 3 | **Step-ratchet stop** (trailing a gradini) | Peak gain hits +0.5% → stop to entry **−0.2%**; +1.5% → stop locks +1.0%; +3.0% → stop locks +2.0% | A multi-step version of the break-even stop. Each gradino raises the stop floor as the peak grows, so a trade that runs up and then reverses keeps a slice of the gain instead of round-tripping all the way back to entry. The first step (+0.5% peak) drops the stop to a hair **below** entry (−0.2% buffer) rather than exactly at entry — a healthy pullback that touches the entry price survives instead of getting whipsawed out (MRVL 18 Jun case); the higher steps lock in profit. The stop only ratchets up, never loosens. Backtested over 631 trades ("Step C + buffer −0.2%"): P&L **+$61.3k** (best of all variants), win rate 43%, profit factor 1.45, max drawdown $10.0k. |
+| 3 | **Profit-lock ratchet** (trailing a gradini) | Peak gain hits +1.5% → stop locks **+1.0%**; +3.0% → stop locks **+2.0%** | Once a trade shows real profit, the stop ratchets up to lock in a slice of it, so a winner that reverses keeps a gain instead of round-tripping to entry. The stop only ratchets up, never loosens. **The early break-even step (+0.5% peak → −0.2%) was removed on 29 Jun** — see changelog. It armed on a tiny pop and exited on the first normal pullback, and once triggered it slipped badly (RKLB 29 Jun: intended −0.2%, real fill **−0.99%**). A slippage-aware backtest revealed the full step config went from a *fictional* +$61.3k (zero-slippage) to **−$650** at realistic slippage (k=0.06); dropping the early break-even and keeping only the two profit-locks restored a positive (if thin) edge. |
 | 4 | **VWAP take-profit** | Price drops below VWAP *and* profit ≥1.5% | This is a profit-protecting exit, not a stop loss. If the stock was running but has now fallen back below the average price of the day, momentum has likely shifted. The 1.5% minimum is there so we don't exit a trade that barely moved — we only lock in profit when there's real gain to protect. **Not made redundant by the step ratchet:** the VWAP exit fires at the *live* price on a reversal (often well above any step floor), while the steps are a fixed pavement below the peak — they protect different things and coexist (38 VWAP exits still fired under Step C in backtest). |
 | 5 | **End-of-day close** | 3:45 PM ET, no exceptions | We never hold overnight. Gaps at open, earnings after hours, macro news — too much can happen. Everything is flat before the close, every single day. |
 
@@ -338,11 +338,14 @@ SPY −0.58%, only RDW (+3.0%) and SMR (+2.2%) in pre-market. Both failed L2 —
 
 Ideas discussed and parked — revisit when there's time.
 
+### ⭐ L'entrata: compriamo il top dell'opening range — priorità (29 giugno 2026)
+Il backtest slippage-aware ha mostrato che, ai costi di frizione reali, **nessuna variante di uscita produce un edge robusto** (tutte sotto PF 1.0 a slippage k=0.10). Le uscite sono il sintomo, non la causa. Il problema strutturale: i criteri L2 (`or_position > 0.66` + `post_open_advance`) per costruzione **comprano forza vicino a un massimo locale intraday**, poi il titolo mean-reverta e *qualsiasi* stop su un titolo volatile slitta. Sui trade reali, 7/12 posizioni che avevano armato il break-even erano uscite in perdita dopo un picco medio +1.25% (SOFI +3.16%→−0.12%, AMD +1.63%→−0.15%). **Leve da testare nel backtest slippage-aware:** (1) non comprare il top dell'OR — entrare con `or_position` più basso o su un pullback; (2) filtro volatilità — cap su ATR%/gap (i nomi tipo RKLB a 10% ATR sono quelli che slittano di più); (3) restringere l'universo a nomi meno volatili. Collegato alla sezione "ADV + OR: segnali troppo correlati" più sotto.
+
 ### 2 vs 3 max positions
 The capital deployed is the same regardless: 2 × $49.5k or 3 × $33k both put $99k to work. The question is whether the 3rd-best setup on a given day is genuinely good or just marginal. The daily log now records `passes_threshold` per ticker — after a few weeks of data, count how many days had 3+ viable candidates above the confidence threshold and decide from there.
 
-### Monitoring interval — portato a 30s (18 giugno 2026)
-Controlliamo il prezzo live ogni **30s** (`MONITORING_INTERVAL`, prima 60s), leggendo l'ultimo trade IEX (fallback al close della barra 1-min se >120s vecchio). Con un feed a ~15–20% del tape e campionamento periodico restano gap inevitabili: il `peak_price` può essere sotto-registrato (gradino non armato), un breve sforamento dello stop che rimbalza entro la finestra è invisibile, e un movimento avverso rapido può riempire peggio del livello di stop (slippage non modellato nel backtest). A 30s questi gap si dimezzano in frequenza; il backtest resta valutato a granularità ~1-min, quindi il live è semmai *più* protettivo di quanto stimato. Alpaca regge ampiamente la frequenza maggiore (~16 chiamate/min con 2 posizioni). **Da osservare nei log:** se restano overshoot reali sugli stop si può valutare 15s, ma è probabilmente eccessivo data la frequenza di stampa IEX sui titoli sottili.
+### Monitoring interval — portato a 15s (29 giugno 2026)
+Controlliamo il prezzo live ogni **15s** (`MONITORING_INTERVAL`; 60s → 30s il 18 giu → 15s il 29 giu), leggendo l'ultimo trade IEX (fallback al close della barra 1-min se >120s vecchio). Con un feed a ~15–20% del tape e campionamento periodico restano gap inevitabili: il `peak_price` può essere sotto-registrato, un breve sforamento dello stop che rimbalza è invisibile, e — il punto chiave — **un movimento avverso rapido riempie peggio del livello di stop (slippage)**. Quest'ultimo si è rivelato il problema dominante: il 29 giu RKLB ha riempito a −0.99% su uno stop a −0.2% perché in 30s il prezzo aveva sfondato il livello. Portare il polling a 15s dimezza la finestra in cui il prezzo può scappare dal trigger, riducendo lo slippage (mitigazione, non eliminazione: su titoli a 10% ATR anche 15s bastano per muoversi). Alpaca regge ampiamente la frequenza (~48 chiamate/min con 2 posizioni). Lo slippage è ora **modellato esplicitamente nel backtest** (`slippage_atr_mult`) — vedi changelog 29 giu.
 
 ### Entry timing — implemented (June 2026)
 Backtested entry times at 9:31, 9:33, 9:35, and 9:40 over the full 2025–2026 universe. Both oracle (signals computed at 9:40, entries at earlier times) and non-oracle (signals computed from bars available at entry time only) variants were run.
@@ -371,6 +374,8 @@ Non-oracle results (profit factor, YTD 2025–2026):
 **Decisione:** Opzione B quando ci sono abbastanza dati per calibrare i nuovi pesi. **Prerequisito:** almeno 3–4 settimane di log reali per confrontare quanti trade buoni sarebbero stati catturati con la nuova formula vs. quanti falsi positivi sarebbero entrati. Nel frattempo il sistema rimane invariato.
 
 ### Strategia di uscita in profitto — backtest completato, break-even adottato (giugno 2026)
+
+> **⚠️ Aggiornamento 29 giugno 2026 — il break-even è stato RIMOSSO.** Tutta l'analisi sotto (e il cuscinetto −0.2% più in basso) era basata su backtest a **slippage zero**, che sopravvalutavano la precisione del break-even. Con uno slippage realistico modellato sui fill veri, il break-even precoce passa da +$61.3k a −$650: usciva sul primo pullback e slittava. Config attuale: solo i due **profit-lock** (+1.5%→+1.0%, +3.0%→+2.0%) + hard stop −2% + VWAP. Vedi changelog 29 giu e la sezione sull'entrata nei Next steps. Le sezioni storiche sotto restano per memoria del processo.
 
 **Osservazione emersa l'11 giugno 2026 (trade INTC):** il sistema ha due soli meccanismi di uscita intraday: hard blocker (−2% dall'entry) e VWAP exit (attivo solo se profit ≥ 1.5%). Quando un trade va brevemente in profitto (+0.5–1%) e poi inverte senza raggiungere la soglia VWAP, non scatta nessuna protezione — il trade continua a deteriorarsi fino all'hard blocker. Risultato: un potenziale +0.8% si trasforma in un −2.1%.
 
@@ -519,6 +524,20 @@ Alpaca's built-in reporting is too limited for meaningful analysis. The plan is 
 ## Changelog — timeline dei cambiamenti
 
 Riassunti **high level** dei cambi per giorno (più recente in alto). Solo titoli — i dettagli sono nelle sezioni sopra e nei commit. Tag: `[feat]` nuova implementazione · `[fix]` bug fix · `[exp]` esperimento/decisione.
+
+### 29 giugno 2026
+- `[exp]` **Break-even precoce RIMOSSO → profit-lock only** (`STEP_STOPS=[(0.015,0.010),(0.030,0.020)]`). Post-mortem RKLB/PLTR (entrati in profitto, usciti −0.99%/−0.42% sul break-even) + backtest slippage-aware: il gradino +0.5%→−0.2% usciva sul primo pullback e slittava. Sui trade reali 7/12 posizioni armate uscivano in perdita dopo picco medio +1.25%. Tenuti i due profit-lock (al k centrale: +8pp win rate, −$6k drawdown vs no-step, a costo di ~$3k PnL).
+- `[feat]` **Modello di slippage nel backtest** (`BacktestParams.slippage_atr_mult`): stop e VWAP riempiono sotto il trigger di k×ATR14, calibrato sui fill reali (media k≈0.057 su 8 fill: RKLB, PLTR, AMAT, MU, INTC, CCL, GOOGL). **Rivelazione:** la config live passava da +$61.3k (slippage 0, fittizio) a −$650 (k=0.06) / −$42k (k=0.10) — l'intero "profitto" del backtest era artefatto dell'assunzione zero-slippage.
+- `[feat]` **Confronto `--exit` slippage-aware** a k=0.06 e k=0.10 su 4 design (arm +0.5% / arm +1.5% / profit-lock only / no-step). A k=0.10 tutte sotto PF 1.0 → l'edge è sottile, la causa vera è l'**entrata** (vedi Next steps).
+- `[feat]` **Monitoring interval 30s → 15s**: dimezza la finestra in cui il prezzo scappa dal trigger, riducendo lo slippage.
+
+### 24–25 giugno 2026
+- `[feat]` **Difese contro i rimbalzi da selloff** (post-mortem CCL: entrato su rimbalzo da −5.4% post-earnings-miss, uscito −2.16%). (1) `prev_day_return` calcolato dalle daily bars e passato all'LLM; (2) regola "rimbalzo da selloff" nel system prompt — se il giorno prima ≤ −3%, l'LLM approva solo con catalyst Tier 1 confermato o Tier 2 senza news contrastanti; (3) `classify_catalyst_from_news` declassa un Tier 2 a Tier 3 se un altro analista contraddice (PT lower / downgrade) sullo stesso titolo.
+- `[exp]` **MU/INTC hard stop slippage** (25 giu): usciti a −2.61%/−2.35% vs floor −2% — conferma sul campo che lo slippage scala con l'ATR (k≈0.05–0.08), input per la calibrazione del modello.
+
+### 23 giugno 2026
+- `[feat]` **Benchmark S&P 500 = chiusura ufficiale**, backfillata il giorno dopo dalle daily bars (`backfill_spy.py`, eseguito all'avvio prima del guard festività). Prima la dashboard salvava solo il movimento di apertura delle 9:35, non la performance di giornata piena. Colonna rinominata "SPY" → "S&P 500".
+- `[fix]` Dashboard: `universe_count` hardcoded 60 → 70; ordine tabelle invertito (pipeline funnel prima del trade log).
 
 ### 22 giugno 2026
 - `[fix]` **Bank holiday guard**: il bot ora verifica il calendario NYSE via Alpaca all'avvio e salta la sessione se il mercato è chiuso (es. Juneteenth 19 giu). In precedenza il bot girava uguale ma non trovava candidati, producendo un log "nessun candidato dopo L1" che gonfiava il contatore `total_days` nella dashboard.
