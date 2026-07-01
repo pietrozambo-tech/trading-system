@@ -1,0 +1,565 @@
+{
+  "date": "2026-07-01",
+  "spy_pct": -0.005390745329136781,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 7,
+      "tickers": [
+        "META",
+        "CRM",
+        "PLTR",
+        "NFLX",
+        "MSFT",
+        "OKLO",
+        "AAPL"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 7,
+      "tickers": [
+        "META",
+        "CRM",
+        "PLTR",
+        "NFLX",
+        "MSFT",
+        "OKLO",
+        "AAPL"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 3,
+      "tickers": [
+        "CRM",
+        "PLTR",
+        "NFLX"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "META",
+      "gap_pct": 7.15,
+      "adv_m": 17.3,
+      "short_float_pct": 1.4,
+      "dist_from_3m_high_pct": -12.6,
+      "prev_day_return_pct": 0.12
+    },
+    {
+      "ticker": "CRM",
+      "gap_pct": 3.66,
+      "adv_m": 15.1,
+      "short_float_pct": 8.3,
+      "dist_from_3m_high_pct": -23.0,
+      "prev_day_return_pct": -0.8
+    },
+    {
+      "ticker": "PLTR",
+      "gap_pct": 2.99,
+      "adv_m": 44.9,
+      "short_float_pct": 3.6,
+      "dist_from_3m_high_pct": -26.6,
+      "prev_day_return_pct": 0.84
+    },
+    {
+      "ticker": "NFLX",
+      "gap_pct": 2.06,
+      "adv_m": 41.2,
+      "short_float_pct": 2.4,
+      "dist_from_3m_high_pct": -33.1,
+      "prev_day_return_pct": -3.23
+    },
+    {
+      "ticker": "MSFT",
+      "gap_pct": 1.94,
+      "adv_m": 39.5,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -18.5,
+      "prev_day_return_pct": 1.21
+    },
+    {
+      "ticker": "OKLO",
+      "gap_pct": 1.8,
+      "adv_m": 13.5,
+      "short_float_pct": 17.9,
+      "dist_from_3m_high_pct": -34.6,
+      "prev_day_return_pct": -0.82
+    },
+    {
+      "ticker": "AAPL",
+      "gap_pct": 1.52,
+      "adv_m": 52.9,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -7.4,
+      "prev_day_return_pct": 2.7
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "META",
+      "confidence": 0.4333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.5218,
+      "gap_retention": 0.7316,
+      "vol_boost": 0.1,
+      "vol_ratio": 4.114,
+      "vol_today": 105908,
+      "vol_avg": 25745,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0137,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0714729535408049,
+      "price_935": 601.39,
+      "open_930": 606.955,
+      "prev_close": 563.29
+    },
+    {
+      "ticker": "CRM",
+      "confidence": 0.7167,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.3797,
+      "gap_retention": 0.8705,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.064,
+      "vol_today": 32776,
+      "vol_avg": 15876,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0834,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03663985701519219,
+      "price_935": 162.715,
+      "open_930": 162.22,
+      "prev_close": 156.66
+    },
+    {
+      "ticker": "PLTR",
+      "confidence": 1.25,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7778,
+      "gap_retention": 0.7809,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.467,
+      "vol_today": 74012,
+      "vol_avg": 30004,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0357,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.029913431044827247,
+      "price_935": 121.97,
+      "open_930": 120.23,
+      "prev_close": 116.67
+    },
+    {
+      "ticker": "NFLX",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8306,
+      "gap_retention": 0.8174,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.451,
+      "vol_today": 111630,
+      "vol_avg": 76924,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0241,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02058823529411763,
+      "price_935": 73.1,
+      "open_930": 72.55,
+      "prev_close": 71.4
+    },
+    {
+      "ticker": "MSFT",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0479,
+      "gap_retention": 0.4477,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.198,
+      "vol_today": 49231,
+      "vol_avg": 41101,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0128,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01935553053455586,
+      "price_935": 376.78,
+      "open_930": 380.95,
+      "prev_close": 373.02
+    },
+    {
+      "ticker": "OKLO",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0993,
+      "gap_retention": -0.0634,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.572,
+      "vol_today": 3759,
+      "vol_avg": 6576,
+      "or_bar_count": 4,
+      "or_last_bar": "09:33",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.17909999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01796292757500487,
+      "price_935": 52.39,
+      "open_930": 53.75,
+      "prev_close": 52.33
+    },
+    {
+      "ticker": "AAPL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.5633,
+      "gap_retention": 0.2647,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.862,
+      "vol_today": 59765,
+      "vol_avg": 69371,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0098,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015171412773016264,
+      "price_935": 292.13,
+      "open_930": 293.44,
+      "prev_close": 289.36
+    }
+  ],
+  "llm_input": [
+    "CRM",
+    "PLTR",
+    "NFLX"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "PLTR",
+      "direction": "long",
+      "confidence": 1.25,
+      "reason": "Catalyst Tier 2 confermato: partnership sovrana AI con Nvidia e ampliamento deal aviation. Segnali tecnici dominanti con or_position 0.78, gap_retention 0.78 e post_open_advance di +1.45% \u2014 momentum reale post-apertura.",
+      "price_935": 121.97
+    },
+    "trade_2": null,
+    "no_trade_reason": "CRM: catalyst_bonus non applicato nonostante upgrade Guggenheim (Tier 2) perch\u00e9 confidence_algo 0.72 con or_position debole (0.38) e titolo a -23% dai massimi; segnale tecnico insufficiente per secondo trade. NFLX: escluso per regola RIMBALZO DA SELLOFF \u2014 prev_day_return_pct -3.2% attiva la regola; nessun catalyst Tier 1 o Tier 2 identificabile nelle news (solo articolo retrospettivo sui 20 anni), quindi il gap odierno \u00e8 con alta probabilit\u00e0 un rimbalzo tecnico da ipervenduto senza scintilla fondamentale."
+  },
+  "trades": [
+    {
+      "ticker": "PLTR",
+      "qty": 397,
+      "entry_price": 122.39,
+      "entry_time": "09:36:08",
+      "entry_ts": 1782912968.2383819,
+      "direction": "long",
+      "confidence": 1.25,
+      "reason": "Catalyst Tier 2 confermato: partnership sovrana AI con Nvidia e ampliamento deal aviation. Segnali tecnici dominanti con or_position 0.78, gap_retention 0.78 e post_open_advance di +1.45% \u2014 momentum reale post-apertura.",
+      "order_id": "e38ec474-574f-4956-960c-e5d9f298c5fb",
+      "stop_atr": 116.5147,
+      "stop_pct": 119.9422,
+      "stop_price": 123.6139,
+      "atr14": 5.8753,
+      "peak_price": 124.605,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 123.28,
+      "exit_time": "09:42:15",
+      "exit_reason": "step_stop",
+      "pnl_usd": 353.33,
+      "pnl_pct": 0.0073,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.05,
+      "short_float": 0.0357,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.7778,
+      "gap_retention": 0.7809,
+      "gap_pct": 0.029913431044827247,
+      "news": [
+        {
+          "author": "Namrata Sen",
+          "content": "",
+          "created_at": "2026-07-01T13:29:46Z",
+          "headline": "Amazon's AWS Bets $1 Billion on New AI Engineering Unit Built Around a Strategy Palantir Pioneered More Than a Decade Ago",
+          "id": 60215633,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/01/August-21--2019-San-Francisco--Ca--Usa.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/01/August-21--2019-San-Francisco--Ca--Usa.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/01/August-21--2019-San-Francisco--Ca--Usa.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "AWS unveils a $1 billion AI engineering unit to help customers deploy AI systems with thousands of Forward Deployed Engineers.",
+          "symbols": [
+            "AMZN",
+            "PLTR"
+          ],
+          "updated_at": "2026-07-01T13:29:46Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60215633/amazons-aws-bets-1-billion-on-new-ai-engineering-unit-built-around-a-strategy-palantir-pioneered-more-than-a-decade-ago"
+        },
+        {
+          "author": "Kaustubh Bagalkote",
+          "content": "",
+          "created_at": "2026-07-01T11:42:30Z",
+          "headline": "Why Is Palantir Stock Surging On Wednesday?",
+          "id": 60212123,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/01/Palantir-Technologies-Artificial.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/01/Palantir-Technologies-Artificial.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/01/Palantir-Technologies-Artificial.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Palantir Technologies Inc. (PLTR) stock is trading higher Wednesday after securing a sovereign AI partnership with Nvidia and expanding its aviation deal with Surf Air Mobility. Learn more.",
+          "symbols": [
+            "MIDD",
+            "PLTR",
+            "TSLA"
+          ],
+          "updated_at": "2026-07-01T11:42:30Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60212123/why-is-palantir-stock-surging-on-wednesday"
+        },
+        {
+          "author": "Badar Shaikh",
+          "content": "",
+          "created_at": "2026-07-01T05:38:38Z",
+          "headline": "'Big Short' Investor Michael Burry Reveals Tesla, Nvidia Shorts, Says Chip Boom Is 'Beginning of the End'",
+          "id": 60207524,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/01/Elon-Musk--The-Ceo-Of-Tesla--Spacex--Pay.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/01/Elon-Musk--The-Ceo-Of-Tesla--Spacex--Pay.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/01/Elon-Musk--The-Ceo-Of-Tesla--Spacex--Pay.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Michael Burry is shorting Tesla, Nvidia, and others including Caterpillar and Applied Materials amid bearish outlook on Semiconductors.",
+          "symbols": [
+            "AMAT",
+            "CAT",
+            "NVDA",
+            "PLTR",
+            "SOXX",
+            "TSLA"
+          ],
+          "updated_at": "2026-07-01T05:38:38Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60207524/big-short-investor-michael-burry-reveals-tesla-nvidia-shorts-says-chip-boom-is-beginning-of-the-end"
+        },
+        {
+          "author": "Shomik Sen Bhattacharjee",
+          "content": "",
+          "created_at": "2026-07-01T05:36:29Z",
+          "headline": "Dan Ives Says SpaceX Looks Expensive, But Elon Musk-Led SPCX Could Become 'One of the Best AI Plays'",
+          "id": 60207512,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/01/Spacex-Logo-On-A-Mobile-Phone-Screen-Wit.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/01/Spacex-Logo-On-A-Mobile-Phone-Screen-Wit.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/01/Spacex-Logo-On-A-Mobile-Phone-Screen-Wit.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Wedbush&#39;s Dan Ives believes SpaceX could become a major AI infrastructure company and values it using a sum of the parts approach.",
+          "symbols": [
+            "GOOG",
+            "GOOGL",
+            "MSFT",
+            "ORCL",
+            "PLTR",
+            "SPCX"
+          ],
+          "updated_at": "2026-07-01T05:36:29Z",
+          "url": "https://www.benzinga.com/news/space/26/07/60207512/dan-ives-says-spacex-looks-expensive-but-elon-musk-led-spcx-could-become-one-of-the-best-ai-plays"
+        },
+        {
+          "author": "Chandrima Sanyal",
+          "content": "",
+          "created_at": "2026-06-30T22:17:14Z",
+          "headline": "More Bark, More Beta: Corgi Debuts 31 Single-Stock ETFs Covering Nvidia, Tesla And More",
+          "id": 60205989,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/30/AI-ETFs.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/30/AI-ETFs.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/06/30/AI-ETFs.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Corgi launches 31 new single-stock leveraged ETFs tracking Nvidia, Tesla, AMD, Microsoft, and other AI and semiconductor leaders.",
+          "symbols": [
+            "ACLS",
+            "ACMR",
+            "AMD",
+            "AMZN",
+            "APP",
+            "ASTS",
+            "CAMT",
+            "CART",
+            "COIN",
+            "CRUS",
+            "GOOGL",
+            "KEYS",
+            "KEYX",
+            "LASR",
+            "LRN",
+            "META",
+            "MNST",
+            "MSFT",
+            "MSI",
+            "MSTR",
+            "MU",
+            "NVDA",
+            "ONTO",
+            "PLTR",
+            "RMBS",
+            "SIMO",
+            "SNDK",
+            "TPL",
+            "TSLA",
+            "TSM",
+            "UCTT",
+            "UCTX",
+            "UMC"
+          ],
+          "updated_at": "2026-06-30T22:17:14Z",
+          "url": "https://www.benzinga.com/etfs/new-etfs/26/06/60205989/more-bark-more-beta-corgi-debuts-31-single-stock-etfs-covering-nvidia-tesla-and-more"
+        }
+      ]
+    }
+  ]
+}
