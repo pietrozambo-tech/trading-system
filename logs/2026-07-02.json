@@ -1,0 +1,985 @@
+{
+  "date": "2026-07-02",
+  "spy_pct": 0.0038824405061253808,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 22,
+      "tickers": [
+        "HOOD",
+        "AMAT",
+        "OKLO",
+        "ASTS",
+        "PLTR",
+        "SMCI",
+        "MARA",
+        "CRWV",
+        "RKLB",
+        "AMD",
+        "SOFI",
+        "MU",
+        "INTC",
+        "QUBT",
+        "IONQ",
+        "QBTS",
+        "TSLA",
+        "RGTI",
+        "MRVL",
+        "SMR",
+        "NFLX",
+        "ORCL"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 22,
+      "tickers": [
+        "HOOD",
+        "AMAT",
+        "OKLO",
+        "ASTS",
+        "PLTR",
+        "SMCI",
+        "MARA",
+        "CRWV",
+        "RKLB",
+        "AMD",
+        "SOFI",
+        "MU",
+        "INTC",
+        "QUBT",
+        "IONQ",
+        "QBTS",
+        "TSLA",
+        "RGTI",
+        "MRVL",
+        "SMR",
+        "NFLX",
+        "ORCL"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 10,
+      "tickers": [
+        "HOOD",
+        "ASTS",
+        "PLTR",
+        "SMCI",
+        "MARA",
+        "SOFI",
+        "QUBT",
+        "SMR",
+        "NFLX",
+        "ORCL"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "HOOD",
+      "gap_pct": 3.73,
+      "adv_m": 31.3,
+      "short_float_pct": 4.8,
+      "dist_from_3m_high_pct": 0.2,
+      "prev_day_return_pct": 8.35
+    },
+    {
+      "ticker": "AMAT",
+      "gap_pct": 2.91,
+      "adv_m": 8.6,
+      "short_float_pct": 2.8,
+      "dist_from_3m_high_pct": -9.4,
+      "prev_day_return_pct": -9.97
+    },
+    {
+      "ticker": "OKLO",
+      "gap_pct": 2.67,
+      "adv_m": 13.5,
+      "short_float_pct": 17.9,
+      "dist_from_3m_high_pct": -33.9,
+      "prev_day_return_pct": 0.23
+    },
+    {
+      "ticker": "ASTS",
+      "gap_pct": 2.45,
+      "adv_m": 22.3,
+      "short_float_pct": 21.0,
+      "dist_from_3m_high_pct": -34.1,
+      "prev_day_return_pct": -3.11
+    },
+    {
+      "ticker": "PLTR",
+      "gap_pct": 2.37,
+      "adv_m": 45.2,
+      "short_float_pct": 3.6,
+      "dist_from_3m_high_pct": -21.4,
+      "prev_day_return_pct": 7.77
+    },
+    {
+      "ticker": "SMCI",
+      "gap_pct": 2.17,
+      "adv_m": 49.8,
+      "short_float_pct": 19.4,
+      "dist_from_3m_high_pct": -45.0,
+      "prev_day_return_pct": -5.73
+    },
+    {
+      "ticker": "MARA",
+      "gap_pct": 2.09,
+      "adv_m": 43.3,
+      "short_float_pct": 30.8,
+      "dist_from_3m_high_pct": -16.9,
+      "prev_day_return_pct": -3.74
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 1.93,
+      "adv_m": 31.3,
+      "short_float_pct": 23.0,
+      "dist_from_3m_high_pct": -36.8,
+      "prev_day_return_pct": -13.92
+    },
+    {
+      "ticker": "RKLB",
+      "gap_pct": 1.89,
+      "adv_m": 27.7,
+      "short_float_pct": 5.9,
+      "dist_from_3m_high_pct": -32.5,
+      "prev_day_return_pct": -1.55
+    },
+    {
+      "ticker": "AMD",
+      "gap_pct": 1.71,
+      "adv_m": 37.3,
+      "short_float_pct": 2.9,
+      "dist_from_3m_high_pct": -5.9,
+      "prev_day_return_pct": -6.89
+    },
+    {
+      "ticker": "SOFI",
+      "gap_pct": 1.68,
+      "adv_m": 71.0,
+      "short_float_pct": 15.5,
+      "dist_from_3m_high_pct": -6.9,
+      "prev_day_return_pct": 2.84
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 1.58,
+      "adv_m": 52.3,
+      "short_float_pct": 3.7,
+      "dist_from_3m_high_pct": -16.4,
+      "prev_day_return_pct": -10.57
+    },
+    {
+      "ticker": "INTC",
+      "gap_pct": 1.51,
+      "adv_m": 135.0,
+      "short_float_pct": 2.9,
+      "dist_from_3m_high_pct": -9.4,
+      "prev_day_return_pct": -9.03
+    },
+    {
+      "ticker": "QUBT",
+      "gap_pct": 1.38,
+      "adv_m": 20.7,
+      "short_float_pct": 29.4,
+      "dist_from_3m_high_pct": -33.8,
+      "prev_day_return_pct": -2.78
+    },
+    {
+      "ticker": "IONQ",
+      "gap_pct": 1.26,
+      "adv_m": 31.6,
+      "short_float_pct": 13.6,
+      "dist_from_3m_high_pct": -29.3,
+      "prev_day_return_pct": -3.49
+    },
+    {
+      "ticker": "QBTS",
+      "gap_pct": 1.15,
+      "adv_m": 34.6,
+      "short_float_pct": 17.2,
+      "dist_from_3m_high_pct": -24.7,
+      "prev_day_return_pct": -2.04
+    },
+    {
+      "ticker": "TSLA",
+      "gap_pct": 1.03,
+      "adv_m": 56.6,
+      "short_float_pct": 2.3,
+      "dist_from_3m_high_pct": -5.2,
+      "prev_day_return_pct": 1.12
+    },
+    {
+      "ticker": "RGTI",
+      "gap_pct": 0.96,
+      "adv_m": 41.0,
+      "short_float_pct": 17.9,
+      "dist_from_3m_high_pct": -32.8,
+      "prev_day_return_pct": -3.31
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 0.9,
+      "adv_m": 42.4,
+      "short_float_pct": 5.3,
+      "dist_from_3m_high_pct": -16.8,
+      "prev_day_return_pct": -8.67
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 0.69,
+      "adv_m": 35.1,
+      "short_float_pct": 22.8,
+      "dist_from_3m_high_pct": -28.5,
+      "prev_day_return_pct": 1.2
+    },
+    {
+      "ticker": "NFLX",
+      "gap_pct": 0.54,
+      "adv_m": 41.2,
+      "short_float_pct": 2.4,
+      "dist_from_3m_high_pct": -31.5,
+      "prev_day_return_pct": 3.91
+    },
+    {
+      "ticker": "ORCL",
+      "gap_pct": 0.53,
+      "adv_m": 28.1,
+      "short_float_pct": 2.2,
+      "dist_from_3m_high_pct": -42.8,
+      "prev_day_return_pct": -2.76
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "AMAT",
+      "reason": "pm_gap_eaten_at_open_31%"
+    },
+    {
+      "ticker": "OKLO",
+      "reason": "pm_gap_eaten_at_open_41%"
+    },
+    {
+      "ticker": "CRWV",
+      "reason": "pm_gap_eaten_at_open_28%"
+    },
+    {
+      "ticker": "RKLB",
+      "reason": "pm_gap_eaten_at_open_34%"
+    },
+    {
+      "ticker": "AMD",
+      "reason": "gap_reversed_at_open"
+    },
+    {
+      "ticker": "MU",
+      "reason": "pm_gap_eaten_at_open_49%"
+    },
+    {
+      "ticker": "IONQ",
+      "reason": "gap_reversed_at_open"
+    },
+    {
+      "ticker": "QBTS",
+      "reason": "pm_gap_eaten_at_open_26%"
+    },
+    {
+      "ticker": "RGTI",
+      "reason": "pm_gap_eaten_at_open_28%"
+    },
+    {
+      "ticker": "MRVL",
+      "reason": "gap_reversed_at_open"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "HOOD",
+      "confidence": 1.25,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.928,
+      "gap_retention": 1.0,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.522,
+      "vol_today": 86922,
+      "vol_avg": 34467,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0477,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03727565577542565,
+      "price_935": 117.2,
+      "open_930": 112.69,
+      "prev_close": 108.65
+    },
+    {
+      "ticker": "ASTS",
+      "confidence": 0.8667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9978,
+      "gap_retention": 0.2273,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.337,
+      "vol_today": 6972,
+      "vol_avg": 20684,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.1,
+      "short_float": 0.20979999,
+      "short_squeeze_bonus": 0.1,
+      "gap_pct": 0.02450638792102206,
+      "price_935": 88.695,
+      "open_930": 87.42,
+      "prev_close": 86.1
+    },
+    {
+      "ticker": "PLTR",
+      "confidence": 1.25,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.9821,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.18,
+      "vol_today": 67038,
+      "vol_avg": 30751,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0357,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0237015827567009,
+      "price_935": 131.36,
+      "open_930": 128.52,
+      "prev_close": 125.73
+    },
+    {
+      "ticker": "SMCI",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.975,
+      "gap_retention": 0.963,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.531,
+      "vol_today": 59066,
+      "vol_avg": 111272,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1942,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02169981916817365,
+      "price_935": 28.82,
+      "open_930": 28.055,
+      "prev_close": 27.65
+    },
+    {
+      "ticker": "MARA",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9651,
+      "gap_retention": 0.3208,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.492,
+      "vol_today": 23833,
+      "vol_avg": 48454,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.3083,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.020942408376963435,
+      "price_935": 13.87,
+      "open_930": 13.635,
+      "prev_close": 13.37
+    },
+    {
+      "ticker": "SOFI",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.5652,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.362,
+      "vol_today": 85090,
+      "vol_avg": 62451,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1548,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01681127982646414,
+      "price_935": 18.98,
+      "open_930": 18.72,
+      "prev_close": 18.44
+    },
+    {
+      "ticker": "INTC",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.2038,
+      "gap_retention": -1.0155,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.485,
+      "vol_today": 52175,
+      "vol_avg": 107548,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0286,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015115729806329727,
+      "price_935": 125.85,
+      "open_930": 128.955,
+      "prev_close": 127.02
+    },
+    {
+      "ticker": "QUBT",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7895,
+      "gap_retention": 0.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.459,
+      "vol_today": 9110,
+      "vol_avg": 19851,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2941,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.013785790031813445,
+      "price_935": 9.58,
+      "open_930": 9.54,
+      "prev_close": 9.43
+    },
+    {
+      "ticker": "TSLA",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0202,
+      "gap_retention": -0.0412,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.984,
+      "vol_today": 28904,
+      "vol_avg": 29370,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0234,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010251587114977695,
+      "price_935": 425.315,
+      "open_930": 428.455,
+      "prev_close": 425.3
+    },
+    {
+      "ticker": "SMR",
+      "confidence": 0.8667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.85,
+      "gap_retention": -1.8,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.401,
+      "vol_today": 17535,
+      "vol_avg": 43724,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.1,
+      "short_float": 0.2283,
+      "short_squeeze_bonus": 0.1,
+      "gap_pct": 0.006896551724137959,
+      "price_935": 10.23,
+      "open_930": 10.2,
+      "prev_close": 10.15
+    },
+    {
+      "ticker": "NFLX",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8086,
+      "gap_retention": 0.7604,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.729,
+      "vol_today": 57724,
+      "vol_avg": 79190,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0241,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.005391562205149018,
+      "price_935": 75.955,
+      "open_930": 75.15,
+      "prev_close": 74.19
+    },
+    {
+      "ticker": "ORCL",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8775,
+      "gap_retention": 0.9281,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.434,
+      "vol_today": 37149,
+      "vol_avg": 25913,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0219,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.005263157894736842,
+      "price_935": 145.71,
+      "open_930": 144.03,
+      "prev_close": 142.5
+    }
+  ],
+  "llm_input": [
+    "HOOD",
+    "ASTS",
+    "PLTR",
+    "SMCI",
+    "MARA",
+    "SOFI",
+    "QUBT",
+    "SMR",
+    "NFLX",
+    "ORCL"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "HOOD",
+      "direction": "long",
+      "confidence": 1.25,
+      "reason": "Catalyst Tier 2 confermato (Mizuho alza il price target a $130) accompagnato da una notizia operativa rilevante (espansione crypto con blockchain Layer-2 e stock tokenizzati). Segnali tecnici tutti al massimo: or_position 0.928, gap_retention 1.0, post_open_advance positivo \u2014 il titolo era gi\u00e0 in trend rialzista con +8.3% il giorno precedente, nessuna regola selloff attiva.",
+      "price_935": 117.2
+    },
+    "trade_2": {
+      "ticker": "PLTR",
+      "direction": "long",
+      "confidence": 1.25,
+      "reason": "Upgrade DA Davidson a Buy con price target $175 (Tier 2) su titolo gi\u00e0 forte (+7.8% il giorno prima), con segnali tecnici eccellenti: or_position 1.0, gap_retention 0.982 e post_open_advance di +2.2% \u2014 momentum solido e continuazione di trend. Settore diverso da HOOD (IT/software vs fintech).",
+      "price_935": 131.36
+    },
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "HOOD",
+      "qty": 415,
+      "entry_price": 117.79,
+      "entry_time": "09:36:28",
+      "entry_ts": 1782999388.732867,
+      "direction": "long",
+      "confidence": 1.25,
+      "reason": "Catalyst Tier 2 confermato (Mizuho alza il price target a $130) accompagnato da una notizia operativa rilevante (espansione crypto con blockchain Layer-2 e stock tokenizzati). Segnali tecnici tutti al massimo: or_position 0.928, gap_retention 1.0, post_open_advance positivo \u2014 il titolo era gi\u00e0 in trend rialzista con +8.3% il giorno precedente, nessuna regola selloff attiva.",
+      "order_id": "d2f51226-f7a4-4f76-9466-b5b8c4975f0b",
+      "stop_atr": 110.6659,
+      "stop_pct": 115.4342,
+      "stop_price": 118.9679,
+      "atr14": 7.1241,
+      "peak_price": 119.92,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 119.02,
+      "exit_time": "10:15:14",
+      "exit_reason": "step_stop",
+      "pnl_usd": 510.45,
+      "pnl_pct": 0.0104,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.05,
+      "short_float": 0.0477,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.928,
+      "gap_retention": 1.0,
+      "gap_pct": 0.03727565577542565,
+      "news": [
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-02T13:27:50Z",
+          "headline": "President Trump Posts On Truth Social \"How about this? Micron, a GREAT American Company, announced that they are putting in 250 Million Dollars into the Trump Accounts for the future benefit of children, and their stock went up 9 points today. ...\"",
+          "id": 60243784,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "HOOD",
+            "MU",
+            "SPY"
+          ],
+          "updated_at": "2026-07-02T13:27:50Z",
+          "url": "https://www.benzinga.com/economics/macro-economic-events/26/07/60243784/president-trump-posts-truth-social-how-about-micron-great-american-company-announced-they-are-puttin"
+        },
+        {
+          "author": "Kaustubh Bagalkote",
+          "content": "",
+          "created_at": "2026-07-02T12:48:50Z",
+          "headline": "Why Is Robinhood Markets Stock Gaining Thursday?",
+          "id": 60242755,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/Robinhood-Mobile-App-Icon-On-Smartphone-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/Robinhood-Mobile-App-Icon-On-Smartphone-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/Robinhood-Mobile-App-Icon-On-Smartphone-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Robinhood (NASDAQ: HOOD) stock climbs 3.3% premarket. Mizuho lifts its price target to $130. Read our technical analysis here.",
+          "symbols": [
+            "HOOD",
+            "LINKUSD",
+            "UNIUSD"
+          ],
+          "updated_at": "2026-07-02T12:48:50Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60242755/why-is-robinhood-markets-stock-gaining-thursday"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-07-02T11:41:02Z",
+          "headline": "Amazon To Rally Over 29%? Here Are 10 Top Analyst Forecasts For Thursday",
+          "id": 60240802,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/USPS-Revenue-Reliant-on-Amazon.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/USPS-Revenue-Reliant-on-Amazon.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/USPS-Revenue-Reliant-on-Amazon.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Wall Street analysts updated ratings and price targets for top companies, including Robinhood, Westlake, Genmab, Levi Strauss, Generac, General Mills, and Amazon.",
+          "symbols": [
+            "ALK",
+            "AMZN",
+            "GIS",
+            "GMAB",
+            "GNRC",
+            "HOOD",
+            "LEVI",
+            "PEP",
+            "PLTR",
+            "WLK"
+          ],
+          "updated_at": "2026-07-02T11:41:02Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/price-target/26/07/60240802/amazon-to-rally-over-29-here-are-10-top-analyst-forecasts-for-thursday"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-02T11:25:14Z",
+          "headline": "Mizuho Maintains Outperform on Robinhood Markets, Raises Price Target to $130",
+          "id": 60240398,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "HOOD"
+          ],
+          "updated_at": "2026-07-02T11:25:14Z",
+          "url": "https://www.benzinga.com/news/26/07/60240398/mizuho-maintains-outperform-robinhood-markets-raises-price-target-130"
+        },
+        {
+          "author": "Khyathi Dalal",
+          "content": "",
+          "created_at": "2026-07-02T10:52:13Z",
+          "headline": "Robinhood Announces Public Blockchain, Tokenized Stocks in Crypto Expansion Push",
+          "id": 60239833,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/Robinhood-Mobile-App-Icon-On-Smartphone-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/Robinhood-Mobile-App-Icon-On-Smartphone-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/Robinhood-Mobile-App-Icon-On-Smartphone-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Robinhood Markets unveiled a major crypto expansion centered on a new Layer-2 blockchain, tokenized U.S. stocks, decentralized lending, AI-powered trading and expanded perpetual futures, aiming to bridge traditional finance, crypto and DeFi.",
+          "symbols": [
+            "HOOD",
+            "LINKUSD",
+            "UNIUSD"
+          ],
+          "updated_at": "2026-07-02T10:52:13Z",
+          "url": "https://www.benzinga.com/crypto/cryptocurrency/26/07/60239833/robinhood-announces-public-blockchain-tokenized-stocks-in-crypto-expansion-push"
+        }
+      ]
+    },
+    {
+      "ticker": "PLTR",
+      "qty": 370,
+      "entry_price": 131.735865,
+      "entry_time": "09:36:44",
+      "entry_ts": 1782999404.0889623,
+      "direction": "long",
+      "confidence": 1.25,
+      "reason": "Upgrade DA Davidson a Buy con price target $175 (Tier 2) su titolo gi\u00e0 forte (+7.8% il giorno prima), con segnali tecnici eccellenti: or_position 1.0, gap_retention 0.982 e post_open_advance di +2.2% \u2014 momentum solido e continuazione di trend. Settore diverso da HOOD (IT/software vs fintech).",
+      "order_id": "4d98dbe4-a69f-47bc-9d82-9e5f95f4e312",
+      "stop_atr": 125.3466,
+      "stop_pct": 129.1011,
+      "stop_price": 129.1011,
+      "atr14": 6.3893,
+      "peak_price": 132.74,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 129.1,
+      "exit_time": "11:04:16",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -975.27,
+      "pnl_pct": -0.02,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.05,
+      "short_float": 0.0357,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.9821,
+      "gap_pct": 0.0237015827567009,
+      "news": [
+        {
+          "author": "Kaustubh Bagalkote",
+          "content": "",
+          "created_at": "2026-07-02T11:48:13Z",
+          "headline": "Why Is Palantir Technologies Stock Surging Thursday?",
+          "id": 60241011,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/Palantir-Logo-At-Palo-Alto-Office.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/Palantir-Logo-At-Palo-Alto-Office.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/Palantir-Logo-At-Palo-Alto-Office.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Palantir stock jumps premarket as DA Davidson upgrades PLTR to Buy with a new $175 price forecast. Read the full market details.",
+          "symbols": [
+            "NVDA",
+            "PLTR"
+          ],
+          "updated_at": "2026-07-02T11:48:13Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60241011/why-is-palantir-technologies-stock-surging-thursday"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-07-02T11:41:02Z",
+          "headline": "Amazon To Rally Over 29%? Here Are 10 Top Analyst Forecasts For Thursday",
+          "id": 60240802,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/USPS-Revenue-Reliant-on-Amazon.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/USPS-Revenue-Reliant-on-Amazon.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/USPS-Revenue-Reliant-on-Amazon.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Wall Street analysts updated ratings and price targets for top companies, including Robinhood, Westlake, Genmab, Levi Strauss, Generac, General Mills, and Amazon.",
+          "symbols": [
+            "ALK",
+            "AMZN",
+            "GIS",
+            "GMAB",
+            "GNRC",
+            "HOOD",
+            "LEVI",
+            "PEP",
+            "PLTR",
+            "WLK"
+          ],
+          "updated_at": "2026-07-02T11:41:02Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/price-target/26/07/60240802/amazon-to-rally-over-29-here-are-10-top-analyst-forecasts-for-thursday"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-02T11:25:05Z",
+          "headline": "Market-Moving News for July 2nd",
+          "id": 60240388,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "PLTR",
+            "USDE"
+          ],
+          "updated_at": "2026-07-02T11:25:05Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60240388/market-moving-news-july-2nd"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-02T10:35:40Z",
+          "headline": "DA Davidson Upgrades Palantir Technologies to Buy, Raises Price Target to $175",
+          "id": 60239414,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "PLTR"
+          ],
+          "updated_at": "2026-07-02T10:35:40Z",
+          "url": "https://www.benzinga.com/news/26/07/60239414/da-davidson-upgrades-palantir-technologies-buy-raises-price-target-175"
+        },
+        {
+          "author": "Mohd Haider",
+          "content": "",
+          "created_at": "2026-07-02T10:24:40Z",
+          "headline": "Alex Karp Bashes OpenAI, Anthropic Token Model \u2014 'Something Has Gone Completely Wrong'",
+          "id": 60239308,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/Brooklyn--Ny--Usa--11-22-20-Sam-Altman-A.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/Brooklyn--Ny--Usa--11-22-20-Sam-Altman-A.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/02/Brooklyn--Ny--Usa--11-22-20-Sam-Altman-A.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "CEO Alex Karp criticized token-based AI pricing, saying enterprises are shifting toward lower-cost models focused on return on investment.",
+          "symbols": [
+            "MSFT",
+            "NVDA",
+            "PLTR"
+          ],
+          "updated_at": "2026-07-02T10:24:40Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60239308/alex-karp-bashes-openai-anthropic-token-model-something-has-gone-completely-wrong"
+        }
+      ]
+    }
+  ]
+}
