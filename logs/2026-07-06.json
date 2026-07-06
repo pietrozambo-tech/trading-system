@@ -1,0 +1,692 @@
+{
+  "date": "2026-07-06",
+  "spy_pct": 0.005840023628601378,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 18,
+      "tickers": [
+        "AMAT",
+        "MRVL",
+        "AVGO",
+        "INTC",
+        "ORCL",
+        "MU",
+        "CRWV",
+        "VRT",
+        "MARA",
+        "META",
+        "TSLA",
+        "QBTS",
+        "IONQ",
+        "NIO",
+        "QUBT",
+        "OKLO",
+        "RKLB",
+        "SMR"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 18,
+      "tickers": [
+        "AMAT",
+        "MRVL",
+        "AVGO",
+        "INTC",
+        "ORCL",
+        "MU",
+        "CRWV",
+        "VRT",
+        "MARA",
+        "META",
+        "TSLA",
+        "QBTS",
+        "IONQ",
+        "NIO",
+        "QUBT",
+        "OKLO",
+        "RKLB",
+        "SMR"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 7,
+      "tickers": [
+        "MRVL",
+        "AVGO",
+        "MU",
+        "CRWV",
+        "VRT",
+        "MARA",
+        "NIO"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "AMAT",
+      "gap_pct": 4.75,
+      "adv_m": 8.7,
+      "short_float_pct": 2.8,
+      "dist_from_3m_high_pct": -14.6,
+      "prev_day_return_pct": -7.35
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 4.66,
+      "adv_m": 42.7,
+      "short_float_pct": 5.3,
+      "dist_from_3m_high_pct": -22.2,
+      "prev_day_return_pct": -9.84
+    },
+    {
+      "ticker": "AVGO",
+      "gap_pct": 3.73,
+      "adv_m": 26.3,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -24.3,
+      "prev_day_return_pct": -2.41
+    },
+    {
+      "ticker": "INTC",
+      "gap_pct": 3.37,
+      "adv_m": 135.6,
+      "short_float_pct": 2.9,
+      "dist_from_3m_high_pct": -12.6,
+      "prev_day_return_pct": -5.25
+    },
+    {
+      "ticker": "ORCL",
+      "gap_pct": 2.92,
+      "adv_m": 28.4,
+      "short_float_pct": 2.2,
+      "dist_from_3m_high_pct": -42.3,
+      "prev_day_return_pct": -1.56
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 2.78,
+      "adv_m": 52.1,
+      "short_float_pct": 3.7,
+      "dist_from_3m_high_pct": -20.1,
+      "prev_day_return_pct": -5.49
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 2.77,
+      "adv_m": 31.4,
+      "short_float_pct": 23.0,
+      "dist_from_3m_high_pct": -39.2,
+      "prev_day_return_pct": -4.6
+    },
+    {
+      "ticker": "VRT",
+      "gap_pct": 2.33,
+      "adv_m": 6.2,
+      "short_float_pct": 3.9,
+      "dist_from_3m_high_pct": -19.0,
+      "prev_day_return_pct": -3.5
+    },
+    {
+      "ticker": "MARA",
+      "gap_pct": 1.85,
+      "adv_m": 43.5,
+      "short_float_pct": 30.8,
+      "dist_from_3m_high_pct": -23.1,
+      "prev_day_return_pct": -7.26
+    },
+    {
+      "ticker": "META",
+      "gap_pct": 1.42,
+      "adv_m": 17.6,
+      "short_float_pct": 1.4,
+      "dist_from_3m_high_pct": -14.4,
+      "prev_day_return_pct": -4.9
+    },
+    {
+      "ticker": "TSLA",
+      "gap_pct": 1.37,
+      "adv_m": 56.6,
+      "short_float_pct": 2.3,
+      "dist_from_3m_high_pct": -12.0,
+      "prev_day_return_pct": -7.49
+    },
+    {
+      "ticker": "QBTS",
+      "gap_pct": 1.24,
+      "adv_m": 34.6,
+      "short_float_pct": 17.2,
+      "dist_from_3m_high_pct": -27.7,
+      "prev_day_return_pct": -4.13
+    },
+    {
+      "ticker": "IONQ",
+      "gap_pct": 1.18,
+      "adv_m": 31.6,
+      "short_float_pct": 13.6,
+      "dist_from_3m_high_pct": -32.5,
+      "prev_day_return_pct": -4.44
+    },
+    {
+      "ticker": "NIO",
+      "gap_pct": 1.04,
+      "adv_m": 36.6,
+      "short_float_pct": 7.0,
+      "dist_from_3m_high_pct": -30.9,
+      "prev_day_return_pct": -3.62
+    },
+    {
+      "ticker": "QUBT",
+      "gap_pct": 0.88,
+      "adv_m": 20.7,
+      "short_float_pct": 29.4,
+      "dist_from_3m_high_pct": -36.8,
+      "prev_day_return_pct": -4.03
+    },
+    {
+      "ticker": "OKLO",
+      "gap_pct": 0.8,
+      "adv_m": 13.5,
+      "short_float_pct": 17.9,
+      "dist_from_3m_high_pct": -35.2,
+      "prev_day_return_pct": -0.17
+    },
+    {
+      "ticker": "RKLB",
+      "gap_pct": 0.66,
+      "adv_m": 27.7,
+      "short_float_pct": 5.9,
+      "dist_from_3m_high_pct": -33.0,
+      "prev_day_return_pct": 0.39
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 0.51,
+      "adv_m": 35.2,
+      "short_float_pct": 22.8,
+      "dist_from_3m_high_pct": -31.4,
+      "prev_day_return_pct": -3.84
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "INTC",
+      "reason": "pm_gap_eaten_at_open_47%"
+    },
+    {
+      "ticker": "QBTS",
+      "reason": "gap_reversed_at_open"
+    },
+    {
+      "ticker": "IONQ",
+      "reason": "gap_reversed_at_open"
+    },
+    {
+      "ticker": "QUBT",
+      "reason": "pm_gap_eaten_at_open_19%"
+    },
+    {
+      "ticker": "OKLO",
+      "reason": "gap_reversed_at_open"
+    },
+    {
+      "ticker": "RKLB",
+      "reason": "gap_reversed_at_open"
+    },
+    {
+      "ticker": "SMR",
+      "reason": "gap_reversed_at_open"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "AMAT",
+      "confidence": 0.2,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.2569,
+      "gap_retention": 0.4363,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.792,
+      "vol_today": 10700,
+      "vol_avg": 13515,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0277,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0475424515786682,
+      "price_935": 617.705,
+      "open_930": 628.275,
+      "prev_close": 603.04
+    },
+    {
+      "ticker": "MRVL",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9028,
+      "gap_retention": 0.8016,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.718,
+      "vol_today": 35932,
+      "vol_avg": 50041,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.052600004,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04659790452117916,
+      "price_935": 254.21,
+      "open_930": 253.0,
+      "prev_close": 245.29
+    },
+    {
+      "ticker": "AVGO",
+      "confidence": 1.2,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.9092,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.849,
+      "vol_today": 35490,
+      "vol_avg": 41798,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.013200001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03731446802607848,
+      "price_935": 382.195,
+      "open_930": 372.79,
+      "prev_close": 360.45
+    },
+    {
+      "ticker": "ORCL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1161,
+      "gap_retention": 0.5813,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.683,
+      "vol_today": 18284,
+      "vol_avg": 26775,
+      "or_bar_count": 4,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0219,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.029229343409139474,
+      "price_935": 143.46,
+      "open_930": 145.31,
+      "prev_close": 140.27
+    },
+    {
+      "ticker": "MU",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8632,
+      "gap_retention": 0.6097,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.82,
+      "vol_today": 31206,
+      "vol_avg": 38058,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0369,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02784470120257131,
+      "price_935": 1005.21,
+      "open_930": 1003.9,
+      "prev_close": 975.41
+    },
+    {
+      "ticker": "CRWV",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.3569,
+      "gap_retention": 0.7244,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.301,
+      "vol_today": 10109,
+      "vol_avg": 33585,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2299,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.027708116704385596,
+      "price_935": 83.195,
+      "open_930": 83.015,
+      "prev_close": 81.745
+    },
+    {
+      "ticker": "VRT",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9872,
+      "gap_retention": 0.8564,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.785,
+      "vol_today": 13788,
+      "vol_avg": 7723,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.039100002,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.023258909260306822,
+      "price_935": 321.56,
+      "open_930": 310.7,
+      "prev_close": 300.53
+    },
+    {
+      "ticker": "MARA",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.75,
+      "gap_retention": 0.6818,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.934,
+      "vol_today": 43941,
+      "vol_avg": 47041,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.3083,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.018548387096774227,
+      "price_935": 12.76,
+      "open_930": 12.62,
+      "prev_close": 12.4
+    },
+    {
+      "ticker": "META",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1786,
+      "gap_retention": 0.7246,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.908,
+      "vol_today": 26595,
+      "vol_avg": 29278,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0137,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.014170526676960012,
+      "price_935": 592.05,
+      "open_930": 594.01,
+      "prev_close": 582.9
+    },
+    {
+      "ticker": "TSLA",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0,
+      "gap_retention": 0.3899,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.175,
+      "vol_today": 35246,
+      "vol_avg": 30002,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0234,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.013699326470961969,
+      "price_935": 395.0,
+      "open_930": 397.425,
+      "prev_close": 393.45
+    },
+    {
+      "ticker": "NIO",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7778,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.446,
+      "vol_today": 74380,
+      "vol_avg": 51436,
+      "or_bar_count": 4,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.070300005,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010438413361169066,
+      "price_935": 4.985,
+      "open_930": 4.88,
+      "prev_close": 4.79
+    }
+  ],
+  "llm_input": [
+    "MRVL",
+    "AVGO",
+    "MU",
+    "CRWV",
+    "VRT",
+    "MARA",
+    "NIO"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "AVGO",
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Catalyst Tier 2 confermato: accordo Apple-Broadcom esteso al 2031 per ASIC custom, notizia concreta e riportata da pi\u00f9 fonti. Segnali tecnici eccellenti: tutti e tre i criteri soddisfatti (post_open_advance, or_position=1.0, gap_retention=0.91) con un post_open_advance_pct del +2.52% che indica momentum reale dopo l'apertura; prev_day_return_pct -2.4% non attiva la regola selloff.",
+      "price_935": 382.195
+    },
+    "trade_2": null,
+    "no_trade_reason": "MRVL escluso per regola RIMBALZO DA SELLOFF: prev_day_return_pct -9.8% richiede catalyst Tier 1 confermato, ma il catalyst citato (opportunit\u00e0 competitiva per ritardo Nvidia Kyber) \u00e8 speculativo/Tier 3, insufficiente per approvare. MU escluso: prev_day_return_pct -5.5% attiva regola selloff, nessun catalyst Tier 1 o Tier 2 confermato (accordo Ford non \u00e8 revenue/earnings beat). CRWV escluso: prev_day_return_pct -4.6% attiva regola selloff, or_position=0.36 debole, nessun catalyst diretto; nonostante short_float elevato (23%) manca la scintilla catalyst. VRT escluso: prev_day_return_pct -3.5% attiva regola selloff, nessun catalyst identificabile (news solo su performance storica), insufficient per approvare. MARA escluso: prev_day_return_pct -7.3% attiva regola selloff, news esplicitamente negative (headwinds sull'AI pivot). NIO escluso: prev_day_return_pct -3.6% attiva regola selloff, catalyst (10.000 consegne ES9) \u00e8 Tier 3 borderline e la seconda news riguarda un competitor, profilo rischio/rendimento insufficiente."
+  },
+  "trades": [
+    {
+      "ticker": "AVGO",
+      "qty": 92,
+      "entry_price": 380.97,
+      "entry_time": "09:40:00",
+      "entry_ts": 1783345200.6890597,
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Catalyst Tier 2 confermato: accordo Apple-Broadcom esteso al 2031 per ASIC custom, notizia concreta e riportata da pi\u00f9 fonti. Segnali tecnici eccellenti: tutti e tre i criteri soddisfatti (post_open_advance, or_position=1.0, gap_retention=0.91) con un post_open_advance_pct del +2.52% che indica momentum reale dopo l'apertura; prev_day_return_pct -2.4% non attiva la regola selloff.",
+      "order_id": "951e50bb-afb5-4cea-8c60-d239eebd3fd8",
+      "stop_atr": 365.4725,
+      "stop_pct": 373.3506,
+      "stop_price": 373.3506,
+      "atr14": 15.4975,
+      "peak_price": 382.69,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 373.18,
+      "exit_time": "11:18:13",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -716.68,
+      "pnl_pct": -0.0204,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.0,
+      "short_float": 0.013200001,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.9092,
+      "gap_pct": 0.03731446802607848,
+      "news": [
+        {
+          "author": "Dylan Berman",
+          "content": "",
+          "created_at": "2026-07-06T12:38:28Z",
+          "headline": "Broadcom Stock Climbs on Report of Apple Chip Deal Extension to 2031",
+          "id": 60276440,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/06/Broadcom-Sign-And-Logo-In-Green-Landscap.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/06/Broadcom-Sign-And-Logo-In-Green-Landscap.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/06/Broadcom-Sign-And-Logo-In-Green-Landscap.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Broadcom shares are trading higher following a report suggesting that the company and Apple will expand their partnership through 2031.",
+          "symbols": [
+            "AAPL",
+            "AVGO",
+            "RIVN"
+          ],
+          "updated_at": "2026-07-06T12:38:28Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60276440/broadcom-stock-climbs-on-report-of-apple-chip-deal-extension-to-2031"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-06T12:04:05Z",
+          "headline": "Broadcom, Apple To Expand Collaboration Through 2031 To Develop, Supply Tailored ASIC Products For Apple",
+          "id": 60275429,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "AAPL",
+            "AVGO"
+          ],
+          "updated_at": "2026-07-06T12:04:05Z",
+          "url": "https://www.benzinga.com/news/26/07/60275429/broadcom-apple-expand-collaboration-through-2031-develop-supply-tailored-asic-products-apple"
+        },
+        {
+          "author": "Radhika Anilkumar Nadig",
+          "content": "",
+          "created_at": "2026-07-06T10:23:27Z",
+          "headline": "Tech Is Winning Wall Street's Cash: Tech Funds Draw $14.3 Billion in Second-Biggest Weekly Inflow on Record",
+          "id": 60272983,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/06/Financial-Market-Bubble-Concept-And-Over.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/06/Financial-Market-Bubble-Concept-And-Over.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/06/Financial-Market-Bubble-Concept-And-Over.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "U.S. tech funds drew a record $14.3B in weekly inflows even as broader equity funds saw their biggest outflows since March.",
+          "symbols": [
+            "AVGO",
+            "FTEC",
+            "IYW",
+            "MSFT",
+            "MU",
+            "NVDA",
+            "VGT",
+            "XLK"
+          ],
+          "updated_at": "2026-07-06T10:23:27Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60272983/tech-is-winning-wall-streets-cash-tech-funds-draw-14-3-billion-in-second-biggest-weekly-inflow-on-record"
+        }
+      ]
+    }
+  ]
+}
