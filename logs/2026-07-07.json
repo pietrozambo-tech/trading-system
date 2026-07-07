@@ -1,0 +1,461 @@
+{
+  "date": "2026-07-07",
+  "spy_pct": -0.002389287473211973,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 6,
+      "tickers": [
+        "PLTR",
+        "MSFT",
+        "NFLX",
+        "ORCL",
+        "AAPL",
+        "NIO"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 6,
+      "tickers": [
+        "PLTR",
+        "MSFT",
+        "NFLX",
+        "ORCL",
+        "AAPL",
+        "NIO"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 2,
+      "tickers": [
+        "MSFT",
+        "NIO"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "PLTR",
+      "gap_pct": 1.71,
+      "adv_m": 45.4,
+      "short_float_pct": 3.6,
+      "dist_from_3m_high_pct": -17.6,
+      "prev_day_return_pct": 2.51
+    },
+    {
+      "ticker": "MSFT",
+      "gap_pct": 1.54,
+      "adv_m": 39.5,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -15.8,
+      "prev_day_return_pct": -0.96
+    },
+    {
+      "ticker": "NFLX",
+      "gap_pct": 1.07,
+      "adv_m": 41.4,
+      "short_float_pct": 2.4,
+      "dist_from_3m_high_pct": -29.5,
+      "prev_day_return_pct": -2.1
+    },
+    {
+      "ticker": "ORCL",
+      "gap_pct": 0.99,
+      "adv_m": 28.6,
+      "short_float_pct": 2.2,
+      "dist_from_3m_high_pct": -42.0,
+      "prev_day_return_pct": 2.49
+    },
+    {
+      "ticker": "AAPL",
+      "gap_pct": 0.77,
+      "adv_m": 53.6,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -0.7,
+      "prev_day_return_pct": 1.31
+    },
+    {
+      "ticker": "NIO",
+      "gap_pct": 0.6,
+      "adv_m": 35.9,
+      "short_float_pct": 7.0,
+      "dist_from_3m_high_pct": -27.9,
+      "prev_day_return_pct": 4.8
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "PLTR",
+      "reason": "pm_gap_eaten_at_open_41%"
+    },
+    {
+      "ticker": "ORCL",
+      "reason": "gap_reversed_at_open"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "MSFT",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.3589,
+      "gap_retention": 0.8322,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.693,
+      "vol_today": 67606,
+      "vol_avg": 39944,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0128,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015410870352174534,
+      "price_935": 392.6,
+      "open_930": 392.46,
+      "prev_close": 386.74
+    },
+    {
+      "ticker": "NFLX",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0222,
+      "gap_retention": 0.5636,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.913,
+      "vol_today": 69429,
+      "vol_avg": 76024,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0241,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010655090765588033,
+      "price_935": 77.02,
+      "open_930": 77.75,
+      "prev_close": 76.02
+    },
+    {
+      "ticker": "AAPL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0262,
+      "gap_retention": 0.0532,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.652,
+      "vol_today": 45020,
+      "vol_avg": 69011,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0098,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.007676069852235582,
+      "price_935": 312.87,
+      "open_930": 315.29,
+      "prev_close": 312.66
+    },
+    {
+      "ticker": "NIO",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.1,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.203,
+      "vol_today": 9278,
+      "vol_avg": 45718,
+      "or_bar_count": 4,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.070300005,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.005976095617529931,
+      "price_935": 5.075,
+      "open_930": 5.07,
+      "prev_close": 5.02
+    }
+  ],
+  "llm_input": [
+    "MSFT",
+    "NIO"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "MSFT",
+      "direction": "long",
+      "confidence": 0.6667,
+      "reason": "Segnale puramente tecnico (2/3 criteri soddisfatti: post_open_advance positivo e gap_retention 0.83), senza catalyst identificabile ma prev_day_return_pct di -1% non attiva la regola selloff. Gap moderato con buona ritenzione supporta un'entrata prudente.",
+      "price_935": 392.6
+    },
+    "trade_2": null,
+    "no_trade_reason": "NIO escluso: nessun catalyst identificabile (recent_news vuote), or_position molto bassa (0.10) che segnala il titolo \u00e8 ai minimi del range di apertura, ed \u00e8 27.9% sotto i massimi a 3 mesi con forte resistenza overhead. A parit\u00e0 di confidence_algo con MSFT, la debolezza strutturale e l'assenza totale di news penalizzano NIO rispetto a MSFT."
+  },
+  "trades": [
+    {
+      "ticker": "MSFT",
+      "qty": 122,
+      "entry_price": 393.559181,
+      "entry_time": "09:37:19",
+      "entry_ts": 1783431439.7794309,
+      "direction": "long",
+      "confidence": 0.6667,
+      "reason": "Segnale puramente tecnico (2/3 criteri soddisfatti: post_open_advance positivo e gap_retention 0.83), senza catalyst identificabile ma prev_day_return_pct di -1% non attiva la regola selloff. Gap moderato con buona ritenzione supporta un'entrata prudente.",
+      "order_id": "7204e654-cc10-497d-96e6-13690b262fa6",
+      "stop_atr": 380.4063,
+      "stop_pct": 385.688,
+      "stop_price": 385.688,
+      "atr14": 13.1529,
+      "peak_price": 395.435,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 389.240417,
+      "exit_time": "15:45:16",
+      "exit_reason": "eod_close",
+      "pnl_usd": -526.89,
+      "pnl_pct": -0.011,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.0128,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.3589,
+      "gap_retention": 0.8322,
+      "gap_pct": 0.015410870352174534,
+      "news": [
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-07-07T09:58:21Z",
+          "headline": "Analyzing Microsoft In Comparison To Competitors In Software Industry",
+          "id": 60297905,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_12.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_12.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_12.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "In the fast-paced and highly competitive business world of today, conducting thorough company analysis is essential for investors and industry observers. In this article, we will conduct an extensive industry",
+          "symbols": [
+            "MSFT"
+          ],
+          "updated_at": "2026-07-07T09:58:21Z",
+          "url": "https://www.benzinga.com/news/26/07/60297905/analyzing-microsoft-comparison-competitors-software-industry"
+        },
+        {
+          "author": "Ananya Gairola",
+          "content": "",
+          "created_at": "2026-07-07T09:30:55Z",
+          "headline": "Bernie Sanders Says Microsoft's Layoffs and Xbox Price Hike Show Tax Cuts 'It Never Trickles Down'",
+          "id": 60297489,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/07/Des-Moines--Iowa---September-21--2019-Be.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/07/Des-Moines--Iowa---September-21--2019-Be.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/07/Des-Moines--Iowa---September-21--2019-Be.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Bernie Sanders said Microsoft&#39;s layoffs and Xbox price hikes show Trump&#39;s corporate tax cuts &#34;never trickle down&#34; to workers.",
+          "symbols": [
+            "AMZN",
+            "META",
+            "MSFT"
+          ],
+          "updated_at": "2026-07-07T09:31:18Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60297489/bernie-sanders-says-microsofts-layoffs-and-xbox-price-hike-show-tax-cuts-it-never-trickles-down"
+        },
+        {
+          "author": "Snigdha Gairola",
+          "content": "",
+          "created_at": "2026-07-07T07:24:47Z",
+          "headline": "Bernie Sanders Warns Big Tech Wants Robots to Replace Millions of Jobs: 'Is This the Future We Want?'",
+          "id": 60296853,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/07/Des-Moines--Iowa---September-21--2019-Be.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/07/Des-Moines--Iowa---September-21--2019-Be.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/07/Des-Moines--Iowa---September-21--2019-Be.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Sanders warns AI and robots could replace millions of jobs, saying Big Tech\u2019s automation push risks hurting workers.",
+          "symbols": [
+            "MSFT"
+          ],
+          "updated_at": "2026-07-07T07:24:47Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60296853/bernie-sanders-warns-big-tech-wants-robots-to-replace-millions-of-jobs-is-this-the-future-we-want"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-07-07T07:09:20Z",
+          "headline": "Dow Settles Above 53,000: Investor Sentiment Improves, Fear & Greed Index Moves To \u2018Neutral\u2019 Zone",
+          "id": 60296784,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/07/Market-sentiment---Fear-and-Greed.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/07/Market-sentiment---Fear-and-Greed.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/07/Market-sentiment---Fear-and-Greed.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Fear &amp; Greed Index improves to &#39;Neutral&#39; zone on Monday, as Nasdaq Composite rises 1%. Most sectors close negative, while tech stocks gain.",
+          "symbols": [
+            "EPAC",
+            "MSFT",
+            "PENG",
+            "SAR"
+          ],
+          "updated_at": "2026-07-07T07:09:20Z",
+          "url": "https://www.benzinga.com/markets/market-summary/26/07/60296784/dow-settles-above-53000-investor-sentiment-improves-fear-greed-index-moves-to-neutral-zone"
+        },
+        {
+          "author": "Badar Shaikh",
+          "content": "",
+          "created_at": "2026-07-07T06:30:20Z",
+          "headline": "Elon Musk Says Optimus, AI Will Enable 'Excellent' Healthcare\u2014Cathie Wood Sees $50 Billion AI Compute Need",
+          "id": 60296473,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/07/National-Harbor--Md--Usa--February-20-20.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/07/National-Harbor--Md--Usa--February-20-20.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/07/National-Harbor--Md--Usa--February-20-20.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Tesla CEO Elon Musk believes robots &amp; AI will revolutionize healthcare in the future, while ARK touts $50 billion investment.",
+          "symbols": [
+            "MSFT",
+            "ORCL",
+            "TSLA"
+          ],
+          "updated_at": "2026-07-07T06:30:20Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60296473/elon-musk-optimus-ai-enable-excellent-healthcare-cathie-wood-50-billion-compute"
+        }
+      ]
+    }
+  ]
+}
