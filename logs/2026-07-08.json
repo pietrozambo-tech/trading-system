@@ -1,0 +1,394 @@
+{
+  "date": "2026-07-08",
+  "spy_pct": -0.005469596266231638,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 3,
+      "tickers": [
+        "RKLB",
+        "OXY",
+        "AVGO"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 3,
+      "tickers": [
+        "RKLB",
+        "OXY",
+        "AVGO"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 2,
+      "tickers": [
+        "OXY",
+        "AVGO"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "RKLB",
+      "gap_pct": 3.36,
+      "adv_m": 27.6,
+      "short_float_pct": 5.9,
+      "dist_from_3m_high_pct": -42.9,
+      "prev_day_return_pct": -10.4
+    },
+    {
+      "ticker": "OXY",
+      "gap_pct": 2.79,
+      "adv_m": 11.9,
+      "short_float_pct": 0.0,
+      "dist_from_3m_high_pct": -19.2,
+      "prev_day_return_pct": 5.88
+    },
+    {
+      "ticker": "AVGO",
+      "gap_pct": 0.92,
+      "adv_m": 26.3,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -24.3,
+      "prev_day_return_pct": -0.83
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "RKLB",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.8432,
+      "gap_retention": 0.2188,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.567,
+      "vol_today": 11705,
+      "vol_avg": 20645,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0594,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0335691164129001,
+      "price_935": 86.03,
+      "open_930": 86.29,
+      "prev_close": 83.41
+    },
+    {
+      "ticker": "OXY",
+      "confidence": 0.9167,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.5761,
+      "gap_retention": 0.9328,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.932,
+      "vol_today": 32566,
+      "vol_avg": 11105,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0002,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02786377708978324,
+      "price_935": 53.195,
+      "open_930": 53.02,
+      "prev_close": 51.68
+    },
+    {
+      "ticker": "AVGO",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.6389,
+      "gap_retention": 0.9104,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.13,
+      "vol_today": 35723,
+      "vol_avg": 31609,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.013200001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.009223798478882399,
+      "price_935": 380.0,
+      "open_930": 377.535,
+      "prev_close": 370.78
+    }
+  ],
+  "llm_input": [
+    "OXY",
+    "AVGO"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "OXY",
+      "direction": "long",
+      "confidence": 0.9167,
+      "reason": "Catalyst Tier 1/2 solido: double upgrade di Evercore ISI a Outperform con target $65 e spike del 6% del Brent crude legato agli strike USA sull'Iran, che supporta un rialzo strutturale delle commodity energetiche. Segnali tecnici forti con gap_retention al 93% e post_open_advance positivo; prev_day_return +5.9% non attiva la regola selloff.",
+      "price_935": 53.195
+    },
+    "trade_2": null,
+    "no_trade_reason": "AVGO escluso: confidence_algo base di 0.67 con catalyst_bonus zero (nessun catalyst confermato) e vol_boost assente; la notizia Apple su spending custom silicon non ha summary confermato come deal, mentre un downgrade di Erste Group a Hold contrasta il sentiment rialzista. Segnale puramente tecnico insufficiente a giustificare il trade."
+  },
+  "trades": [
+    {
+      "ticker": "OXY",
+      "qty": 898,
+      "entry_price": 53.130835,
+      "entry_time": "09:36:23",
+      "entry_ts": 1783517783.6444662,
+      "direction": "long",
+      "confidence": 0.9167,
+      "reason": "Catalyst Tier 1/2 solido: double upgrade di Evercore ISI a Outperform con target $65 e spike del 6% del Brent crude legato agli strike USA sull'Iran, che supporta un rialzo strutturale delle commodity energetiche. Segnali tecnici forti con gap_retention al 93% e post_open_advance positivo; prev_day_return +5.9% non attiva la regola selloff.",
+      "order_id": "9432121e-eec7-461e-847f-d8c78647c88e",
+      "stop_atr": 51.7789,
+      "stop_pct": 52.0682,
+      "stop_price": 54.1935,
+      "atr14": 1.3519,
+      "peak_price": 54.885,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 54.180768,
+      "exit_time": "12:18:00",
+      "exit_reason": "step_stop",
+      "pnl_usd": 942.84,
+      "pnl_pct": 0.0198,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.05,
+      "short_float": 0.0002,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.5761,
+      "gap_retention": 0.9328,
+      "gap_pct": 0.02786377708978324,
+      "news": [
+        {
+          "author": "Kaustubh Bagalkote",
+          "content": "",
+          "created_at": "2026-07-08T11:56:59Z",
+          "headline": "Why Is Occidental Petroleum Stock Surging on Wednesday?",
+          "id": 60327912,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/08/Milan--Italy---November-1--2017-Occident.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/08/Milan--Italy---November-1--2017-Occident.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/08/Milan--Italy---November-1--2017-Occident.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Occidental Petroleum Corporation (NYSE: OXY) stock surged Wednesday after an Evercore ISI double upgrade and a 6% spike in Brent crude oil prices amid U.S. strikes on Iran.",
+          "symbols": [
+            "OXY"
+          ],
+          "updated_at": "2026-07-08T11:56:59Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60327912/why-is-occidental-petroleum-stock-surging-on-wednesday"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-07-08T11:14:35Z",
+          "headline": "This RH Analyst Is No Longer Bearish; Here Are Top 5 Upgrades For Wednesday",
+          "id": 60327235,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/08/RH.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/08/RH.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/08/RH.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Wall Street analysts upgraded Occidental Petroleum, RH, Dollar Tree, PROG Holdings, and Ultrapar Participacoes. See what others think before buying RH.",
+          "symbols": [
+            "DLTR",
+            "OXY",
+            "PRG",
+            "RH",
+            "UGP"
+          ],
+          "updated_at": "2026-07-08T11:14:35Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/upgrades/26/07/60327235/this-rh-analyst-is-no-longer-bearish-here-are-top-5-upgrades-for-wednesday"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-08T09:44:50Z",
+          "headline": "Evercore ISI Group Upgrades Occidental Petroleum to Outperform, Raises Price Target to $65",
+          "id": 60325013,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "OXY"
+          ],
+          "updated_at": "2026-07-08T09:44:50Z",
+          "url": "https://www.benzinga.com/news/26/07/60325013/evercore-isi-group-upgrades-occidental-petroleum-outperform-raises-price-target-65"
+        },
+        {
+          "author": "Radhika Anilkumar Nadig",
+          "content": "",
+          "created_at": "2026-07-08T05:51:27Z",
+          "headline": "Justin Wolfers Says Trouble in Iran Means 'Turmoil' in Energy Markets: 'Expect Higher Gas Prices'",
+          "id": 60323494,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/08/Energa.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/08/Energa.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/08/Energa.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Economist Justin Wolfers warned Tuesday that U.S. strikes on Iran renewed concerns over global energy supplies and higher gas prices",
+          "symbols": [
+            "BATL",
+            "DBO",
+            "OILK",
+            "OXY",
+            "SCO",
+            "UCO",
+            "USO",
+            "XOM"
+          ],
+          "updated_at": "2026-07-08T05:51:27Z",
+          "url": "https://www.benzinga.com/markets/commodities/26/07/60323494/justin-wolfers-says-expect-higher-gas-prices-to-follow-after-u-s-strikes-on-iran"
+        },
+        {
+          "author": "Mohd Haider",
+          "content": "",
+          "created_at": "2026-07-08T04:07:10Z",
+          "headline": "Exxon Mobil, Battalion Oil, Occidental Petroleum Are Trending After Hours as Hormuz Strait Disruption Reignites: XOM, BATL, OXY Spike",
+          "id": 60323183,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/08/Oil-Field--Falling-Chart-And-Petroleum-R.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/08/Oil-Field--Falling-Chart-And-Petroleum-R.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/08/Oil-Field--Falling-Chart-And-Petroleum-R.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Exxon Mobil shares 1.03% after hours as oil stocks gained following U.S. strikes on Iran amid Middle East tensions.\n",
+          "symbols": [
+            "BATL",
+            "OXY",
+            "XOM"
+          ],
+          "updated_at": "2026-07-08T04:07:10Z",
+          "url": "https://www.benzinga.com/markets/equities/26/07/60323183/exxon-mobil-battalion-oil-and-occidental-petroleum-trend-after-hours-as-hormuz-strait-disruption-fears-return"
+        }
+      ]
+    }
+  ]
+}
