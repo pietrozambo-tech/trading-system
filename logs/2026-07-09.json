@@ -1,0 +1,555 @@
+{
+  "date": "2026-07-09",
+  "spy_pct": 0.002790897380850205,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 15,
+      "tickers": [
+        "AMAT",
+        "MU",
+        "MRVL",
+        "MARA",
+        "INTC",
+        "BKSY",
+        "CRWV",
+        "RKLB",
+        "ASTS",
+        "SMR",
+        "QUBT",
+        "ORCL",
+        "RGTI",
+        "MSTR",
+        "NVDA"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 14,
+      "tickers": [
+        "AMAT",
+        "MU",
+        "MRVL",
+        "MARA",
+        "INTC",
+        "CRWV",
+        "RKLB",
+        "ASTS",
+        "SMR",
+        "QUBT",
+        "ORCL",
+        "RGTI",
+        "MSTR",
+        "NVDA"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 3,
+      "tickers": [
+        "MRVL",
+        "MARA",
+        "INTC"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "AMAT",
+      "gap_pct": 9.17,
+      "adv_m": 8.9,
+      "short_float_pct": 2.8,
+      "dist_from_3m_high_pct": -15.8,
+      "prev_day_return_pct": 2.89
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 6.96,
+      "adv_m": 51.1,
+      "short_float_pct": 3.7,
+      "dist_from_3m_high_pct": -19.1,
+      "prev_day_return_pct": 1.11
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 5.7,
+      "adv_m": 42.2,
+      "short_float_pct": 5.3,
+      "dist_from_3m_high_pct": -25.8,
+      "prev_day_return_pct": 0.44
+    },
+    {
+      "ticker": "MARA",
+      "gap_pct": 5.41,
+      "adv_m": 43.0,
+      "short_float_pct": 30.8,
+      "dist_from_3m_high_pct": -22.9,
+      "prev_day_return_pct": -0.25
+    },
+    {
+      "ticker": "INTC",
+      "gap_pct": 5.07,
+      "adv_m": 135.4,
+      "short_float_pct": 2.9,
+      "dist_from_3m_high_pct": -18.6,
+      "prev_day_return_pct": -0.14
+    },
+    {
+      "ticker": "BKSY",
+      "gap_pct": 4.25,
+      "adv_m": 2.2,
+      "short_float_pct": 22.3,
+      "dist_from_3m_high_pct": -49.0,
+      "prev_day_return_pct": 1.65
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 3.04,
+      "adv_m": 31.3,
+      "short_float_pct": 23.0,
+      "dist_from_3m_high_pct": -32.9,
+      "prev_day_return_pct": 7.75
+    },
+    {
+      "ticker": "RKLB",
+      "gap_pct": 3.0,
+      "adv_m": 27.4,
+      "short_float_pct": 5.9,
+      "dist_from_3m_high_pct": -43.1,
+      "prev_day_return_pct": -0.07
+    },
+    {
+      "ticker": "ASTS",
+      "gap_pct": 2.17,
+      "adv_m": 22.2,
+      "short_float_pct": 21.0,
+      "dist_from_3m_high_pct": -42.8,
+      "prev_day_return_pct": 1.0
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 1.37,
+      "adv_m": 35.3,
+      "short_float_pct": 22.8,
+      "dist_from_3m_high_pct": -37.9,
+      "prev_day_return_pct": -2.23
+    },
+    {
+      "ticker": "QUBT",
+      "gap_pct": 1.26,
+      "adv_m": 20.8,
+      "short_float_pct": 29.4,
+      "dist_from_3m_high_pct": -38.7,
+      "prev_day_return_pct": 0.69
+    },
+    {
+      "ticker": "ORCL",
+      "gap_pct": 0.96,
+      "adv_m": 29.4,
+      "short_float_pct": 2.2,
+      "dist_from_3m_high_pct": -43.3,
+      "prev_day_return_pct": -0.78
+    },
+    {
+      "ticker": "RGTI",
+      "gap_pct": 0.95,
+      "adv_m": 40.8,
+      "short_float_pct": 17.9,
+      "dist_from_3m_high_pct": -39.1,
+      "prev_day_return_pct": 2.24
+    },
+    {
+      "ticker": "MSTR",
+      "gap_pct": 0.75,
+      "adv_m": 21.2,
+      "short_float_pct": 12.2,
+      "dist_from_3m_high_pct": -52.0,
+      "prev_day_return_pct": -3.58
+    },
+    {
+      "ticker": "NVDA",
+      "gap_pct": 0.57,
+      "adv_m": 158.2,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -13.1,
+      "prev_day_return_pct": 3.65
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "BKSY",
+      "reason": "adv_2,249,298<min_5,000,000"
+    },
+    {
+      "ticker": "ASTS",
+      "reason": "pm_gap_eaten_at_open_13%"
+    },
+    {
+      "ticker": "QUBT",
+      "reason": "pm_gap_eaten_at_open_32%"
+    },
+    {
+      "ticker": "ORCL",
+      "reason": "pm_gap_eaten_at_open_34%"
+    },
+    {
+      "ticker": "RGTI",
+      "reason": "pm_gap_eaten_at_open_25%"
+    },
+    {
+      "ticker": "MSTR",
+      "reason": "pm_gap_eaten_at_open_1%"
+    },
+    {
+      "ticker": "NVDA",
+      "reason": "pm_gap_eaten_at_open_29%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "AMAT",
+      "confidence": 0.5833,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.4423,
+      "gap_retention": 0.8006,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.893,
+      "vol_today": 44046,
+      "vol_avg": 15225,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0277,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.09165644171779135,
+      "price_935": 622.13,
+      "open_930": 627.3,
+      "prev_close": 570.5
+    },
+    {
+      "ticker": "MU",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0044,
+      "gap_retention": 0.9172,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.244,
+      "vol_today": 46603,
+      "vol_avg": 37447,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0369,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.06960370994940987,
+      "price_935": 1008.15,
+      "open_930": 1013.44,
+      "prev_close": 948.8
+    },
+    {
+      "ticker": "MRVL",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.8771,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.892,
+      "vol_today": 32169,
+      "vol_avg": 36071,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.052600004,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.05701091882093988,
+      "price_935": 248.82,
+      "open_930": 246.155,
+      "prev_close": 231.71
+    },
+    {
+      "ticker": "MARA",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.0545,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.858,
+      "vol_today": 83968,
+      "vol_avg": 45202,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.3083,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.05407653910149753,
+      "price_935": 12.695,
+      "open_930": 12.68,
+      "prev_close": 12.02
+    },
+    {
+      "ticker": "INTC",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8673,
+      "gap_retention": 0.6974,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.502,
+      "vol_today": 150089,
+      "vol_avg": 99930,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0286,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.05070754716981135,
+      "price_935": 115.12,
+      "open_930": 114.8,
+      "prev_close": 110.24
+    },
+    {
+      "ticker": "CRWV",
+      "confidence": 0.3833,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0467,
+      "gap_retention": 0.9607,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.406,
+      "vol_today": 79588,
+      "vol_avg": 33079,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2299,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03044444444444439,
+      "price_935": 93.15,
+      "open_930": 93.18,
+      "prev_close": 90.0
+    },
+    {
+      "ticker": "RKLB",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.6799,
+      "gap_retention": 0.2254,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.233,
+      "vol_today": 25817,
+      "vol_avg": 20944,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0594,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02999400119976005,
+      "price_935": 85.185,
+      "open_930": 85.79,
+      "prev_close": 83.35
+    },
+    {
+      "ticker": "SMR",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.4571,
+      "gap_retention": -0.5,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.407,
+      "vol_today": 15376,
+      "vol_avg": 37741,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2283,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.013698630136986415,
+      "price_935": 8.8,
+      "open_930": 8.84,
+      "prev_close": 8.76
+    }
+  ],
+  "llm_input": [
+    "MRVL",
+    "MARA",
+    "INTC"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "MRVL",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e tre i segnali tecnici sono positivi (or_position=1.0, gap_retention=0.8771, post_open_advance=true) con confidence_algo massima di 1.0. Nessun catalyst classificabile formalmente, ma il segnale puramente tecnico \u00e8 il pi\u00f9 forte del gruppo con prev_day_return_pct neutro (+0.4%).",
+      "price_935": 248.82
+    },
+    "trade_2": null,
+    "no_trade_reason": "MARA esclusa: nonostante il gap e il short_float elevato (30.8%), l'acquisizione del terreno in Texas non costituisce un catalyst Tier 1/2 sufficiente e Morgan Stanley ha abbassato il price target a $5.5 (Underweight), introducendo news negative che neutralizzano il potenziale squeeze; or_position bassissimo (0.0545) segnala inoltre debolezza strutturale intraday. INTC esclusa: confidence_algo pari a 0.6667 con nessun catalyst identificabile (news generiche su Micron e whale alerts), gap_retention appena sotto soglia (0.6974) e short_float irrilevante (2.9%); profilo rischio/rendimento insufficiente per giustificare un secondo trade."
+  },
+  "trades": [
+    {
+      "ticker": "MRVL",
+      "qty": 194,
+      "entry_price": 249.2,
+      "entry_time": "09:36:22",
+      "entry_ts": 1783604182.9378176,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e tre i segnali tecnici sono positivi (or_position=1.0, gap_retention=0.8771, post_open_advance=true) con confidence_algo massima di 1.0. Nessun catalyst classificabile formalmente, ma il segnale puramente tecnico \u00e8 il pi\u00f9 forte del gruppo con prev_day_return_pct neutro (+0.4%).",
+      "order_id": "fd03345e-db97-43ce-8b74-2f265e20df1b",
+      "stop_atr": 223.9969,
+      "stop_pct": 244.216,
+      "stop_price": 244.216,
+      "atr14": 25.2031,
+      "peak_price": 251.54,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 242.5,
+      "exit_time": "10:20:34",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1299.8,
+      "pnl_pct": -0.0269,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.052600004,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.8771,
+      "gap_pct": 0.05701091882093988,
+      "news": [
+        {
+          "author": "Snigdha Gairola",
+          "content": "",
+          "created_at": "2026-07-09T10:39:32Z",
+          "headline": "Nvidia CEO Jensen Huang Says Software Engineers Would Rather Build AI Agents Than Write Python Code",
+          "id": 60351886,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/09/Jensen-Huang-Nvidias-Founder--President-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/09/Jensen-Huang-Nvidias-Founder--President-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/09/Jensen-Huang-Nvidias-Founder--President-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Huang says software engineers are shifting to creating AI agents, freeing them from repetitive coding tasks.",
+          "symbols": [
+            "AMZN",
+            "MRVL",
+            "MSFT",
+            "NVDA"
+          ],
+          "updated_at": "2026-07-09T10:39:32Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60351886/nvidia-ceo-jensen-huang-says-software-engineers-would-rather-build-ai-agents-than-write-python-code"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-08T13:59:42Z",
+          "headline": "Watching Marvell Technology; Hearing Zacks Tech Innovator Buys Stock",
+          "id": 60332381,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "MRVL"
+          ],
+          "updated_at": "2026-07-08T13:59:42Z",
+          "url": "https://www.benzinga.com/quote/MRVL"
+        }
+      ]
+    }
+  ]
+}
