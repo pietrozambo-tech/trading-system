@@ -1,0 +1,847 @@
+{
+  "date": "2026-07-10",
+  "spy_pct": 0.0012906659570221905,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 13,
+      "tickers": [
+        "COIN",
+        "MSTR",
+        "META",
+        "HOOD",
+        "UUUU",
+        "MARA",
+        "NIO",
+        "RIVN",
+        "ORCL",
+        "APP",
+        "MSFT",
+        "JPM",
+        "RKLB"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 12,
+      "tickers": [
+        "COIN",
+        "MSTR",
+        "META",
+        "HOOD",
+        "UUUU",
+        "MARA",
+        "NIO",
+        "RIVN",
+        "ORCL",
+        "MSFT",
+        "JPM",
+        "RKLB"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 6,
+      "tickers": [
+        "MSTR",
+        "META",
+        "UUUU",
+        "RIVN",
+        "MSFT",
+        "JPM"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "COIN",
+      "gap_pct": 4.67,
+      "adv_m": 9.2,
+      "short_float_pct": 12.2,
+      "dist_from_3m_high_pct": -25.4,
+      "prev_day_return_pct": -0.58
+    },
+    {
+      "ticker": "MSTR",
+      "gap_pct": 4.41,
+      "adv_m": 21.1,
+      "short_float_pct": 12.2,
+      "dist_from_3m_high_pct": -50.2,
+      "prev_day_return_pct": 0.02
+    },
+    {
+      "ticker": "META",
+      "gap_pct": 3.73,
+      "adv_m": 17.5,
+      "short_float_pct": 1.4,
+      "dist_from_3m_high_pct": -5.2,
+      "prev_day_return_pct": 4.7
+    },
+    {
+      "ticker": "HOOD",
+      "gap_pct": 3.09,
+      "adv_m": 31.2,
+      "short_float_pct": 4.8,
+      "dist_from_3m_high_pct": -1.1,
+      "prev_day_return_pct": 1.39
+    },
+    {
+      "ticker": "UUUU",
+      "gap_pct": 2.82,
+      "adv_m": 10.3,
+      "short_float_pct": 15.3,
+      "dist_from_3m_high_pct": -46.2,
+      "prev_day_return_pct": 2.66
+    },
+    {
+      "ticker": "MARA",
+      "gap_pct": 2.12,
+      "adv_m": 43.6,
+      "short_float_pct": 30.8,
+      "dist_from_3m_high_pct": -17.8,
+      "prev_day_return_pct": 9.98
+    },
+    {
+      "ticker": "NIO",
+      "gap_pct": 1.88,
+      "adv_m": 35.1,
+      "short_float_pct": 7.0,
+      "dist_from_3m_high_pct": -30.4,
+      "prev_day_return_pct": -2.45
+    },
+    {
+      "ticker": "RIVN",
+      "gap_pct": 1.71,
+      "adv_m": 33.8,
+      "short_float_pct": 14.6,
+      "dist_from_3m_high_pct": -8.8,
+      "prev_day_return_pct": 8.76
+    },
+    {
+      "ticker": "ORCL",
+      "gap_pct": 1.23,
+      "adv_m": 29.7,
+      "short_float_pct": 2.2,
+      "dist_from_3m_high_pct": -41.7,
+      "prev_day_return_pct": 2.66
+    },
+    {
+      "ticker": "APP",
+      "gap_pct": 1.06,
+      "adv_m": 5.0,
+      "short_float_pct": 4.4,
+      "dist_from_3m_high_pct": -15.4,
+      "prev_day_return_pct": -0.34
+    },
+    {
+      "ticker": "MSFT",
+      "gap_pct": 1.06,
+      "adv_m": 39.7,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -16.7,
+      "prev_day_return_pct": 0.27
+    },
+    {
+      "ticker": "JPM",
+      "gap_pct": 0.77,
+      "adv_m": 9.2,
+      "short_float_pct": 1.1,
+      "dist_from_3m_high_pct": -1.1,
+      "prev_day_return_pct": 1.47
+    },
+    {
+      "ticker": "RKLB",
+      "gap_pct": 0.61,
+      "adv_m": 27.3,
+      "short_float_pct": 5.9,
+      "dist_from_3m_high_pct": -45.0,
+      "prev_day_return_pct": -0.96
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "APP",
+      "reason": "adv_4,996,562<min_5,000,000"
+    },
+    {
+      "ticker": "RKLB",
+      "reason": "gap_reversed_at_open"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "COIN",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.3274,
+      "gap_retention": 0.8748,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.274,
+      "vol_today": 8372,
+      "vol_avg": 6571,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.12189999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04670537742994197,
+      "price_935": 166.38,
+      "open_930": 166.67,
+      "prev_close": 158.44
+    },
+    {
+      "ticker": "MSTR",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9115,
+      "gap_retention": 0.8655,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.478,
+      "vol_today": 8667,
+      "vol_avg": 18117,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.122,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04409415273192034,
+      "price_935": 99.04,
+      "open_930": 98.65,
+      "prev_close": 93.89
+    },
+    {
+      "ticker": "META",
+      "confidence": 1.1,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.6836,
+      "gap_retention": 0.9364,
+      "vol_boost": 0.1,
+      "vol_ratio": 5.18,
+      "vol_today": 144359,
+      "vol_avg": 27867,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0137,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.037340850066510306,
+      "price_935": 671.185,
+      "open_930": 660.335,
+      "prev_close": 631.48
+    },
+    {
+      "ticker": "HOOD",
+      "confidence": 0.2,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.4309,
+      "gap_retention": 0.4334,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.976,
+      "vol_today": 36525,
+      "vol_avg": 37418,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0477,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.030926939449222503,
+      "price_935": 117.705,
+      "open_930": 118.94,
+      "prev_close": 115.11
+    },
+    {
+      "ticker": "UUUU",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.7927,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.804,
+      "vol_today": 7995,
+      "vol_avg": 9941,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1526,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.028169014084506967,
+      "price_935": 14.135,
+      "open_930": 13.9,
+      "prev_close": 13.49
+    },
+    {
+      "ticker": "MARA",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.5965,
+      "gap_retention": 0.4487,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.836,
+      "vol_today": 35505,
+      "vol_avg": 42473,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.3083,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.021180030257186032,
+      "price_935": 13.565,
+      "open_930": 13.61,
+      "prev_close": 13.22
+    },
+    {
+      "ticker": "NIO",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0,
+      "gap_retention": 0.5385,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.307,
+      "vol_today": 11962,
+      "vol_avg": 38939,
+      "or_bar_count": 3,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.070300005,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.018828451882845158,
+      "price_935": 4.85,
+      "open_930": 4.91,
+      "prev_close": 4.78
+    },
+    {
+      "ticker": "RIVN",
+      "confidence": 0.8667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8364,
+      "gap_retention": 0.4262,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.798,
+      "vol_today": 56283,
+      "vol_avg": 70564,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.1459,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.017108167770419354,
+      "price_935": 18.48,
+      "open_930": 18.425,
+      "prev_close": 18.12
+    },
+    {
+      "ticker": "ORCL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.3823,
+      "gap_retention": -1.4122,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.588,
+      "vol_today": 44883,
+      "vol_avg": 28266,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0219,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.012315613693292584,
+      "price_935": 143.25,
+      "open_930": 145.03,
+      "prev_close": 143.72
+    },
+    {
+      "ticker": "MSFT",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8444,
+      "gap_retention": 0.6524,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.881,
+      "vol_today": 39759,
+      "vol_avg": 45115,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0128,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010563013841190556,
+      "price_935": 389.54,
+      "open_930": 387.64,
+      "prev_close": 384.36
+    },
+    {
+      "ticker": "JPM",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.5291,
+      "gap_retention": 0.9761,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.333,
+      "vol_today": 1695,
+      "vol_avg": 5088,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0113,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0076608936715652455,
+      "price_935": 337.49,
+      "open_930": 336.935,
+      "prev_close": 335.47
+    }
+  ],
+  "llm_input": [
+    "MSTR",
+    "META",
+    "UUUU",
+    "RIVN",
+    "MSFT",
+    "JPM"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "META",
+      "direction": "long",
+      "confidence": 1.1,
+      "reason": "Segnali tecnici completi (tutti e 3 positivi) con gap_retention elevata (0.94) e post_open_advance solido (+1.64%); il vol_ratio >3x conferma partecipazione istituzionale e il titolo \u00e8 solo -5.2% dai massimi di 3 mesi. Nota: news EU sui possibili fines presenti ma gi\u00e0 prezzate nel precedente +4.7%; il catalyst_bonus algoritmico \u00e8 0 ma i fondamentali tecnici dominano.",
+      "price_935": 671.185
+    },
+    "trade_2": {
+      "ticker": "MSTR",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e 3 i segnali tecnici soddisfatti con or_position altissimo (0.91) e gap_retention forte (0.87); prev_day_return neutro (0%) esclude la regola rimbalzo da selloff. Le news su vendite BTC di Saylor sono classificate come 'tweak' dagli esperti, senza catalyst negativo definitivo che invalidi il setup tecnico.",
+      "price_935": 99.04
+    },
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "MSTR",
+      "qty": 480,
+      "entry_price": 99.506042,
+      "entry_time": "09:36:20",
+      "entry_ts": 1783690580.0623019,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e 3 i segnali tecnici soddisfatti con or_position altissimo (0.91) e gap_retention forte (0.87); prev_day_return neutro (0%) esclude la regola rimbalzo da selloff. Le news su vendite BTC di Saylor sono classificate come 'tweak' dagli esperti, senza catalyst negativo definitivo che invalidi il setup tecnico.",
+      "order_id": "7ee216ec-110f-4de1-92c1-0de9ed0e9a4f",
+      "stop_atr": 90.4825,
+      "stop_pct": 97.5159,
+      "stop_price": 97.5159,
+      "atr14": 9.0236,
+      "peak_price": 100.12,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 97.248729,
+      "exit_time": "09:57:57",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1083.51,
+      "pnl_pct": -0.0227,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.122,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9115,
+      "gap_retention": 0.8655,
+      "gap_pct": 0.04409415273192034,
+      "news": [
+        {
+          "author": "Parshwa Turakhiya",
+          "content": "",
+          "created_at": "2026-07-10T13:21:17Z",
+          "headline": "Bitcoin, Ethereum, XRP Got Clobbered in Q2: Here's What Will Decide Their Fate in Q3",
+          "id": 60381556,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/10/Flying-Altcoins-With-Bitcoin-In-The-Cent.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/10/Flying-Altcoins-With-Bitcoin-In-The-Cent.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/10/Flying-Altcoins-With-Bitcoin-In-The-Cent.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Bitwise says crypto faces its toughest test since 2022 as Bitcoin demand outpaces supply and the CLARITY Act looms over Q3.",
+          "symbols": [
+            "AAVEUSD",
+            "ADAUSD",
+            "BTCUSD",
+            "COIN",
+            "CORZ",
+            "ETHUSD",
+            "HUT",
+            "HYPEUSD",
+            "MARA",
+            "MSTR",
+            "MTPLF",
+            "RIOT",
+            "SOLUSD",
+            "WULF",
+            "XRPUSD"
+          ],
+          "updated_at": "2026-07-10T13:21:17Z",
+          "url": "https://www.benzinga.com/crypto/cryptocurrency/26/07/60381556/bitcoin-ethereum-xrp-got-clobbered-in-q2-heres-what-will-decide-their-fate-in-q3"
+        },
+        {
+          "author": "Parshwa Turakhiya",
+          "content": "",
+          "created_at": "2026-07-09T20:46:29Z",
+          "headline": "Michael Saylor Selling Isn't Bitcoin's Biggest Problem\u2014Here's What JPMorgan Says the Real Threat Is",
+          "id": 60374122,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/09/4-Stocks-JPMorgan-Is-Betting-Big-On-For-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/09/4-Stocks-JPMorgan-Is-Betting-Big-On-For-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/09/4-Stocks-JPMorgan-Is-Betting-Big-On-For-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "JPMorgan says banks building private blockchains pose a bigger threat to crypto than Strategy&#39;s Bitcoin sales.",
+          "symbols": [
+            "BTCUSD",
+            "ETHUSD",
+            "MSTR"
+          ],
+          "updated_at": "2026-07-09T20:46:29Z",
+          "url": "https://www.benzinga.com/crypto/cryptocurrency/26/07/60374122/michael-saylor-selling-isnt-bitcoins-biggest-problem-heres-what-jpmorgan-says-the-real-threat-is"
+        },
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-07-09T17:35:08Z",
+          "headline": "10 Information Technology Stocks With Whale Alerts In Today\u2019s Session",
+          "id": 60368130,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_3.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_3.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_3.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "This whale alert can help traders discover the next big trading opportunities.\nWhales are entities with large sums of money and we track their transactions here at Benzinga on our options activity scanner.\nTraders often",
+          "symbols": [
+            "ADBE",
+            "DELL",
+            "DT",
+            "INTC",
+            "LRCX",
+            "MSTR",
+            "MU",
+            "NVDA",
+            "ORCL",
+            "TSM"
+          ],
+          "updated_at": "2026-07-09T17:35:08Z",
+          "url": "https://www.benzinga.com/markets/options/26/07/60368130/10-information-technology-stocks-whale-alerts-today-s-session"
+        },
+        {
+          "author": "Khyathi Dalal",
+          "content": "",
+          "created_at": "2026-07-09T15:41:25Z",
+          "headline": "Michael Saylor Selling Bitcoin Is a 'Tweak', Strategy Will Be Fine, Industry Expert Argues",
+          "id": 60363853,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/09/Strategy-Inc.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/09/Strategy-Inc.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/09/Strategy-Inc.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Strategy&#39;s recent $216 million Bitcoin sale is not a warning sign for its preferred-stock dividend model, according to Parker White.",
+          "symbols": [
+            "BTCUSD",
+            "MSTR"
+          ],
+          "updated_at": "2026-07-09T15:41:25Z",
+          "url": "https://www.benzinga.com/crypto/cryptocurrency/26/07/60363853/michael-saylor-selling-bitcoin-is-a-tweak-strategy-will-be-fine-industry-expert-argues"
+        }
+      ]
+    },
+    {
+      "ticker": "META",
+      "qty": 70,
+      "entry_price": 668.19,
+      "entry_time": "09:36:14",
+      "entry_ts": 1783690574.7792819,
+      "direction": "long",
+      "confidence": 1.1,
+      "reason": "Segnali tecnici completi (tutti e 3 positivi) con gap_retention elevata (0.94) e post_open_advance solido (+1.64%); il vol_ratio >3x conferma partecipazione istituzionale e il titolo \u00e8 solo -5.2% dai massimi di 3 mesi. Nota: news EU sui possibili fines presenti ma gi\u00e0 prezzate nel precedente +4.7%; il catalyst_bonus algoritmico \u00e8 0 ma i fondamentali tecnici dominano.",
+      "order_id": "55fc4a25-d6b9-44c5-8eef-1f0e4b9da4e1",
+      "stop_atr": 643.4429,
+      "stop_pct": 654.8262,
+      "stop_price": 654.8262,
+      "atr14": 24.7471,
+      "peak_price": 677.18,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 665.26,
+      "exit_time": "15:45:08",
+      "exit_reason": "eod_close",
+      "pnl_usd": -205.1,
+      "pnl_pct": -0.0044,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.1,
+      "short_float": 0.0137,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.6836,
+      "gap_retention": 0.9364,
+      "gap_pct": 0.037340850066510306,
+      "news": [
+        {
+          "author": "Chandrima Sanyal",
+          "content": "",
+          "created_at": "2026-07-10T13:28:57Z",
+          "headline": "ETF Investors Are Finally Getting Paid To Diversify Away From The Magnificent Seven",
+          "id": 60381758,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/10/The-Magnificent-Seven--7-Of-The-Largest-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/10/The-Magnificent-Seven--7-Of-The-Largest-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/10/The-Magnificent-Seven--7-Of-The-Largest-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "The Magnificent Seven&#39;s slowdown is boosting diversified ETFs. IJR has gained 20%, IJH 13% and RSP 11%, all ahead of the S&amp;P 500.",
+          "symbols": [
+            "AMZN",
+            "IJH",
+            "IJR",
+            "IVV",
+            "META",
+            "MSFT",
+            "NVDA",
+            "RSP",
+            "SPY",
+            "TSLA",
+            "VOO"
+          ],
+          "updated_at": "2026-07-10T13:28:57Z",
+          "url": "https://www.benzinga.com/etfs/specialty-etfs/26/07/60381758/etf-investors-are-finally-getting-paid-to-diversify-away-from-the-magnificent-seven"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-10T12:54:29Z",
+          "headline": "Citizens Maintains Market Outperform on Meta Platforms, Lowers Price Target to $800",
+          "id": 60380987,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "META"
+          ],
+          "updated_at": "2026-07-10T12:54:29Z",
+          "url": "https://www.benzinga.com/news/26/07/60380987/citizens-maintains-market-outperform-meta-platforms-lowers-price-target-800"
+        },
+        {
+          "author": "Namrata Sen",
+          "content": "",
+          "created_at": "2026-07-10T12:31:38Z",
+          "headline": "Meta Could Face Billions in Fines as EU Cracks Down on 'Addictive' Facebook and Instagram Features",
+          "id": 60380435,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/10/Facebook-And-Instagram-Apps-Seen-On-The-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/10/Facebook-And-Instagram-Apps-Seen-On-The-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/10/Facebook-And-Instagram-Apps-Seen-On-The-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "EU says Meta&#39;s Instagram and Facebook may breach digital rules over addictive features, risking fines of up to 6% of annual revenue.",
+          "symbols": [
+            "AAPL",
+            "GOOG",
+            "GOOGL",
+            "META"
+          ],
+          "updated_at": "2026-07-10T12:31:38Z",
+          "url": "https://www.benzinga.com/news/legal/26/07/60380435/meta-could-face-billions-in-fines-as-eu-cracks-down-on-addictive-facebook-and-instagram-features"
+        },
+        {
+          "author": "Kaustubh Bagalkote",
+          "content": "",
+          "created_at": "2026-07-10T12:21:12Z",
+          "headline": "What's Going on With Intel Stock on Friday?",
+          "id": 60380182,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/10/Intel-Logo-Displayed-On-Blue-Cube.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/10/Intel-Logo-Displayed-On-Blue-Cube.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/10/Intel-Logo-Displayed-On-Blue-Cube.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Intel Corp (NASDAQ: INTC) stock drops on Friday amid a broader semiconductor sector selloff. Traders eye upcoming Q2 earnings scheduled for July 23, 2026.",
+          "symbols": [
+            "INTC",
+            "META",
+            "MU"
+          ],
+          "updated_at": "2026-07-10T12:21:12Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60380182/whats-going-on-with-intel-stock-on-friday-3"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-10T12:05:27Z",
+          "headline": "Innovative Eyewear Launches Claude AI Integration For Its Smart Eyewear Products; Starting Next Week For All Lucyd Models",
+          "id": 60379929,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "GOOG",
+            "LUCY",
+            "META",
+            "SNAP"
+          ],
+          "updated_at": "2026-07-10T12:05:27Z",
+          "url": "https://www.benzinga.com/news/26/07/60379929/innovative-eyewear-launches-claude-ai-integration-its-smart-eyewear-products-starting-next-week-all-"
+        }
+      ]
+    }
+  ]
+}
