@@ -1,0 +1,600 @@
+{
+  "date": "2026-07-13",
+  "spy_pct": -0.0020134050388111576,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 6,
+      "tickers": [
+        "SHOP",
+        "NIO",
+        "SOFI",
+        "OXY",
+        "CRM",
+        "AAPL"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 6,
+      "tickers": [
+        "SHOP",
+        "NIO",
+        "SOFI",
+        "OXY",
+        "CRM",
+        "AAPL"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 4,
+      "tickers": [
+        "NIO",
+        "OXY",
+        "CRM",
+        "AAPL"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "SHOP",
+      "gap_pct": 2.79,
+      "adv_m": 10.2,
+      "short_float_pct": 1.8,
+      "dist_from_3m_high_pct": -8.3,
+      "prev_day_return_pct": -0.51
+    },
+    {
+      "ticker": "NIO",
+      "gap_pct": 2.72,
+      "adv_m": 35.0,
+      "short_float_pct": 6.8,
+      "dist_from_3m_high_pct": -29.9,
+      "prev_day_return_pct": 0.0
+    },
+    {
+      "ticker": "SOFI",
+      "gap_pct": 2.56,
+      "adv_m": 73.8,
+      "short_float_pct": 14.9,
+      "dist_from_3m_high_pct": -4.3,
+      "prev_day_return_pct": 0.86
+    },
+    {
+      "ticker": "OXY",
+      "gap_pct": 1.89,
+      "adv_m": 11.7,
+      "short_float_pct": 0.0,
+      "dist_from_3m_high_pct": -11.6,
+      "prev_day_return_pct": 1.13
+    },
+    {
+      "ticker": "CRM",
+      "gap_pct": 1.1,
+      "adv_m": 15.0,
+      "short_float_pct": 7.1,
+      "dist_from_3m_high_pct": -21.7,
+      "prev_day_return_pct": 0.5
+    },
+    {
+      "ticker": "AAPL",
+      "gap_pct": 0.61,
+      "adv_m": 53.6,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -0.1,
+      "prev_day_return_pct": -0.28
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "SOFI",
+      "reason": "pm_gap_eaten_at_open_45%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "SHOP",
+      "confidence": 0.25,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.3702,
+      "gap_retention": 0.4537,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.334,
+      "vol_today": 20640,
+      "vol_avg": 8843,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0175,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02790925412110321,
+      "price_935": 124.44,
+      "open_930": 124.59,
+      "prev_close": 122.54
+    },
+    {
+      "ticker": "NIO",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.6111,
+      "gap_retention": 0.7273,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.85,
+      "vol_today": 32511,
+      "vol_avg": 38266,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0683,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02719665271966525,
+      "price_935": 4.915,
+      "open_930": 4.89,
+      "prev_close": 4.78
+    },
+    {
+      "ticker": "OXY",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.813,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.521,
+      "vol_today": 19074,
+      "vol_avg": 12541,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0002,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.018907165815844205,
+      "price_935": 54.39,
+      "open_930": 54.2,
+      "prev_close": 52.89
+    },
+    {
+      "ticker": "CRM",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.5645,
+      "gap_retention": 0.9246,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.546,
+      "vol_today": 7925,
+      "vol_avg": 14508,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0715,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010960078373744922,
+      "price_935": 166.95,
+      "open_930": 166.37,
+      "prev_close": 163.32
+    },
+    {
+      "ticker": "AAPL",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9939,
+      "gap_retention": 0.7062,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.989,
+      "vol_today": 61821,
+      "vol_avg": 62502,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0095999995,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.006057338576684083,
+      "price_935": 320.575,
+      "open_930": 317.005,
+      "prev_close": 315.32
+    }
+  ],
+  "llm_input": [
+    "NIO",
+    "OXY",
+    "CRM",
+    "AAPL"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "AAPL",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Segnali tecnici massimi (or_position 0.99, gap_retention 0.71, post_open_advance positivo) con confidence_algo pari a 1.0; la notizia sul deal da $30B con Broadcom per chip custom (Tier 2) e il lawsuit contro OpenAI generano attenzione mediatica positiva, e il titolo \u00e8 praticamente ai massimi degli ultimi 3 mesi (-0.1%) con vol_ratio sufficiente.",
+      "price_935": 320.575
+    },
+    "trade_2": {
+      "ticker": "OXY",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Confidence_algo massima (1.0) con tutti e tre i segnali tecnici confermati (or_position 1.0, gap_retention 0.81, post_open_advance positivo); le news sul Q2 con prezzo medio petrolio a $96.78/bbl rappresentano un aggiornamento operativo positivo pre-earnings (Tier 2/3), settore Energy distinto da AAPL (Technology Hardware).",
+      "price_935": 54.39
+    },
+    "no_trade_reason": "NIO escluso per assenza di volume boost e or_position sotto 0.66 (0.611), rendendo il segnale tecnico insufficiente nonostante l'upgrade Goldman; CRM escluso per or_position debole (0.56) e assenza di catalyst diretto rilevante."
+  },
+  "trades": [
+    {
+      "ticker": "AAPL",
+      "qty": 146,
+      "entry_price": 321.052466,
+      "entry_time": "09:36:49",
+      "entry_ts": 1783949809.9753053,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Segnali tecnici massimi (or_position 0.99, gap_retention 0.71, post_open_advance positivo) con confidence_algo pari a 1.0; la notizia sul deal da $30B con Broadcom per chip custom (Tier 2) e il lawsuit contro OpenAI generano attenzione mediatica positiva, e il titolo \u00e8 praticamente ai massimi degli ultimi 3 mesi (-0.1%) con vol_ratio sufficiente.",
+      "order_id": "5fa9391d-a4cb-4408-a8b3-ce7578df5203",
+      "stop_atr": 312.1053,
+      "stop_pct": 314.6314,
+      "stop_price": 314.6314,
+      "atr14": 8.9471,
+      "peak_price": 323.3,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 316.99,
+      "exit_time": "15:45:09",
+      "exit_reason": "eod_close",
+      "pnl_usd": -593.12,
+      "pnl_pct": -0.0127,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.0095999995,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9939,
+      "gap_retention": 0.7062,
+      "gap_pct": 0.006057338576684083,
+      "news": [
+        {
+          "author": "Dylan Berman",
+          "content": "",
+          "created_at": "2026-07-13T11:50:39Z",
+          "headline": "Apple Stock Trending After Suing OpenAI for Allegedly Stealing Hardware Trade Secrets",
+          "id": 60410566,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Cupertino--California--September-25--202.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Cupertino--California--September-25--202.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Cupertino--California--September-25--202.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Apple shares are trending Monday after it filed a blockbuster federal lawsuit on Friday, alleging OpenAI stole its trade secrets.",
+          "symbols": [
+            "AAPL"
+          ],
+          "updated_at": "2026-07-13T11:50:39Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60410566/apple-stock-trending-after-suing-openai-for-allegedly-stealing-hardware-trade-secrets"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-07-13T09:54:34Z",
+          "headline": "Taiwan Semiconductor\u2019s AI Boom Rolls On: June Revenue Jumps 68%",
+          "id": 60408014,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/TSMC--Photo-by-Sundry-Photography-on-Shu.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/TSMC--Photo-by-Sundry-Photography-on-Shu.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/TSMC--Photo-by-Sundry-Photography-on-Shu.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Taiwan Semiconductor reports a 67.9% YoY surge in June revenue as tech giants scramble for AI infrastructure chips.",
+          "symbols": [
+            "AAPL",
+            "AMD",
+            "NVDA",
+            "TSM"
+          ],
+          "updated_at": "2026-07-13T09:59:03Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60408014/taiwan-semiconductors-ai-boom-rolls-on-june-revenue-jumps-68"
+        },
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-07-13T09:58:42Z",
+          "headline": "Industry Comparison: Evaluating Apple Against Competitors In Technology Hardware, Storage &amp; Peripherals Industry",
+          "id": 60408039,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_7.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_7.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_7.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "In the fast-paced and highly competitive business world of today, conducting thorough company analysis is essential for investors and industry observers. In this article, we will conduct an extensive industry",
+          "symbols": [
+            "AAPL"
+          ],
+          "updated_at": "2026-07-13T09:58:42Z",
+          "url": "https://www.benzinga.com/news/26/07/60408039/industry-comparison-evaluating-apple-against-competitors-technology-hardware-storage-amp-peripherals"
+        },
+        {
+          "author": "Rishabh Mishra",
+          "content": "",
+          "created_at": "2026-07-13T08:09:15Z",
+          "headline": "Looking Beyond the S&P 500? This Vanguard Tech ETF Has Averaged 25% Annual Returns",
+          "id": 60407289,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Stock-S-And-P-500-Index-Fund-Symbol-Is-O.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Stock-S-And-P-500-Index-Fund-Symbol-Is-O.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Stock-S-And-P-500-Index-Fund-Symbol-Is-O.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Discover why the Vanguard Tech ETF (VGT) is crushing the S&amp;P 500. Driven by the AI boom, this high-growth fund averages 25% annual returns.",
+          "symbols": [
+            "AAPL",
+            "NVDA",
+            "VGT",
+            "VOO"
+          ],
+          "updated_at": "2026-07-13T08:09:15Z",
+          "url": "https://www.benzinga.com/etfs/sector-etfs/26/07/60407289/looking-beyond-the-sp-500-this-vanguard-tech-etf-has-averaged-25-annual-returns"
+        },
+        {
+          "author": "Badar Shaikh",
+          "content": "",
+          "created_at": "2026-07-13T08:00:25Z",
+          "headline": "Elon Musk Says SpaceX Will Fly Orbital Data Centers Next Year\u2014Jim Chanos Isn't Buying It",
+          "id": 60407246,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Elon-Musk.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Elon-Musk.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Elon-Musk.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "SpaceX CEO Elon Musk plans to launch orbital data centers as soon as next year, but short seller Jim Chanos remains skeptical.",
+          "symbols": [
+            "AAPL",
+            "SPCX"
+          ],
+          "updated_at": "2026-07-13T08:00:25Z",
+          "url": "https://www.benzinga.com/news/space/26/07/60407246/elon-musk-says-spacex-will-fly-orbital-data-centers-next-year-jim-chanos-isnt-buying-it"
+        }
+      ]
+    },
+    {
+      "ticker": "OXY",
+      "qty": 863,
+      "entry_price": 54.37,
+      "entry_time": "09:36:55",
+      "entry_ts": 1783949815.1158485,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Confidence_algo massima (1.0) con tutti e tre i segnali tecnici confermati (or_position 1.0, gap_retention 0.81, post_open_advance positivo); le news sul Q2 con prezzo medio petrolio a $96.78/bbl rappresentano un aggiornamento operativo positivo pre-earnings (Tier 2/3), settore Energy distinto da AAPL (Technology Hardware).",
+      "order_id": "2c9f06ba-c078-4cab-9de4-36ff95b940ee",
+      "stop_atr": 52.8813,
+      "stop_pct": 53.2826,
+      "stop_price": 53.2826,
+      "atr14": 1.4887,
+      "peak_price": 55.105,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 54.86,
+      "exit_time": "15:45:10",
+      "exit_reason": "eod_close",
+      "pnl_usd": 422.87,
+      "pnl_pct": 0.009,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.0002,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.813,
+      "gap_pct": 0.018907165815844205,
+      "news": [
+        {
+          "author": "Rishabh Mishra",
+          "content": "",
+          "created_at": "2026-07-13T12:40:09Z",
+          "headline": "Stock Market Today: Dow Jones, Nasdaq 100, S&P 500 Futures Slips as US and Iran Exchange Strikes\u2014 Saratoga, Exxon Mobil, Levi's Strauss In Focus (UPDATED)",
+          "id": 60408205,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Wall-Street-New-York-Stock-Exchange.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Wall-Street-New-York-Stock-Exchange.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Wall-Street-New-York-Stock-Exchange.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "U.S. stock futures were mixed on Monday, as the Dow Jones index advanced, while the Nasdaq 100 and S&amp;P 500 indices fell.",
+          "symbols": [
+            "BTCUSD",
+            "FBK",
+            "OXY",
+            "QQQ",
+            "QTTB",
+            "SKHYV",
+            "SPY",
+            "TSM"
+          ],
+          "updated_at": "2026-07-13T12:40:31Z",
+          "url": "https://www.benzinga.com/markets/equities/26/07/60408205/stock-market-today-dow-futures-gain-sp-500-slips-as-us-and-iran-exchange-strikes-saratoga-exxon-mobil-levi-strauss-in-focus"
+        },
+        {
+          "author": "Lekha Gupta",
+          "content": "",
+          "created_at": "2026-07-13T10:46:43Z",
+          "headline": "What's Going on With Occidental Petroleum Stock Monday?",
+          "id": 60408821,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Milan--Italy---November-1--2017-Occident.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Milan--Italy---November-1--2017-Occident.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/13/Milan--Italy---November-1--2017-Occident.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Occidental Petroleum reports Q2 updates, netting $96.78/bbl worldwide average oil prices ahead of its Aug 5 earnings catalyst.",
+          "symbols": [
+            "GQGU",
+            "OXY"
+          ],
+          "updated_at": "2026-07-13T10:46:43Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60408821/whats-going-on-with-occidental-petroleum-stock-monday"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-10T20:25:22Z",
+          "headline": "Occidental Petroleum Q2 2026 Crude Oil Collar Settlements Reduced Operating Cash Flow By $156M; Q2 2026 Average Realized Oil Price Worldwide $96.78/Barrel; Q2 2026 Average Realized Natural Gas Price Worldwide $(0.8)/Mcf; Q2 2026 Average Diluted Shares Outstanding Were 1.0122B",
+          "id": 60401139,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "OXY"
+          ],
+          "updated_at": "2026-07-10T20:25:22Z",
+          "url": "https://www.benzinga.com/news/26/07/60401139/occidental-petroleum-q2-2026-crude-oil-collar-settlements-reduced-operating-cash-flow-156m-q2-2026-a"
+        }
+      ]
+    }
+  ]
+}
