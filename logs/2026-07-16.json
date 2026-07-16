@@ -1,0 +1,142 @@
+{
+  "date": "2026-07-16",
+  "spy_pct": -0.003405010797991357,
+  "spy_source": "open_935",
+  "blocked": "nessun candidato sopra soglia confidence",
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 1,
+      "tickers": [
+        "NIO"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 1,
+      "tickers": [
+        "NIO"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 0,
+      "tickers": [],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "NIO",
+      "gap_pct": 0.99,
+      "adv_m": 33.6,
+      "short_float_pct": 6.8,
+      "dist_from_3m_high_pct": -27.4,
+      "prev_day_return_pct": 0.4
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "NIO",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.2143,
+      "gap_retention": 0.4,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.472,
+      "vol_today": 17357,
+      "vol_avg": 36796,
+      "or_bar_count": 4,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0683,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.009940357852882668,
+      "price_935": 5.085,
+      "open_930": 5.13,
+      "prev_close": 5.03
+    }
+  ],
+  "llm_input": [],
+  "llm_output": {},
+  "trades": []
+}
