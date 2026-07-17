@@ -1,0 +1,150 @@
+{
+  "date": "2026-07-17",
+  "spy_pct": -0.013064844780055214,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 1,
+      "tickers": [
+        "OXY"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 1,
+      "tickers": [
+        "OXY"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 1,
+      "tickers": [
+        "OXY"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "OXY",
+      "gap_pct": 1.68,
+      "adv_m": 11.3,
+      "short_float_pct": 0.0,
+      "dist_from_3m_high_pct": -10.5,
+      "prev_day_return_pct": -0.22
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "OXY",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.1324,
+      "gap_retention": 0.97,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.683,
+      "vol_today": 10135,
+      "vol_avg": 14830,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0002,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.016775396085740888,
+      "price_935": 54.665,
+      "open_930": 54.65,
+      "prev_close": 53.65
+    }
+  ],
+  "llm_input": [
+    "OXY"
+  ],
+  "llm_output": {
+    "trade_1": null,
+    "trade_2": null,
+    "no_trade_reason": "OXY raggiunge la soglia minima di confidence (0.6667) grazie ai 2/3 segnali tecnici soddisfatti (post_open_advance e gap_retention >0.70), ma presenta segnali di debolezza significativi: or_position molto bassa (0.1324, ben al di sotto di 0.66), vol_ratio <2x (volume_boost = 0), nessun catalyst identificabile, e il post_open_advance_pct \u00e8 praticamente nullo (+0.03%), indicando che il titolo ha appena consolidato piatto senza momentum reale. In un contesto di mercato debole (SPY -1.31%), un segnale puramente tecnico senza catalyst e senza volume \u00e8 insufficiente per giustificare un'operazione long con confidence adeguata."
+  },
+  "trades": []
+}
