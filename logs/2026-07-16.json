@@ -1,7 +1,7 @@
 {
   "date": "2026-07-16",
-  "spy_pct": -0.003405010797991357,
-  "spy_source": "open_935",
+  "spy_pct": -0.005419,
+  "spy_source": "official_close",
   "blocked": "nessun candidato sopra soglia confidence",
   "pipeline": [
     {
