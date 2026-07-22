@@ -1,0 +1,559 @@
+{
+  "date": "2026-07-22",
+  "spy_pct": -0.00112944510161668,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 4,
+      "tickers": [
+        "SMCI",
+        "RKLB",
+        "OKLO",
+        "CRWV"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 4,
+      "tickers": [
+        "SMCI",
+        "RKLB",
+        "OKLO",
+        "CRWV"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 3,
+      "tickers": [
+        "SMCI",
+        "RKLB",
+        "OKLO"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "SMCI",
+      "gap_pct": 13.69,
+      "adv_m": 49.9,
+      "short_float_pct": 20.8,
+      "dist_from_3m_high_pct": -43.6,
+      "prev_day_return_pct": 7.01
+    },
+    {
+      "ticker": "RKLB",
+      "gap_pct": 2.11,
+      "adv_m": 26.8,
+      "short_float_pct": 7.4,
+      "dist_from_3m_high_pct": -53.3,
+      "prev_day_return_pct": 5.14
+    },
+    {
+      "ticker": "OKLO",
+      "gap_pct": 1.95,
+      "adv_m": 13.2,
+      "short_float_pct": 16.0,
+      "dist_from_3m_high_pct": -44.8,
+      "prev_day_return_pct": 6.31
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 1.62,
+      "adv_m": 28.8,
+      "short_float_pct": 27.0,
+      "dist_from_3m_high_pct": -41.5,
+      "prev_day_return_pct": 8.92
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "CRWV",
+      "reason": "pm_gap_eaten_at_open_42%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "SMCI",
+      "confidence": 1.4,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9105,
+      "gap_retention": 0.8678,
+      "vol_boost": 0.1,
+      "vol_ratio": 3.953,
+      "vol_today": 226699,
+      "vol_avg": 57341,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.2083,
+      "short_squeeze_bonus": 0.1,
+      "gap_pct": 0.13686274509803917,
+      "price_935": 29.69,
+      "open_930": 28.98,
+      "prev_close": 25.5
+    },
+    {
+      "ticker": "RKLB",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.724,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.674,
+      "vol_today": 12866,
+      "vol_avg": 19092,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.074099995,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02112268518518509,
+      "price_935": 71.44,
+      "open_930": 70.43,
+      "prev_close": 69.12
+    },
+    {
+      "ticker": "OKLO",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8193,
+      "gap_retention": 0.6154,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.204,
+      "vol_today": 6030,
+      "vol_avg": 5007,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1604,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01948787672784952,
+      "price_935": 45.57,
+      "open_930": 45.365,
+      "prev_close": 44.13
+    }
+  ],
+  "llm_input": [
+    "SMCI",
+    "RKLB",
+    "OKLO"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "SMCI",
+      "direction": "long",
+      "confidence": 1.4,
+      "reason": "Gap del 13.7% con tutti e tre i segnali tecnici confermati (or_position 0.91, gap_retention 0.87, post_open_advance positivo) e short float elevato al 20.8% che amplifica il movimento con due price target raise (Needham a $46, Barclays a $38) come catalyst Tier 2; la sessione precedente era +7% quindi nessuna regola rimbalzo da selloff applicabile.",
+      "price_935": 29.69
+    },
+    "trade_2": {
+      "ticker": "RKLB",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Contratto Space Force da $266M firm-fixed-price \u00e8 un catalyst Tier 1 (partnership/contratto confermato) che giustifica il gap e la gap_retention perfetta a 1.0; segnali tecnici solidi con or_position 0.72 e post_open_advance positivo, prev_day_return +5.1% non attiva la regola selloff.",
+      "price_935": 71.44
+    },
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "RKLB",
+      "qty": 652,
+      "entry_price": 71.632071,
+      "entry_time": "09:35:33",
+      "entry_ts": 1784727333.0237865,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Contratto Space Force da $266M firm-fixed-price \u00e8 un catalyst Tier 1 (partnership/contratto confermato) che giustifica il gap e la gap_retention perfetta a 1.0; segnali tecnici solidi con or_position 0.72 e post_open_advance positivo, prev_day_return +5.1% non attiva la regola selloff.",
+      "order_id": "46e03684-a593-4db2-9532-91820400dfa0",
+      "stop_atr": 64.9277,
+      "stop_pct": 70.1994,
+      "stop_price": 70.1994,
+      "atr14": 6.7043,
+      "peak_price": 71.632071,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 70.056135,
+      "exit_time": "09:39:11",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1027.51,
+      "pnl_pct": -0.022,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.074099995,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.724,
+      "gap_retention": 1.0,
+      "gap_pct": 0.02112268518518509,
+      "news": [
+        {
+          "author": "Dylan Berman",
+          "content": "",
+          "created_at": "2026-07-22T13:01:17Z",
+          "headline": "Rocket Lab Wins $266 Million Space Force Contract for Suborbital Launches \u2014 Stock Rises",
+          "id": 60605248,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/22/Rocket-Lab-Building-Sign--Auckland--New-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/22/Rocket-Lab-Building-Sign--Auckland--New-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/22/Rocket-Lab-Building-Sign--Auckland--New-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Rocket Lab shares are trading higher Wednesday after the company won a $266 million Space Force contract for suborbital launches.",
+          "symbols": [
+            "RKLB"
+          ],
+          "updated_at": "2026-07-22T13:01:17Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60605248/rocket-lab-wins-266-million-space-force-contract-for-suborbital-launches-stock-rises"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-22T11:18:13Z",
+          "headline": "Market-Moving News for July 22nd",
+          "id": 60602478,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "RKLB",
+            "SMCI",
+            "XE"
+          ],
+          "updated_at": "2026-07-22T11:18:13Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60602478/market-moving-news-july-22nd"
+        },
+        {
+          "author": "Shivdeep Dhaliwal",
+          "content": "",
+          "created_at": "2026-07-22T01:12:39Z",
+          "headline": "Super Micro Computer, Rocket Lab, Dell, Capital One and Oklo: Why These 5 Stocks Are on Investors' Radars Today",
+          "id": 60598063,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/22/Concept-Of-Stock-Market-And-Fintech--Blu.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/22/Concept-Of-Stock-Market-And-Fintech--Blu.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/22/Concept-Of-Stock-Market-And-Fintech--Blu.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Major U.S. indices closed higher, with the Dow Jones Industrial Average gaining 0.74% to 52,224.64.",
+          "symbols": [
+            "COF",
+            "DELL",
+            "OKLO",
+            "RKLB",
+            "SMCI"
+          ],
+          "updated_at": "2026-07-22T01:12:39Z",
+          "url": "https://www.benzinga.com/markets/equities/26/07/60598063/super-micro-computer-rocket-lab-dell-capital-one-and-oklo-why-these-5-stocks-are-on-investors-radars-today"
+        },
+        {
+          "author": "Adam Eckert",
+          "content": "",
+          "created_at": "2026-07-21T21:47:29Z",
+          "headline": "Rocket Lab Stock Rises After the Bell: Here's Why",
+          "id": 60597077,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/21/Rocket-LabELaNa19-liftoff-Photo-credit-T.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/21/Rocket-LabELaNa19-liftoff-Photo-credit-T.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/21/Rocket-LabELaNa19-liftoff-Photo-credit-T.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Rocket Lab shares are rising in extended trading Tuesday after the company was awarded a $266 million defense contract for suborbital launch.",
+          "symbols": [
+            "RKLB"
+          ],
+          "updated_at": "2026-07-21T21:47:29Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60597077/rocket-lab-stock-rises-after-the-bell-heres-why"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-21T21:28:42Z",
+          "headline": "Rocket Lab Awarded $266M Firm-Fixed-Price Completion Contract For Suborbital Launch; Contract Provides For The Launch Of 12 Suborbital Launch Vehicles, With Six Optional Launches",
+          "id": 60596762,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "RKLB"
+          ],
+          "updated_at": "2026-07-21T21:28:42Z",
+          "url": "https://www.benzinga.com/news/26/07/60596762/rocket-lab-awarded-266m-firm-fixed-price-completion-contract-suborbital-launch-contract-provides-lau"
+        }
+      ]
+    },
+    {
+      "ticker": "SMCI",
+      "qty": 1569,
+      "entry_price": 29.7,
+      "entry_time": "09:35:22",
+      "entry_ts": 1784727322.7936633,
+      "direction": "long",
+      "confidence": 1.4,
+      "reason": "Gap del 13.7% con tutti e tre i segnali tecnici confermati (or_position 0.91, gap_retention 0.87, post_open_advance positivo) e short float elevato al 20.8% che amplifica il movimento con due price target raise (Needham a $46, Barclays a $38) come catalyst Tier 2; la sessione precedente era +7% quindi nessuna regola rimbalzo da selloff applicabile.",
+      "order_id": "a18bb8b1-b6f9-4b86-9132-4a10c8686f46",
+      "stop_atr": 28.1303,
+      "stop_pct": 29.106,
+      "stop_price": 30.294,
+      "atr14": 1.5697,
+      "peak_price": 32.265,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 31.144302,
+      "exit_time": "13:33:35",
+      "exit_reason": "vwap_exit",
+      "pnl_usd": 2266.11,
+      "pnl_pct": 0.0486,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.1,
+      "short_float": 0.2083,
+      "short_squeeze_bonus": 0.1,
+      "post_open_advance": true,
+      "or_position": 0.9105,
+      "gap_retention": 0.8678,
+      "gap_pct": 0.13686274509803917,
+      "news": [
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-22T13:22:41Z",
+          "headline": "Barclays Maintains Equal-Weight on Super Micro Computer, Raises Price Target to $38",
+          "id": 60606133,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "SMCI"
+          ],
+          "updated_at": "2026-07-22T13:22:41Z",
+          "url": "https://www.benzinga.com/news/26/07/60606133/barclays-maintains-equal-weight-super-micro-computer-raises-price-target-38"
+        },
+        {
+          "author": "Rishabh Mishra",
+          "content": "",
+          "created_at": "2026-07-22T12:30:00Z",
+          "headline": "Stock Market Today: Dow, S&P 500, Nasdaq 100 Futures Fall As Chip Stocks Cool Down and Tesla, Alphabet Gear Up for Earnings\u2014 Super Micro, Capital One in Focus (UPDATED)",
+          "id": 60600025,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/22/Bull-And-Bear-Market-Confrontation-Refle.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/22/Bull-And-Bear-Market-Confrontation-Refle.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/22/Bull-And-Bear-Market-Confrontation-Refle.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "U.S. stock futures declined on Wednesday, as the Dow Jones, Nasdaq 100, and S&amp;P 500 indices fell, following Tuesday&#39;s higher close.",
+          "symbols": [
+            "ADTN",
+            "AIR",
+            "AVGO",
+            "BTCUSD",
+            "COF",
+            "GOOG",
+            "GOOGL",
+            "IBM",
+            "MU",
+            "NVDA",
+            "NVVE",
+            "QQQ",
+            "SMCI",
+            "SPY",
+            "TSLA",
+            "TXN"
+          ],
+          "updated_at": "2026-07-22T12:30:18Z",
+          "url": "https://www.benzinga.com/markets/equities/26/07/60600025/stock-market-today-sp-500-nasdaq-100-futures-fall-as-chip-stocks-cool-down-and-tesla-alphabet-gear-up-for-earnings-super-micro-adtran-capital-one-in-focus"
+        },
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-07-22T12:05:43Z",
+          "headline": "12 Information Technology Stocks Moving In Wednesday's Pre-Market Session",
+          "id": 60603546,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/movers_4.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/movers_4.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/movers_4.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Gainers\n\nCore AI Holdings (NASDAQ:CHAI) shares increased by 50.2% to $0.59 during Wednesday&#39;s pre-market session. The market value of their outstanding shares is at $8.5 million. \nKustom Entertainment (NASDAQ:KUST)",
+          "symbols": [
+            "ADTN",
+            "CHAI",
+            "FXHO",
+            "KUST",
+            "LEDS",
+            "MASK",
+            "MWC",
+            "PEGA",
+            "SMCI",
+            "VIDA",
+            "WCT",
+            "YAAS"
+          ],
+          "updated_at": "2026-07-22T12:05:43Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60603546/12-information-technology-stocks-moving-wednesday-s-pre-market-session"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-22T11:18:13Z",
+          "headline": "Market-Moving News for July 22nd",
+          "id": 60602478,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "RKLB",
+            "SMCI",
+            "XE"
+          ],
+          "updated_at": "2026-07-22T11:18:13Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60602478/market-moving-news-july-22nd"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-22T10:10:16Z",
+          "headline": "Needham Maintains Buy on Super Micro Computer, Raises Price Target to $46",
+          "id": 60600749,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "SMCI"
+          ],
+          "updated_at": "2026-07-22T10:10:17Z",
+          "url": "https://www.benzinga.com/news/26/07/60600749/needham-maintains-buy-super-micro-computer-raises-price-target-46"
+        }
+      ]
+    }
+  ]
+}
