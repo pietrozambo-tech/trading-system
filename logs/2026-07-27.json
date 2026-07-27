@@ -1,0 +1,761 @@
+{
+  "date": "2026-07-27",
+  "spy_pct": 0.007795371498172948,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 15,
+      "tickers": [
+        "QBTS",
+        "RGTI",
+        "IONQ",
+        "QUBT",
+        "CRWV",
+        "MRVL",
+        "SMR",
+        "OKLO",
+        "SOFI",
+        "MU",
+        "INTC",
+        "MSFT",
+        "GOOGL",
+        "NIO",
+        "TSLA"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 15,
+      "tickers": [
+        "QBTS",
+        "RGTI",
+        "IONQ",
+        "QUBT",
+        "CRWV",
+        "MRVL",
+        "SMR",
+        "OKLO",
+        "SOFI",
+        "MU",
+        "INTC",
+        "MSFT",
+        "GOOGL",
+        "NIO",
+        "TSLA"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 9,
+      "tickers": [
+        "QBTS",
+        "RGTI",
+        "IONQ",
+        "QUBT",
+        "SMR",
+        "OKLO",
+        "SOFI",
+        "GOOGL",
+        "NIO"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "QBTS",
+      "gap_pct": 8.64,
+      "adv_m": 30.3,
+      "short_float_pct": 20.0,
+      "dist_from_3m_high_pct": -44.2,
+      "prev_day_return_pct": -5.2
+    },
+    {
+      "ticker": "RGTI",
+      "gap_pct": 4.66,
+      "adv_m": 38.2,
+      "short_float_pct": 18.5,
+      "dist_from_3m_high_pct": -47.2,
+      "prev_day_return_pct": -4.71
+    },
+    {
+      "ticker": "IONQ",
+      "gap_pct": 4.51,
+      "adv_m": 27.5,
+      "short_float_pct": 12.7,
+      "dist_from_3m_high_pct": -53.4,
+      "prev_day_return_pct": -3.61
+    },
+    {
+      "ticker": "QUBT",
+      "gap_pct": 3.9,
+      "adv_m": 19.2,
+      "short_float_pct": 32.4,
+      "dist_from_3m_high_pct": -46.6,
+      "prev_day_return_pct": -5.47
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 3.48,
+      "adv_m": 28.7,
+      "short_float_pct": 21.4,
+      "dist_from_3m_high_pct": -46.2,
+      "prev_day_return_pct": -11.37
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 2.97,
+      "adv_m": 41.0,
+      "short_float_pct": 4.3,
+      "dist_from_3m_high_pct": -39.4,
+      "prev_day_return_pct": -7.21
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 2.97,
+      "adv_m": 33.6,
+      "short_float_pct": 23.2,
+      "dist_from_3m_high_pct": -41.8,
+      "prev_day_return_pct": -8.17
+    },
+    {
+      "ticker": "OKLO",
+      "gap_pct": 2.68,
+      "adv_m": 12.8,
+      "short_float_pct": 18.4,
+      "dist_from_3m_high_pct": -49.3,
+      "prev_day_return_pct": -8.52
+    },
+    {
+      "ticker": "SOFI",
+      "gap_pct": 2.31,
+      "adv_m": 77.8,
+      "short_float_pct": 14.7,
+      "dist_from_3m_high_pct": -14.7,
+      "prev_day_return_pct": -1.14
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 2.02,
+      "adv_m": 51.7,
+      "short_float_pct": 3.2,
+      "dist_from_3m_high_pct": -25.1,
+      "prev_day_return_pct": -6.99
+    },
+    {
+      "ticker": "INTC",
+      "gap_pct": 1.56,
+      "adv_m": 134.4,
+      "short_float_pct": 2.4,
+      "dist_from_3m_high_pct": -34.1,
+      "prev_day_return_pct": -7.89
+    },
+    {
+      "ticker": "MSFT",
+      "gap_pct": 1.51,
+      "adv_m": 38.9,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -16.9,
+      "prev_day_return_pct": 0.03
+    },
+    {
+      "ticker": "GOOGL",
+      "gap_pct": 1.49,
+      "adv_m": 32.7,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -20.5,
+      "prev_day_return_pct": 0.65
+    },
+    {
+      "ticker": "NIO",
+      "gap_pct": 1.34,
+      "adv_m": 32.4,
+      "short_float_pct": 6.7,
+      "dist_from_3m_high_pct": -31.9,
+      "prev_day_return_pct": -3.23
+    },
+    {
+      "ticker": "TSLA",
+      "gap_pct": 1.23,
+      "adv_m": 49.9,
+      "short_float_pct": 2.0,
+      "dist_from_3m_high_pct": -30.1,
+      "prev_day_return_pct": -2.08
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "INTC",
+      "reason": "gap_reversed_at_open"
+    },
+    {
+      "ticker": "TSLA",
+      "reason": "pm_gap_eaten_at_open_13%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "QBTS",
+      "confidence": 1.05,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.8848,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.565,
+      "vol_today": 41781,
+      "vol_avg": 16287,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2002,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0863664404688463,
+      "price_935": 18.59,
+      "open_930": 17.99,
+      "prev_close": 16.21
+    },
+    {
+      "ticker": "RGTI",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9811,
+      "gap_retention": 0.9886,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.608,
+      "vol_today": 40450,
+      "vol_avg": 25148,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.18540001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04664310954063605,
+      "price_935": 15.54,
+      "open_930": 15.03,
+      "prev_close": 14.15
+    },
+    {
+      "ticker": "IONQ",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.9202,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.621,
+      "vol_today": 21634,
+      "vol_avg": 13346,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1267,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04506699147381232,
+      "price_935": 35.575,
+      "open_930": 34.47,
+      "prev_close": 32.84
+    },
+    {
+      "ticker": "QUBT",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.381,
+      "vol_today": 14647,
+      "vol_avg": 10607,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.3243,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03903095558546434,
+      "price_935": 7.925,
+      "open_930": 7.73,
+      "prev_close": 7.43
+    },
+    {
+      "ticker": "CRWV",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.6305,
+      "gap_retention": 0.3197,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.401,
+      "vol_today": 11774,
+      "vol_avg": 29327,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.21440001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.034780189204229275,
+      "price_935": 73.25,
+      "open_930": 73.71,
+      "prev_close": 71.88
+    },
+    {
+      "ticker": "MRVL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.4446,
+      "gap_retention": 0.3009,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.702,
+      "vol_today": 14609,
+      "vol_avg": 20807,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0434,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.029707048344745975,
+      "price_935": 196.995,
+      "open_930": 198.75,
+      "prev_close": 194.23
+    },
+    {
+      "ticker": "SMR",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7667,
+      "gap_retention": 0.8636,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.403,
+      "vol_today": 28068,
+      "vol_avg": 19999,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2315,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.029666254635352312,
+      "price_935": 8.395,
+      "open_930": 8.31,
+      "prev_close": 8.09
+    },
+    {
+      "ticker": "OKLO",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.6207,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.465,
+      "vol_today": 6489,
+      "vol_avg": 4428,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1839,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02683229813664592,
+      "price_935": 41.27,
+      "open_930": 40.83,
+      "prev_close": 40.25
+    },
+    {
+      "ticker": "SOFI",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9672,
+      "gap_retention": 0.9271,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.325,
+      "vol_today": 89989,
+      "vol_avg": 67910,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.147,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.023086269744835904,
+      "price_935": 17.2,
+      "open_930": 16.94,
+      "prev_close": 16.46
+    },
+    {
+      "ticker": "MU",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.3443,
+      "gap_retention": -0.477,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.929,
+      "vol_today": 33378,
+      "vol_avg": 35911,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0321,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.020196536185460565,
+      "price_935": 922.035,
+      "open_930": 932.46,
+      "prev_close": 920.95
+    },
+    {
+      "ticker": "MSFT",
+      "confidence": 0.5333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.2916,
+      "gap_retention": 0.8,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.83,
+      "vol_today": 39161,
+      "vol_avg": 47175,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0124,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015064186533927168,
+      "price_935": 389.345,
+      "open_930": 389.7,
+      "prev_close": 381.7
+    },
+    {
+      "ticker": "GOOGL",
+      "confidence": 1.2,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9926,
+      "gap_retention": 0.9882,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.042,
+      "vol_today": 41454,
+      "vol_avg": 39766,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0134000005,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.014887095765309284,
+      "price_935": 327.865,
+      "open_930": 325.245,
+      "prev_close": 319.74
+    },
+    {
+      "ticker": "NIO",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.375,
+      "gap_retention": 0.9412,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.908,
+      "vol_today": 48173,
+      "vol_avg": 25246,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0672,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01336302895322931,
+      "price_935": 4.585,
+      "open_930": 4.575,
+      "prev_close": 4.49
+    }
+  ],
+  "llm_input": [
+    "QBTS",
+    "RGTI",
+    "IONQ",
+    "QUBT",
+    "SMR",
+    "OKLO",
+    "SOFI",
+    "GOOGL",
+    "NIO"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "GOOGL",
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Catalyst Tier 2 confermato (earnings imminenti con IBM beat come proxy settoriale, analisti raccomandano il titolo su CNBC). Tutti e tre i segnali tecnici attivi (post_open_advance, or_position 0.99, gap_retention 0.99) con prev_day_return neutro (+0.7%), nessun rischio rimbalzo da selloff.",
+      "price_935": 327.865
+    },
+    "trade_2": null,
+    "no_trade_reason": "QBTS, RGTI, IONQ, QUBT, SMR, OKLO attivano tutti la regola RIMBALZO DA SELLOFF (prev_day_return_pct <= -3%): i catalyst identificati sono al massimo Tier 2 (accordo AT&T per QBTS, partnership HPE per RGTI, notizia federale per OKLO) ma non sufficientemente forti in assenza di earnings/revenue beat confermati dopo cali del -4.7% / -5.2% / -3.6% / -5.5% / -8.2% / -8.5%; in particolare QBTS ha un price target raise post-selloff che non supera la soglia richiesta. SOFI non ha catalyst identificabili. NIO ha or_position 0.375, segnale tecnico debole, nessun catalyst e prev_day_return -3.2% che attiva la regola rimbalzo. Nessun secondo candidato supera la soglia di confidenza 0.65 con catalyst adeguato fuori dal contesto di rimbalzo."
+  },
+  "trades": [
+    {
+      "ticker": "GOOGL",
+      "qty": 142,
+      "entry_price": 328.33,
+      "entry_time": "09:36:42",
+      "entry_ts": 1785159402.438852,
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Catalyst Tier 2 confermato (earnings imminenti con IBM beat come proxy settoriale, analisti raccomandano il titolo su CNBC). Tutti e tre i segnali tecnici attivi (post_open_advance, or_position 0.99, gap_retention 0.99) con prev_day_return neutro (+0.7%), nessun rischio rimbalzo da selloff.",
+      "order_id": "be3a7603-f63d-4a71-9a65-cf819f83e60e",
+      "stop_atr": 316.7564,
+      "stop_pct": 321.7634,
+      "stop_price": 321.7634,
+      "atr14": 11.5736,
+      "peak_price": 330.37,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 327.55,
+      "exit_time": "15:45:08",
+      "exit_reason": "eod_close",
+      "pnl_usd": -110.76,
+      "pnl_pct": -0.0024,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.0,
+      "short_float": 0.0134000005,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9926,
+      "gap_retention": 0.9882,
+      "gap_pct": 0.014887095765309284,
+      "news": [
+        {
+          "author": "Mohd Haider",
+          "content": "",
+          "created_at": "2026-07-27T13:00:17Z",
+          "headline": "EXCLUSIVE: Chamath Palihapitiya Says He'll Pay and Jensen Huang Says Stay as California's Billionaire Tax Looms\u2014 But a Tax Adviser to the Ultra-Wealthy Is Telling Clients Something Very Different",
+          "id": 60693454,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Los-Angeles---Apr-15-Chamath-Palihapitiy.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Los-Angeles---Apr-15-Chamath-Palihapitiy.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Los-Angeles---Apr-15-Chamath-Palihapitiy.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Tax adviser says some billionaires are using legal planning strategies to limit exposure to California\u2019s proposed wealth tax.",
+          "symbols": [
+            "GOOG",
+            "GOOGL",
+            "META",
+            "NVDA"
+          ],
+          "updated_at": "2026-07-27T13:00:17Z",
+          "url": "https://www.benzinga.com/markets/treasuries/26/07/60693454/exclusive-chamath-palihapitiya-says-hell-pay-and-jensen-huang-says-stay-as-californias-billionaire-tax-looms-but-a-tax-adviser-to-the-ultra-wealthy-is-telling-clients-something-very-diff"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-07-27T12:30:22Z",
+          "headline": "IBM, Amazon, Alphabet And More: CNBC\u2019s \u2018Final Trades\u2019",
+          "id": 60692555,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Experts-Urge-Seniors-to-Stay-Vigilant.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Experts-Urge-Seniors-to-Stay-Vigilant.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Experts-Urge-Seniors-to-Stay-Vigilant.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Experts recommend Goldman Sachs Nasdaq-100 ETF, IBM, Alphabet, and Amazon ahead of earnings. IBM beat estimates, Alphabet and Amazon report soon.",
+          "symbols": [
+            "AMZN",
+            "GOOG",
+            "GOOGL",
+            "GPIQ",
+            "IBM"
+          ],
+          "updated_at": "2026-07-27T12:30:23Z",
+          "url": "https://www.benzinga.com/trading-ideas/long-ideas/26/07/60692555/ibm-amazon-alphabet-and-more-cnbcs-final-trades"
+        },
+        {
+          "author": "Shomik Sen Bhattacharjee",
+          "content": "",
+          "created_at": "2026-07-27T12:23:32Z",
+          "headline": "Waymo Says It Expects No Special Treatment After Its Austin Robotaxis Accumulate More Than $9,000 in Parking Fines",
+          "id": 60692365,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Waymo-self-driving-car-performing-tests-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Waymo-self-driving-car-performing-tests-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Waymo-self-driving-car-performing-tests-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Waymo\u2019s Austin fleet has collected $9,325 in parking tickets, including violations involving tow-away zones, meters and disabled spaces.",
+          "symbols": [
+            "GOOG",
+            "GOOGL",
+            "TSLA"
+          ],
+          "updated_at": "2026-07-27T12:23:32Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60692365/waymo-says-it-expects-no-special-treatment-after-its-austin-robotaxis-accumulate-more-than-9000-in-parking-fines"
+        },
+        {
+          "author": "Rishabh Mishra",
+          "content": "",
+          "created_at": "2026-07-27T11:05:59Z",
+          "headline": "As SpaceX Crashes 51% From Its Mania Peak, Market Strategist Warns This Could Tank SPCX Stock Further: 'Great Companies Can Still Be Bad Investments'",
+          "id": 60690133,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Paris--France---June-16--2023-Elon-Musk-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Paris--France---June-16--2023-Elon-Musk-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Paris--France---June-16--2023-Elon-Musk-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "SpaceX ($SPCX) crashed 51% from its peak. Charlie Bilello explains why the August lockup expiration of could tank the stock further.",
+          "symbols": [
+            "GOOG",
+            "GOOGL",
+            "SPCX"
+          ],
+          "updated_at": "2026-07-27T11:05:59Z",
+          "url": "https://www.benzinga.com/markets/equities/26/07/60690133/as-spacex-crashes-51-from-its-mania-peak-market-strategist-warns-this-could-tank-spcx-stock-further-great-companies-can-still-be-bad-investments"
+        },
+        {
+          "author": "Badar Shaikh",
+          "content": "",
+          "created_at": "2026-07-27T10:51:50Z",
+          "headline": "Lyft Stock Is Down More Than 26% This Year\u2014Now a Short Seller Warns the Uber Rival Could Be in Deep Trouble",
+          "id": 60689838,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Ivano-frankivsk--Ukraine---May-10--2019-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Ivano-frankivsk--Ukraine---May-10--2019-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Ivano-frankivsk--Ukraine---May-10--2019-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Lyft faces multi-billion-dollar liabilities from legal challenges due to alleged sexual assault claims, according to this short-seller.",
+          "symbols": [
+            "GOOG",
+            "GOOGL",
+            "LYFT",
+            "UBER"
+          ],
+          "updated_at": "2026-07-27T10:51:50Z",
+          "url": "https://www.benzinga.com/news/legal/26/07/60689838/lyft-stock-is-down-more-than-26-this-year-now-a-short-seller-warns-the-uber-rival-could-be-in-deep-trouble"
+        }
+      ]
+    }
+  ]
+}
