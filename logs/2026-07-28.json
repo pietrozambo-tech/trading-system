@@ -1,0 +1,297 @@
+{
+  "date": "2026-07-28",
+  "spy_pct": -0.000920349191310907,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 4,
+      "tickers": [
+        "CRM",
+        "MSFT",
+        "META",
+        "AAPL"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 4,
+      "tickers": [
+        "CRM",
+        "MSFT",
+        "META",
+        "AAPL"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 2,
+      "tickers": [
+        "CRM",
+        "MSFT"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "CRM",
+      "gap_pct": 2.02,
+      "adv_m": 14.7,
+      "short_float_pct": 6.6,
+      "dist_from_3m_high_pct": -16.0,
+      "prev_day_return_pct": 6.07
+    },
+    {
+      "ticker": "MSFT",
+      "gap_pct": 1.54,
+      "adv_m": 38.9,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -15.3,
+      "prev_day_return_pct": 1.94
+    },
+    {
+      "ticker": "META",
+      "gap_pct": 0.8,
+      "adv_m": 18.0,
+      "short_float_pct": 1.7,
+      "dist_from_3m_high_pct": -12.7,
+      "prev_day_return_pct": -0.22
+    },
+    {
+      "ticker": "AAPL",
+      "gap_pct": 0.56,
+      "adv_m": 54.7,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -0.2,
+      "prev_day_return_pct": 1.17
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "META",
+      "reason": "pm_gap_eaten_at_open_42%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "CRM",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.9985,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.962,
+      "vol_today": 24991,
+      "vol_avg": 12736,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0656,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0202188940092167,
+      "price_935": 179.645,
+      "open_930": 177.0,
+      "prev_close": 173.6
+    },
+    {
+      "ticker": "MSFT",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9973,
+      "gap_retention": 0.7862,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.586,
+      "vol_today": 73445,
+      "vol_avg": 46312,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0124,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015420200462606013,
+      "price_935": 396.08,
+      "open_930": 393.24,
+      "prev_close": 389.1
+    },
+    {
+      "ticker": "AAPL",
+      "confidence": 0.05,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.3576,
+      "gap_retention": 0.2797,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.332,
+      "vol_today": 139939,
+      "vol_avg": 60015,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.01,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.005639488290641349,
+      "price_935": 339.6,
+      "open_930": 340.02,
+      "prev_close": 336.91
+    }
+  ],
+  "llm_input": [
+    "CRM",
+    "MSFT"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "CRM",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Catalyst Tier 1 confermato: contratto governativo da $1.6B con il VA, che giustifica pienamente il gap del +2%. Tutti e tre i segnali tecnici sono positivi (or_position=1.0, gap_retention=0.9985, post_open_advance confermato), con prev_day_return del +6.1% che esclude la regola rimbalzo da selloff.",
+      "price_935": 179.645
+    },
+    "trade_2": null,
+    "no_trade_reason": "MSFT escluso: nessun catalyst rilevante identificabile nelle news recenti (la reiterazione del price target da Citizens \u00e8 Tier 2 ma le altre news non riguardano direttamente MSFT); senza catalyst bonus il secondo slot non aggiunge diversificazione reale rispetto a CRM e il vol_ratio \u00e8 <2x. Con entrambi i titoli appartenenti al settore Technology (GICS), il secondo trade avrebbe comportato una penalizzazione settoriale."
+  },
+  "trades": [
+    {
+      "ticker": "CRM",
+      "qty": 259,
+      "entry_price": 180.000386,
+      "entry_time": "09:35:44",
+      "entry_ts": 1785245744.363129,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Catalyst Tier 1 confermato: contratto governativo da $1.6B con il VA, che giustifica pienamente il gap del +2%. Tutti e tre i segnali tecnici sono positivi (or_position=1.0, gap_retention=0.9985, post_open_advance confermato), con prev_day_return del +6.1% che esclude la regola rimbalzo da selloff.",
+      "order_id": "b6ba4951-46c5-423b-ba7e-5b02dbb2f32d",
+      "stop_atr": 171.9455,
+      "stop_pct": 176.4004,
+      "stop_price": 181.8004,
+      "atr14": 8.0549,
+      "peak_price": 184.495,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 181.66,
+      "exit_time": "11:53:42",
+      "exit_reason": "step_stop",
+      "pnl_usd": 429.84,
+      "pnl_pct": 0.0092,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.0656,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.9985,
+      "gap_pct": 0.0202188940092167,
+      "news": [
+        {
+          "author": "Kaustubh Bagalkote",
+          "content": "",
+          "created_at": "2026-07-27T17:20:56Z",
+          "headline": "Why Is Salesforce Stock Surging Monday?",
+          "id": 60704998,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Salesforce.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Salesforce.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/27/Salesforce.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Salesforce (CRM) stock leaps 7% on a $1.6B VA deal. Get the latest CRM price levels, technical analysis, and analyst earnings forecasts.",
+          "symbols": [
+            "CRM"
+          ],
+          "updated_at": "2026-07-27T17:20:56Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60704998/why-is-salesforce-stock-surging-monday"
+        }
+      ]
+    }
+  ]
+}
