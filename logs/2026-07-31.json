@@ -1,0 +1,1087 @@
+{
+  "date": "2026-07-31",
+  "spy_pct": 0.005932877580464621,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 18,
+      "tickers": [
+        "AMZN",
+        "VRT",
+        "CRWV",
+        "MRVL",
+        "INTC",
+        "MU",
+        "UUUU",
+        "AMAT",
+        "SMR",
+        "ORCL",
+        "IONQ",
+        "RKLB",
+        "RGTI",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "QUBT",
+        "NVDA"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 18,
+      "tickers": [
+        "AMZN",
+        "VRT",
+        "CRWV",
+        "MRVL",
+        "INTC",
+        "MU",
+        "UUUU",
+        "AMAT",
+        "SMR",
+        "ORCL",
+        "IONQ",
+        "RKLB",
+        "RGTI",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "QUBT",
+        "NVDA"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 15,
+      "tickers": [
+        "AMZN",
+        "VRT",
+        "MRVL",
+        "INTC",
+        "MU",
+        "SMR",
+        "ORCL",
+        "IONQ",
+        "RKLB",
+        "RGTI",
+        "GOOGL",
+        "META",
+        "AVGO",
+        "QUBT",
+        "NVDA"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "AMZN",
+      "gap_pct": 12.85,
+      "adv_m": 49.4,
+      "short_float_pct": 1.1,
+      "dist_from_3m_high_pct": -4.6,
+      "prev_day_return_pct": 3.9
+    },
+    {
+      "ticker": "VRT",
+      "gap_pct": 7.4,
+      "adv_m": 6.3,
+      "short_float_pct": 2.9,
+      "dist_from_3m_high_pct": -35.7,
+      "prev_day_return_pct": 2.0
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 5.89,
+      "adv_m": 28.9,
+      "short_float_pct": 21.4,
+      "dist_from_3m_high_pct": -43.4,
+      "prev_day_return_pct": 21.51
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 5.38,
+      "adv_m": 40.6,
+      "short_float_pct": 4.3,
+      "dist_from_3m_high_pct": -41.4,
+      "prev_day_return_pct": 12.18
+    },
+    {
+      "ticker": "INTC",
+      "gap_pct": 5.27,
+      "adv_m": 132.5,
+      "short_float_pct": 2.4,
+      "dist_from_3m_high_pct": -32.6,
+      "prev_day_return_pct": 11.3
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 4.19,
+      "adv_m": 52.9,
+      "short_float_pct": 3.2,
+      "dist_from_3m_high_pct": -27.4,
+      "prev_day_return_pct": 18.36
+    },
+    {
+      "ticker": "UUUU",
+      "gap_pct": 3.84,
+      "adv_m": 9.5,
+      "short_float_pct": 19.8,
+      "dist_from_3m_high_pct": -52.8,
+      "prev_day_return_pct": 9.03
+    },
+    {
+      "ticker": "AMAT",
+      "gap_pct": 3.37,
+      "adv_m": 9.6,
+      "short_float_pct": 2.1,
+      "dist_from_3m_high_pct": -29.9,
+      "prev_day_return_pct": 14.97
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 2.09,
+      "adv_m": 32.6,
+      "short_float_pct": 23.2,
+      "dist_from_3m_high_pct": -38.6,
+      "prev_day_return_pct": 13.31
+    },
+    {
+      "ticker": "ORCL",
+      "gap_pct": 2.08,
+      "adv_m": 30.6,
+      "short_float_pct": 2.9,
+      "dist_from_3m_high_pct": -47.8,
+      "prev_day_return_pct": 8.34
+    },
+    {
+      "ticker": "IONQ",
+      "gap_pct": 1.98,
+      "adv_m": 27.2,
+      "short_float_pct": 12.7,
+      "dist_from_3m_high_pct": -50.5,
+      "prev_day_return_pct": 11.82
+    },
+    {
+      "ticker": "RKLB",
+      "gap_pct": 1.79,
+      "adv_m": 26.1,
+      "short_float_pct": 8.0,
+      "dist_from_3m_high_pct": -56.4,
+      "prev_day_return_pct": 10.38
+    },
+    {
+      "ticker": "RGTI",
+      "gap_pct": 1.68,
+      "adv_m": 38.1,
+      "short_float_pct": 18.5,
+      "dist_from_3m_high_pct": -46.2,
+      "prev_day_return_pct": 12.41
+    },
+    {
+      "ticker": "GOOGL",
+      "gap_pct": 1.25,
+      "adv_m": 33.1,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -17.3,
+      "prev_day_return_pct": -0.91
+    },
+    {
+      "ticker": "META",
+      "gap_pct": 1.19,
+      "adv_m": 18.6,
+      "short_float_pct": 1.7,
+      "dist_from_3m_high_pct": -20.5,
+      "prev_day_return_pct": -7.95
+    },
+    {
+      "ticker": "AVGO",
+      "gap_pct": 0.79,
+      "adv_m": 25.8,
+      "short_float_pct": 1.5,
+      "dist_from_3m_high_pct": -20.9,
+      "prev_day_return_pct": 4.73
+    },
+    {
+      "ticker": "QUBT",
+      "gap_pct": 0.75,
+      "adv_m": 18.9,
+      "short_float_pct": 32.4,
+      "dist_from_3m_high_pct": -44.1,
+      "prev_day_return_pct": 9.86
+    },
+    {
+      "ticker": "NVDA",
+      "gap_pct": 0.73,
+      "adv_m": 154.5,
+      "short_float_pct": 1.4,
+      "dist_from_3m_high_pct": -16.8,
+      "prev_day_return_pct": 2.65
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "AMZN",
+      "confidence": 1.3,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8773,
+      "gap_retention": 0.9075,
+      "vol_boost": 0.1,
+      "vol_ratio": 4.552,
+      "vol_today": 278754,
+      "vol_avg": 61243,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0109,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.1285350318471337,
+      "price_935": 267.81,
+      "open_930": 264.8,
+      "prev_close": 235.5
+    },
+    {
+      "ticker": "VRT",
+      "confidence": 1.05,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.6881,
+      "gap_retention": 0.8769,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.643,
+      "vol_today": 22008,
+      "vol_avg": 8328,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0292,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.07402197802197803,
+      "price_935": 249.195,
+      "open_930": 246.87,
+      "prev_close": 227.5
+    },
+    {
+      "ticker": "CRWV",
+      "confidence": 0.6333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0,
+      "gap_retention": 0.7719,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.997,
+      "vol_today": 27328,
+      "vol_avg": 27413,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.21440001,
+      "short_squeeze_bonus": 0.1,
+      "gap_pct": 0.05886332882273334,
+      "price_935": 76.32,
+      "open_930": 77.035,
+      "prev_close": 73.9
+    },
+    {
+      "ticker": "MRVL",
+      "confidence": 0.7167,
+      "passes_threshold": true,
+      "post_open_advance": false,
+      "or_position": 0.7053,
+      "gap_retention": 0.773,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.144,
+      "vol_today": 51284,
+      "vol_avg": 23924,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0434,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.05379159847244945,
+      "price_935": 199.01,
+      "open_930": 199.29,
+      "prev_close": 183.3
+    },
+    {
+      "ticker": "INTC",
+      "confidence": 1.05,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7751,
+      "gap_retention": 0.8137,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.189,
+      "vol_today": 269546,
+      "vol_avg": 123109,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.024,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0526720070229344,
+      "price_935": 97.315,
+      "open_930": 96.55,
+      "prev_close": 91.13
+    },
+    {
+      "ticker": "MU",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.3485,
+      "gap_retention": 0.8685,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.903,
+      "vol_today": 38499,
+      "vol_avg": 42636,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0321,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04193629524615287,
+      "price_935": 918.965,
+      "open_930": 918.83,
+      "prev_close": 874.66
+    },
+    {
+      "ticker": "UUUU",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.2292,
+      "gap_retention": 0.598,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.018,
+      "vol_today": 5045,
+      "vol_avg": 4953,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.19790001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0384286934244235,
+      "price_935": 12.07,
+      "open_930": 12.22,
+      "prev_close": 11.71
+    },
+    {
+      "ticker": "AMAT",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.4438,
+      "gap_retention": 0.8205,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.226,
+      "vol_today": 16042,
+      "vol_avg": 13082,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0211,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03366084062419034,
+      "price_935": 530.78,
+      "open_930": 531.69,
+      "prev_close": 501.77
+    },
+    {
+      "ticker": "SMR",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.875,
+      "gap_retention": 0.75,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.973,
+      "vol_today": 22507,
+      "vol_avg": 23140,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2315,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.020930232558139503,
+      "price_935": 8.98,
+      "open_930": 8.92,
+      "prev_close": 8.6
+    },
+    {
+      "ticker": "ORCL",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8116,
+      "gap_retention": 0.9777,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.535,
+      "vol_today": 48262,
+      "vol_avg": 31447,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0291,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.020774537472561975,
+      "price_935": 131.715,
+      "open_930": 129.805,
+      "prev_close": 127.56
+    },
+    {
+      "ticker": "IONQ",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.963,
+      "gap_retention": 0.6825,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.922,
+      "vol_today": 15132,
+      "vol_avg": 16411,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1267,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.019849035504612627,
+      "price_935": 37.37,
+      "open_930": 36.4,
+      "prev_close": 35.77
+    },
+    {
+      "ticker": "RKLB",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7515,
+      "gap_retention": 0.8845,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.493,
+      "vol_today": 6683,
+      "vol_avg": 13547,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0797,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.017934446505875022,
+      "price_935": 67.26,
+      "open_930": 66.195,
+      "prev_close": 64.68
+    },
+    {
+      "ticker": "RGTI",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.806,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.876,
+      "vol_today": 20225,
+      "vol_avg": 23092,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.18540001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.016823687752355317,
+      "price_935": 15.57,
+      "open_930": 15.195,
+      "prev_close": 14.86
+    },
+    {
+      "ticker": "GOOGL",
+      "confidence": 0.9667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.6554,
+      "gap_retention": 0.9084,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.194,
+      "vol_today": 45798,
+      "vol_avg": 38354,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.0134000005,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.012467781574057327,
+      "price_935": 342.59,
+      "open_930": 341.03,
+      "prev_close": 333.66
+    },
+    {
+      "ticker": "META",
+      "confidence": 1.35,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8209,
+      "gap_retention": 0.8963,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.696,
+      "vol_today": 81853,
+      "vol_avg": 30360,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.0172,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.011891731443519066,
+      "price_935": 555.25,
+      "open_930": 543.32,
+      "prev_close": 539.03
+    },
+    {
+      "ticker": "AVGO",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8445,
+      "gap_retention": 0.6108,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.892,
+      "vol_today": 18295,
+      "vol_avg": 20507,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0147,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.007941419141914298,
+      "price_935": 398.62,
+      "open_930": 394.11,
+      "prev_close": 387.84
+    },
+    {
+      "ticker": "QUBT",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.256,
+      "vol_today": 11620,
+      "vol_avg": 9255,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.3243,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0074812967581048,
+      "price_935": 8.355,
+      "open_930": 8.17,
+      "prev_close": 8.02
+    },
+    {
+      "ticker": "NVDA",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9462,
+      "gap_retention": 0.5957,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.122,
+      "vol_today": 157237,
+      "vol_avg": 140167,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0139,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.007331829368334736,
+      "price_935": 199.57,
+      "open_930": 198.515,
+      "prev_close": 195.04
+    }
+  ],
+  "llm_input": [
+    "AMZN",
+    "VRT",
+    "MRVL",
+    "INTC",
+    "MU",
+    "SMR",
+    "ORCL",
+    "IONQ",
+    "RKLB",
+    "RGTI",
+    "GOOGL",
+    "META",
+    "AVGO",
+    "QUBT",
+    "NVDA"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "AMZN",
+      "direction": "long",
+      "confidence": 1.3,
+      "reason": "Catalyst Tier 2 confermato con due analyst upgrade/price target raise (Wedbush a $310, Truist a $350) su AWS surge e Q2 beat; segnali tecnici tutti positivi: gap retention 90.7%, or_position 87.7%, post_open_advance +1.14%, vol_ratio boost presente.",
+      "price_935": 267.81
+    },
+    "trade_2": {
+      "ticker": "GOOGL",
+      "direction": "long",
+      "confidence": 0.9667,
+      "reason": "Catalyst Tier 1 confermato: espansione accordo AI con Oracle/Google Cloud (Gemini in Fusion/NetSuite) e risultati AWS/cloud di Amazon che trainano l'intero settore cloud; segnali tecnici solidi con or_position 0.655, gap_retention 90.8% e post_open_advance positivo; settore diverso rispetto a AMZN (Communication Services vs Consumer Discretionary).",
+      "price_935": 342.59
+    },
+    "no_trade_reason": "META esclusa per regola RIMBALZO DA SELLOFF (prev_day_return_pct = -8.0%): nonostante confidence_algo alta (1.35) e catalyst_bonus Tier 1, le news recenti non contengono un catalyst Tier 1 confermato per META stessa (nessun earnings beat o guidance raise identificabile nelle news), e sono presenti notizie negative/contrastanti (California billionaire tax, Michael Burry short su AI, rischio debito AI). In dubbio \u2192 no_trade per META."
+  },
+  "trades": [
+    {
+      "ticker": "AMZN",
+      "qty": 177,
+      "entry_price": 267.43,
+      "entry_time": "09:37:01",
+      "entry_ts": 1785505021.6844382,
+      "direction": "long",
+      "confidence": 1.3,
+      "reason": "Catalyst Tier 2 confermato con due analyst upgrade/price target raise (Wedbush a $310, Truist a $350) su AWS surge e Q2 beat; segnali tecnici tutti positivi: gap retention 90.7%, or_position 87.7%, post_open_advance +1.14%, vol_ratio boost presente.",
+      "order_id": "afaabaa7-ce17-4f7e-84e6-a47119673485",
+      "stop_atr": 260.4775,
+      "stop_pct": 262.0814,
+      "stop_price": 270.1043,
+      "atr14": 6.9525,
+      "peak_price": 271.96,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 270.04,
+      "exit_time": "11:09:32",
+      "exit_reason": "step_stop",
+      "pnl_usd": 461.97,
+      "pnl_pct": 0.0098,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.1,
+      "short_float": 0.0109,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.8773,
+      "gap_retention": 0.9075,
+      "gap_pct": 0.1285350318471337,
+      "news": [
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-07-31T13:22:56Z",
+          "headline": "Intel Stock Is Surging Friday: What's Going On?",
+          "id": 60836472,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Intel-Corporation.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Intel-Corporation.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Intel-Corporation.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Intel (INTC) jumped 4%+ premarket on AI spending optimism. Explore stock price targets, technical support levels, and ETF exposure.",
+          "symbols": [
+            "AMZN",
+            "GOOGL",
+            "IGPT",
+            "INTC",
+            "MSFT",
+            "SMH",
+            "SOXQ"
+          ],
+          "updated_at": "2026-07-31T13:22:56Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60836472/intel-stock-is-surging-friday-whats-going-on"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-31T13:22:05Z",
+          "headline": "Wedbush Maintains Outperform on Amazon.com, Raises Price Target to $310",
+          "id": 60836418,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "AMZN"
+          ],
+          "updated_at": "2026-07-31T13:22:05Z",
+          "url": "https://www.benzinga.com/news/26/07/60836418/wedbush-maintains-outperform-amazon-com-raises-price-target-310"
+        },
+        {
+          "author": "Kaustubh Bagalkote",
+          "content": "",
+          "created_at": "2026-07-31T13:11:02Z",
+          "headline": "Why Is Marvell Technology Stock Surging Friday?",
+          "id": 60836037,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Kanata--Ottawa--On--Canada---October-15-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Kanata--Ottawa--On--Canada---October-15-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Kanata--Ottawa--On--Canada---October-15-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Marvell Technology (MRVL) stock surged over 5% premarket on strong AI infrastructure spending from tech giants. Read the update!",
+          "symbols": [
+            "AMZN",
+            "FDTX",
+            "FTXL",
+            "GOOGL",
+            "MRVL",
+            "MSFT",
+            "SOXQ"
+          ],
+          "updated_at": "2026-07-31T13:11:02Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60836037/why-is-marvell-technology-stock-surging-friday"
+        },
+        {
+          "author": "Piero Cingari",
+          "content": "",
+          "created_at": "2026-07-31T13:04:32Z",
+          "headline": "South Korea's KOSPI Rallies 18%, Its Best Day Ever: SK Hynix Jumps 30%",
+          "id": 60835846,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/National-Flag-Of-South-Korea-On-Satin--D.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/National-Flag-Of-South-Korea-On-Satin--D.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/National-Flag-Of-South-Korea-On-Satin--D.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "The KOSPI closed up 17.91% on July 31, its largest one-day gain on record, as SK Hynix hit its first limit-up and Samsung rose 26.81%. Here is what drove it",
+          "symbols": [
+            "AMZN",
+            "EWY",
+            "MSFT",
+            "SKHY",
+            "SOXX",
+            "SSNLF"
+          ],
+          "updated_at": "2026-07-31T13:04:32Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60835846/south-korea-kospi-best-day-ever-sk-hynix-samsung-rally"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-07-31T12:57:25Z",
+          "headline": "Truist Securities Maintains Buy on Amazon.com, Raises Price Target to $350",
+          "id": 60835536,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "AMZN"
+          ],
+          "updated_at": "2026-07-31T12:57:25Z",
+          "url": "https://www.benzinga.com/news/26/07/60835536/truist-securities-maintains-buy-amazon-com-raises-price-target-350"
+        }
+      ]
+    },
+    {
+      "ticker": "GOOGL",
+      "qty": 138,
+      "entry_price": 344.254348,
+      "entry_time": "09:38:43",
+      "entry_ts": 1785505123.2447383,
+      "direction": "long",
+      "confidence": 0.9667,
+      "reason": "Catalyst Tier 1 confermato: espansione accordo AI con Oracle/Google Cloud (Gemini in Fusion/NetSuite) e risultati AWS/cloud di Amazon che trainano l'intero settore cloud; segnali tecnici solidi con or_position 0.655, gap_retention 90.8% e post_open_advance positivo; settore diverso rispetto a AMZN (Communication Services vs Consumer Discretionary).",
+      "order_id": "be1e6448-7008-4826-be93-dd6bfc938d50",
+      "stop_atr": 332.3301,
+      "stop_pct": 337.3693,
+      "stop_price": 351.1394,
+      "atr14": 11.9243,
+      "peak_price": 357.6,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 357.51,
+      "exit_time": "15:45:17",
+      "exit_reason": "eod_close",
+      "pnl_usd": 1829.28,
+      "pnl_pct": 0.0385,
+      "catalyst_bonus": 0.3,
+      "vol_boost": 0.0,
+      "short_float": 0.0134000005,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.6554,
+      "gap_retention": 0.9084,
+      "gap_pct": 0.012467781574057327,
+      "news": [
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-07-31T13:22:56Z",
+          "headline": "Intel Stock Is Surging Friday: What's Going On?",
+          "id": 60836472,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Intel-Corporation.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Intel-Corporation.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Intel-Corporation.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Intel (INTC) jumped 4%+ premarket on AI spending optimism. Explore stock price targets, technical support levels, and ETF exposure.",
+          "symbols": [
+            "AMZN",
+            "GOOGL",
+            "IGPT",
+            "INTC",
+            "MSFT",
+            "SMH",
+            "SOXQ"
+          ],
+          "updated_at": "2026-07-31T13:22:56Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60836472/intel-stock-is-surging-friday-whats-going-on"
+        },
+        {
+          "author": "Kaustubh Bagalkote",
+          "content": "",
+          "created_at": "2026-07-31T13:11:02Z",
+          "headline": "Why Is Marvell Technology Stock Surging Friday?",
+          "id": 60836037,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Kanata--Ottawa--On--Canada---October-15-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Kanata--Ottawa--On--Canada---October-15-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Kanata--Ottawa--On--Canada---October-15-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Marvell Technology (MRVL) stock surged over 5% premarket on strong AI infrastructure spending from tech giants. Read the update!",
+          "symbols": [
+            "AMZN",
+            "FDTX",
+            "FTXL",
+            "GOOGL",
+            "MRVL",
+            "MSFT",
+            "SOXQ"
+          ],
+          "updated_at": "2026-07-31T13:11:02Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/07/60836037/why-is-marvell-technology-stock-surging-friday"
+        },
+        {
+          "author": "Stjepan Kalinic",
+          "content": "",
+          "created_at": "2026-07-31T11:07:06Z",
+          "headline": "NVIDIA Stock Is Still Up, But $250 Billion AI Risk Has Spooked The Debt Market",
+          "id": 60832453,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Kyiv--Ukraine---January-29--2025-Nvidia-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Kyiv--Ukraine---January-29--2025-Nvidia-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Kyiv--Ukraine---January-29--2025-Nvidia-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Wall Street turns to credit-default swaps to hedge the AI spending boom. Learn why investors are insuring tech giant debt.",
+          "symbols": [
+            "AIQ",
+            "AMZN",
+            "GOOG",
+            "GOOGL",
+            "MAGS",
+            "META",
+            "MSFT",
+            "NVDA",
+            "ORCL",
+            "QQQ",
+            "ROBT",
+            "SMH",
+            "VGT",
+            "XLK"
+          ],
+          "updated_at": "2026-07-31T11:07:06Z",
+          "url": "https://www.benzinga.com/markets/tech/26/07/60832453/nvidia-stock-is-still-up-but-250-billion-ai-risk-has-spooked-the-debt-market"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-07-31T10:18:41Z",
+          "headline": "'The Breakout the Stock Needed': Analyst Cheers Amazon's AWS Surge",
+          "id": 60831159,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Cdg-Airport--Paris---122218-Aws-Amazon-C.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Cdg-Airport--Paris---122218-Aws-Amazon-C.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Cdg-Airport--Paris---122218-Aws-Amazon-C.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Amazon stock jumped 12% in premarket after Q2 revenue beat estimates at $200.6B and EPS reached $5.75 on strong AWS cloud growth.",
+          "symbols": [
+            "AMZN",
+            "FFOG",
+            "GOOGL",
+            "IWX",
+            "MSFT",
+            "PNQI"
+          ],
+          "updated_at": "2026-07-31T10:18:41Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/analyst-color/26/07/60831159/the-breakout-the-stock-needed-analyst-cheers-amazons-aws-surge"
+        },
+        {
+          "author": "Radhika Anilkumar Nadig",
+          "content": "",
+          "created_at": "2026-07-31T09:02:20Z",
+          "headline": "Reddit Stock Tumbles as CEO Says Google Search Referrals Were 'Choppy,' Pushes Users to Its App",
+          "id": 60829501,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Reddit-Inc.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Reddit-Inc.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/07/31/Reddit-Inc.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Reddit pushes users beyond Google Search after CEO says referrals turned &#34;choppy,&#34; sending shares down 10% after earnings.",
+          "symbols": [
+            "GOOG",
+            "GOOGL",
+            "RDDT"
+          ],
+          "updated_at": "2026-07-31T09:02:20Z",
+          "url": "https://www.benzinga.com/markets/earnings/26/07/60829501/reddit-stock-tumbles-as-ceo-pushes-users-to-app-amid-choppy-google-search-referrals"
+        }
+      ]
+    }
+  ]
+}
