@@ -1,0 +1,731 @@
+{
+  "date": "2026-08-03",
+  "spy_pct": 0.005302695536897972,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 8,
+      "tickers": [
+        "PLTR",
+        "ORCL",
+        "AMZN",
+        "MSFT",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AAPL"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 8,
+      "tickers": [
+        "PLTR",
+        "ORCL",
+        "AMZN",
+        "MSFT",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AAPL"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 5,
+      "tickers": [
+        "ORCL",
+        "AMZN",
+        "MSFT",
+        "META",
+        "GOOGL"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "PLTR",
+      "gap_pct": 2.76,
+      "adv_m": 41.0,
+      "short_float_pct": 3.6,
+      "dist_from_3m_high_pct": -22.8,
+      "prev_day_return_pct": 0.65
+    },
+    {
+      "ticker": "ORCL",
+      "gap_pct": 1.99,
+      "adv_m": 30.6,
+      "short_float_pct": 2.9,
+      "dist_from_3m_high_pct": -46.9,
+      "prev_day_return_pct": 1.81
+    },
+    {
+      "ticker": "AMZN",
+      "gap_pct": 1.91,
+      "adv_m": 50.7,
+      "short_float_pct": 1.1,
+      "dist_from_3m_high_pct": -0.6,
+      "prev_day_return_pct": 15.32
+    },
+    {
+      "ticker": "MSFT",
+      "gap_pct": 1.84,
+      "adv_m": 40.8,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": 1.4,
+      "prev_day_return_pct": 3.02
+    },
+    {
+      "ticker": "META",
+      "gap_pct": 1.49,
+      "adv_m": 18.8,
+      "short_float_pct": 1.7,
+      "dist_from_3m_high_pct": -17.6,
+      "prev_day_return_pct": 3.28
+    },
+    {
+      "ticker": "GOOGL",
+      "gap_pct": 1.35,
+      "adv_m": 33.4,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -11.6,
+      "prev_day_return_pct": 6.73
+    },
+    {
+      "ticker": "TSLA",
+      "gap_pct": 0.56,
+      "adv_m": 47.8,
+      "short_float_pct": 2.0,
+      "dist_from_3m_high_pct": -31.0,
+      "prev_day_return_pct": 0.76
+    },
+    {
+      "ticker": "AAPL",
+      "gap_pct": 0.55,
+      "adv_m": 57.2,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -9.8,
+      "prev_day_return_pct": -7.35
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "TSLA",
+      "reason": "gap_reversed_at_open"
+    },
+    {
+      "ticker": "AAPL",
+      "reason": "pm_gap_eaten_at_open_50%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "PLTR",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.3912,
+      "gap_retention": 0.1843,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.527,
+      "vol_today": 51216,
+      "vol_avg": 33548,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0364,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.027628798959856912,
+      "price_935": 124.945,
+      "open_930": 126.75,
+      "prev_close": 123.06
+    },
+    {
+      "ticker": "ORCL",
+      "confidence": 0.8667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8854,
+      "gap_retention": 0.2622,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.266,
+      "vol_today": 40527,
+      "vol_avg": 32003,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0291,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.019866019866019744,
+      "price_935": 132.62,
+      "open_930": 131.815,
+      "prev_close": 129.87
+    },
+    {
+      "ticker": "AMZN",
+      "confidence": 1.1,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9754,
+      "gap_retention": 0.9602,
+      "vol_boost": 0.1,
+      "vol_ratio": 6.592,
+      "vol_today": 463287,
+      "vol_avg": 70284,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0109,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.019110391044995942,
+      "price_935": 284.755,
+      "open_930": 278.49,
+      "prev_close": 271.58
+    },
+    {
+      "ticker": "MSFT",
+      "confidence": 1.25,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8416,
+      "gap_retention": 0.8947,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.148,
+      "vol_today": 156368,
+      "vol_avg": 72808,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0124,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.018398175245308904,
+      "price_935": 484.39,
+      "open_930": 476.4,
+      "prev_close": 464.72
+    },
+    {
+      "ticker": "META",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9795,
+      "gap_retention": 0.4589,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.113,
+      "vol_today": 37264,
+      "vol_avg": 33467,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0172,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.014873093711267936,
+      "price_935": 571.91,
+      "open_930": 562.8,
+      "prev_close": 556.71
+    },
+    {
+      "ticker": "GOOGL",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7243,
+      "gap_retention": 0.7848,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.736,
+      "vol_today": 69001,
+      "vol_avg": 39741,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0134000005,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.013450144610114342,
+      "price_935": 367.67,
+      "open_930": 365.445,
+      "prev_close": 356.13
+    }
+  ],
+  "llm_input": [
+    "ORCL",
+    "AMZN",
+    "MSFT",
+    "META",
+    "GOOGL"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "MSFT",
+      "direction": "long",
+      "confidence": 1.25,
+      "reason": "Confidence algoritmica massima del lotto (1.25) con catalyst Tier 2 (partnership Azure con ArcelorMittal ed espansione AI cloud) che supporta il movimento. Segnali tecnici solidi: post_open_advance positivo (+1.68%), or_position 0.84 e gap_retention 0.89 con titolo sopra i massimi trimestrali.",
+      "price_935": 484.39
+    },
+    "trade_2": {
+      "ticker": "AMZN",
+      "direction": "long",
+      "confidence": 1.1,
+      "reason": "Confidence algoritmica 1.10 con vol_boost +0.10 e segnali tecnici eccellenti: or_position 0.975, gap_retention 0.96 e post_open_advance_pct +2.25% \u2014 il titolo continua a fare nuovi massimi. Settore diversificato rispetto a MSFT (Broadline Retail/Consumer Discretionary vs Software/Technology).",
+      "price_935": 284.755
+    },
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "MSFT",
+      "qty": 100,
+      "entry_price": 485.89,
+      "entry_time": "09:37:31",
+      "entry_ts": 1785764251.6116436,
+      "direction": "long",
+      "confidence": 1.25,
+      "reason": "Confidence algoritmica massima del lotto (1.25) con catalyst Tier 2 (partnership Azure con ArcelorMittal ed espansione AI cloud) che supporta il movimento. Segnali tecnici solidi: post_open_advance positivo (+1.68%), or_position 0.84 e gap_retention 0.89 con titolo sopra i massimi trimestrali.",
+      "order_id": "d3062b00-36e2-43c2-a008-cd54dcadc00c",
+      "stop_atr": 469.4457,
+      "stop_pct": 476.1722,
+      "stop_price": 476.1722,
+      "atr14": 16.4443,
+      "peak_price": 491.55,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 488.965599,
+      "exit_time": "15:45:11",
+      "exit_reason": "eod_close",
+      "pnl_usd": 307.56,
+      "pnl_pct": 0.0063,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.05,
+      "short_float": 0.0124,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.8416,
+      "gap_retention": 0.8947,
+      "gap_pct": 0.018398175245308904,
+      "news": [
+        {
+          "author": "Rishabh Mishra",
+          "content": "",
+          "created_at": "2026-08-03T12:28:44Z",
+          "headline": "Stock Market Today:  S&P 500, Dow, Nasdaq 100 Futures Gain as Trump Halts 'Massive Attack' on Iran\u2014Atkore, Alibaba, ArcelorMittal in Focus (UPDATED)",
+          "id": 60865024,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Wall-Street.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Wall-Street.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Wall-Street.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "U.S. stock futures rose on Monday, as the Dow Jones, S&amp;P 500, and Nasdaq 100 indices advanced, following Friday&#39;s higher close.",
+          "symbols": [
+            "AMD",
+            "AMZN",
+            "ATKR",
+            "BA",
+            "BABA",
+            "BTCUSD",
+            "DIS",
+            "MSFT",
+            "MT",
+            "PLTR",
+            "QQQ",
+            "SPCX",
+            "SPY"
+          ],
+          "updated_at": "2026-08-03T12:29:12Z",
+          "url": "https://www.benzinga.com/markets/equities/26/08/60865024/stock-market-today-stock-market-today-sp-500-dow-jones-futures-gain-as-trump-halts-massive-attack-on-iran-atkore-alibaba-arcelormittal-in-focus"
+        },
+        {
+          "author": "Akanksha Bakshi",
+          "content": "",
+          "created_at": "2026-08-03T11:53:10Z",
+          "headline": "ArcelorMittal Expands Microsoft Partnership To Accelerate AI-Led Digital Transformation",
+          "id": 60868803,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Acciones-de-ArcelorMittal.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Acciones-de-ArcelorMittal.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Acciones-de-ArcelorMittal.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "ArcelorMittal expands its partnership with Microsoft Azure to accelerate global AI, cloud data, and digital transformation.",
+          "symbols": [
+            "MSFT",
+            "MT"
+          ],
+          "updated_at": "2026-08-03T11:53:10Z",
+          "url": "https://www.benzinga.com/markets/large-cap/26/08/60868803/arcelormittal-expands-microsoft-partnership-to-accelerate-ai-led-digital-transformation"
+        },
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-08-03T09:59:00Z",
+          "headline": "Analyzing Microsoft In Comparison To Competitors In Software Industry",
+          "id": 60865473,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_11.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_11.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_11.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "In the ever-changing and fiercely competitive business landscape, conducting thorough company analysis is crucial for investors and industry experts. In this article, we will undertake a comprehensive industry",
+          "symbols": [
+            "MSFT"
+          ],
+          "updated_at": "2026-08-03T09:59:00Z",
+          "url": "https://www.benzinga.com/news/26/08/60865473/analyzing-microsoft-comparison-competitors-software-industry"
+        },
+        {
+          "author": "Radhika Anilkumar Nadig",
+          "content": "",
+          "created_at": "2026-08-03T09:04:33Z",
+          "headline": "AMD Q2 Earnings Preview: Can Lisa Su's AI Strategy Prove the Structural Shift Is Real?",
+          "id": 60864974,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Amd-Chairman-And-Ceo-Lisa-Su-Delivers-Th.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Amd-Chairman-And-Ceo-Lisa-Su-Delivers-Th.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Amd-Chairman-And-Ceo-Lisa-Su-Delivers-Th.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "AMD reports earnings Tuesday as investors look for proof CEO Lisa Su&#39;s &#34;structural shift&#34; is translating into sustained growth.",
+          "symbols": [
+            "AMD",
+            "AMZN",
+            "CORZ",
+            "GOOG",
+            "GOOGL",
+            "META",
+            "MSFT"
+          ],
+          "updated_at": "2026-08-03T09:04:33Z",
+          "url": "https://www.benzinga.com/markets/earnings/26/08/60864974/amd-q2-earnings-preview-can-lisa-su-prove-the-structural-shift-is-real"
+        },
+        {
+          "author": "Tanya Rawat",
+          "content": "",
+          "created_at": "2026-08-03T08:38:31Z",
+          "headline": "Steve Hanke Says AI Won't Replace Workers Because It's 'Incredibly Costly:' 'Businesses Will Not Be Firing\u2026'",
+          "id": 60864779,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Creative-Ai-Background-With-Forex-Chart-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Creative-Ai-Background-With-Forex-Chart-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Creative-Ai-Background-With-Forex-Chart-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Steve Hanke says AI&#39;s high costs could prevent widespread job losses despite growing investment in the technology.",
+          "symbols": [
+            "AMZN",
+            "GOOG",
+            "GOOGL",
+            "META",
+            "MSFT",
+            "NVDA",
+            "SPCX",
+            "TSLA"
+          ],
+          "updated_at": "2026-08-03T08:38:31Z",
+          "url": "https://www.benzinga.com/markets/tech/26/08/60864779/steve-hanke-ai-costly-replace-workers"
+        }
+      ]
+    },
+    {
+      "ticker": "AMZN",
+      "qty": 170,
+      "entry_price": 284.595294,
+      "entry_time": "09:38:47",
+      "entry_ts": 1785764327.8520012,
+      "direction": "long",
+      "confidence": 1.1,
+      "reason": "Confidence algoritmica 1.10 con vol_boost +0.10 e segnali tecnici eccellenti: or_position 0.975, gap_retention 0.96 e post_open_advance_pct +2.25% \u2014 il titolo continua a fare nuovi massimi. Settore diversificato rispetto a MSFT (Broadline Retail/Consumer Discretionary vs Software/Technology).",
+      "order_id": "463de42b-f0d2-4bfd-b19c-8f2ed11f1869",
+      "stop_atr": 275.3385,
+      "stop_pct": 278.9034,
+      "stop_price": 278.9034,
+      "atr14": 9.2567,
+      "peak_price": 286.98,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 284.99,
+      "exit_time": "15:45:16",
+      "exit_reason": "eod_close",
+      "pnl_usd": 67.1,
+      "pnl_pct": 0.0014,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.1,
+      "short_float": 0.0109,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9754,
+      "gap_retention": 0.9602,
+      "gap_pct": 0.019110391044995942,
+      "news": [
+        {
+          "author": "Namrata Sen",
+          "content": "",
+          "created_at": "2026-08-03T13:34:55Z",
+          "headline": "SpaceX Could Burn Through Billions More as Elon Musk Ramps Up AI Spending With Tesla: Analyst Says Free Cash Flow is 'Just Not Part of the Story'",
+          "id": 60872099,
+          "images": [],
+          "source": "benzinga",
+          "summary": "SpaceX is set to ramp up spending as analysts forecast negative free cash flow and focus on its long-term growth outlook.",
+          "symbols": [
+            "AMZN",
+            "META",
+            "SPCX",
+            "TSLA"
+          ],
+          "updated_at": "2026-08-03T13:34:55Z",
+          "url": "https://www.benzinga.com/news/space/26/08/60872099/spacex-could-burn-through-billions-more-as-elon-musk-ramps-up-ai-spending-with-tesla-analyst-says-free-cash-flow-is-just-not-part-of-the-story"
+        },
+        {
+          "author": "Henry Khederian",
+          "content": "",
+          "created_at": "2026-08-03T13:04:31Z",
+          "headline": "Amazon Stock Tests 52-Week High: Can $1 Trillion AWS Vision Drive a Breakout?",
+          "id": 60871359,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/View-at-the-Amazon-store-sign-at-the-Dow.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/View-at-the-Amazon-store-sign-at-the-Dow.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/View-at-the-Amazon-store-sign-at-the-Dow.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Amazon.com shares are trading higher Monday as optimism builds around AWS-driven AI spending and a long-term cloud growth potential.",
+          "symbols": [
+            "AMZN"
+          ],
+          "updated_at": "2026-08-03T13:04:31Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/08/60871359/amazon-stock-tests-52-week-high-can-1-trillion-aws-vision-drive-a-breakout"
+        },
+        {
+          "author": "Rishabh Mishra",
+          "content": "",
+          "created_at": "2026-08-03T12:28:44Z",
+          "headline": "Stock Market Today:  S&P 500, Dow, Nasdaq 100 Futures Gain as Trump Halts 'Massive Attack' on Iran\u2014Atkore, Alibaba, ArcelorMittal in Focus (UPDATED)",
+          "id": 60865024,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Wall-Street.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Wall-Street.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Wall-Street.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "U.S. stock futures rose on Monday, as the Dow Jones, S&amp;P 500, and Nasdaq 100 indices advanced, following Friday&#39;s higher close.",
+          "symbols": [
+            "AMD",
+            "AMZN",
+            "ATKR",
+            "BA",
+            "BABA",
+            "BTCUSD",
+            "DIS",
+            "MSFT",
+            "MT",
+            "PLTR",
+            "QQQ",
+            "SPCX",
+            "SPY"
+          ],
+          "updated_at": "2026-08-03T12:29:12Z",
+          "url": "https://www.benzinga.com/markets/equities/26/08/60865024/stock-market-today-stock-market-today-sp-500-dow-jones-futures-gain-as-trump-halts-massive-attack-on-iran-atkore-alibaba-arcelormittal-in-focus"
+        },
+        {
+          "author": "Tanya Rawat",
+          "content": "",
+          "created_at": "2026-08-03T12:15:28Z",
+          "headline": "Jeff Bezos Is Poised to Add Billions More to His Fortune as Amazon Stock Extends Massive Rally After a $25 Billion Windfall",
+          "id": 60869734,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Los-Angeles---Nov-13-Jeff-Bezos-Arrives-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Los-Angeles---Nov-13-Jeff-Bezos-Arrives-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Los-Angeles---Nov-13-Jeff-Bezos-Arrives-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Amazon climbs again as Jeff Bezos eyes another multibillion-dollar wealth boost.",
+          "symbols": [
+            "AMZN",
+            "GOOG",
+            "GOOGL"
+          ],
+          "updated_at": "2026-08-03T12:23:53Z",
+          "url": "https://www.benzinga.com/markets/tech/26/08/60869734/amazon-premarket-rally-boosts-jeff-bezos-fortune"
+        },
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-08-03T09:58:31Z",
+          "headline": "Assessing Amazon.com's Performance Against Competitors In Broadline Retail Industry",
+          "id": 60865461,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_4.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_4.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_4.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "In today&#39;s rapidly changing and highly competitive business world, it is vital for investors and industry enthusiasts to carefully assess companies. In this article, we will perform a comprehensive industry",
+          "symbols": [
+            "AMZN"
+          ],
+          "updated_at": "2026-08-03T09:58:31Z",
+          "url": "https://www.benzinga.com/news/26/08/60865461/assessing-amazon-com-s-performance-against-competitors-broadline-retail-industry"
+        }
+      ]
+    }
+  ]
+}
