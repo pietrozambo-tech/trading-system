@@ -1,0 +1,956 @@
+{
+  "date": "2026-08-04",
+  "spy_pct": 0.005437364725756222,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 17,
+      "tickers": [
+        "PLTR",
+        "MRVL",
+        "ASTS",
+        "INTC",
+        "VRT",
+        "MU",
+        "AMD",
+        "SMCI",
+        "RGTI",
+        "AVGO",
+        "SMR",
+        "OKLO",
+        "QBTS",
+        "QUBT",
+        "NVDA",
+        "NCLH",
+        "CRWV"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 16,
+      "tickers": [
+        "PLTR",
+        "MRVL",
+        "ASTS",
+        "INTC",
+        "VRT",
+        "MU",
+        "SMCI",
+        "RGTI",
+        "AVGO",
+        "SMR",
+        "OKLO",
+        "QBTS",
+        "QUBT",
+        "NVDA",
+        "NCLH",
+        "CRWV"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 12,
+      "tickers": [
+        "PLTR",
+        "MRVL",
+        "ASTS",
+        "INTC",
+        "MU",
+        "RGTI",
+        "AVGO",
+        "SMR",
+        "OKLO",
+        "QBTS",
+        "QUBT",
+        "CRWV"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "PLTR",
+      "gap_pct": 14.41,
+      "adv_m": 41.7,
+      "short_float_pct": 3.6,
+      "dist_from_3m_high_pct": -12.2,
+      "prev_day_return_pct": 2.1
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 8.34,
+      "adv_m": 40.6,
+      "short_float_pct": 4.3,
+      "dist_from_3m_high_pct": -36.3,
+      "prev_day_return_pct": 3.31
+    },
+    {
+      "ticker": "ASTS",
+      "gap_pct": 7.98,
+      "adv_m": 21.8,
+      "short_float_pct": 19.9,
+      "dist_from_3m_high_pct": -48.8,
+      "prev_day_return_pct": 7.7
+    },
+    {
+      "ticker": "INTC",
+      "gap_pct": 5.38,
+      "adv_m": 129.7,
+      "short_float_pct": 2.4,
+      "dist_from_3m_high_pct": -32.6,
+      "prev_day_return_pct": 0.89
+    },
+    {
+      "ticker": "VRT",
+      "gap_pct": 5.22,
+      "adv_m": 6.4,
+      "short_float_pct": 2.9,
+      "dist_from_3m_high_pct": -27.1,
+      "prev_day_return_pct": 8.89
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 5.16,
+      "adv_m": 53.2,
+      "short_float_pct": 3.2,
+      "dist_from_3m_high_pct": -30.5,
+      "prev_day_return_pct": 0.79
+    },
+    {
+      "ticker": "AMD",
+      "gap_pct": 4.51,
+      "adv_m": 33.1,
+      "short_float_pct": 2.5,
+      "dist_from_3m_high_pct": -13.4,
+      "prev_day_return_pct": 1.78
+    },
+    {
+      "ticker": "SMCI",
+      "gap_pct": 3.88,
+      "adv_m": 53.7,
+      "short_float_pct": 19.6,
+      "dist_from_3m_high_pct": -42.1,
+      "prev_day_return_pct": 0.85
+    },
+    {
+      "ticker": "RGTI",
+      "gap_pct": 3.12,
+      "adv_m": 38.1,
+      "short_float_pct": 18.5,
+      "dist_from_3m_high_pct": -41.1,
+      "prev_day_return_pct": 7.16
+    },
+    {
+      "ticker": "AVGO",
+      "gap_pct": 2.76,
+      "adv_m": 25.7,
+      "short_float_pct": 1.5,
+      "dist_from_3m_high_pct": -18.4,
+      "prev_day_return_pct": 0.76
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 2.55,
+      "adv_m": 32.8,
+      "short_float_pct": 23.2,
+      "dist_from_3m_high_pct": -35.4,
+      "prev_day_return_pct": 7.01
+    },
+    {
+      "ticker": "OKLO",
+      "gap_pct": 2.52,
+      "adv_m": 11.7,
+      "short_float_pct": 18.4,
+      "dist_from_3m_high_pct": -47.2,
+      "prev_day_return_pct": 6.16
+    },
+    {
+      "ticker": "QBTS",
+      "gap_pct": 2.35,
+      "adv_m": 30.5,
+      "short_float_pct": 20.0,
+      "dist_from_3m_high_pct": -35.2,
+      "prev_day_return_pct": 10.51
+    },
+    {
+      "ticker": "QUBT",
+      "gap_pct": 1.83,
+      "adv_m": 18.9,
+      "short_float_pct": 32.4,
+      "dist_from_3m_high_pct": -38.4,
+      "prev_day_return_pct": 7.9
+    },
+    {
+      "ticker": "NVDA",
+      "gap_pct": 1.63,
+      "adv_m": 154.0,
+      "short_float_pct": 1.4,
+      "dist_from_3m_high_pct": -11.1,
+      "prev_day_return_pct": 2.93
+    },
+    {
+      "ticker": "NCLH",
+      "gap_pct": 1.52,
+      "adv_m": 20.4,
+      "short_float_pct": 20.2,
+      "dist_from_3m_high_pct": -8.6,
+      "prev_day_return_pct": 6.64
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 0.51,
+      "adv_m": 29.2,
+      "short_float_pct": 21.4,
+      "dist_from_3m_high_pct": -37.6,
+      "prev_day_return_pct": 19.49
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "AMD",
+      "reason": "earnings_tonight"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "PLTR",
+      "confidence": 1.3,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9792,
+      "gap_retention": 0.9207,
+      "vol_boost": 0.1,
+      "vol_ratio": 6.098,
+      "vol_today": 208889,
+      "vol_avg": 34256,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0364,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.14405093513728606,
+      "price_935": 149.71,
+      "open_930": 145.145,
+      "prev_close": 125.65
+    },
+    {
+      "ticker": "MRVL",
+      "confidence": 1.1,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.8956,
+      "vol_boost": 0.1,
+      "vol_ratio": 3.697,
+      "vol_today": 88697,
+      "vol_avg": 23992,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0434,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.08342149400077405,
+      "price_935": 217.7,
+      "open_930": 209.815,
+      "prev_close": 193.775
+    },
+    {
+      "ticker": "ASTS",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.8041,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.957,
+      "vol_today": 33563,
+      "vol_avg": 17150,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1993,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.07981738035264484,
+      "price_935": 70.6,
+      "open_930": 68.37,
+      "prev_close": 63.52
+    },
+    {
+      "ticker": "INTC",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.8266,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.632,
+      "vol_today": 220210,
+      "vol_avg": 134900,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.024,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.05384615384615391,
+      "price_935": 96.72,
+      "open_930": 95.065,
+      "prev_close": 91.0
+    },
+    {
+      "ticker": "VRT",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.3526,
+      "gap_retention": 0.5269,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.15,
+      "vol_today": 10416,
+      "vol_avg": 9058,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0292,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.052157384527656225,
+      "price_935": 272.2,
+      "open_930": 276.24,
+      "prev_close": 263.05
+    },
+    {
+      "ticker": "MU",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8486,
+      "gap_retention": 0.8146,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.045,
+      "vol_today": 46332,
+      "vol_avg": 44326,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0321,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.05163351416515979,
+      "price_935": 872.38,
+      "open_930": 865.555,
+      "prev_close": 829.5
+    },
+    {
+      "ticker": "SMCI",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.7629,
+      "gap_retention": 0.6263,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.861,
+      "vol_today": 44948,
+      "vol_avg": 52229,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.19610001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03875698324022344,
+      "price_935": 29.63,
+      "open_930": 29.63,
+      "prev_close": 28.64
+    },
+    {
+      "ticker": "RGTI",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9784,
+      "gap_retention": 0.94,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.833,
+      "vol_today": 41371,
+      "vol_avg": 22574,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.18540001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.031210986267166042,
+      "price_935": 17.17,
+      "open_930": 16.52,
+      "prev_close": 16.02
+    },
+    {
+      "ticker": "AVGO",
+      "confidence": 1.05,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8505,
+      "gap_retention": 0.8217,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.591,
+      "vol_today": 50516,
+      "vol_avg": 19498,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0147,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.027560359992861334,
+      "price_935": 407.2,
+      "open_930": 402.97,
+      "prev_close": 392.23
+    },
+    {
+      "ticker": "SMR",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9787,
+      "gap_retention": 0.9474,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.975,
+      "vol_today": 23454,
+      "vol_avg": 24056,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2315,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02552719200887907,
+      "price_935": 9.42,
+      "open_930": 9.2,
+      "prev_close": 9.01
+    },
+    {
+      "ticker": "OKLO",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.295,
+      "vol_today": 5019,
+      "vol_avg": 3876,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1839,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.025230470645317787,
+      "price_935": 43.37,
+      "open_930": 41.93,
+      "prev_close": 41.22
+    },
+    {
+      "ticker": "QBTS",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.939,
+      "gap_retention": 0.988,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.896,
+      "vol_today": 34393,
+      "vol_avg": 18135,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2002,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.023523523523523465,
+      "price_935": 21.16,
+      "open_930": 20.395,
+      "prev_close": 19.98
+    },
+    {
+      "ticker": "QUBT",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.8571,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.408,
+      "vol_today": 12859,
+      "vol_avg": 9132,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.3243,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.018306636155606425,
+      "price_935": 9.2,
+      "open_930": 8.985,
+      "prev_close": 8.74
+    },
+    {
+      "ticker": "NVDA",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.3143,
+      "gap_retention": 0.767,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.068,
+      "vol_today": 152511,
+      "vol_avg": 142791,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0139,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.016308555942702307,
+      "price_935": 210.91,
+      "open_930": 211.49,
+      "prev_close": 206.64
+    },
+    {
+      "ticker": "NCLH",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1429,
+      "gap_retention": 0.8,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.125,
+      "vol_today": 24065,
+      "vol_avg": 21381,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2017,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015182186234817669,
+      "price_935": 20.12,
+      "open_930": 20.16,
+      "prev_close": 19.76
+    },
+    {
+      "ticker": "CRWV",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7111,
+      "gap_retention": 0.9,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.739,
+      "vol_today": 47602,
+      "vol_avg": 27365,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.21440001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.005130597014925346,
+      "price_935": 88.86,
+      "open_930": 86.36,
+      "prev_close": 85.76
+    }
+  ],
+  "llm_input": [
+    "PLTR",
+    "MRVL",
+    "ASTS",
+    "INTC",
+    "MU",
+    "RGTI",
+    "AVGO",
+    "SMR",
+    "OKLO",
+    "QBTS",
+    "QUBT",
+    "CRWV"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "PLTR",
+      "direction": "long",
+      "confidence": 1.3,
+      "reason": "Catalyst Tier 2 confermato: upgrade analista a bullish e price target raise da Cantor Fitzgerald, supportati da narrativa AI Sovereignty in crescita. Segnali tecnici eccellenti: or_position 0.98, gap_retention 0.92, post_open_advance positivo con gap del 14.4% e vol_ratio >3x.",
+      "price_935": 149.71
+    },
+    "trade_2": {
+      "ticker": "QBTS",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Catalyst Tier 2 confermato: partnership con Nasdaq Verafin annunciata e rating Outperform da Wedbush con price target $40, settore quantum in momentum. Segnali tecnici solidi: or_position 0.94, gap_retention 0.99, post_open_advance positivo; short_float elevato al 20% amplifica potenziale squeeze.",
+      "price_935": 21.16
+    },
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "QBTS",
+      "qty": 2306,
+      "entry_price": 21.27,
+      "entry_time": "09:39:03",
+      "entry_ts": 1785850743.569745,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Catalyst Tier 2 confermato: partnership con Nasdaq Verafin annunciata e rating Outperform da Wedbush con price target $40, settore quantum in momentum. Segnali tecnici solidi: or_position 0.94, gap_retention 0.99, post_open_advance positivo; short_float elevato al 20% amplifica potenziale squeeze.",
+      "order_id": "e8401514-1e12-4ed0-9017-788995524c20",
+      "stop_atr": 19.7353,
+      "stop_pct": 20.8446,
+      "stop_price": 20.8446,
+      "atr14": 1.5347,
+      "peak_price": 21.27,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 20.81,
+      "exit_time": "09:44:56",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1060.76,
+      "pnl_pct": -0.0216,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.2002,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.939,
+      "gap_retention": 0.988,
+      "gap_pct": 0.023523523523523465,
+      "news": [
+        {
+          "author": "Evette Mitkov",
+          "content": "",
+          "created_at": "2026-08-03T18:13:23Z",
+          "headline": "D-Wave Quantum Stock Surges on Nasdaq Verafin Deal",
+          "id": 60884267,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/D-Wave.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/D-Wave.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/D-Wave.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "D-Wave Quantum Inc (NASDAQ:QBTS) shares are gaining Monday after the quantum computing company unveiled a collaboration with Nasdaq Verafin aimed at determining whether quantum technology can meaningfully strengthen the fight against financial crime. Here&#39;s what you should know.",
+          "symbols": [
+            "QBTS"
+          ],
+          "updated_at": "2026-08-03T18:13:23Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/08/60884267/d-wave-quantum-stock-surges-on-nasdaq-verafin-deal"
+        },
+        {
+          "author": "Kaustubh Bagalkote",
+          "content": "",
+          "created_at": "2026-08-03T16:37:47Z",
+          "headline": "IonQ Stock Is Soaring Monday: What's Going On?",
+          "id": 60881018,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Munich--Bavaria--Germany---March-31-2023.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Munich--Bavaria--Germany---March-31-2023.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/03/Munich--Bavaria--Germany---March-31-2023.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "IONQ surges 9% ahead of Q2 earnings, boosted by Wedbush&#39;s $75 target and sector-wide quantum computing optimism.",
+          "symbols": [
+            "AIPI",
+            "IONQ",
+            "QBTS",
+            "SKYT",
+            "T",
+            "VTWG",
+            "VTWO"
+          ],
+          "updated_at": "2026-08-03T16:37:47Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/08/60881018/ionq-stock-is-soaring-monday-whats-going-on"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-08-03T13:38:30Z",
+          "headline": "Wedbush Assumes D-Wave Quantum at Outperform, Maintains Price Target of $40",
+          "id": 60872407,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "QBTS"
+          ],
+          "updated_at": "2026-08-03T13:38:30Z",
+          "url": "https://www.benzinga.com/news/26/08/60872407/wedbush-assumes-d-wave-quantum-outperform-maintains-price-target-40"
+        }
+      ]
+    },
+    {
+      "ticker": "PLTR",
+      "qty": 326,
+      "entry_price": 150.294785,
+      "entry_time": "09:38:58",
+      "entry_ts": 1785850738.4113572,
+      "direction": "long",
+      "confidence": 1.3,
+      "reason": "Catalyst Tier 2 confermato: upgrade analista a bullish e price target raise da Cantor Fitzgerald, supportati da narrativa AI Sovereignty in crescita. Segnali tecnici eccellenti: or_position 0.98, gap_retention 0.92, post_open_advance positivo con gap del 14.4% e vol_ratio >3x.",
+      "order_id": "9207305c-cb18-43bc-aefb-74a768464fc3",
+      "stop_atr": 144.3755,
+      "stop_pct": 147.2889,
+      "stop_price": 153.3007,
+      "atr14": 5.9193,
+      "peak_price": 164.49,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 162.61,
+      "exit_time": "15:45:17",
+      "exit_reason": "eod_close",
+      "pnl_usd": 4014.76,
+      "pnl_pct": 0.0819,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.1,
+      "short_float": 0.0364,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9792,
+      "gap_retention": 0.9207,
+      "gap_pct": 0.14405093513728606,
+      "news": [
+        {
+          "author": "Surbhi Jain",
+          "content": "",
+          "created_at": "2026-08-04T13:16:22Z",
+          "headline": "Palantir Says Companies Are Paying to Give Away Their 'Most Important Secrets'",
+          "id": 60906376,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/04/Paris--France---March-4--2026-The-Logo-O.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/04/Paris--France---March-4--2026-The-Logo-O.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/04/Paris--France---March-4--2026-The-Logo-O.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Palantir warns companies may be giving valuable know-how to AI providers. Concerns are driving demand for greater control over enterprise AI.",
+          "symbols": [
+            "PLTR"
+          ],
+          "updated_at": "2026-08-04T13:16:22Z",
+          "url": "https://www.benzinga.com/trading-ideas/long-ideas/26/08/60906376/palantir-says-companies-giving-most-important-secrets-away"
+        },
+        {
+          "author": "Eva Mathew",
+          "content": "",
+          "created_at": "2026-08-04T12:57:07Z",
+          "headline": "Stock Market Today: S&P 500, Dow and Nasdaq Futures Gain as Scott Bessent Says Hormuz Deal Could Come Soon\u2014 Caterpiller, Palantir in Focus (UPDATED)",
+          "id": 60897120,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/04/Wall-Street.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/04/Wall-Street.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/04/Wall-Street.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "U.S. stock futures edged higher on Tuesday, with Dow, S&amp;P 500 and Nasdaq 100 futures advancing after Wall Street&#39;s broad rally on Monday.",
+          "symbols": [
+            "AMD",
+            "AMZN",
+            "BTCUSD",
+            "CAT",
+            "GOOG",
+            "GOOGL",
+            "MCD",
+            "META",
+            "MSFT",
+            "NVDA",
+            "ON",
+            "PFE",
+            "PLTR",
+            "QQQ",
+            "SPCX",
+            "SPY"
+          ],
+          "updated_at": "2026-08-04T13:01:22Z",
+          "url": "https://www.benzinga.com/markets/equities/26/08/60897120/stock-market-today-sp-500-dow-and-nasdaq-futures-rise-after-strong-monday-gains-mcdonalds-amd-palantir-in-focus"
+        },
+        {
+          "author": "Chandrima Sanyal",
+          "content": "",
+          "created_at": "2026-08-04T12:36:17Z",
+          "headline": "Palantir's AI Sovereignty Bet Could Be the Next Big ETF Catalyst",
+          "id": 60904581,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/04/New-York-City--New-York---September-3-20.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/04/New-York-City--New-York---September-3-20.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/04/New-York-City--New-York---September-3-20.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Palantir AI sovereignty narrative puts these ETFs back in focus as investors seek new ways to play the rally.",
+          "symbols": [
+            "PLIB",
+            "PLTD",
+            "PLTR",
+            "PLTU"
+          ],
+          "updated_at": "2026-08-04T12:36:17Z",
+          "url": "https://www.benzinga.com/etfs/specialty-etfs/26/08/60904581/palantir-ai-sovereignty-earnings-etfs-in-focus"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-08-04T12:19:31Z",
+          "headline": "Cantor Fitzgerald Maintains Neutral on Palantir Technologies, Raises Price Target to $156",
+          "id": 60903813,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "PLTR"
+          ],
+          "updated_at": "2026-08-04T12:19:31Z",
+          "url": "https://www.benzinga.com/news/26/08/60903813/cantor-fitzgerald-maintains-neutral-palantir-technologies-raises-price-target-156"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-08-04T11:46:05Z",
+          "headline": "This Palantir Analyst Turns Bullish; Here Are Top 5 Upgrades For Tuesday",
+          "id": 60902267,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/04/Apex--North-Carolina---April-8-2025-Pala.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/04/Apex--North-Carolina---April-8-2025-Pala.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/04/Apex--North-Carolina---April-8-2025-Pala.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Analysts upgraded Replimune, Madrigal, BBB Foods, Palantir, and Fomento Economico. See other opinions and price targets for these stocks.",
+          "symbols": [
+            "FMX",
+            "MDGL",
+            "PLTR",
+            "REPL",
+            "TBBB"
+          ],
+          "updated_at": "2026-08-04T11:46:05Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/upgrades/26/08/60902267/this-palantir-analyst-turns-bullish-here-are-top-5-upgrades-for-tuesday"
+        }
+      ]
+    }
+  ]
+}
