@@ -39,6 +39,15 @@ class BacktestParams:
     or_position_threshold:   float = 0.66
     gap_retention_threshold: float = 0.70
     min_gap_pct:             float = 0.005   # +0.5% long-only
+    # Cap sul gap di apertura. I trade reali (giu 2026) mostrano che i gap più grandi sono
+    # exhaustion-prone: il peggior loser è MU +17.3% gap → −2.61%. Un titolo già su del 17%
+    # all'apertura ha in gran parte esaurito il movimento; comprare il top dell'OR sopra a
+    # quel gap è comprare un massimo locale che mean-reverta. None = nessun cap (storico).
+    max_gap_pct:             Optional[float] = None
+    # Cap sulla volatilità (ATR14 / prezzo). Su un titolo ad alto ATR l'hard stop fisso −2%
+    # sta dentro il rumore giornaliero. Sui trade reali i losers hanno ATR% più alto dei
+    # winners (6.6 vs 5.3). None = nessun cap (storico).
+    max_atr_pct:             Optional[float] = None
     min_adv:                 float = 5_000_000  # 5M shares/day (SIP consolidated)
     vol_ratio_high:          float = 3.0
     vol_ratio_mid:           float = 2.0
@@ -83,6 +92,7 @@ class TradeResult:
     or_position:       float
     gap_retention:     float
     entry_offset_min:  int = 10
+    gap_pct:           float = 0.0
 
 
 @dataclass
@@ -310,6 +320,9 @@ def _simulate_day(
     gap_pct = (open_930 - prev_close) / prev_close
     if gap_pct < params.min_gap_pct:
         return None
+    # L1b gap cap — escludi i gap troppo grandi (exhaustion). None = disattivato.
+    if params.max_gap_pct is not None and gap_pct > params.max_gap_pct:
+        return None
 
     # S1 — Post-open advance: price moved up in first 5 minutes
     post_open_advance = price_935 > open_930
@@ -347,6 +360,11 @@ def _simulate_day(
 
     # Stops — tightest of ATR stop and hard blocker pct
     atr14      = _calc_atr14(daily, session_date)
+    # L1c volatility cap — su un titolo ad alto ATR il nostro hard stop fisso −2% sta DENTRO
+    # il rumore giornaliero, quindi un wiggle normale lo fa scattare. Escludi i nomi troppo
+    # volatili. None = disattivato. (I trade reali: losers ATR% medio 6.6 vs winners 5.3.)
+    if params.max_atr_pct is not None and atr14 > 0 and (atr14 / entry_price) > params.max_atr_pct:
+        return None
     stop_atr   = entry_price - atr14 if atr14 > 0 else 0
     stop_pct   = entry_price * (1 - params.hard_blocker_pct)
     stop_price = max(stop_atr, stop_pct)
@@ -438,6 +456,7 @@ def _simulate_day(
         or_position=round(or_pos, 4),
         gap_retention=round(gap_ret, 4),
         entry_offset_min=5,  # 9:34 bar close ≈ price at 9:35 = offset 5 from 9:30
+        gap_pct=round(gap_pct, 4),
     )
 
 
@@ -664,6 +683,74 @@ def exit_strategy_analysis(
             "eod_exits":       ec.get("eod_close", 0),
         })
         logger.info(f"  {name}: PF={s['profit_factor']:.2f} WR={s['win_rate']:.1%} PnL=${s['total_pnl_usd']:+.0f}")
+
+    return pd.DataFrame(rows)
+
+
+def entry_cap_analysis(
+    universe: list[str],
+    start_date: date,
+    end_date: date,
+) -> pd.DataFrame:
+    """
+    Sweep two entry-filter hypotheses OUT OF SAMPLE on the full backtest history.
+
+    Both come from the live trade log (49 trades, giu–ago 2026), where the hard-stop
+    losers bleed the most. The live data is in-sample: any cut fit to it looks good
+    (the gap-cap did, then died when the sample grew from 20 to 49 trades). This runs
+    each cut on the 631-trade backtest — an independent sample — holding the deployed
+    exit (profit-lock only) and realistic slippage constant, so the ONLY thing varying
+    is the entry cap. A cut that helps here too has a real edge; one that doesn't was
+    a curve-fit.
+
+      • max_gap_pct — oversized opening gaps as exhaustion (REFUTED on full live data:
+        big gaps were winners; kept here as a control / for closure).
+      • max_atr_pct — high-volatility names where the fixed −2% hard stop sits inside
+        the daily noise (live: losers ATR% 6.6 vs winners 5.3 — the surviving signal).
+    """
+    logger.info("Entry-cap analysis — pre-fetching data …")
+    all_cache = prefetch_universe(universe, start_date, end_date)
+    days      = _trading_days(start_date, end_date)
+
+    SLIP = 0.06                                   # slippage calibrato sui fill reali
+    LIVE_EXIT = [(0.015, 0.010), (0.030, 0.020)]  # profit-lock only (config deployata 29 giu)
+
+    # (label, kwargs) — baseline prima, poi i due sweep. Tutto il resto identico.
+    configs = [("baseline (nessun cap)", {})]
+    configs += [(f"gap ≤ {c:.0%}", {"max_gap_pct": c}) for c in (0.12, 0.10, 0.08, 0.06)]
+    configs += [(f"ATR% ≤ {c:.0%}", {"max_atr_pct": c}) for c in (0.09, 0.08, 0.07, 0.06)]
+
+    rows = []
+    baseline_pnl = None
+    for label, kw in configs:
+        p = BacktestParams(step_stops=LIVE_EXIT, slippage_atr_mult=SLIP, **kw)
+        res = BacktestResults()
+        for day in days:
+            day_trades = 0
+            for ticker in universe:
+                if day_trades >= p.max_positions or ticker not in all_cache:
+                    continue
+                trade = _simulate_day(ticker, day, all_cache[ticker], p)
+                if trade:
+                    res.trades.append(trade)
+                    day_trades += 1
+
+        s = res.summary()
+        if baseline_pnl is None:
+            baseline_pnl = s["total_pnl_usd"]
+        rows.append({
+            "filter":         label,
+            "trades":         s["total_trades"],
+            "win_rate":       f"{s['win_rate']:.1%}",
+            "profit_factor":  s["profit_factor"],
+            "avg_win_usd":    s["avg_win_usd"],
+            "avg_loss_usd":   s["avg_loss_usd"],
+            "total_pnl_usd":  s["total_pnl_usd"],
+            "vs_base_usd":    round(s["total_pnl_usd"] - baseline_pnl, 0),
+            "max_dd_usd":     s["max_drawdown_usd"],
+        })
+        logger.info(f"  {label}: PF={s['profit_factor']:.2f} "
+                    f"WR={s['win_rate']:.1%} PnL=${s['total_pnl_usd']:+.0f} n={s['total_trades']}")
 
     return pd.DataFrame(rows)
 

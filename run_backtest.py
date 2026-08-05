@@ -29,7 +29,7 @@ logging.basicConfig(
 from backtest.engine import (
     BacktestParams, BacktestResults,
     run_backtest, sensitivity_analysis, vwap_sensitivity_analysis,
-    exit_strategy_analysis, max_positions_analysis,
+    exit_strategy_analysis, max_positions_analysis, entry_cap_analysis,
     run_entry_timing_backtest, run_true_entry_timing_backtest,
     prefetch_universe, _trading_days, _simulate_day,
 )
@@ -232,6 +232,7 @@ def main():
     parser.add_argument("--hardstop",    action="store_true", help="Sensitivity solo hard stop (1.0%%–2.5%%)")
     parser.add_argument("--exit", dest="exit_strategy", action="store_true", help="Confronto strategie di uscita (break-even, trailing)")
     parser.add_argument("--positions",   action="store_true", help="Confronto 1/2/3 max positions (confidence-sorted, $99k/N per slot)")
+    parser.add_argument("--entry-cap", dest="entry_cap", action="store_true", help="Sweep cap d'ingresso (gap + ATR%%) out-of-sample — profit-lock + slippage reale")
     args = parser.parse_args()
 
     if args.timing:
@@ -280,6 +281,22 @@ def main():
         os.makedirs("backtest/results", exist_ok=True)
         path = "backtest/results/exit_strategy.csv"
         exit_df.to_csv(path, index=False)
+        print(f"\nRisultati salvati in: {path}")
+
+    elif args.entry_cap:
+        print(f"Entry-cap sweep (out-of-sample): {START_DATE} → {END_DATE} | {len(BACKTEST_UNIVERSE)} ticker")
+        print("Stesse uscite (profit-lock only) + slippage reale — varia solo il cap d'ingresso (gap, ATR%).\n")
+        cap_df = entry_cap_analysis(BACKTEST_UNIVERSE, START_DATE, END_DATE)
+
+        print("\n" + "=" * 110)
+        print("ENTRY-CAP SWEEP  (gap-size & volatility filters)")
+        print("=" * 110)
+        print(cap_df.to_string(index=False))
+        print("=" * 110)
+
+        os.makedirs("backtest/results", exist_ok=True)
+        path = "backtest/results/entry_cap_sweep.csv"
+        cap_df.to_csv(path, index=False)
         print(f"\nRisultati salvati in: {path}")
 
     elif args.positions:
