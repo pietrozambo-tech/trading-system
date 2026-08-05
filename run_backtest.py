@@ -43,7 +43,7 @@ from backtest.engine import (
 BACKTEST_UNIVERSE = [
     # Tech / Growth
     "AAPL", "MSFT", "NVDA", "AMZN", "META", "GOOGL", "TSLA", "AMD", "NFLX",
-    "CRM", "ORCL", "ADBE", "INTC", "QCOM", "MU", "AVGO", "AMAT", "MRVL",
+    "CRM", "ORCL", "ADBE", "QCOM", "MU", "AVGO", "AMAT", "MRVL",
     # AI / Datacenter / Semi
     "PLTR", "SMCI", "ARM", "VRT", "APP", "CRWV", "CBRS", "DELL",
     # Finance
@@ -63,7 +63,7 @@ BACKTEST_UNIVERSE = [
     # EV / China
     "RIVN", "NIO",
     # Space
-    "RKLB", "ASTS", "BKSY", "RDW", "LUNR",
+    "ASTS", "BKSY", "RDW", "LUNR",
     # Nucleare / Power / Uranio
     "UUUU", "CCJ", "NNE", "SMR", "OKLO", "CEG", "VST", "LEU",
     # Quantum Computing

@@ -63,7 +63,7 @@ signal.signal(signal.SIGINT,  _handle_signal)
 UNIVERSE = [
     # Tech / Growth
     "AAPL", "MSFT", "NVDA", "AMZN", "META", "GOOGL", "TSLA", "AMD", "NFLX",
-    "CRM", "ORCL", "ADBE", "INTC", "QCOM", "MU", "AVGO", "AMAT", "MRVL",
+    "CRM", "ORCL", "ADBE", "QCOM", "MU", "AVGO", "AMAT", "MRVL",
     # AI / Datacenter / Semi
     "PLTR", "SMCI", "ARM", "VRT", "APP", "CRWV", "CBRS", "DELL",
     # Finance (solo proxy macro/earnings — le banche gappano solo sugli earnings)
@@ -83,7 +83,7 @@ UNIVERSE = [
     # EV / China (gap overnight su headline cinesi — profilo di rischio diverso)
     "RIVN", "NIO",
     # Space
-    "RKLB", "ASTS", "BKSY", "RDW", "LUNR",
+    "ASTS", "BKSY", "RDW", "LUNR",
     # Nucleare / Power / Uranio
     "UUUU", "CCJ", "NNE", "SMR", "OKLO", "CEG", "VST", "LEU",
     # Quantum Computing
