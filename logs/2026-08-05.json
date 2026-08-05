@@ -1,0 +1,569 @@
+{
+  "date": "2026-08-05",
+  "spy_pct": 0.006581421587062717,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 70,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "INTC",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "RKLB",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 9,
+      "tickers": [
+        "SHOP",
+        "META",
+        "NVDA",
+        "COIN",
+        "GOOGL",
+        "MSFT",
+        "HOOD",
+        "UNH",
+        "RKLB"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 9,
+      "tickers": [
+        "SHOP",
+        "META",
+        "NVDA",
+        "COIN",
+        "GOOGL",
+        "MSFT",
+        "HOOD",
+        "UNH",
+        "RKLB"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 2,
+      "tickers": [
+        "NVDA",
+        "GOOGL"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "SHOP",
+      "gap_pct": 21.26,
+      "adv_m": 10.7,
+      "short_float_pct": 2.2,
+      "dist_from_3m_high_pct": 11.6,
+      "prev_day_return_pct": 5.38
+    },
+    {
+      "ticker": "META",
+      "gap_pct": 2.6,
+      "adv_m": 18.4,
+      "short_float_pct": 1.7,
+      "dist_from_3m_high_pct": -12.1,
+      "prev_day_return_pct": -0.39
+    },
+    {
+      "ticker": "NVDA",
+      "gap_pct": 1.51,
+      "adv_m": 152.6,
+      "short_float_pct": 1.4,
+      "dist_from_3m_high_pct": -8.9,
+      "prev_day_return_pct": 2.56
+    },
+    {
+      "ticker": "COIN",
+      "gap_pct": 1.43,
+      "adv_m": 8.6,
+      "short_float_pct": 11.4,
+      "dist_from_3m_high_pct": -31.2,
+      "prev_day_return_pct": 2.89
+    },
+    {
+      "ticker": "GOOGL",
+      "gap_pct": 1.27,
+      "adv_m": 32.8,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -6.3,
+      "prev_day_return_pct": 1.11
+    },
+    {
+      "ticker": "MSFT",
+      "gap_pct": 1.19,
+      "adv_m": 40.9,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -0.2,
+      "prev_day_return_pct": 1.06
+    },
+    {
+      "ticker": "HOOD",
+      "gap_pct": 0.82,
+      "adv_m": 26.9,
+      "short_float_pct": 4.9,
+      "dist_from_3m_high_pct": -21.5,
+      "prev_day_return_pct": 3.51
+    },
+    {
+      "ticker": "UNH",
+      "gap_pct": 0.67,
+      "adv_m": 6.4,
+      "short_float_pct": 2.1,
+      "dist_from_3m_high_pct": -11.1,
+      "prev_day_return_pct": -1.88
+    },
+    {
+      "ticker": "RKLB",
+      "gap_pct": 0.52,
+      "adv_m": 26.1,
+      "short_float_pct": 8.0,
+      "dist_from_3m_high_pct": -50.4,
+      "prev_day_return_pct": 5.75
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "COIN",
+      "reason": "gap_reversed_at_open"
+    },
+    {
+      "ticker": "UNH",
+      "reason": "gap_reversed_at_open"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "SHOP",
+      "confidence": 0.4333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0201,
+      "gap_retention": 0.9181,
+      "vol_boost": 0.1,
+      "vol_ratio": 9.029,
+      "vol_today": 100679,
+      "vol_avg": 11151,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0218,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.2125709651257096,
+      "price_935": 146.5,
+      "open_930": 148.405,
+      "prev_close": 123.3
+    },
+    {
+      "ticker": "META",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.4993,
+      "gap_retention": 0.501,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.646,
+      "vol_today": 22620,
+      "vol_avg": 35036,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0172,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02604007211620224,
+      "price_935": 597.6,
+      "open_930": 600.455,
+      "prev_close": 587.94
+    },
+    {
+      "ticker": "NVDA",
+      "confidence": 0.7167,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.6254,
+      "gap_retention": 0.9134,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.117,
+      "vol_today": 308654,
+      "vol_avg": 145793,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0139,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015145795979994376,
+      "price_935": 218.39,
+      "open_930": 216.845,
+      "prev_close": 211.94
+    },
+    {
+      "ticker": "GOOGL",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.728,
+      "gap_retention": 0.342,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.841,
+      "vol_today": 36047,
+      "vol_avg": 42861,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0134000005,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.012657222295776592,
+      "price_935": 383.095,
+      "open_930": 383.045,
+      "prev_close": 377.65
+    },
+    {
+      "ticker": "MSFT",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1006,
+      "gap_retention": 0.1047,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.366,
+      "vol_today": 28992,
+      "vol_avg": 79220,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0124,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.011870700675716854,
+      "price_935": 493.715,
+      "open_930": 496.725,
+      "prev_close": 492.81
+    },
+    {
+      "ticker": "HOOD",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.544,
+      "gap_retention": -2.3778,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.314,
+      "vol_today": 10763,
+      "vol_avg": 34269,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.048699997,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.00823441343171849,
+      "price_935": 93.275,
+      "open_930": 93.96,
+      "prev_close": 93.51
+    },
+    {
+      "ticker": "RKLB",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.2974,
+      "gap_retention": -2.5976,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.734,
+      "vol_today": 8949,
+      "vol_avg": 12192,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0797,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.005236305048335131,
+      "price_935": 74.05,
+      "open_930": 74.89,
+      "prev_close": 74.48
+    }
+  ],
+  "llm_input": [
+    "NVDA",
+    "GOOGL"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "NVDA",
+      "direction": "long",
+      "confidence": 0.7167,
+      "reason": "Catalyst Tier 2/3 supportato dalla notizia SpaceX che adotter\u00e0 GPU Nvidia in esclusiva e dai forti flussi su QQQ/big tech; segnali tecnici solidi con post_open_advance positivo e gap_retention oltre 0.91, mentre il vol_ratio 2-3x aggiunge ulteriore conferma al momentum.",
+      "price_935": 218.39
+    },
+    "trade_2": null,
+    "no_trade_reason": "GOOGL escluso per gap_retention estremamente bassa (0.342, sotto la soglia 0.70) e post_open_advance_pct quasi nullo (+0.0001%), indicativi di debolezza strutturale nel mantenere il gap; nessun catalyst identificabile di rilievo e vol_boost assente rendono la confidence insufficiente per un secondo trade."
+  },
+  "trades": [
+    {
+      "ticker": "NVDA",
+      "qty": 147,
+      "entry_price": 219.168163,
+      "entry_time": "09:39:42",
+      "entry_ts": 1785937182.986961,
+      "direction": "long",
+      "confidence": 0.7167,
+      "reason": "Catalyst Tier 2/3 supportato dalla notizia SpaceX che adotter\u00e0 GPU Nvidia in esclusiva e dai forti flussi su QQQ/big tech; segnali tecnici solidi con post_open_advance positivo e gap_retention oltre 0.91, mentre il vol_ratio 2-3x aggiunge ulteriore conferma al momentum.",
+      "order_id": "583f609b-0e30-483b-bdfa-4ac123a18fb1",
+      "stop_atr": 211.419,
+      "stop_pct": 214.7848,
+      "stop_price": 214.7848,
+      "atr14": 7.7492,
+      "peak_price": 222.22,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 220.24,
+      "exit_time": "15:45:14",
+      "exit_reason": "eod_close",
+      "pnl_usd": 157.56,
+      "pnl_pct": 0.0049,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.05,
+      "short_float": 0.0139,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.6254,
+      "gap_retention": 0.9134,
+      "gap_pct": 0.015145795979994376,
+      "news": [
+        {
+          "author": "Chandrima Sanyal",
+          "content": "",
+          "created_at": "2026-08-05T13:18:06Z",
+          "headline": "QUICK SPARK: QQQ Pulls In Nearly $5 Billion in a Day as Investors Pile Into Big Tech",
+          "id": 60948333,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/05/Benzinga-Quick-Spark.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/05/Benzinga-Quick-Spark.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/05/Benzinga-Quick-Spark.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Investors favoring large-cap tech: QQQ attracted $4.95 billion, dwarfing all other ETFs. IGV and SOXS saw big inflows, while SOXX saw a large redemption.",
+          "symbols": [
+            "AAPL",
+            "AMZN",
+            "AVGO",
+            "EWY",
+            "IGV",
+            "IVV",
+            "IWM",
+            "META",
+            "MSFT",
+            "NVDA",
+            "QQQ",
+            "SGOV",
+            "SOXS",
+            "SOXX"
+          ],
+          "updated_at": "2026-08-05T13:18:06Z",
+          "url": "https://www.benzinga.com/etfs/broad-u-s-equity-etfs/26/08/60948333/quick-spark-qqq-nearly-5-billion-in-one-day-investors-big-tech"
+        },
+        {
+          "author": "Surbhi Jain",
+          "content": "",
+          "created_at": "2026-08-05T12:14:57Z",
+          "headline": "QUICK SPARK: SpaceX Goes All-In on Nvidia. Jim Cramer Thinks That's All Investors Need to Know.",
+          "id": 60946201,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/05/Benzinga-Quick-Spark.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/05/Benzinga-Quick-Spark.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/05/Benzinga-Quick-Spark.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Elon Musk says SpaceX will use Nvidia GPUs exclusively. Jim Cramer responded, &#34;and there it is,&#34; as JPMorgan sees it receiving a significant share of Nvidia&#39;s 2027 shipments.",
+          "symbols": [
+            "NVDA",
+            "SPCX",
+            "TSLA"
+          ],
+          "updated_at": "2026-08-05T12:14:57Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/08/60946201/elon-musk-spacex-all-in-nvidia-jim-cramer-weighs-in"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-08-05T09:33:57Z",
+          "headline": "How Intel's Earnings Turned AMD's Beat Into A Sell-Off",
+          "id": 60939483,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/05/AMD-OpenAI-Deal.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/05/AMD-OpenAI-Deal.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/05/AMD-OpenAI-Deal.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "AMD stock falls nearly 9% premarket despite beat on Q2 top-line revenue. Here is what\u2019s driving the market sell-off.",
+          "symbols": [
+            "AMD",
+            "ARKW",
+            "INTC",
+            "IVES",
+            "NVDA",
+            "SOXX"
+          ],
+          "updated_at": "2026-08-05T10:08:37Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/analyst-color/26/08/60939483/how-intels-earnings-turned-amds-beat-into-a-sell-off"
+        },
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-08-05T09:58:28Z",
+          "headline": "Competitor Analysis: Evaluating NVIDIA And Competitors In Semiconductors &amp; Semiconductor Equipment Industry",
+          "id": 60939656,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_10.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_10.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_10.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "In the ever-changing and fiercely competitive business landscape, conducting thorough company analysis is crucial for investors and industry experts. In this article, we will undertake a comprehensive industry",
+          "symbols": [
+            "NVDA"
+          ],
+          "updated_at": "2026-08-05T09:58:28Z",
+          "url": "https://www.benzinga.com/news/26/08/60939656/competitor-analysis-evaluating-nvidia-and-competitors-semiconductors-amp-semiconductor-equipment-ind"
+        },
+        {
+          "author": "Radhika Anilkumar Nadig",
+          "content": "",
+          "created_at": "2026-08-05T09:49:04Z",
+          "headline": "AMD CEO Lisa Su Says Meta, OpenAI and Anthropic Are Helping Improve the Entire AMD Ecosystem",
+          "id": 60939618,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/05/AMD-CEO-Lisa-Su-delivers-the-first-AI-ke.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/05/AMD-CEO-Lisa-Su-delivers-the-first-AI-ke.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/05/AMD-CEO-Lisa-Su-delivers-the-first-AI-ke.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "AMD said Meta, OpenAI and Anthropic are helping optimize AI models on its platform, benefiting the broader AI ecosystem.",
+          "symbols": [
+            "AMD",
+            "META",
+            "NVDA"
+          ],
+          "updated_at": "2026-08-05T09:49:04Z",
+          "url": "https://www.benzinga.com/markets/earnings/26/08/60939618/amd-taps-meta-openai-and-anthropic-to-optimize-ai-models-says-improvements-benefiting-the-entire-amd-ecosystem"
+        }
+      ]
+    }
+  ]
+}
