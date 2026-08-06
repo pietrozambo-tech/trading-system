@@ -1,0 +1,256 @@
+{
+  "date": "2026-08-06",
+  "spy_pct": 0.00015588667039063194,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 68,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 5,
+      "tickers": [
+        "RDW",
+        "OKLO",
+        "IONQ",
+        "NVDA",
+        "AAPL"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 5,
+      "tickers": [
+        "RDW",
+        "OKLO",
+        "IONQ",
+        "NVDA",
+        "AAPL"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 1,
+      "tickers": [
+        "NVDA"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "RDW",
+      "gap_pct": 10.63,
+      "adv_m": 36.7,
+      "short_float_pct": 21.0,
+      "dist_from_3m_high_pct": -55.5,
+      "prev_day_return_pct": 0.85
+    },
+    {
+      "ticker": "OKLO",
+      "gap_pct": 4.98,
+      "adv_m": 11.6,
+      "short_float_pct": 18.4,
+      "dist_from_3m_high_pct": -43.6,
+      "prev_day_return_pct": -0.78
+    },
+    {
+      "ticker": "IONQ",
+      "gap_pct": 4.41,
+      "adv_m": 27.2,
+      "short_float_pct": 12.7,
+      "dist_from_3m_high_pct": -43.4,
+      "prev_day_return_pct": -4.29
+    },
+    {
+      "ticker": "NVDA",
+      "gap_pct": 1.2,
+      "adv_m": 153.1,
+      "short_float_pct": 1.4,
+      "dist_from_3m_high_pct": -6.1,
+      "prev_day_return_pct": 3.43
+    },
+    {
+      "ticker": "AAPL",
+      "gap_pct": 0.96,
+      "adv_m": 57.0,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -8.9,
+      "prev_day_return_pct": 0.52
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "OKLO",
+      "reason": "pm_gap_eaten_at_open_17%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "RDW",
+      "confidence": 0.2,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.4141,
+      "gap_retention": 0.4671,
+      "vol_boost": 0.1,
+      "vol_ratio": 11.662,
+      "vol_today": 118944,
+      "vol_avg": 10199,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2101,
+      "short_squeeze_bonus": 0.1,
+      "gap_pct": 0.10634328358208943,
+      "price_935": 11.96,
+      "open_930": 12.24,
+      "prev_close": 10.72
+    },
+    {
+      "ticker": "IONQ",
+      "confidence": 0.05,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1849,
+      "gap_retention": 0.2218,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.405,
+      "vol_today": 45196,
+      "vol_avg": 18791,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1267,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04407713498622585,
+      "price_935": 40.49,
+      "open_930": 41.35,
+      "prev_close": 39.93
+    },
+    {
+      "ticker": "NVDA",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.3559,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.965,
+      "vol_today": 150828,
+      "vol_avg": 156245,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0139,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.011997080558343197,
+      "price_935": 222.19,
+      "open_930": 221.58,
+      "prev_close": 219.22
+    },
+    {
+      "ticker": "AAPL",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.2866,
+      "gap_retention": 0.7831,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.474,
+      "vol_today": 45779,
+      "vol_avg": 96623,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.01,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.009614147909967875,
+      "price_935": 314.445,
+      "open_930": 314.55,
+      "prev_close": 311.0
+    }
+  ],
+  "llm_input": [
+    "NVDA"
+  ],
+  "llm_output": {
+    "trade_1": null,
+    "trade_2": null,
+    "no_trade_reason": "NVDA non soddisfa i requisiti minimi: gap_retention a 0.356 \u00e8 ben sotto la soglia 0.70, il catalyst_bonus \u00e8 0.00 (nessun catalyst identificabile nelle news recenti, che riguardano Uber/Tesla, Strategy, Sandisk e avvertimenti generici sull'AI). La confidence rimane a 0.6667 (solo 2/3 segnali tecnici soddisfatti: post_open_advance e or_position, ma gap_retention fallisce) senza alcun bonus aggiuntivo, e il vol_ratio \u00e8 sotto 2x (vol_boost=0). Con un catalyst nullo e gap_retention insufficiente, il setup \u00e8 debole e non giustifica l'ingresso."
+  },
+  "trades": []
+}
