@@ -1,0 +1,1028 @@
+{
+  "date": "2026-08-07",
+  "spy_pct": 0.003642797668609581,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 68,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 20,
+      "tickers": [
+        "CIFR",
+        "MSTR",
+        "CRWV",
+        "ARM",
+        "MU",
+        "HOOD",
+        "QUBT",
+        "AMD",
+        "RDW",
+        "CCL",
+        "IONQ",
+        "SMR",
+        "PLTR",
+        "AVGO",
+        "NIO",
+        "SOFI",
+        "DKNG",
+        "OKLO",
+        "TSLA",
+        "AMZN"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 20,
+      "tickers": [
+        "CIFR",
+        "MSTR",
+        "CRWV",
+        "ARM",
+        "MU",
+        "HOOD",
+        "QUBT",
+        "AMD",
+        "RDW",
+        "CCL",
+        "IONQ",
+        "SMR",
+        "PLTR",
+        "AVGO",
+        "NIO",
+        "SOFI",
+        "DKNG",
+        "OKLO",
+        "TSLA",
+        "AMZN"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 11,
+      "tickers": [
+        "MSTR",
+        "CRWV",
+        "HOOD",
+        "QUBT",
+        "RDW",
+        "IONQ",
+        "SMR",
+        "PLTR",
+        "AVGO",
+        "NIO",
+        "OKLO"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "CIFR",
+      "gap_pct": 5.38,
+      "adv_m": 27.4,
+      "short_float_pct": 16.7,
+      "dist_from_3m_high_pct": -36.3,
+      "prev_day_return_pct": -2.67
+    },
+    {
+      "ticker": "MSTR",
+      "gap_pct": 4.74,
+      "adv_m": 19.8,
+      "short_float_pct": 11.8,
+      "dist_from_3m_high_pct": -48.5,
+      "prev_day_return_pct": -1.55
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 4.28,
+      "adv_m": 29.0,
+      "short_float_pct": 21.4,
+      "dist_from_3m_high_pct": -35.6,
+      "prev_day_return_pct": -5.07
+    },
+    {
+      "ticker": "ARM",
+      "gap_pct": 3.74,
+      "adv_m": 10.1,
+      "short_float_pct": 12.0,
+      "dist_from_3m_high_pct": -34.3,
+      "prev_day_return_pct": 4.41
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 2.91,
+      "adv_m": 52.9,
+      "short_float_pct": 3.2,
+      "dist_from_3m_high_pct": -27.7,
+      "prev_day_return_pct": -1.31
+    },
+    {
+      "ticker": "HOOD",
+      "gap_pct": 2.38,
+      "adv_m": 26.5,
+      "short_float_pct": 4.9,
+      "dist_from_3m_high_pct": -22.6,
+      "prev_day_return_pct": -2.25
+    },
+    {
+      "ticker": "QUBT",
+      "gap_pct": 2.22,
+      "adv_m": 18.8,
+      "short_float_pct": 32.4,
+      "dist_from_3m_high_pct": -37.9,
+      "prev_day_return_pct": -1.18
+    },
+    {
+      "ticker": "AMD",
+      "gap_pct": 2.09,
+      "adv_m": 33.2,
+      "short_float_pct": 2.5,
+      "dist_from_3m_high_pct": -14.6,
+      "prev_day_return_pct": 1.5
+    },
+    {
+      "ticker": "RDW",
+      "gap_pct": 2.03,
+      "adv_m": 36.8,
+      "short_float_pct": 21.0,
+      "dist_from_3m_high_pct": -54.7,
+      "prev_day_return_pct": 10.35
+    },
+    {
+      "ticker": "CCL",
+      "gap_pct": 1.99,
+      "adv_m": 25.0,
+      "short_float_pct": 2.7,
+      "dist_from_3m_high_pct": -7.1,
+      "prev_day_return_pct": -2.98
+    },
+    {
+      "ticker": "IONQ",
+      "gap_pct": 1.91,
+      "adv_m": 27.2,
+      "short_float_pct": 12.7,
+      "dist_from_3m_high_pct": -45.0,
+      "prev_day_return_pct": -0.53
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 1.58,
+      "adv_m": 33.1,
+      "short_float_pct": 23.2,
+      "dist_from_3m_high_pct": -32.7,
+      "prev_day_return_pct": 0.96
+    },
+    {
+      "ticker": "PLTR",
+      "gap_pct": 1.55,
+      "adv_m": 43.9,
+      "short_float_pct": 3.6,
+      "dist_from_3m_high_pct": -4.7,
+      "prev_day_return_pct": -1.58
+    },
+    {
+      "ticker": "AVGO",
+      "gap_pct": 1.53,
+      "adv_m": 25.9,
+      "short_float_pct": 1.5,
+      "dist_from_3m_high_pct": -13.6,
+      "prev_day_return_pct": 0.55
+    },
+    {
+      "ticker": "NIO",
+      "gap_pct": 1.52,
+      "adv_m": 31.4,
+      "short_float_pct": 6.7,
+      "dist_from_3m_high_pct": -29.0,
+      "prev_day_return_pct": -1.08
+    },
+    {
+      "ticker": "SOFI",
+      "gap_pct": 1.44,
+      "adv_m": 78.4,
+      "short_float_pct": 14.6,
+      "dist_from_3m_high_pct": -7.0,
+      "prev_day_return_pct": -0.82
+    },
+    {
+      "ticker": "DKNG",
+      "gap_pct": 1.22,
+      "adv_m": 12.9,
+      "short_float_pct": 8.2,
+      "dist_from_3m_high_pct": -25.5,
+      "prev_day_return_pct": 1.88
+    },
+    {
+      "ticker": "OKLO",
+      "gap_pct": 1.19,
+      "adv_m": 11.6,
+      "short_float_pct": 18.4,
+      "dist_from_3m_high_pct": -46.7,
+      "prev_day_return_pct": -1.86
+    },
+    {
+      "ticker": "TSLA",
+      "gap_pct": 1.09,
+      "adv_m": 46.5,
+      "short_float_pct": 2.0,
+      "dist_from_3m_high_pct": -28.8,
+      "prev_day_return_pct": -0.63
+    },
+    {
+      "ticker": "AMZN",
+      "gap_pct": 0.64,
+      "adv_m": 50.1,
+      "short_float_pct": 1.1,
+      "dist_from_3m_high_pct": -4.6,
+      "prev_day_return_pct": -0.14
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "CCL",
+      "reason": "pm_gap_eaten_at_open_34%"
+    },
+    {
+      "ticker": "AMZN",
+      "reason": "pm_gap_eaten_at_open_32%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "CIFR",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1071,
+      "gap_retention": 0.5,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.387,
+      "vol_today": 21553,
+      "vol_avg": 55674,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1674,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.053816584294343786,
+      "price_935": 18.53,
+      "open_930": 18.73,
+      "prev_close": 18.21
+    },
+    {
+      "ticker": "MSTR",
+      "confidence": 1.05,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8179,
+      "gap_retention": 0.8017,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.271,
+      "vol_today": 18245,
+      "vol_avg": 8035,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1176,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04739287558079508,
+      "price_935": 101.895,
+      "open_930": 101.49,
+      "prev_close": 96.85
+    },
+    {
+      "ticker": "CRWV",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.4111,
+      "gap_retention": 0.9344,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.807,
+      "vol_today": 21345,
+      "vol_avg": 26461,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.21440001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04277510840267205,
+      "price_935": 89.63,
+      "open_930": 89.14,
+      "prev_close": 85.33
+    },
+    {
+      "ticker": "ARM",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.2104,
+      "gap_retention": 0.5907,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.649,
+      "vol_today": 5299,
+      "vol_avg": 8170,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.12020001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03742849169806062,
+      "price_935": 295.12,
+      "open_930": 299.09,
+      "prev_close": 286.68
+    },
+    {
+      "ticker": "MU",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.2056,
+      "gap_retention": 0.25,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.013,
+      "vol_today": 45027,
+      "vol_avg": 44430,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0321,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.029144497260258365,
+      "price_935": 890.08,
+      "open_930": 902.77,
+      "prev_close": 881.47
+    },
+    {
+      "ticker": "HOOD",
+      "confidence": 1.05,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7115,
+      "gap_retention": 0.9909,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.289,
+      "vol_today": 73393,
+      "vol_avg": 32065,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.048699997,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.023812148605446046,
+      "price_935": 94.0,
+      "open_930": 92.91,
+      "prev_close": 90.71
+    },
+    {
+      "ticker": "QUBT",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.5,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.411,
+      "vol_today": 3697,
+      "vol_avg": 8992,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.3243,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.022222222222222254,
+      "price_935": 8.98,
+      "open_930": 8.935,
+      "prev_close": 8.775
+    },
+    {
+      "ticker": "AMD",
+      "confidence": 0.2,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1727,
+      "gap_retention": 0.058,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.055,
+      "vol_today": 33680,
+      "vol_avg": 31917,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.024500001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.020908273381295004,
+      "price_935": 491.2,
+      "open_930": 497.98,
+      "prev_close": 489.28
+    },
+    {
+      "ticker": "RDW",
+      "confidence": 0.7667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.561,
+      "gap_retention": 0.9932,
+      "vol_boost": 0.1,
+      "vol_ratio": 3.629,
+      "vol_today": 57041,
+      "vol_avg": 15720,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2101,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.020287404902789536,
+      "price_935": 12.9,
+      "open_930": 12.56,
+      "prev_close": 11.83
+    },
+    {
+      "ticker": "IONQ",
+      "confidence": 1.35,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.7218,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.68,
+      "vol_today": 55376,
+      "vol_avg": 20662,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.1267,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.019133937562940535,
+      "price_935": 42.5,
+      "open_930": 40.385,
+      "prev_close": 39.72
+    },
+    {
+      "ticker": "SMR",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.3333,
+      "gap_retention": 0.7955,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.129,
+      "vol_today": 28263,
+      "vol_avg": 25024,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2315,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01583949313621949,
+      "price_935": 9.73,
+      "open_930": 9.69,
+      "prev_close": 9.47
+    },
+    {
+      "ticker": "PLTR",
+      "confidence": 1.2,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9255,
+      "gap_retention": 0.9891,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.786,
+      "vol_today": 85262,
+      "vol_avg": 47746,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0364,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015456644433042748,
+      "price_935": 163.87,
+      "open_930": 160.065,
+      "prev_close": 155.92
+    },
+    {
+      "ticker": "AVGO",
+      "confidence": 1.1,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9008,
+      "gap_retention": 0.7748,
+      "vol_boost": 0.1,
+      "vol_ratio": 4.175,
+      "vol_today": 74377,
+      "vol_avg": 17812,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0147,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015277067754092736,
+      "price_935": 430.24,
+      "open_930": 428.715,
+      "prev_close": 420.565
+    },
+    {
+      "ticker": "NIO",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.182,
+      "vol_today": 4812,
+      "vol_avg": 26452,
+      "or_bar_count": 2,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0672,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01521739130434789,
+      "price_935": 4.73,
+      "open_930": 4.69,
+      "prev_close": 4.6
+    },
+    {
+      "ticker": "SOFI",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0833,
+      "gap_retention": 0.3514,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.291,
+      "vol_today": 27430,
+      "vol_avg": 94334,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1461,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01436464088397779,
+      "price_935": 18.25,
+      "open_930": 18.47,
+      "prev_close": 18.1
+    },
+    {
+      "ticker": "DKNG",
+      "confidence": 0.1,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.4623,
+      "gap_retention": -0.3724,
+      "vol_boost": 0.1,
+      "vol_ratio": 7.38,
+      "vol_today": 99154,
+      "vol_avg": 13436,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.081599995,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.012178619756427585,
+      "price_935": 22.36,
+      "open_930": 22.895,
+      "prev_close": 22.17
+    },
+    {
+      "ticker": "OKLO",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.4425,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.316,
+      "vol_today": 5618,
+      "vol_avg": 4269,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1839,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.011851149561507467,
+      "price_935": 45.03,
+      "open_930": 44.26,
+      "prev_close": 42.19
+    },
+    {
+      "ticker": "TSLA",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1697,
+      "gap_retention": 0.642,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.6,
+      "vol_today": 19660,
+      "vol_avg": 32782,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.02,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010859700184646286,
+      "price_935": 321.81,
+      "open_930": 322.295,
+      "prev_close": 319.53
+    }
+  ],
+  "llm_input": [
+    "MSTR",
+    "CRWV",
+    "HOOD",
+    "QUBT",
+    "RDW",
+    "IONQ",
+    "SMR",
+    "PLTR",
+    "AVGO",
+    "NIO",
+    "OKLO"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "IONQ",
+      "direction": "long",
+      "confidence": 1.35,
+      "reason": "Catalyst Tier 1 confermato: earnings beat Q2, guidance alzata per il 2026 e contratto DARPA da $28M. Tutti e tre i segnali tecnici positivi (post_open_advance, or_position=1.0, gap_retention=0.72), con post_open_advance_pct eccezionale a +5.24% che conferma momentum reale.",
+      "price_935": 42.5
+    },
+    "trade_2": {
+      "ticker": "PLTR",
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Catalyst Tier 2 confermato: forti risultati Q2 con upside sulle aspettative e multipli analyst upgrade/price target raise. Segnali tecnici solidi (or_position=0.93, gap_retention=0.99, post_open_advance=+2.38%), titolo vicino ai massimi di 3 mesi (-4.7%) con scarsa resistenza sopra.",
+      "price_935": 163.87
+    },
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "IONQ",
+      "qty": 1185,
+      "entry_price": 42.141064,
+      "entry_time": "09:36:50",
+      "entry_ts": 1786109810.7991693,
+      "direction": "long",
+      "confidence": 1.35,
+      "reason": "Catalyst Tier 1 confermato: earnings beat Q2, guidance alzata per il 2026 e contratto DARPA da $28M. Tutti e tre i segnali tecnici positivi (post_open_advance, or_position=1.0, gap_retention=0.72), con post_open_advance_pct eccezionale a +5.24% che conferma momentum reale.",
+      "order_id": "9ed3de05-2650-4a47-a349-d73a7a52fc05",
+      "stop_atr": 39.4131,
+      "stop_pct": 41.2982,
+      "stop_price": 42.5625,
+      "atr14": 2.728,
+      "peak_price": 43.09,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 42.52,
+      "exit_time": "09:45:55",
+      "exit_reason": "step_stop",
+      "pnl_usd": 449.04,
+      "pnl_pct": 0.009,
+      "catalyst_bonus": 0.3,
+      "vol_boost": 0.05,
+      "short_float": 0.1267,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.7218,
+      "gap_pct": 0.019133937562940535,
+      "news": [
+        {
+          "author": "Priya Nigam",
+          "content": "",
+          "created_at": "2026-08-06T15:52:33Z",
+          "headline": "IonQ Stock Soars After Q2 Earnings Beat, Raised 2026 Outlook, Bullish Analyst Takeaways",
+          "id": 61005307,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/IonQ.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/IonQ.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/IonQ.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "IONQ stock is up after upbeat Q2 results and a raised outlook. What do analysts think?",
+          "symbols": [
+            "IONQ"
+          ],
+          "updated_at": "2026-08-06T15:52:33Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/analyst-color/26/08/61005307/ionq-stock-soars-after-q2-earnings-beat-raised-2026-outlook-bullish-analyst-takeaways"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-08-06T15:30:42Z",
+          "headline": "Benchmark Reiterates Buy on IonQ, Maintains $60 Price Target",
+          "id": 61004063,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "IONQ"
+          ],
+          "updated_at": "2026-08-06T15:30:42Z",
+          "url": "https://www.benzinga.com/news/26/08/61004063/benchmark-reiterates-buy-ionq-maintains-60-price-target"
+        },
+        {
+          "author": "Akanksha Bakshi",
+          "content": "",
+          "created_at": "2026-08-06T15:12:19Z",
+          "headline": "Why Is IonQ Stock Gaining Today?",
+          "id": 61003220,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/Munich--Bavaria--Germany---March-31-2023.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/Munich--Bavaria--Germany---March-31-2023.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/Munich--Bavaria--Germany---March-31-2023.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "IonQ stock rises after strong Q2 results, a higher revenue outlook and a $28 million DARPA contract extension.",
+          "symbols": [
+            "AIPI",
+            "IONQ",
+            "VTWG",
+            "VTWO"
+          ],
+          "updated_at": "2026-08-06T15:12:19Z",
+          "url": "https://www.benzinga.com/markets/tech/26/08/61003220/why-is-ionq-stock-gaining-today"
+        }
+      ]
+    },
+    {
+      "ticker": "PLTR",
+      "qty": 307,
+      "entry_price": 164.18,
+      "entry_time": "09:36:56",
+      "entry_ts": 1786109816.1967678,
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Catalyst Tier 2 confermato: forti risultati Q2 con upside sulle aspettative e multipli analyst upgrade/price target raise. Segnali tecnici solidi (or_position=0.93, gap_retention=0.99, post_open_advance=+2.38%), titolo vicino ai massimi di 3 mesi (-4.7%) con scarsa resistenza sopra.",
+      "order_id": "d148db27-39f3-4a70-af39-5f953d60f34c",
+      "stop_atr": 155.7479,
+      "stop_pct": 160.8964,
+      "stop_price": 167.4636,
+      "atr14": 8.4321,
+      "peak_price": 171.81,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 171.15,
+      "exit_time": "15:45:16",
+      "exit_reason": "eod_close",
+      "pnl_usd": 2139.79,
+      "pnl_pct": 0.0425,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.0,
+      "short_float": 0.0364,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9255,
+      "gap_retention": 0.9891,
+      "gap_pct": 0.015456644433042748,
+      "news": [
+        {
+          "author": "Kaustubh Bagalkote",
+          "content": "",
+          "created_at": "2026-08-07T12:23:37Z",
+          "headline": "Why Is Palantir Technologies Stock Gaining Friday?",
+          "id": 61036034,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/07/Palantir---EK.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/07/Palantir---EK.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/07/Palantir---EK.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Palantir extends post-earnings gains on strong Q2 results and bullish analyst price targets. Read key technicals and price action.",
+          "symbols": [
+            "IGV",
+            "MISL",
+            "PLTR",
+            "SHLD"
+          ],
+          "updated_at": "2026-08-07T12:23:37Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/08/61036034/why-is-palantir-technologies-stock-gaining-friday"
+        },
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-08-07T09:58:19Z",
+          "headline": "Exploring The Competitive Space: Palantir Technologies Versus Industry Peers In Software",
+          "id": 61031249,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_11.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_11.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_11.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "In today&#39;s fast-paced and highly competitive business world, it is crucial for investors and industry followers to conduct comprehensive company evaluations. In this article, we will delve into an extensive industry",
+          "symbols": [
+            "PLTR"
+          ],
+          "updated_at": "2026-08-07T09:58:19Z",
+          "url": "https://www.benzinga.com/news/26/08/61031249/exploring-competitive-space-palantir-technologies-versus-industry-peers-software"
+        },
+        {
+          "author": "Daragh Thomas",
+          "content": "",
+          "created_at": "2026-08-06T14:09:42Z",
+          "headline": "Airbnb Earnings Prediction Market Preview: What Will Brian Chesky Say?",
+          "id": 60998959,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/Airbnb-Logo-Displayed-On-A-Smartphone-Sc.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/Airbnb-Logo-Displayed-On-A-Smartphone-Sc.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/Airbnb-Logo-Displayed-On-A-Smartphone-Sc.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Airbnb reports Q2 earnings today with Polymarket giving just 41% odds of a beat. Kalshi traders bet on whether Brian Chesky says World Cup, Boutique or Home Sharing.",
+          "symbols": [
+            "ABNB",
+            "DAL",
+            "PLTR"
+          ],
+          "updated_at": "2026-08-06T14:09:42Z",
+          "url": "https://www.benzinga.com/markets/prediction-markets/26/08/60998959/airbnb-earnings-prediction-market-preview-what-will-brian-chesky-say"
+        },
+        {
+          "author": "Daragh Thomas",
+          "content": "",
+          "created_at": "2026-08-06T14:01:32Z",
+          "headline": "Steve Eisman Pushes Back on Michael Burry's Market Top Call: 'I Think It's Premature'",
+          "id": 60998326,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/burry-tesla-dall-e.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/burry-tesla-dall-e.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/burry-tesla-dall-e.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Two investors who bet against 2008 housing collapse disagree on whether it&#39;s time to bet against AI. Burry says yes, Eisman says wait for price war.",
+          "symbols": [
+            "AMZN",
+            "MSFT",
+            "MU",
+            "NVDA",
+            "PLTR",
+            "TSLA"
+          ],
+          "updated_at": "2026-08-06T14:01:32Z",
+          "url": "https://www.benzinga.com/markets/prediction-markets/26/08/60998326/steve-eisman-pushes-back-on-michael-burrys-market-top-call-i-think-its-premature"
+        },
+        {
+          "author": "Kaustubh Bagalkote",
+          "content": "",
+          "created_at": "2026-08-06T13:35:44Z",
+          "headline": "Why Is Palantir Stock Falling on Thursday?",
+          "id": 60996330,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/Paris--France---March-4--2026-The-Logo-O.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/Paris--France---March-4--2026-The-Logo-O.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/06/Paris--France---March-4--2026-The-Logo-O.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Palantir Technologies Inc (NASDAQ: PLTR) stock fell Thursday amid profit-taking despite strong Q2 earnings, contrasting analyst upgrades with bearish positions.",
+          "symbols": [
+            "PLTR",
+            "TSLA"
+          ],
+          "updated_at": "2026-08-06T13:35:44Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/08/60996330/why-is-palantir-stock-falling-on-thursday-3"
+        }
+      ]
+    }
+  ]
+}
