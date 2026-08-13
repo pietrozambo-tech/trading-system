@@ -1,0 +1,419 @@
+{
+  "date": "2026-08-13",
+  "spy_pct": 0.003611463484091539,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 68,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 3,
+      "tickers": [
+        "SMCI",
+        "MSFT",
+        "SOFI"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 3,
+      "tickers": [
+        "SMCI",
+        "MSFT",
+        "SOFI"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 2,
+      "tickers": [
+        "SMCI",
+        "SOFI"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "SMCI",
+      "gap_pct": 1.04,
+      "adv_m": 55.2,
+      "short_float_pct": 18.5,
+      "dist_from_3m_high_pct": -26.1,
+      "prev_day_return_pct": 19.02
+    },
+    {
+      "ticker": "MSFT",
+      "gap_pct": 0.83,
+      "adv_m": 40.9,
+      "short_float_pct": 1.1,
+      "dist_from_3m_high_pct": -3.4,
+      "prev_day_return_pct": -2.26
+    },
+    {
+      "ticker": "SOFI",
+      "gap_pct": 0.78,
+      "adv_m": 77.5,
+      "short_float_pct": 15.0,
+      "dist_from_3m_high_pct": -8.4,
+      "prev_day_return_pct": -0.22
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "MSFT",
+      "reason": "pm_gap_eaten_at_open_28%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "SMCI",
+      "confidence": 1.0167,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.6516,
+      "gap_retention": 0.8472,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.034,
+      "vol_today": 171906,
+      "vol_avg": 84530,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.18450001,
+      "short_squeeze_bonus": 0.1,
+      "gap_pct": 0.01036958255783038,
+      "price_935": 39.155,
+      "open_930": 38.33,
+      "prev_close": 37.61
+    },
+    {
+      "ticker": "SOFI",
+      "confidence": 1.2,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7586,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.227,
+      "vol_today": 16771,
+      "vol_avg": 73939,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.1497,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0078037904124858976,
+      "price_935": 18.19,
+      "open_930": 18.08,
+      "prev_close": 17.94
+    }
+  ],
+  "llm_input": [
+    "SMCI",
+    "SOFI"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "SOFI",
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Tutti e tre i segnali tecnici sono positivi (post_open_advance, or_position > 0.66, gap_retention = 1.0) con catalyst Tier 2 (price target raise Truist a $19) e short float al 15% che amplifica il movimento. Prev_day_return quasi neutro (-0.2%) esclude la regola rimbalzo da selloff.",
+      "price_935": 18.19
+    },
+    "trade_2": {
+      "ticker": "SMCI",
+      "direction": "long",
+      "confidence": 1.0167,
+      "reason": "Forte rimbalzo da giornata precedente +19% supportato da outlook positivo sulla domanda AI server (catalyst Tier 2); short float elevato al 18.5% con gap_retention solida a 0.85 e post_open_advance reale di +2.15% confermano continuazione del momentum.",
+      "price_935": 39.155
+    },
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "SMCI",
+      "qty": 1329,
+      "entry_price": 39.248126,
+      "entry_time": "09:38:38",
+      "entry_ts": 1786628318.5041513,
+      "direction": "long",
+      "confidence": 1.0167,
+      "reason": "Forte rimbalzo da giornata precedente +19% supportato da outlook positivo sulla domanda AI server (catalyst Tier 2); short float elevato al 18.5% con gap_retention solida a 0.85 e post_open_advance reale di +2.15% confermano continuazione del momentum.",
+      "order_id": "fe8e8b20-298f-4762-b514-9adbd51f4ec0",
+      "stop_atr": 36.7845,
+      "stop_pct": 38.4632,
+      "stop_price": 39.6406,
+      "atr14": 2.4636,
+      "peak_price": 40.01,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 39.584154,
+      "exit_time": "09:55:29",
+      "exit_reason": "step_stop",
+      "pnl_usd": 446.58,
+      "pnl_pct": 0.0086,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.05,
+      "short_float": 0.18450001,
+      "short_squeeze_bonus": 0.1,
+      "post_open_advance": true,
+      "or_position": 0.6516,
+      "gap_retention": 0.8472,
+      "gap_pct": 0.01036958255783038,
+      "news": [
+        {
+          "author": "Namrata Sen",
+          "content": "",
+          "created_at": "2026-08-13T11:02:45Z",
+          "headline": "DELL Stock Climbs 4% in Thursday Pre-Market: What's Going On?",
+          "id": 61168887,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/13/Bucharest--Romania---16-03-2020-Close-up.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/13/Bucharest--Romania---16-03-2020-Close-up.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/13/Bucharest--Romania---16-03-2020-Close-up.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Dell stock rises as strong Lenovo results and Super Micro&#39;s upbeat outlook fuel optimism over AI server demand.",
+          "symbols": [
+            "DELL",
+            "SMCI"
+          ],
+          "updated_at": "2026-08-13T11:02:45Z",
+          "url": "https://www.benzinga.com/markets/tech/26/08/61168887/dell-stock-climbs-4-in-thursday-pre-market-whats-going-on"
+        },
+        {
+          "author": "Rishabh Mishra",
+          "content": "",
+          "created_at": "2026-08-13T05:41:06Z",
+          "headline": "Stock Market: Will S&P 500 Open Up or Down Today?",
+          "id": 61164563,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/13/Stock-S-And-P-500-Index-Fund-Symbol-Is-O.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/13/Stock-S-And-P-500-Index-Fund-Symbol-Is-O.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/13/Stock-S-And-P-500-Index-Fund-Symbol-Is-O.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Will the S&amp;P 500 open higher? Polymarket odds lean bullish as Wall Street digests cooling CPI data against the ongoing Middle East impasse.",
+          "symbols": [
+            "AMAT",
+            "BN",
+            "CRWV",
+            "JD",
+            "LITE",
+            "POLUSD",
+            "SMCI"
+          ],
+          "updated_at": "2026-08-13T05:41:06Z",
+          "url": "https://www.benzinga.com/markets/prediction-markets/26/08/61164563/stock-market-will-sp-500-open-up-or-down-today-15"
+        },
+        {
+          "author": "Daragh Thomas",
+          "content": "",
+          "created_at": "2026-08-12T19:33:45Z",
+          "headline": "Tesla, Palantir Fall as CPI Sends September Fed Hike Odds to 33%",
+          "id": 61156417,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/12/Inflation-Word-On-Wooden-Cube-With-With-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/12/Inflation-Word-On-Wooden-Cube-With-With-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/12/Inflation-Word-On-Wooden-Cube-With-With-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Tesla and Palantir fell after July CPI pushed September Fed hike odds below 42%, even as the report lifted the broader tech market.",
+          "symbols": [
+            "CRM",
+            "CRWV",
+            "MSFT",
+            "NBIS",
+            "NOW",
+            "PLTR",
+            "SMCI",
+            "TSLA",
+            "WDAY"
+          ],
+          "updated_at": "2026-08-12T19:33:45Z",
+          "url": "https://www.benzinga.com/markets/prediction-markets/26/08/61156417/tesla-palantir-july-cpi-fed-hike-odds"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-08-12T18:33:45Z",
+          "headline": "Citigroup Maintains Neutral on Super Micro Computer, Raises Price Target to $39",
+          "id": 61154468,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "SMCI"
+          ],
+          "updated_at": "2026-08-12T18:33:45Z",
+          "url": "https://www.benzinga.com/news/26/08/61154468/citigroup-maintains-neutral-super-micro-computer-raises-price-target-39"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-08-12T18:18:55Z",
+          "headline": "Goldman Sachs Maintains Sell on Super Micro Computer, Raises Price Target to $34",
+          "id": 61154021,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "SMCI"
+          ],
+          "updated_at": "2026-08-12T18:18:55Z",
+          "url": "https://www.benzinga.com/news/26/08/61154021/goldman-sachs-maintains-sell-super-micro-computer-raises-price-target-34"
+        }
+      ]
+    },
+    {
+      "ticker": "SOFI",
+      "qty": 2862,
+      "entry_price": 18.25,
+      "entry_time": "09:35:20",
+      "entry_ts": 1786628120.3870904,
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Tutti e tre i segnali tecnici sono positivi (post_open_advance, or_position > 0.66, gap_retention = 1.0) con catalyst Tier 2 (price target raise Truist a $19) e short float al 15% che amplifica il movimento. Prev_day_return quasi neutro (-0.2%) esclude la regola rimbalzo da selloff.",
+      "order_id": "39b2423e-cef5-401e-b2eb-7996996b6f32",
+      "stop_atr": 17.3955,
+      "stop_pct": 17.885,
+      "stop_price": 18.4325,
+      "atr14": 0.8545,
+      "peak_price": 18.605,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 18.6,
+      "exit_time": "15:45:05",
+      "exit_reason": "eod_close",
+      "pnl_usd": 1001.7,
+      "pnl_pct": 0.0192,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.0,
+      "short_float": 0.1497,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.7586,
+      "gap_retention": 1.0,
+      "gap_pct": 0.0078037904124858976,
+      "news": [
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-08-12T17:32:46Z",
+          "headline": "Truist Securities Maintains Hold on SoFi Technologies, Raises Price Target to $19",
+          "id": 61152608,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "SOFI"
+          ],
+          "updated_at": "2026-08-12T17:32:46Z",
+          "url": "https://www.benzinga.com/news/26/08/61152608/truist-securities-maintains-hold-sofi-technologies-raises-price-target-19"
+        }
+      ]
+    }
+  ]
+}
