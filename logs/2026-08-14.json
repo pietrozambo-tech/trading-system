@@ -1,0 +1,327 @@
+{
+  "date": "2026-08-14",
+  "spy_pct": 0.0005013884603517258,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 68,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 5,
+      "tickers": [
+        "LUNR",
+        "MU",
+        "UUUU",
+        "OKLO",
+        "MRVL"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 5,
+      "tickers": [
+        "LUNR",
+        "MU",
+        "UUUU",
+        "OKLO",
+        "MRVL"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 1,
+      "tickers": [
+        "UUUU"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "LUNR",
+      "gap_pct": 4.16,
+      "adv_m": 13.2,
+      "short_float_pct": 27.1,
+      "dist_from_3m_high_pct": -60.9,
+      "prev_day_return_pct": 3.6
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 2.86,
+      "adv_m": 50.8,
+      "short_float_pct": 2.7,
+      "dist_from_3m_high_pct": -22.1,
+      "prev_day_return_pct": 4.23
+    },
+    {
+      "ticker": "UUUU",
+      "gap_pct": 1.78,
+      "adv_m": 8.9,
+      "short_float_pct": 20.5,
+      "dist_from_3m_high_pct": -31.0,
+      "prev_day_return_pct": 0.76
+    },
+    {
+      "ticker": "OKLO",
+      "gap_pct": 0.75,
+      "adv_m": 11.5,
+      "short_float_pct": 18.6,
+      "dist_from_3m_high_pct": -39.0,
+      "prev_day_return_pct": 2.92
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 0.72,
+      "adv_m": 40.7,
+      "short_float_pct": 4.8,
+      "dist_from_3m_high_pct": -32.1,
+      "prev_day_return_pct": 2.35
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "OKLO",
+      "reason": "gap_reversed_at_open"
+    },
+    {
+      "ticker": "MRVL",
+      "reason": "gap_reversed_at_open"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "LUNR",
+      "confidence": 0.3833,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.108,
+      "gap_retention": 0.8688,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.588,
+      "vol_today": 20781,
+      "vol_avg": 8030,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2714,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0415717539863326,
+      "price_935": 19.35,
+      "open_930": 19.465,
+      "prev_close": 17.56
+    },
+    {
+      "ticker": "MU",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0087,
+      "gap_retention": 0.2626,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.405,
+      "vol_today": 67297,
+      "vol_avg": 47900,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.026500002,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.028647231609866947,
+      "price_935": 957.805,
+      "open_930": 979.32,
+      "prev_close": 949.83
+    },
+    {
+      "ticker": "UUUU",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7882,
+      "gap_retention": 0.8,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.133,
+      "vol_today": 7997,
+      "vol_avg": 7055,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.205,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.017832647462277078,
+      "price_935": 15.035,
+      "open_930": 14.73,
+      "prev_close": 14.58
+    }
+  ],
+  "llm_input": [
+    "UUUU"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "UUUU",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "BMO Capital avvia copertura con rating Outperform e price target $18, catalyst Tier 2 confermato. Tutti e tre i segnali tecnici sono positivi (or_position 0.79, gap_retention 0.80, post_open_advance +2.07%) con short float elevato al 20.5% che amplifica il potenziale di squeeze.",
+      "price_935": 15.035
+    },
+    "trade_2": null,
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "UUUU",
+      "qty": 3511,
+      "entry_price": 15.04,
+      "entry_time": "09:35:53",
+      "entry_ts": 1786714553.0503254,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "BMO Capital avvia copertura con rating Outperform e price target $18, catalyst Tier 2 confermato. Tutti e tre i segnali tecnici sono positivi (or_position 0.79, gap_retention 0.80, post_open_advance +2.07%) con short float elevato al 20.5% che amplifica il potenziale di squeeze.",
+      "order_id": "81f7db57-37ef-4d42-80d6-29e02f15bc08",
+      "stop_atr": 14.1419,
+      "stop_pct": 14.7392,
+      "stop_price": 15.1904,
+      "atr14": 0.8981,
+      "peak_price": 15.36,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 15.19,
+      "exit_time": "10:08:28",
+      "exit_reason": "step_stop",
+      "pnl_usd": 526.65,
+      "pnl_pct": 0.01,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.205,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.7882,
+      "gap_retention": 0.8,
+      "gap_pct": 0.017832647462277078,
+      "news": [
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-08-14T12:57:44Z",
+          "headline": "This Aehr Test Systems Analyst Begins Coverage On A Bearish Note; Here Are Top 4 Initiations For Friday",
+          "id": 61207415,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/14/Financial-Analysts.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/14/Financial-Analysts.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/14/Financial-Analysts.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Wall Street analysts changed ratings for top names. Visit our analyst ratings page for details. SGP initiated with Outperform, $39 PT.",
+          "symbols": [
+            "ADIG",
+            "CSQR",
+            "SGP",
+            "SM",
+            "UAA",
+            "UUUU"
+          ],
+          "updated_at": "2026-08-14T12:57:44Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/initiation/26/08/61207415/this-aehr-test-systems-analyst-begins-coverage-on-a-bearish-note-here-are-top-4-initiations-for-friday"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-08-14T09:33:41Z",
+          "headline": "BMO Capital Initiates Coverage On Energy Fuels with Outperform Rating, Announces Price Target of $18",
+          "id": 61202161,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "UUUU"
+          ],
+          "updated_at": "2026-08-14T09:33:41Z",
+          "url": "https://www.benzinga.com/news/26/08/61202161/bmo-capital-initiates-coverage-energy-fuels-outperform-rating-announces-price-target-18"
+        }
+      ]
+    }
+  ]
+}
