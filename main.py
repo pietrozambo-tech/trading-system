@@ -238,27 +238,50 @@ def _push_log_to_github(date_str: str, log_path: str) -> None:
     with open(log_path, "rb") as f:
         content = base64.b64encode(f.read()).decode()
 
-    # GET first to retrieve SHA (required by GitHub API when updating an existing file)
-    sha = None
+    # Retry con backoff: la PUT è un singolo colpo su un servizio esterno che ogni tanto
+    # restituisce 5xx/429 transitori (episodio 17/08: GitHub 503 "No server available" alla
+    # chiusura → log perso senza retry, dashboard con un buco silenzioso). 4 tentativi con
+    # backoff 1/2/4s; ri-fetch della SHA a ogni giro (può cambiare tra un tentativo e l'altro).
+    last_err = None
+    for attempt in range(4):
+        sha = None
+        try:
+            r = _req.get(api_url, headers=headers, timeout=10)
+            if r.status_code == 200:
+                sha = r.json().get("sha")
+        except Exception:
+            pass
+
+        body: dict = {"message": f"trading log {date_str}", "content": content}
+        if sha:
+            body["sha"] = sha
+
+        try:
+            r = _req.put(api_url, json=body, headers=headers, timeout=30)
+            if r.status_code in (200, 201):
+                suffix = f" (tentativo {attempt + 1})" if attempt else ""
+                logger.info(f"[PIPELINE] Log pushed to GitHub: logs/{date_str}.json{suffix}")
+                return
+            last_err = f"{r.status_code} {r.text[:120]}"
+            # 4xx (auth/validazione) non si risolve ritentando — esci subito.
+            if r.status_code not in (500, 502, 503, 504, 429):
+                break
+        except Exception as e:
+            last_err = str(e)
+
+        if attempt < 3:
+            time.sleep(2 ** attempt)  # 1s, 2s, 4s
+
+    # Esauriti i tentativi: alza la voce invece di lasciare un buco silenzioso nella dashboard.
+    logger.warning(f"GitHub log push failed after retries: {last_err}")
     try:
-        r = _req.get(api_url, headers=headers, timeout=10)
-        if r.status_code == 200:
-            sha = r.json().get("sha")
+        telegram.send_message(
+            f"⚠️ Log del {date_str} NON salvato su GitHub dopo 4 tentativi ({last_err}).\n"
+            f"La sessione è andata a buon fine ma la dashboard non mostrerà questa giornata "
+            f"finché il log non viene ripristinato dal container."
+        )
     except Exception:
         pass
-
-    body: dict = {"message": f"trading log {date_str}", "content": content}
-    if sha:
-        body["sha"] = sha
-
-    try:
-        r = _req.put(api_url, json=body, headers=headers, timeout=30)
-        if r.status_code in (200, 201):
-            logger.info(f"[PIPELINE] Log pushed to GitHub: logs/{date_str}.json")
-        else:
-            logger.warning(f"GitHub log push failed: {r.status_code} {r.text[:120]}")
-    except Exception as e:
-        logger.warning(f"GitHub log push error: {e}")
 
 
 # ---------------------------------------------------------------------------
