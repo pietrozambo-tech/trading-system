@@ -1,0 +1,155 @@
+{
+  "date": "2026-08-18",
+  "spy_pct": -0.0053066190365251,
+  "spy_source": "open_935",
+  "blocked": "nessun candidato sopra soglia confidence",
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 68,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 2,
+      "tickers": [
+        "MSFT",
+        "AAPL"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 2,
+      "tickers": [
+        "MSFT",
+        "AAPL"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 0,
+      "tickers": [],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "MSFT",
+      "gap_pct": 0.6,
+      "adv_m": 40.3,
+      "short_float_pct": 1.1,
+      "dist_from_3m_high_pct": -5.9,
+      "prev_day_return_pct": -3.04
+    },
+    {
+      "ticker": "AAPL",
+      "gap_pct": 0.59,
+      "adv_m": 55.8,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -10.7,
+      "prev_day_return_pct": -0.11
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "MSFT",
+      "reason": "pm_gap_eaten_at_open_41%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "AAPL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0319,
+      "gap_retention": 0.2035,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.496,
+      "vol_today": 48524,
+      "vol_avg": 97783,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0097,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.005922968683530228,
+      "price_935": 306.11,
+      "open_930": 307.85,
+      "prev_close": 305.59
+    }
+  ],
+  "llm_input": [],
+  "llm_output": {},
+  "trades": []
+}
