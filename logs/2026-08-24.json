@@ -1,0 +1,233 @@
+{
+  "date": "2026-08-24",
+  "spy_pct": -0.0027950472807063195,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 68,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 3,
+      "tickers": [
+        "MSTR",
+        "NCLH",
+        "HOOD"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 3,
+      "tickers": [
+        "MSTR",
+        "NCLH",
+        "HOOD"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 1,
+      "tickers": [
+        "NCLH"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "MSTR",
+      "gap_pct": 2.52,
+      "adv_m": 21.6,
+      "short_float_pct": 8.9,
+      "dist_from_3m_high_pct": -27.8,
+      "prev_day_return_pct": 6.1
+    },
+    {
+      "ticker": "NCLH",
+      "gap_pct": 0.93,
+      "adv_m": 17.5,
+      "short_float_pct": 20.7,
+      "dist_from_3m_high_pct": -20.7,
+      "prev_day_return_pct": 2.93
+    },
+    {
+      "ticker": "HOOD",
+      "gap_pct": 0.53,
+      "adv_m": 26.1,
+      "short_float_pct": 4.2,
+      "dist_from_3m_high_pct": -9.4,
+      "prev_day_return_pct": 13.7
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "HOOD",
+      "reason": "gap_reversed_at_open"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "MSTR",
+      "confidence": 0.1,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.5076,
+      "gap_retention": 0.2304,
+      "vol_boost": 0.1,
+      "vol_ratio": 3.161,
+      "vol_today": 44591,
+      "vol_avg": 14106,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0892,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.025241090146750567,
+      "price_935": 121.26,
+      "open_930": 121.485,
+      "prev_close": 119.25
+    },
+    {
+      "ticker": "NCLH",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.68,
+      "gap_retention": 0.8148,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.058,
+      "vol_today": 23359,
+      "vol_avg": 22088,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2074,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.00928074245939676,
+      "price_935": 17.63,
+      "open_930": 17.51,
+      "prev_close": 17.24
+    }
+  ],
+  "llm_input": [
+    "NCLH"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "NCLH",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e tre i segnali tecnici sono positivi (post_open_advance, or_position 0.68, gap_retention 0.81) con short float elevato al 20.7% che amplifica il potenziale rialzista. Nessun catalyst identificabile ma i segnali tecnici da soli (1.0 direction score) superano la soglia con short squeeze bonus attivato dal gap positivo e short float >15%.",
+      "price_935": 17.63
+    },
+    "trade_2": null,
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "NCLH",
+      "qty": 3052,
+      "entry_price": 17.594005,
+      "entry_time": "09:39:13",
+      "entry_ts": 1787578753.3899844,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e tre i segnali tecnici sono positivi (post_open_advance, or_position 0.68, gap_retention 0.81) con short float elevato al 20.7% che amplifica il potenziale rialzista. Nessun catalyst identificabile ma i segnali tecnici da soli (1.0 direction score) superano la soglia con short squeeze bonus attivato dal gap positivo e short float >15%.",
+      "order_id": "5b7aa9a4-5743-4f1f-85dd-62a924939ff2",
+      "stop_atr": 16.9169,
+      "stop_pct": 17.2421,
+      "stop_price": 17.2421,
+      "atr14": 0.6771,
+      "peak_price": 17.594005,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 17.23,
+      "exit_time": "10:20:19",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1110.94,
+      "pnl_pct": -0.0207,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.2074,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.68,
+      "gap_retention": 0.8148,
+      "gap_pct": 0.00928074245939676,
+      "news": []
+    }
+  ]
+}
