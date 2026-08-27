@@ -1,0 +1,753 @@
+{
+  "date": "2026-08-27",
+  "spy_pct": 0.0019518500143612956,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 68,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 15,
+      "tickers": [
+        "NVDA",
+        "MU",
+        "MRVL",
+        "CIFR",
+        "CRWV",
+        "MARA",
+        "QBTS",
+        "SMR",
+        "QUBT",
+        "ORCL",
+        "IONQ",
+        "HOOD",
+        "AVGO",
+        "RGTI",
+        "AMD"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 15,
+      "tickers": [
+        "NVDA",
+        "MU",
+        "MRVL",
+        "CIFR",
+        "CRWV",
+        "MARA",
+        "QBTS",
+        "SMR",
+        "QUBT",
+        "ORCL",
+        "IONQ",
+        "HOOD",
+        "AVGO",
+        "RGTI",
+        "AMD"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 1,
+      "tickers": [
+        "AVGO"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "NVDA",
+      "gap_pct": 6.31,
+      "adv_m": 141.3,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -3.9,
+      "prev_day_return_pct": -1.59
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 3.6,
+      "adv_m": 47.3,
+      "short_float_pct": 2.7,
+      "dist_from_3m_high_pct": -22.5,
+      "prev_day_return_pct": 0.58
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 3.41,
+      "adv_m": 40.5,
+      "short_float_pct": 3.8,
+      "dist_from_3m_high_pct": -23.2,
+      "prev_day_return_pct": 1.97
+    },
+    {
+      "ticker": "CIFR",
+      "gap_pct": 3.25,
+      "adv_m": 29.3,
+      "short_float_pct": 19.2,
+      "dist_from_3m_high_pct": -45.1,
+      "prev_day_return_pct": -1.78
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 2.43,
+      "adv_m": 29.3,
+      "short_float_pct": 18.9,
+      "dist_from_3m_high_pct": -31.8,
+      "prev_day_return_pct": -0.03
+    },
+    {
+      "ticker": "MARA",
+      "gap_pct": 2.32,
+      "adv_m": 46.2,
+      "short_float_pct": 32.7,
+      "dist_from_3m_high_pct": -30.1,
+      "prev_day_return_pct": -5.16
+    },
+    {
+      "ticker": "QBTS",
+      "gap_pct": 2.06,
+      "adv_m": 24.3,
+      "short_float_pct": 20.5,
+      "dist_from_3m_high_pct": -42.9,
+      "prev_day_return_pct": -9.51
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 1.83,
+      "adv_m": 33.6,
+      "short_float_pct": 18.4,
+      "dist_from_3m_high_pct": -34.0,
+      "prev_day_return_pct": -5.5
+    },
+    {
+      "ticker": "QUBT",
+      "gap_pct": 1.68,
+      "adv_m": 13.0,
+      "short_float_pct": 32.0,
+      "dist_from_3m_high_pct": -34.7,
+      "prev_day_return_pct": -1.3
+    },
+    {
+      "ticker": "ORCL",
+      "gap_pct": 1.64,
+      "adv_m": 31.8,
+      "short_float_pct": 2.8,
+      "dist_from_3m_high_pct": -39.3,
+      "prev_day_return_pct": 2.84
+    },
+    {
+      "ticker": "IONQ",
+      "gap_pct": 1.57,
+      "adv_m": 22.8,
+      "short_float_pct": 10.5,
+      "dist_from_3m_high_pct": -44.8,
+      "prev_day_return_pct": -4.8
+    },
+    {
+      "ticker": "HOOD",
+      "gap_pct": 1.57,
+      "adv_m": 26.2,
+      "short_float_pct": 4.2,
+      "dist_from_3m_high_pct": -8.2,
+      "prev_day_return_pct": -3.17
+    },
+    {
+      "ticker": "AVGO",
+      "gap_pct": 1.35,
+      "adv_m": 26.0,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -27.1,
+      "prev_day_return_pct": -0.32
+    },
+    {
+      "ticker": "RGTI",
+      "gap_pct": 1.32,
+      "adv_m": 30.9,
+      "short_float_pct": 17.7,
+      "dist_from_3m_high_pct": -42.4,
+      "prev_day_return_pct": -5.9
+    },
+    {
+      "ticker": "AMD",
+      "gap_pct": 0.73,
+      "adv_m": 28.2,
+      "short_float_pct": 2.5,
+      "dist_from_3m_high_pct": -17.2,
+      "prev_day_return_pct": 0.37
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "AMD",
+      "reason": "pm_gap_eaten_at_open_30%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "NVDA",
+      "confidence": 0.6333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.2622,
+      "gap_retention": 0.8872,
+      "vol_boost": 0.1,
+      "vol_ratio": 3.595,
+      "vol_today": 519606,
+      "vol_avg": 144538,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0123000005,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0631498616808166,
+      "price_935": 222.31,
+      "open_930": 222.74,
+      "prev_close": 209.66
+    },
+    {
+      "ticker": "MU",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1041,
+      "gap_retention": 0.2937,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.705,
+      "vol_today": 30792,
+      "vol_avg": 43700,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.026600001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03599744245524294,
+      "price_935": 949.085,
+      "open_930": 967.1,
+      "prev_close": 938.4
+    },
+    {
+      "ticker": "MRVL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0832,
+      "gap_retention": 0.3275,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.162,
+      "vol_today": 39995,
+      "vol_avg": 34429,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0379,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.034066337562726916,
+      "price_935": 248.27,
+      "open_930": 253.17,
+      "prev_close": 245.11
+    },
+    {
+      "ticker": "CIFR",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": true,
+      "or_position": 0.5275,
+      "gap_retention": 0.6887,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.338,
+      "vol_today": 83701,
+      "vol_avg": 62565,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.192,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03245942571785266,
+      "price_935": 16.625,
+      "open_930": 16.55,
+      "prev_close": 16.02
+    },
+    {
+      "ticker": "CRWV",
+      "confidence": 0.3,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1116,
+      "gap_retention": 0.5119,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.562,
+      "vol_today": 27084,
+      "vol_avg": 48154,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.1889,
+      "short_squeeze_bonus": 0.1,
+      "gap_pct": 0.024315418702420183,
+      "price_935": 89.58,
+      "open_930": 90.53,
+      "prev_close": 88.01
+    },
+    {
+      "ticker": "MARA",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.5,
+      "gap_retention": 0.2414,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.445,
+      "vol_today": 21326,
+      "vol_avg": 47909,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.3266,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.023172905525846683,
+      "price_935": 11.42,
+      "open_930": 11.51,
+      "prev_close": 11.22
+    },
+    {
+      "ticker": "QBTS",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.375,
+      "gap_retention": 0.6364,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.423,
+      "vol_today": 12448,
+      "vol_avg": 29459,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2047,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.020559680182752678,
+      "price_935": 17.81,
+      "open_930": 17.84,
+      "prev_close": 17.51
+    },
+    {
+      "ticker": "SMR",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0156,
+      "gap_retention": -0.1053,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.416,
+      "vol_today": 42358,
+      "vol_avg": 29911,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.184,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.018338727076591146,
+      "price_935": 9.255,
+      "open_930": 9.46,
+      "prev_close": 9.27
+    },
+    {
+      "ticker": "QUBT",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0,
+      "gap_retention": 0.3571,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.388,
+      "vol_today": 3450,
+      "vol_avg": 8898,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.32,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.016766467065868332,
+      "price_935": 8.425,
+      "open_930": 8.56,
+      "prev_close": 8.35
+    },
+    {
+      "ticker": "ORCL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1822,
+      "gap_retention": 0.6391,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.65,
+      "vol_today": 15776,
+      "vol_avg": 24284,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0278,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.016390139047491085,
+      "price_935": 151.43,
+      "open_930": 152.14,
+      "prev_close": 148.87
+    },
+    {
+      "ticker": "IONQ",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.1412,
+      "gap_retention": 0.8571,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.843,
+      "vol_today": 19251,
+      "vol_avg": 22846,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.105100006,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015738196352735333,
+      "price_935": 40.93,
+      "open_930": 40.94,
+      "prev_close": 40.03
+    },
+    {
+      "ticker": "HOOD",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0348,
+      "gap_retention": -0.4246,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.281,
+      "vol_today": 10721,
+      "vol_avg": 38219,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0424,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015662428597751875,
+      "price_935": 107.67,
+      "open_930": 110.86,
+      "prev_close": 108.54
+    },
+    {
+      "ticker": "AVGO",
+      "confidence": 1.2,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9868,
+      "gap_retention": 0.9652,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.087,
+      "vol_today": 31214,
+      "vol_avg": 28704,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.012,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.013498692314182097,
+      "price_935": 366.39,
+      "open_930": 361.34,
+      "prev_close": 355.59
+    },
+    {
+      "ticker": "RGTI",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0,
+      "gap_retention": 0.25,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.335,
+      "vol_today": 29344,
+      "vol_avg": 21981,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1774,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.013174404015056405,
+      "price_935": 16.025,
+      "open_930": 16.28,
+      "prev_close": 15.94
+    }
+  ],
+  "llm_input": [
+    "AVGO"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "AVGO",
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Broadcom beneficia del rally settoriale trainato dai risultati Nvidia con forte domanda AI, supportato dall'espansione della partnership con Kyndryl su VMware (catalyst Tier 2). I segnali tecnici sono eccellenti: or_position a 0.987, gap_retention a 0.965 e post_open_advance positivo confermano momentum reale e assenza di venditori nella prima fascia.",
+      "price_935": 366.39
+    },
+    "trade_2": null,
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "AVGO",
+      "qty": 145,
+      "entry_price": 364.78,
+      "entry_time": "09:36:00",
+      "entry_ts": 1787837760.629413,
+      "direction": "long",
+      "confidence": 1.2,
+      "reason": "Broadcom beneficia del rally settoriale trainato dai risultati Nvidia con forte domanda AI, supportato dall'espansione della partnership con Kyndryl su VMware (catalyst Tier 2). I segnali tecnici sono eccellenti: or_position a 0.987, gap_retention a 0.965 e post_open_advance positivo confermano momentum reale e assenza di venditori nella prima fascia.",
+      "order_id": "b3b011c7-3072-4f43-a544-b406917e632e",
+      "stop_atr": 351.9404,
+      "stop_pct": 357.4844,
+      "stop_price": 368.4278,
+      "atr14": 12.8396,
+      "peak_price": 370.425,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 368.3,
+      "exit_time": "13:39:25",
+      "exit_reason": "step_stop",
+      "pnl_usd": 510.4,
+      "pnl_pct": 0.0096,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.0,
+      "short_float": 0.012,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9868,
+      "gap_retention": 0.9652,
+      "gap_pct": 0.013498692314182097,
+      "news": [
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-08-27T13:01:10Z",
+          "headline": "Kyndryl Expands Partnership With Broadcom To Provide Consulting Services For VMware Cloud Foundation",
+          "id": 61460655,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "AVGO",
+            "KD"
+          ],
+          "updated_at": "2026-08-27T13:01:10Z",
+          "url": "https://www.benzinga.com/news/26/08/61460655/kyndryl-expands-partnership-broadcom-provide-consulting-services-vmware-cloud-foundation"
+        },
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-08-27T09:58:38Z",
+          "headline": "Comparing Broadcom With Industry Competitors In Semiconductors &amp; Semiconductor Equipment Industry",
+          "id": 61454741,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_1.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_1.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_1.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "In today&#39;s rapidly changing and highly competitive business world, it is imperative for investors and industry observers to carefully assess companies before making investment choices. In this article, we will",
+          "symbols": [
+            "AVGO"
+          ],
+          "updated_at": "2026-08-27T09:58:38Z",
+          "url": "https://www.benzinga.com/news/26/08/61454741/comparing-broadcom-industry-competitors-semiconductors-amp-semiconductor-equipment-industry"
+        },
+        {
+          "author": "Namrata Sen",
+          "content": "",
+          "created_at": "2026-08-27T09:31:57Z",
+          "headline": "Nvidia Stock Climbs Over 7% in Thursday Pre-Market: What\u2019s Lifting Micron, Intel and Other Chip Stocks?",
+          "id": 61454195,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/27/Los-Angeles--California---July-6-2025-Nv.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/27/Los-Angeles--California---July-6-2025-Nv.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/27/Los-Angeles--California---July-6-2025-Nv.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Nvidia shares surge 7.4% premarket as strong guidance boosts chip stocks, while CEO Jensen Huang cites robust AI demand.",
+          "symbols": [
+            "AMD",
+            "AVGO",
+            "INTC",
+            "MU",
+            "NVDA",
+            "TSM"
+          ],
+          "updated_at": "2026-08-27T09:32:06Z",
+          "url": "https://www.benzinga.com/markets/tech/26/08/61454195/nvidia-micron-intel-climb-in-thursday-pre-market-whats-going-on"
+        },
+        {
+          "author": "Ananya Gairola",
+          "content": "",
+          "created_at": "2026-08-27T06:56:54Z",
+          "headline": "Nvidia CEO Jensen Huang Not Taking OpenAI's 'Jalape\u00f1o' Chip Personally: 'Lots of Projects Get Started. Lots of Projects Get Canceled'",
+          "id": 61453544,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/27/Taipei--Taiwan-On-June-1--2023--Jen-hsun.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/27/Taipei--Taiwan-On-June-1--2023--Jen-hsun.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/27/Taipei--Taiwan-On-June-1--2023--Jen-hsun.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Jensen Huang shrugged off OpenAI\u2019s Jalape\u00f1o chip, saying Nvidia remains confident despite growing AI-chip competition.",
+          "symbols": [
+            "AMZN",
+            "AVGO",
+            "GOOG",
+            "GOOGL",
+            "META",
+            "NVDA"
+          ],
+          "updated_at": "2026-08-27T06:56:54Z",
+          "url": "https://www.benzinga.com/markets/tech/26/08/61453544/nvidia-jensen-huang-openai-jalapeno-chip-competition"
+        },
+        {
+          "author": "Shivdeep Dhaliwal",
+          "content": "",
+          "created_at": "2026-08-27T04:17:01Z",
+          "headline": "CrowdStrike Posts Best Quarter Ever, but Cathie Wood's Ark Sells Shares Amid Cloudflare, Cerebras Buys",
+          "id": 61452726,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/27/Germany--Mannheim-January-29--2025--Sign.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/27/Germany--Mannheim-January-29--2025--Sign.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/08/27/Germany--Mannheim-January-29--2025--Sign.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "On Wednesday, Aug. 26, 2026, Ark Invest sold CrowdStrike and AMD shares after CrowdStrike&#39;s record quarter.",
+          "symbols": [
+            "AMD",
+            "ARKF",
+            "ARKK",
+            "ARKQ",
+            "ARKW",
+            "AVGO",
+            "CBRS",
+            "CRWD",
+            "NET",
+            "NVDA"
+          ],
+          "updated_at": "2026-08-27T04:17:01Z",
+          "url": "https://www.benzinga.com/etfs/emerging-market-etfs/26/08/61452726/crowdstrike-posts-best-quarter-ever-but-cathie-woods-ark-sells-shares-amid-cloudflare-cerebras-buys"
+        }
+      ]
+    }
+  ]
+}
