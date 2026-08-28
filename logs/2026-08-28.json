@@ -1,0 +1,179 @@
+{
+  "date": "2026-08-28",
+  "spy_pct": 0.0010438548717550556,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 68,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 2,
+      "tickers": [
+        "AVGO",
+        "ORCL"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 2,
+      "tickers": [
+        "AVGO",
+        "ORCL"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 1,
+      "tickers": [
+        "AVGO"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "AVGO",
+      "gap_pct": 0.94,
+      "adv_m": 26.0,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -24.1,
+      "prev_day_return_pct": 4.49
+    },
+    {
+      "ticker": "ORCL",
+      "gap_pct": 0.57,
+      "adv_m": 32.1,
+      "short_float_pct": 2.8,
+      "dist_from_3m_high_pct": -38.7,
+      "prev_day_return_pct": 2.06
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "AVGO",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.8543,
+      "gap_retention": 0.4818,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.991,
+      "vol_today": 28190,
+      "vol_avg": 28440,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.012,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.009420250847822576,
+      "price_935": 375.86,
+      "open_930": 373.325,
+      "prev_close": 371.54
+    },
+    {
+      "ticker": "ORCL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.3471,
+      "gap_retention": 0.3667,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.655,
+      "vol_today": 15138,
+      "vol_avg": 23123,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0278,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.005660128998288888,
+      "price_935": 152.91,
+      "open_930": 153.44,
+      "prev_close": 151.94
+    }
+  ],
+  "llm_input": [
+    "AVGO"
+  ],
+  "llm_output": {
+    "trade_1": null,
+    "trade_2": null,
+    "no_trade_reason": "AVGO presenta confidence pari alla soglia minima (0.6667) con soli 2/3 segnali tecnici attivi: gap_retention insufficiente (0.48, sotto soglia 0.70) penalizza la solidit\u00e0 del setup. Nessun catalyst identificabile (bonus 0.00) e vol_ratio sotto 2x (volume_boost 0.00): la news presente \u00e8 un'analisi comparativa generica senza impatto direzionale. Con dist_from_3m_high_pct a -24.1% c'\u00e8 resistenza significativa sopra. In assenza di catalyst e con gap_retention debole, la confidence effettiva rimane al limite e non giustifica un'esposizione long."
+  },
+  "trades": []
+}
