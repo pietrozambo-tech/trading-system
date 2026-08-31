@@ -1,0 +1,155 @@
+{
+  "date": "2026-08-31",
+  "spy_pct": -0.0037827579034941353,
+  "spy_source": "open_935",
+  "blocked": "nessun candidato sopra soglia confidence",
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 68,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 2,
+      "tickers": [
+        "OXY",
+        "MARA"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 2,
+      "tickers": [
+        "OXY",
+        "MARA"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 0,
+      "tickers": [],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "OXY",
+      "gap_pct": 2.18,
+      "adv_m": 9.1,
+      "short_float_pct": 0.0,
+      "dist_from_3m_high_pct": -2.8,
+      "prev_day_return_pct": -0.12
+    },
+    {
+      "ticker": "MARA",
+      "gap_pct": 0.66,
+      "adv_m": 46.6,
+      "short_float_pct": 32.7,
+      "dist_from_3m_high_pct": -34.6,
+      "prev_day_return_pct": -10.11
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "MARA",
+      "reason": "pm_gap_eaten_at_open_36%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "OXY",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.5758,
+      "gap_retention": 0.8413,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.16,
+      "vol_today": 9938,
+      "vol_avg": 8569,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.021827411167512675,
+      "price_935": 60.35,
+      "open_930": 60.36,
+      "prev_close": 59.1
+    }
+  ],
+  "llm_input": [],
+  "llm_output": {},
+  "trades": []
+}
