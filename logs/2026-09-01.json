@@ -1,0 +1,123 @@
+{
+  "date": "2026-09-01",
+  "spy_pct": -0.0065069698905942455,
+  "spy_source": "open_935",
+  "blocked": "nessun candidato sopra soglia confidence",
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 68,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 1,
+      "tickers": [
+        "HOOD"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 1,
+      "tickers": [
+        "HOOD"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 0,
+      "tickers": [],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "HOOD",
+      "gap_pct": 1.18,
+      "adv_m": 25.5,
+      "short_float_pct": 4.2,
+      "dist_from_3m_high_pct": -11.7,
+      "prev_day_return_pct": 0.53
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "HOOD",
+      "reason": "pm_gap_eaten_at_open_35%"
+    }
+  ],
+  "signals": [],
+  "llm_input": [],
+  "llm_output": {},
+  "trades": []
+}
