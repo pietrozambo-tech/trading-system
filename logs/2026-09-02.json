@@ -1,0 +1,339 @@
+{
+  "date": "2026-09-02",
+  "spy_pct": 0.000945340913566991,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 68,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 3,
+      "tickers": [
+        "DELL",
+        "CCL",
+        "AAPL"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 3,
+      "tickers": [
+        "DELL",
+        "CCL",
+        "AAPL"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 1,
+      "tickers": [
+        "DELL"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "DELL",
+      "gap_pct": 10.4,
+      "adv_m": 7.5,
+      "short_float_pct": 4.6,
+      "dist_from_3m_high_pct": -8.7,
+      "prev_day_return_pct": -6.8
+    },
+    {
+      "ticker": "CCL",
+      "gap_pct": 1.38,
+      "adv_m": 20.8,
+      "short_float_pct": 2.9,
+      "dist_from_3m_high_pct": -25.1,
+      "prev_day_return_pct": -2.76
+    },
+    {
+      "ticker": "AAPL",
+      "gap_pct": 0.56,
+      "adv_m": 54.9,
+      "short_float_pct": 0.8,
+      "dist_from_3m_high_pct": -5.0,
+      "prev_day_return_pct": 2.61
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "DELL",
+      "confidence": 0.9667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.5355,
+      "gap_retention": 0.9006,
+      "vol_boost": 0.1,
+      "vol_ratio": 4.144,
+      "vol_today": 37164,
+      "vol_avg": 8967,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0464,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.1039764705882353,
+      "price_935": 466.46,
+      "open_930": 460.81,
+      "prev_close": 425.0
+    },
+    {
+      "ticker": "CCL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.18,
+      "gap_retention": 0.5778,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.488,
+      "vol_today": 35713,
+      "vol_avg": 24008,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.028900001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.013775290572535527,
+      "price_935": 23.535,
+      "open_930": 23.68,
+      "prev_close": 23.23
+    },
+    {
+      "ticker": "AAPL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "post_open_advance": false,
+      "or_position": 0.0,
+      "gap_retention": 0.25,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.94,
+      "vol_today": 48811,
+      "vol_avg": 51947,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.008,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0055977608956417225,
+      "price_935": 325.6,
+      "open_930": 327.01,
+      "prev_close": 325.13
+    }
+  ],
+  "llm_input": [
+    "DELL"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "DELL",
+      "direction": "long",
+      "confidence": 0.9667,
+      "reason": "Earnings blowout confermato (Tier 1) con multipli analisti che alzano i price target dopo i risultati Q2; il prev_day_return_pct di -6.8% attiva la regola rimbalzo da selloff, ma il catalyst \u00e8 un earnings beat genuino (Tier 1) che lo supera, supportato da gap_retention al 90% e vol_boost elevato.",
+      "price_935": 466.46
+    },
+    "trade_2": null,
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "DELL",
+      "qty": 114,
+      "entry_price": 459.99,
+      "entry_time": "09:35:34",
+      "entry_ts": 1788356134.3685658,
+      "direction": "long",
+      "confidence": 0.9667,
+      "reason": "Earnings blowout confermato (Tier 1) con multipli analisti che alzano i price target dopo i risultati Q2; il prev_day_return_pct di -6.8% attiva la regola rimbalzo da selloff, ma il catalyst \u00e8 un earnings beat genuino (Tier 1) che lo supera, supportato da gap_retention al 90% e vol_boost elevato.",
+      "order_id": "59ac583f-bd8a-49da-b10e-3c4e88311f3b",
+      "stop_atr": 435.7892,
+      "stop_pct": 450.7902,
+      "stop_price": 469.1898,
+      "atr14": 24.2008,
+      "peak_price": 483.37,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 468.6,
+      "exit_time": "09:50:21",
+      "exit_reason": "step_stop",
+      "pnl_usd": 981.54,
+      "pnl_pct": 0.0187,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.1,
+      "short_float": 0.0464,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.5355,
+      "gap_retention": 0.9006,
+      "gap_pct": 0.1039764705882353,
+      "news": [
+        {
+          "author": "Dylan Berman",
+          "content": "",
+          "created_at": "2026-09-02T13:29:19Z",
+          "headline": "Super Micro Stock Rises in Sympathy After Dell's Blowout Quarter",
+          "id": 61574611,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/02/Supermicro-Computer-Logo-On-Smartphone-S.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/02/Supermicro-Computer-Logo-On-Smartphone-S.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/02/Supermicro-Computer-Logo-On-Smartphone-S.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Super Micro Computer shares are trading higher in sympathy with Dell Technologies, which reported Q2 results yesterday after market close.",
+          "symbols": [
+            "DELL",
+            "SMCI"
+          ],
+          "updated_at": "2026-09-02T13:29:19Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/09/61574611/super-micro-stock-rises-in-sympathy-after-dells-blowout-quarter"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-09-02T13:24:49Z",
+          "headline": "Bernstein Maintains Outperform on Dell Technologies, Raises Price Target to $650",
+          "id": 61574498,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "DELL"
+          ],
+          "updated_at": "2026-09-02T13:24:49Z",
+          "url": "https://www.benzinga.com/news/26/09/61574498/bernstein-maintains-outperform-dell-technologies-raises-price-target-650"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-09-02T13:18:48Z",
+          "headline": "TD Cowen Maintains Hold on Dell Technologies, Raises Price Target to $500",
+          "id": 61574210,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "DELL"
+          ],
+          "updated_at": "2026-09-02T13:18:48Z",
+          "url": "https://www.benzinga.com/news/26/09/61574210/td-cowen-maintains-hold-dell-technologies-raises-price-target-500"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-09-02T12:58:58Z",
+          "headline": "Mizuho Maintains Outperform on Dell Technologies, Raises Price Target to $600",
+          "id": 61573451,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "DELL"
+          ],
+          "updated_at": "2026-09-02T12:58:58Z",
+          "url": "https://www.benzinga.com/news/26/09/61573451/mizuho-maintains-outperform-dell-technologies-raises-price-target-600"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-09-02T12:56:20Z",
+          "headline": "Barclays Maintains Overweight on Dell Technologies, Raises Price Target to $603",
+          "id": 61573370,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "DELL"
+          ],
+          "updated_at": "2026-09-02T12:56:20Z",
+          "url": "https://www.benzinga.com/news/26/09/61573370/barclays-maintains-overweight-dell-technologies-raises-price-target-603"
+        }
+      ]
+    }
+  ]
+}
