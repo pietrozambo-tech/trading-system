@@ -1,0 +1,718 @@
+{
+  "date": "2026-09-04",
+  "spy_pct": -0.0005755935404177258,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 68,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "JPM",
+        "BAC",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "SLB",
+        "HAL",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "AAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "BKSY",
+        "RDW",
+        "LUNR",
+        "UUUU",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 7,
+      "tickers": [
+        "ORCL",
+        "AMD",
+        "SMR",
+        "MU",
+        "NVDA",
+        "MRVL",
+        "CRWV"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 7,
+      "tickers": [
+        "ORCL",
+        "AMD",
+        "SMR",
+        "MU",
+        "NVDA",
+        "MRVL",
+        "CRWV"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 6,
+      "tickers": [
+        "ORCL",
+        "AMD",
+        "MU",
+        "NVDA",
+        "MRVL",
+        "CRWV"
+      ],
+      "note": "confidence>=0.65"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "ORCL",
+      "gap_pct": 3.97,
+      "adv_m": 31.3,
+      "short_float_pct": 2.8,
+      "dist_from_3m_high_pct": -33.2,
+      "prev_day_return_pct": 5.69
+    },
+    {
+      "ticker": "AMD",
+      "gap_pct": 1.69,
+      "adv_m": 26.7,
+      "short_float_pct": 2.5,
+      "dist_from_3m_high_pct": -20.7,
+      "prev_day_return_pct": -0.2
+    },
+    {
+      "ticker": "SMR",
+      "gap_pct": 1.54,
+      "adv_m": 32.5,
+      "short_float_pct": 18.4,
+      "dist_from_3m_high_pct": -26.8,
+      "prev_day_return_pct": 1.99
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 1.16,
+      "adv_m": 44.1,
+      "short_float_pct": 2.7,
+      "dist_from_3m_high_pct": -22.8,
+      "prev_day_return_pct": 0.22
+    },
+    {
+      "ticker": "NVDA",
+      "gap_pct": 1.1,
+      "adv_m": 138.6,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": 0.2,
+      "prev_day_return_pct": 1.8
+    },
+    {
+      "ticker": "MRVL",
+      "gap_pct": 0.96,
+      "adv_m": 38.0,
+      "short_float_pct": 3.8,
+      "dist_from_3m_high_pct": -36.1,
+      "prev_day_return_pct": 1.14
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 0.52,
+      "adv_m": 27.9,
+      "short_float_pct": 18.9,
+      "dist_from_3m_high_pct": -30.3,
+      "prev_day_return_pct": 4.49
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "SMR",
+      "reason": "gap_reversed_at_open"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "ORCL",
+      "confidence": 1.0167,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.7909,
+      "gap_retention": 0.6596,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.091,
+      "vol_today": 36906,
+      "vol_avg": 17652,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.0278,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.039729940275253214,
+      "price_935": 159.195,
+      "open_930": 158.96,
+      "prev_close": 154.04
+    },
+    {
+      "ticker": "AMD",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.5052,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.12,
+      "vol_today": 25612,
+      "vol_avg": 22874,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.024600001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.016880042090494537,
+      "price_935": 467.81,
+      "open_930": 460.455,
+      "prev_close": 456.16
+    },
+    {
+      "ticker": "MU",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9982,
+      "gap_retention": 0.8501,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.401,
+      "vol_today": 47280,
+      "vol_avg": 33748,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.026600001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.011584704016030749,
+      "price_935": 994.48,
+      "open_930": 971.4,
+      "prev_close": 958.16
+    },
+    {
+      "ticker": "NVDA",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9477,
+      "gap_retention": 0.5395,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.831,
+      "vol_today": 126388,
+      "vol_avg": 152021,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0123000005,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.011030860144451786,
+      "price_935": 232.42,
+      "open_930": 231.11,
+      "prev_close": 228.45
+    },
+    {
+      "ticker": "MRVL",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.9772,
+      "gap_retention": 0.8147,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.398,
+      "vol_today": 13107,
+      "vol_avg": 32972,
+      "or_bar_count": 4,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0379,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.009625053871570132,
+      "price_935": 214.59,
+      "open_930": 211.69,
+      "prev_close": 208.83
+    },
+    {
+      "ticker": "CRWV",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "post_open_advance": true,
+      "or_position": 0.803,
+      "gap_retention": 0.5279,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.487,
+      "vol_today": 19776,
+      "vol_avg": 40648,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1889,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.005203405865657494,
+      "price_935": 85.97,
+      "open_930": 85.725,
+      "prev_close": 84.56
+    }
+  ],
+  "llm_input": [
+    "ORCL",
+    "AMD",
+    "MU",
+    "NVDA",
+    "MRVL",
+    "CRWV"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "ORCL",
+      "direction": "long",
+      "confidence": 1.0167,
+      "reason": "Catalyst Tier 1 confermato: earnings imminenti con guidance per crescita cloud 58-64% e contesto settoriale positivo (Salesforce beat + upgrade analisti). Segnali tecnici solidi: tutti e 3 i criteri soddisfatti (post_open_advance, or_position 0.79, gap_retention 0.66), prev_day_return_pct +5.7% esclude la regola rimbalzo da selloff.",
+      "price_935": 159.195
+    },
+    "trade_2": {
+      "ticker": "MU",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Forte momentum tecnico con or_position 0.998 e gap_retention 0.85, tutti e 3 i segnali tecnici positivi. Nota negativa: news su guadagni di quota di mercato cinese in DRAM/NAND introduce un rischio fondamentale, ma il titolo \u00e8 nel settore Semiconductors (diverso da ORCL/Software) e i segnali tecnici restano dominanti con catalyst Tier 3 su memory crunch AI.",
+      "price_935": 994.48
+    },
+    "no_trade_reason": null
+  },
+  "trades": [
+    {
+      "ticker": "MU",
+      "qty": 55,
+      "entry_price": 992.251818,
+      "entry_time": "09:36:41",
+      "entry_ts": 1788529001.016606,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Forte momentum tecnico con or_position 0.998 e gap_retention 0.85, tutti e 3 i segnali tecnici positivi. Nota negativa: news su guadagni di quota di mercato cinese in DRAM/NAND introduce un rischio fondamentale, ma il titolo \u00e8 nel settore Semiconductors (diverso da ORCL/Software) e i segnali tecnici restano dominanti con catalyst Tier 3 su memory crunch AI.",
+      "order_id": "b03b29d4-1616-4128-a801-e46a8dd6be3f",
+      "stop_atr": 945.2263,
+      "stop_pct": 972.4068,
+      "stop_price": 1002.1743,
+      "atr14": 47.0256,
+      "peak_price": 1007.3,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 1001.24,
+      "exit_time": "13:04:21",
+      "exit_reason": "step_stop",
+      "pnl_usd": 494.35,
+      "pnl_pct": 0.0091,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "short_float": 0.026600001,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9982,
+      "gap_retention": 0.8501,
+      "gap_pct": 0.011584704016030749,
+      "news": [
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-09-04T10:23:30Z",
+          "headline": "AI Memory Crunch Is About to Hit \u201810 Out of 10\u2019 Craziness",
+          "id": 61623070,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/04/Paris--France---February-20-2026-The-Mic.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/04/Paris--France---February-20-2026-The-Mic.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/04/Paris--France---February-20-2026-The-Mic.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "AI demand triggers historic memory crunch: TechInsights predicts DRAM prices will jump 200%+ as supply tightens through 2027.",
+          "symbols": [
+            "MU",
+            "SKHY",
+            "SSNLF"
+          ],
+          "updated_at": "2026-09-04T10:23:30Z",
+          "url": "https://www.benzinga.com/markets/tech/26/09/61623070/ai-memory-crunch-is-about-to-hit-10-out-of-10-craziness"
+        },
+        {
+          "author": "Radhika Anilkumar Nadig",
+          "content": "",
+          "created_at": "2026-09-04T08:35:14Z",
+          "headline": "South Korea Lands $2 Billion From 4 US Companies as Trump Turns Up Pressure on Foreign Chipmakers: GLW, APD, ACLS Among Stocks in Focus",
+          "id": 61621888,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/04/USA-and-South-Korea-flags-waving-in-the-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/04/USA-and-South-Korea-flags-waving-in-the-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/04/USA-and-South-Korea-flags-waving-in-the-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Four U.S. companies filed investment reports totaling $2 billion for projects in South Korea&#39;s semiconductor and clean energy sectors.",
+          "symbols": [
+            "ACLS",
+            "AMZN",
+            "APD",
+            "GLW",
+            "GOOG",
+            "GOOGL",
+            "MU",
+            "SKHY"
+          ],
+          "updated_at": "2026-09-04T08:35:14Z",
+          "url": "https://www.benzinga.com/markets/equities/26/09/61621888/four-us-companies-pledge-2-billion-to-south-korea-in-chip-and-energy-investment"
+        },
+        {
+          "author": "Daragh Thomas",
+          "content": "",
+          "created_at": "2026-09-03T18:36:03Z",
+          "headline": "Micron, SanDisk Lag Tech Rally as China Grabs Memory Market Share",
+          "id": 61613454,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/03/Portland--Or--Usa---Apr-14--2026-Sandisk.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/03/Portland--Or--Usa---Apr-14--2026-Sandisk.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/03/Portland--Or--Usa---Apr-14--2026-Sandisk.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Chinese memory makers are gaining DRAM and NAND share as Micron and SanDisk slip, raising new questions about future pricing pressure.",
+          "symbols": [
+            "MU",
+            "SNDK"
+          ],
+          "updated_at": "2026-09-03T18:36:03Z",
+          "url": "https://www.benzinga.com/markets/prediction-markets/26/09/61613454/china-memory-market-share-micron-sandisk"
+        },
+        {
+          "author": "Piero Cingari",
+          "content": "",
+          "created_at": "2026-09-03T17:47:45Z",
+          "headline": "Wall Street Rallies as Fed\u2019s Waller Hints at September Rate Hold: Stock Market Today",
+          "id": 61611969,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/03/wall-street-bull-ai.png?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/03/wall-street-bull-ai.png?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/03/wall-street-bull-ai.png?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Stocks rallied and Treasury yields retreated from three-year highs after Fed Governor Waller signaled he could back a rate hold, sending bitcoin above $80,000.",
+          "symbols": [
+            "AVGO",
+            "BLSH",
+            "BTCUSD",
+            "CIEN",
+            "COIN",
+            "CPB",
+            "CRCL",
+            "CRWD",
+            "DELL",
+            "DIA",
+            "FDN",
+            "GDX",
+            "GIS",
+            "GOOGL",
+            "HOOD",
+            "HPE",
+            "IWM",
+            "KHC",
+            "KIE",
+            "META",
+            "MOO",
+            "MSFT",
+            "MSTR",
+            "MU",
+            "NOW",
+            "ORCL",
+            "PL",
+            "PLTR",
+            "QQQ",
+            "SMMT",
+            "SNOW",
+            "SPCX",
+            "TSLA",
+            "TSN",
+            "TTC",
+            "VOO",
+            "XLB",
+            "XLE",
+            "XLF",
+            "XLK",
+            "XLP",
+            "XLV",
+            "XLY"
+          ],
+          "updated_at": "2026-09-03T17:47:45Z",
+          "url": "https://www.benzinga.com/markets/market-summary/26/09/61611969/waller-cools-rate-hike-bets-bitcoin-tops-80000-whats-moving-markets-thursday"
+        }
+      ]
+    },
+    {
+      "ticker": "ORCL",
+      "qty": 348,
+      "entry_price": 159.106235,
+      "entry_time": "09:36:35",
+      "entry_ts": 1788528995.8431962,
+      "direction": "long",
+      "confidence": 1.0167,
+      "reason": "Catalyst Tier 1 confermato: earnings imminenti con guidance per crescita cloud 58-64% e contesto settoriale positivo (Salesforce beat + upgrade analisti). Segnali tecnici solidi: tutti e 3 i criteri soddisfatti (post_open_advance, or_position 0.79, gap_retention 0.66), prev_day_return_pct +5.7% esclude la regola rimbalzo da selloff.",
+      "order_id": "60301aa6-48d3-4446-8ae3-ab3044eb5afc",
+      "stop_atr": 152.9359,
+      "stop_pct": 155.9241,
+      "stop_price": 155.9241,
+      "atr14": 6.1704,
+      "peak_price": 159.395,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 157.64,
+      "exit_time": "15:45:04",
+      "exit_reason": "eod_close",
+      "pnl_usd": -510.25,
+      "pnl_pct": -0.0092,
+      "catalyst_bonus": 0.3,
+      "vol_boost": 0.05,
+      "short_float": 0.0278,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.7909,
+      "gap_retention": 0.6596,
+      "gap_pct": 0.039729940275253214,
+      "news": [
+        {
+          "author": "Dylan Berman",
+          "content": "",
+          "created_at": "2026-09-04T12:44:13Z",
+          "headline": "Oracle Guides for 58-64% Cloud Growth \u2014 Here's the Bar for Sept. 10",
+          "id": 61625390,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/04/Konskie--Poland---November-13--2024-Orac.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/04/Konskie--Poland---November-13--2024-Orac.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/04/Konskie--Poland---November-13--2024-Orac.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Oracle shares are in the spotlight Friday, with earnings on deck, recent analyst activity, and Edge Rankings all drawing attention.",
+          "symbols": [
+            "ORCL"
+          ],
+          "updated_at": "2026-09-04T12:44:13Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/09/61625390/oracle-guides-for-58-64-cloud-growth-heres-the-bar-for-sept-10"
+        },
+        {
+          "author": "Kaustubh Bagalkote",
+          "content": "",
+          "created_at": "2026-09-03T17:49:09Z",
+          "headline": "What's Going On With Salesforce Stock on Thursday?",
+          "id": 61612014,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/03/Salesforce.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/03/Salesforce.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/03/Salesforce.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Salesforce (NYSE: CRM) stock surges Thursday on Q2 earnings beat, Agentforce growth, an Anthropic deal and analyst target hikes from Cantor Fitzgerald, BTIG and Needham.",
+          "symbols": [
+            "CRM",
+            "NOW",
+            "ORCL"
+          ],
+          "updated_at": "2026-09-03T17:49:09Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/09/61612014/whats-going-on-with-salesforce-stock-on-thursday-2"
+        },
+        {
+          "author": "Piero Cingari",
+          "content": "",
+          "created_at": "2026-09-03T17:47:45Z",
+          "headline": "Wall Street Rallies as Fed\u2019s Waller Hints at September Rate Hold: Stock Market Today",
+          "id": 61611969,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/03/wall-street-bull-ai.png?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/03/wall-street-bull-ai.png?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/03/wall-street-bull-ai.png?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Stocks rallied and Treasury yields retreated from three-year highs after Fed Governor Waller signaled he could back a rate hold, sending bitcoin above $80,000.",
+          "symbols": [
+            "AVGO",
+            "BLSH",
+            "BTCUSD",
+            "CIEN",
+            "COIN",
+            "CPB",
+            "CRCL",
+            "CRWD",
+            "DELL",
+            "DIA",
+            "FDN",
+            "GDX",
+            "GIS",
+            "GOOGL",
+            "HOOD",
+            "HPE",
+            "IWM",
+            "KHC",
+            "KIE",
+            "META",
+            "MOO",
+            "MSFT",
+            "MSTR",
+            "MU",
+            "NOW",
+            "ORCL",
+            "PL",
+            "PLTR",
+            "QQQ",
+            "SMMT",
+            "SNOW",
+            "SPCX",
+            "TSLA",
+            "TSN",
+            "TTC",
+            "VOO",
+            "XLB",
+            "XLE",
+            "XLF",
+            "XLK",
+            "XLP",
+            "XLV",
+            "XLY"
+          ],
+          "updated_at": "2026-09-03T17:47:45Z",
+          "url": "https://www.benzinga.com/markets/market-summary/26/09/61611969/waller-cools-rate-hike-bets-bitcoin-tops-80000-whats-moving-markets-thursday"
+        },
+        {
+          "author": "Benzinga News-desk",
+          "content": "",
+          "created_at": "2026-09-03T15:10:20Z",
+          "headline": "OpenAI Says It Is Investigating Elevated Errors Across ChatGPT And Codex; Status Page Shows Degraded Performance With 15 ChatGPT Components And 4 Codex Components Affected",
+          "id": 61606836,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "AMZN",
+            "GOOG",
+            "GOOGL",
+            "MSFT",
+            "ORCL"
+          ],
+          "updated_at": "2026-09-03T15:12:52Z",
+          "url": "https://www.benzinga.com/news/26/09/61606836/openai-says-it-is-investigating-elevated-errors-across-chatgpt-and-codex-status-page-shows-degraded-performance-with-15-chatgpt-components-and-4-codex-components-affected"
+        }
+      ]
+    }
+  ]
+}
