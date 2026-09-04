@@ -1,7 +1,7 @@
 {
   "date": "2026-09-03",
-  "spy_pct": 0.00501222014559622,
-  "spy_source": "open_935",
+  "spy_pct": 0.010468,
+  "spy_source": "official_close",
   "blocked": null,
   "pipeline": [
     {
