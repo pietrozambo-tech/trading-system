@@ -6,17 +6,17 @@ No manual intervention needed.
 
 ---
 
-## The universe: 70 curated stocks
+## The universe: 72 curated stocks
 
-The bot doesn't scan the entire US stock market — it operates on a fixed watchlist of **70 hand-picked stocks**. Scanning thousands of tickers is technically possible but strategically counterproductive.
+The bot doesn't scan the entire US stock market — it operates on a fixed watchlist of **72 hand-picked stocks**. Scanning thousands of tickers is technically possible but strategically counterproductive.
 
 **Why a curated universe instead of the full market:**
 
 - **Institutional volume.** Every stock on the list trades at least 5 million shares per day on average. A $50k position doesn't move the price, and the bid-ask spread is tight enough that slippage is negligible. Thinly traded names are excluded entirely.
 - **Sectors with momentum.** Tech (semis, cloud, AI), healthcare, energy, financials, space, and nuclear — sectors with active institutional participation and frequent catalyst-driven moves. Consumer staples and utilities are intentionally excluded: they gap rarely, and when they do, the moves are small.
-- **Pipeline speed.** With 70 stocks, the full pre-market scan completes in well under 2 minutes. Scaling to 5,000 stocks would require hours of API calls — far past the 9:25 AM window when pre-market data is still relevant.
+- **Pipeline speed.** With 72 stocks, the full pre-market scan completes in well under 2 minutes. Scaling to 5,000 stocks would require hours of API calls — far past the 9:25 AM window when pre-market data is still relevant.
 
-The complete list is in the [Appendix — Watchlist (70 stocks)](#the-watchlist-70-stocks).
+The complete list is in the [Appendix — Watchlist (72 stocks)](#appendix--the-watchlist-72-stocks).
 
 ---
 
@@ -24,7 +24,7 @@ The complete list is in the [Appendix — Watchlist (70 stocks)](#the-watchlist-
 
 ### 1. Pre-market scan — 9:25 AM New York time
 
-The bot scans all 70 stocks looking for ones **gapping up at least +0.5%** above yesterday's close. That's the only filter here — a meaningful overnight move signals that something happened (earnings, news, an upgrade) worth investigating further. Stocks that drifted up 0.2% on no news don't qualify.
+The bot scans all 72 stocks looking for ones **gapping up at least +0.5%** above yesterday's close. That's the only filter here — a meaningful overnight move signals that something happened (earnings, news, an upgrade) worth investigating further. Stocks that drifted up 0.2% on no news don't qualify.
 
 Pre-market prices are fetched from **Yahoo Finance** (primary), with Alpaca IEX as fallback. Yahoo Finance aggregates prints from all exchanges (NYSE, NASDAQ, CBOE, etc.), giving full pre-market coverage. Alpaca's free IEX feed only sees ~15–20% of pre-market volume — relying on it alone would miss gappers that trade on other venues.
 
@@ -237,26 +237,30 @@ The trade header (`Trade N — TICKER long [Score: X.XX]`) is **bold** in Telegr
 
 ---
 
-## Appendix — The watchlist (70 stocks)
+## Appendix — The watchlist (72 stocks)
 
 This is a **pre-validated universe of liquid names**, not a list of stocks the bot trades regardless. In a gap-and-go strategy the real watchlist is dynamic — the morning gappers *are* the list. This universe just gives the scanner more "shots" each day, so it's tilted toward high-beta names that gap often and away from "slow" mega/large caps that pass the liquidity filters but never trip a momentum threshold. The runtime filters (market cap, ADV, spread, halt) always have the final say: the most volatile micro caps (quantum/space/nuclear) stay only as long as they clear them.
 
 **June 2026 rebalance (net +10):** dropped 14 liquid-but-rarely-gapping names (banks C/WFC/BLK/SCHW/MS, defensive healthcare JNJ/MRK/BMY/PFE, oil majors XOM/CVX, plus LMT/TXN/NKE) and added 24 high-beta names that gap frequently (crypto miners, AI/datacenter, fintech growth, nuclear/power, EV/China).
 
+**5 August 2026:** INTC and RKLB removed (70 → 68) — the two worst multi-trade names in live trading (INTC 0/3, RKLB 0/2, both repeat hard-stop bleeders).
+
+**8 September 2026 rebalance (net +4, 68 → 72):** dropped AAL, BKSY, UUUU, BAC, SLB, HAL; added AI networking / photonics (ANET, LITE, CRDO, COHR, CIEN), power infrastructure (GEV), healthcare tech (TEM, HIMS) and consumer growth (CELH, CAVA).
+
 | Sector | Tickers |
 |--------|---------|
-| Tech / Growth | AAPL, MSFT, NVDA, AMZN, META, GOOGL, TSLA, AMD, NFLX, CRM, ORCL, ADBE, INTC, QCOM, MU, AVGO, AMAT, MRVL |
-| AI / Datacenter / Semi | PLTR, SMCI, ARM, VRT, APP, CRWV, CBRS, DELL |
-| Finance | JPM, BAC, GS |
-| Fintech / Consumer Growth | SOFI, AFRM, DKNG, SHOP, CVNA |
-| Healthcare | UNH, ABBV, MRNA |
-| Energy | SLB, HAL, OXY |
+| Tech / Growth | AAPL, MSFT, NVDA, AMZN, META, GOOGL, TSLA, AMD, NFLX, CRM, ORCL, ADBE, QCOM, MU, AVGO, AMAT, MRVL |
+| AI / Datacenter / Semi | PLTR, SMCI, ARM, VRT, APP, CRWV, CBRS, DELL, ANET, LITE, CRDO, COHR, CIEN |
+| Finance | JPM, GS |
+| Fintech / Consumer Growth | SOFI, AFRM, DKNG, SHOP, CVNA, CELH, CAVA |
+| Healthcare | UNH, ABBV, MRNA, TEM, HIMS |
+| Energy | OXY |
 | Clean Energy | ENPH |
 | Crypto Proxy / Miner | MSTR, COIN, HOOD, MARA, RIOT, CIFR |
-| Airlines / Cruises | DAL, AAL, NCLH, CCL |
+| Airlines / Cruises | DAL, NCLH, CCL |
 | EV / China | RIVN, NIO |
-| Space | RKLB, ASTS, BKSY, RDW, LUNR |
-| Nuclear / Power / Uranium | UUUU, CCJ, NNE, SMR, OKLO, CEG, VST, LEU |
+| Space | ASTS, RDW, LUNR |
+| Nuclear / Power / Uranium | CCJ, NNE, SMR, OKLO, CEG, VST, LEU, GEV |
 | Quantum Computing | IONQ, QBTS, QUBT, RGTI |
 
 ---
@@ -547,6 +551,7 @@ Alpaca's built-in reporting is too limited for meaningful analysis. The plan is 
 Riassunti **high level** dei cambi per giorno (più recente in alto). Solo titoli — i dettagli sono nelle sezioni sopra e nei commit. Tag: `[feat]` nuova implementazione · `[fix]` bug fix · `[exp]` esperimento/decisione.
 
 ### 8 settembre 2026
+- `[exp]` **Universo 68 → 72**: rimossi AAL, BKSY, UUUU, BAC, SLB, HAL; aggiunti ANET, LITE, CRDO, COHR, CIEN (networking/fotonica AI), GEV (power), TEM, HIMS (healthcare tech), CELH, CAVA (consumer growth). Liste `main.UNIVERSE` e `BACKTEST_UNIVERSE` allineate.
 - `[fix]` **8 correzioni da code review completa** (verificate contro il codice, harness mock 41/41 check): (1) `calc_stop_prices` non alza più eccezioni dopo un fill — un errore data-API lasciava azioni possedute senza position/stop/monitoring/EOD; (2) niente più *phantom close* — un ordine di chiusura rifiutato o non eseguito veniva registrato con un prezzo da snapshot mentre le azioni restavano in mano overnight, ora ritorna `None` e viene ritentato; (3) rimosso il pre-check "halt" dal loop di monitoring — su ogni errore API tornava "halt" e saltava TUTTI i check stop/ratchet/VWAP, e non vedeva comunque gli halt LULD; (4) le scelte LLM vengono validate e deduplicate PRIMA di piazzare qualsiasi ordine (un `trade_2` malformato lasciava vivo e orfano l'ordine di `trade_1`; lo stesso ticker due volte raddoppiava l'esposizione); (5) conferma fill **round-robin** con monitoring delle posizioni già aperte mentre gli altri ordini attendono — l'8/09 IONQ è rimasta ~3.7 min senza alcun check mentre l'ordine RGTI non si eseguiva; (6) giornate a chiusura anticipata (13:00) saltate — l'EOD 15:45 sparava a mercato chiuso; (7) classificatore catalyst a **regex**: "IonQ Raises FY2026 Sales Guidance $280–290M → $450–460M" valeva 0.0 perché "FY2026 Sales" stava tra le parole chiave; (8) pre-market Yahoo: `fast_info` non ha `pre_market_price`, la sorgente "primaria" non era mai scattata e ogni gap veniva dal print IEX.
 - `[exp]` **Analisi 3 mesi (66 giorni, 69 trade, 4 giu – 8 set)**: +$11.019, win 57%, max DD −$9.081. Pre 29/06: −$1.278 (39% win) → post: +$12.297 (63%); agosto +$9.667 (83%). Il profit-lock è provato (21 uscite step_stop, +$11.7k). **Il predittore più forte è la partecipazione**: post-29/06 con catalyst +$18.357/76% vs senza −$6.060/50%; news + volume ≥2×: +$11.242/81%; né news né volume: −$7.167/39% e 8 degli 11 hard stop. Gap size, ATR% e OR position **non** separano. Entry miss 4/73 (5%) e slippage d'ingresso medio 0.05% (25/64 fill meglio del riferimento): il limit +0.5% funziona, non allargarlo. I top-5 trade valgono $12.7k > totale: edge fat-tailed, proteggere i grandi vincitori conta più di limare le piccole perdite. Dettagli e leve nei Next steps.
 - `[feat]` **GATE DI PARTECIPAZIONE in produzione** (`MIN_VOL_RATIO_ENTRY = 1.5`): un candidato entra solo se il volume dell'opening range è ≥ 1.5× la media a 20 giorni della stessa finestra — un requisito, non più un bonus. Validato out-of-sample sul backtest a 631 trade (`--entry-cap`, sweep `min_vol_ratio`): baseline PF 1.02 / +$4.7k → **≥1.5: PF 1.11 / +$18.7k (×4), max DD −25%, avg win +22%**; ≥2.0: PF 1.11 / +$17.1k; ≥3.0: PF 1.23 / +$22.4k su soli 240 trade. Tiene i vincitori (a differenza del cap ATR). Costo: ~27% di trade in meno. Il ramo *catalyst* del gate (`CATALYST_BYPASSES_VOL_GATE`) resta spento: non è backtestabile e va confermato sui trade live. Scarti loggati come `no_participation` → dashboard **NO VOL** (badge col multiplo, filtro dedicato, motivo nel `blocked` del giorno).

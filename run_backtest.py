@@ -46,26 +46,27 @@ BACKTEST_UNIVERSE = [
     "CRM", "ORCL", "ADBE", "QCOM", "MU", "AVGO", "AMAT", "MRVL",
     # AI / Datacenter / Semi
     "PLTR", "SMCI", "ARM", "VRT", "APP", "CRWV", "CBRS", "DELL",
+    "ANET", "LITE", "CRDO", "COHR", "CIEN",   # networking / fotonica per l'AI (9 set 2026)
     # Finance
-    "JPM", "BAC", "GS",
+    "JPM", "GS",
     # Fintech / Consumer Growth
-    "SOFI", "AFRM", "DKNG", "SHOP", "CVNA",
+    "SOFI", "AFRM", "DKNG", "SHOP", "CVNA", "CELH", "CAVA",
     # Healthcare
-    "UNH", "ABBV", "MRNA",
+    "UNH", "ABBV", "MRNA", "TEM", "HIMS",
     # Energy
-    "SLB", "HAL", "OXY",
+    "OXY",
     # Clean Energy
     "ENPH",
     # Crypto Proxy / Miner
     "MSTR", "COIN", "HOOD", "MARA", "RIOT", "CIFR",
     # Airlines / Crociere
-    "DAL", "AAL", "NCLH", "CCL",
+    "DAL", "NCLH", "CCL",
     # EV / China
     "RIVN", "NIO",
     # Space
-    "ASTS", "BKSY", "RDW", "LUNR",
+    "ASTS", "RDW", "LUNR",
     # Nucleare / Power / Uranio
-    "UUUU", "CCJ", "NNE", "SMR", "OKLO", "CEG", "VST", "LEU",
+    "CCJ", "NNE", "SMR", "OKLO", "CEG", "VST", "LEU", "GEV",
     # Quantum Computing
     "IONQ", "QBTS", "QUBT", "RGTI",
 ]
