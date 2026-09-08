@@ -239,7 +239,13 @@ def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict
             # has printed yet — fall through to IEX rather than log a 0% gap.
             if not prev_close or abs(pm_price - float(prev_close)) > 1e-9:
                 logger.debug(f"{ticker}: pre-market price from yfinance ${pm_price:.2f}")
-                return {"premarket_price": pm_price}
+                # Restituisce anche la chiusura UFFICIALE di ieri (asta di chiusura), così il
+                # chiamante calcola il gap con la STESSA sorgente. La daily bar Alpaca sul feed
+                # IEX è l'ultimo print IEX, non la chiusura ufficiale: mischiare Yahoo/IEX
+                # nella stessa frazione sposta il gap di qualche decimo — sulla soglia +0.5% conta.
+                return {"premarket_price": pm_price,
+                        "prev_close": float(prev_close) if prev_close else None,
+                        "source": "yahoo"}
     except Exception as e:
         logger.debug(f"{ticker}: yfinance pre-market failed ({e}) — trying Alpaca")
 
@@ -252,13 +258,14 @@ def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict
             if trade_date == session_date:
                 pm_price = float(snap.latest_trade.price)
                 logger.debug(f"{ticker}: pre-market price from Alpaca IEX ${pm_price:.2f}")
-                return {"premarket_price": pm_price}
+                # prev_close None → il chiamante usa la daily bar IEX: stessa sorgente del print.
+                return {"premarket_price": pm_price, "prev_close": None, "source": "iex"}
             else:
                 logger.debug(f"{ticker}: Alpaca latest_trade from {trade_date}, not today — skipping")
     except Exception as e:
         logger.warning(f"{ticker}: snapshot price error ({e})")
 
-    return {"premarket_price": None}
+    return {"premarket_price": None, "prev_close": None, "source": None}
 
 
 def get_news(ticker: str, start: Optional[datetime] = None, limit: int = 10) -> list[dict]:

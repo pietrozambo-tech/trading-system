@@ -49,6 +49,16 @@ def build_premarket_watchlist(universe: list[str], session_date: Optional[date] 
             if pm_price is None or prev_close == 0:
                 continue
 
+            # SORGENTE COERENTE: se il prezzo pre-market viene da Yahoo, il riferimento del gap
+            # è la chiusura UFFICIALE di Yahoo (asta di chiusura), non la daily bar Alpaca —
+            # che sul feed IEX è l'ultimo print IEX e può scostarsi di qualche decimo. Mai due
+            # sorgenti nella stessa frazione. Questo prev_close alimenta anche il gate pre-open,
+            # il check "gap invertito" e la gap retention in triggers.py, così tutta la catena
+            # del gap usa lo stesso riferimento. (prev_day_return e ADV, calcolati sopra, restano
+            # IEX-vs-IEX: coerenti al loro interno.)
+            if pm.get("prev_close"):
+                prev_close = float(pm["prev_close"])
+
             gap_pct = (pm_price - prev_close) / prev_close
 
             # Solo gap positivi (long only)
