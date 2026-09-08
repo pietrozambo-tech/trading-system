@@ -245,7 +245,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
       <th>Data</th><th>S&amp;P 500</th><th>Universe</th>
       <th>Pre-mkt <span data-tip="Ticker con gap ≥ 0.5% in pre-market rispetto alla chiusura precedente" class="iico">ⓘ</span></th>
       <th>L1 ✓ <span data-tip="Superano i filtri binari di qualità: liquidità (ADV), spread, prezzo minimo, asset tradabile su Alpaca" class="iico">ⓘ</span></th>
-      <th>L2 ✓ <span data-tip="Superano la soglia di confidence algoritmica (≥ 0.65) basata su segnali tecnici: post-open advance, OR position, gap retention, vol boost, catalyst" class="iico">ⓘ</span></th>
+      <th>L2 ✓ <span data-tip="Superano la soglia di confidence algoritmica (≥ 0.65: post-open advance, OR position, gap retention, vol boost, catalyst) E il gate di partecipazione (volume dell'opening range ≥ 1.5× la media a 20gg). Gli scarti per volume sono etichettati NO VOL nella tabella segnali." class="iico">ⓘ</span></th>
       <th>→ LLM <span data-tip="Candidati inviati al modello LLM per la selezione finale del trade, dopo aver superato tutti i filtri algoritmici" class="iico">ⓘ</span></th>
       <th>Trade</th><th>P&amp;L</th><th>P&amp;L %</th><th>Note</th>
     </tr></thead>
@@ -263,7 +263,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
       <th>Data</th><th>Ticker</th><th>Entry</th><th>Exit</th>
       <th>Shares</th><th>P&amp;L $</th><th>P&amp;L %</th>
       <th>Uscita</th><th>Conf.</th><th>Gap %</th>
-      <th>Catalyst</th><th>Vol boost</th><th>Short float</th>
+      <th>Catalyst</th><th>Volume <span data-tip="Volume dell'opening range (9:30–9:34) rispetto alla media della STESSA finestra sui 20 giorni di trading precedenti. Es. ×2.3 = più del doppio del normale. Dal 9 settembre 2026 è un requisito d'ingresso: serve ≥ 1.5× (gate di partecipazione)." class="iico">ⓘ</span></th><th>Short float</th>
     </tr></thead>
     <tbody id="tradeRows"></tbody>
   </table>
@@ -280,6 +280,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
     <button class="qbtn" data-esito="LLM_ALTRO">LLM: altro scelto</button>
     <button class="qbtn" data-esito="LLM_NOENTRY">LLM: no entry</button>
     <button class="qbtn" data-esito="REJECT">REJECT</button>
+    <button class="qbtn" data-esito="NO_PART">NO VOL</button>
     <button class="qbtn" data-esito="PASS">PASS</button>
   </div>
   <div class="tbl-wrap scroll-wrap">
@@ -289,7 +290,7 @@ svg text {{ font-family: -apple-system, sans-serif; }}
       <th>Post-open advance <span data-tip="Prezzo alle 9:35 superiore all'apertura delle 9:30 — conferma che il gap tiene nei primi 5 minuti di trading" class="iico">ⓘ</span></th>
       <th>OR position <span data-tip="Posizione nel range 9:30–9:35: 1.0 = massimo del range, 0.0 = minimo. Sopra 0.66 = titolo nel terzo superiore, segnale di forza" class="iico">ⓘ</span></th>
       <th>Gap retention <span data-tip="Frazione del gap pre-market ancora intatta alle 9:35. 1.0 = gap invariato, 0.0 = gap completamente colmato. Sopra 0.70 = gap difeso" class="iico">ⓘ</span></th>
-      <th>Vol boost <span data-tip="Volume nei primi 5 minuti (9:30–9:35) rapportato alla media storica della stessa finestra. >3× → +0.10, 2–3× → +0.05. Passa il mouse sulla cella per i volumi grezzi (oggi vs media)" class="iico">ⓘ</span></th><th>Catalyst</th>
+      <th>Vol boost <span data-tip="Volume nei primi 5 minuti (9:30–9:34) rapportato alla media della stessa finestra sui 20 giorni di trading precedenti. >3× → +0.10, 2–3× → +0.05; dal 9 set ≥1.5× è richiesto per entrare (gate). Passa il mouse sulla cella per i volumi grezzi (oggi vs media)" class="iico">ⓘ</span></th><th>Catalyst</th>
       <th data-tip="Percentuale del flottante venduta allo scoperto">Short float</th>
       <th>Squeeze</th><th>Gap %</th><th>Esito</th>
     </tr></thead>
@@ -565,7 +566,7 @@ function renderTradeLog(logs) {{
       <td>${{confBar(t.confidence)}}</td>
       <td class="pos">${{t.gap_pct!=null?fpm(t.gap_pct*100,1)+"%":"—"}}</td>
       <td>${{badge(cat,t.catalyst_bonus>=0.20?"bb":t.catalyst_bonus>=0.10?"bb":"bmu")}}</td>
-      <td>${{t.vol_boost?"+"+parseFloat(t.vol_boost).toFixed(2):"—"}}</td>
+      <td>${{(()=>{{const vr=t.vol_ratio!=null?t.vol_ratio:((r.signals||[]).find(s=>s.ticker===t.ticker&&s.vol_ratio!=null)||{{}}).vol_ratio;return vr!=null?"×"+parseFloat(vr).toFixed(2):"—";}})()}}</td>
       <td>${{t.short_float!=null?(t.short_float*100).toFixed(1)+"%":"—"}}</td>
     </tr>`);
   }}));
@@ -595,15 +596,17 @@ function renderFunnel(logs) {{
 
 // ── L2 signals ────────────────────────────────────────────────────────────────
 function getEsitoType(s, tradedTickers, llmTickers, llm_output) {{
-  if (!s.passes_threshold) return "REJECT";
+  // Scarto per gate di partecipazione (volume OR < soglia) distinto dal reject per confidence.
+  if (!s.passes_threshold) return (s.reject_reason||"").startsWith("no_participation") ? "NO_PART" : "REJECT";
   if (tradedTickers.includes(s.ticker)) return "TRADED";
   if (llmTickers.length>0 && !llmTickers.includes(s.ticker)) return "LLM_ALTRO";
   if (llm_output?.no_trade_reason) return "LLM_NOENTRY";
   return "PASS";
 }}
-function esitoDisplay(type) {{
+function esitoDisplay(type, s) {{
   switch(type) {{
     case "REJECT":     return badge("REJECT","br");
+    case "NO_PART":    return badge("NO VOL "+(s&&s.vol_ratio!=null?Number(s.vol_ratio).toFixed(2)+"x":"n/d"),"br");
     case "TRADED":     return badge("TRADED","bb");
     case "LLM_ALTRO":  return badge("LLM: altro scelto","by");
     case "LLM_NOENTRY":return badge("LLM: no entry","bmu");
@@ -618,7 +621,7 @@ function renderSignals(logs) {{
     r.signals.forEach(s=>{{
       const esitoType=getEsitoType(s,tradedTickers,llmTickers,r.llm_output);
       if (activeSignalEsitoFilter && esitoType!==activeSignalEsitoFilter) return;
-      const esito=esitoDisplay(esitoType);
+      const esito=esitoDisplay(esitoType, s);
       rows.push(`<tr>
         <td>${{fmtDate(r.date)}}</td><td><strong>${{s.ticker}}</strong></td>
         <td>${{confBar(s.confidence)}}</td>

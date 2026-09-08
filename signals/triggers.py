@@ -42,23 +42,73 @@ def s3_gap_retention(bars_or: pd.DataFrame, open_930: float, prev_close: float) 
     return 1.0 - (gap_eaten / gap_size)
 
 
-def s4_volume_boost(ticker: str, bars_or: pd.DataFrame, session_date: Optional[date] = None) -> tuple[float, Optional[float], float, float]:
+def s4_volume_boost(
+    ticker: str,
+    bars_or: pd.DataFrame,
+    session_date: Optional[date] = None,
+    expected_bars: Optional[int] = None,
+) -> tuple[float, Optional[float], float, float]:
     """S4: Volume in opening range vs historical average same window.
     Returns (boost, raw ratio, vol_today, vol_avg) — raw values go into the daily log
     so threshold calibration can be done offline. Ratio is None when historical data
     is unavailable — distinct from a genuine low-volume ratio, which previously
-    looked identical."""
+    looked identical.
+
+    FINESTRA: oggi = barre 1-min con 9:30 ≤ t < ENTRY_TIME (fine esclusiva → 5 barre con
+    entrata 9:35); storico = la STESSA finestra sui 20 giorni precedenti, stesso feed.
+    È anche la definizione del backtest (_calc_hist_or_vol: 5 barre 9:30–9:34, media a
+    20gg), quindi la soglia validata lì si trasferisce. Da settembre il ratio è un GATE.
+
+    FINESTRA TRONCATA (4% dei casi live anche dopo il retry): se manca una barra — per un
+    nome con ADV ≥ 5M all'apertura è quasi sempre "non ancora pubblicata", non "nessuno
+    scambio" — la somma di oggi sarebbe deflazionata ~20% e il gate darebbe un falso
+    scarto. Il ratio si calcola quindi sul volume normalizzato alla finestra attesa;
+    vol_today nel log resta quello grezzo. Con la finestra completa è identico al backtest.
+    """
     vol_today = float(bars_or["volume"].sum())
     vol_avg   = fetcher.get_historical_or_volume(ticker, lookback_days=20, session_date=session_date)
     if vol_avg == 0:
         logger.warning(f"{ticker}: historical OR volume unavailable (vol_avg=0) — vol_boost skipped")
         return 0.0, None, vol_today, 0.0
-    ratio = vol_today / vol_avg
+    n_bars = len(bars_or)
+    vol_for_ratio = vol_today
+    if expected_bars and 0 < n_bars < expected_bars:
+        vol_for_ratio = vol_today * expected_bars / n_bars
+        logger.warning(
+            f"{ticker}: OR window truncated ({n_bars}/{expected_bars} bars) — vol ratio "
+            f"normalized ({vol_today:.0f} → {vol_for_ratio:.0f} for {expected_bars} bars)"
+        )
+    ratio = vol_for_ratio / vol_avg
     if ratio > config.VOL_RATIO_HIGH:
         return 0.10, ratio, vol_today, vol_avg
     elif ratio > config.VOL_RATIO_MID:
         return 0.05, ratio, vol_today, vol_avg
     return 0.0, ratio, vol_today, vol_avg
+
+
+def participation_gate(vol_ratio: Optional[float], catalyst_bonus: float) -> tuple[bool, Optional[str]]:
+    """Gate di PARTECIPAZIONE (8 set 2026): il volume dell'opening range deve essere almeno
+    config.MIN_VOL_RATIO_ENTRY × la media a 20gg della stessa finestra — un requisito, non
+    un bonus. È l'unico segnale d'ingresso che separa vincitori e perdenti nei 3 mesi live
+    e regge out-of-sample sul backtest a 631 trade (PF 1.02 → 1.11, P&L ×4 a ≥1.5).
+
+    vol_ratio None (storico assente) → NON passa: è il comportamento del backtest che ha
+    validato la soglia. Un catalyst bypassa il gate solo se CATALYST_BYPASSES_VOL_GATE.
+    Funzione pura (nessun I/O) così è testabile in isolamento.
+
+    Returns (passes, reason): reason è None se passa, altrimenti 'no_participation: …' —
+    finisce nel log giornaliero e nella dashboard come motivo di scarto.
+    """
+    min_vr = config.MIN_VOL_RATIO_ENTRY
+    if min_vr is None:
+        return True, None
+    if vol_ratio is not None and vol_ratio >= min_vr:
+        return True, None
+    if config.CATALYST_BYPASSES_VOL_GATE and catalyst_bonus > 0:
+        return True, None
+    if vol_ratio is None:
+        return False, f"no_participation: vol n/d (storico assente), need ≥{min_vr:g}x"
+    return False, f"no_participation: vol {vol_ratio:.2f}x < {min_vr:g}x"
 
 
 def calc_confidence(
@@ -145,7 +195,7 @@ def compute_signals(
     post_adv      = s1_post_open_advance(open_930, price_935)
     or_pos        = s2_or_position(bars_or, price_935)
     gap_ret       = s3_gap_retention(bars_or, open_930, prev_close)
-    vol_boost, vol_ratio, vol_today, vol_avg = s4_volume_boost(ticker, bars_or, session_date)
+    vol_boost, vol_ratio, vol_today, vol_avg = s4_volume_boost(ticker, bars_or, session_date, expected_bars=expected_bars)
     squeeze_bonus = (
         config.SHORT_SQUEEZE_BONUS
         if short_float is not None
@@ -158,19 +208,26 @@ def compute_signals(
     )
     confidence = calc_confidence(post_adv, or_pos, gap_ret, catalyst_bonus, vol_boost, short_float, gap_pct)
 
-    passes   = confidence >= config.CONFIDENCE_THRESHOLD
+    above_threshold = confidence >= config.CONFIDENCE_THRESHOLD
+    participation, reject_reason = participation_gate(vol_ratio, catalyst_bonus)
+    passes = above_threshold and participation
+    if not above_threshold:
+        reject_reason = f"confidence {confidence:.2f} < {config.CONFIDENCE_THRESHOLD}"
+    elif participation:
+        reject_reason = None
     adv_str  = f"ADV={'✓' if post_adv else '✗'}"
     or_str   = f"OR={or_pos:.2f}{'✓' if or_pos > config.OR_POSITION_THRESHOLD else f'✗(need>{config.OR_POSITION_THRESHOLD})'}"
     gr_str   = f"GR={gap_ret:.2f}{'✓' if gap_ret > config.GAP_RETENTION_THRESHOLD else f'✗(need>{config.GAP_RETENTION_THRESHOLD})'}"
     vol_str  = f"vol={vol_ratio:.2f}x(+{vol_boost:.2f})" if vol_ratio is not None else f"vol=n/d(+{vol_boost:.2f})"
     cat_str  = f"catalyst=+{catalyst_bonus:.2f}"
     sq_str   = f" squeeze=+{squeeze_bonus:.2f}" if squeeze_bonus > 0 else ""
-    conf_str = f"confidence={confidence:.3f}{'✓' if passes else f'✗(need≥{config.CONFIDENCE_THRESHOLD})'}"
+    conf_str = f"confidence={confidence:.3f}{'✓' if above_threshold else f'✗(need≥{config.CONFIDENCE_THRESHOLD})'}"
+    gate_str = "" if config.MIN_VOL_RATIO_ENTRY is None else (" gate=✓" if participation else f" gate=✗({reject_reason})")
 
     if passes:
-        logger.info(f"L2 PASS  {ticker}: {adv_str} {or_str} {gr_str} {vol_str} {cat_str}{sq_str} → {conf_str}")
+        logger.info(f"L2 PASS  {ticker}: {adv_str} {or_str} {gr_str} {vol_str} {cat_str}{sq_str} → {conf_str}{gate_str}")
     else:
-        logger.info(f"L2 REJECT {ticker}: {adv_str} {or_str} {gr_str} {vol_str} {cat_str}{sq_str} → {conf_str}")
+        logger.info(f"L2 REJECT {ticker}: {adv_str} {or_str} {gr_str} {vol_str} {cat_str}{sq_str} → {conf_str}{gate_str}")
 
     signals = {
         "ticker":               ticker,
@@ -192,5 +249,7 @@ def compute_signals(
         "short_squeeze_bonus":  squeeze_bonus,
         "confidence":           round(confidence, 4),
         "passes_threshold":     passes,
+        "participation":        participation,
+        "reject_reason":        reject_reason,
     }
     return signals

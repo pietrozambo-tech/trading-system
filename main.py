@@ -125,6 +125,8 @@ class PipelineLog:
             "ticker":              signals.get("ticker"),
             "confidence":          signals.get("confidence"),
             "passes_threshold":    signals.get("passes_threshold"),
+            "participation":       signals.get("participation"),    # gate volume (8 set)
+            "reject_reason":       signals.get("reject_reason"),    # motivo di scarto → dashboard
             "post_open_advance":   signals.get("post_open_advance"),
             "or_position":         signals.get("or_position"),
             "gap_retention":       signals.get("gap_retention"),
@@ -508,10 +510,18 @@ def run() -> None:
             candidates_with_signals.append({**c, **signals})
 
     pl.log_stage("L2_signals_passed", [c["ticker"] for c in candidates_with_signals],
-                 f"confidence>={config.CONFIDENCE_THRESHOLD}")
+                 f"confidence>={config.CONFIDENCE_THRESHOLD} & vol_ratio>={config.MIN_VOL_RATIO_ENTRY}x")
 
     if not candidates_with_signals:
-        pl.blocked = "nessun candidato sopra soglia confidence"
+        # Distingui "nessuno sopra soglia" da "sopra soglia ma senza partecipazione": il
+        # gate volume è un motivo di scarto diverso e la dashboard/recap devono dirlo.
+        gated = [s for s in getattr(pl, "signals", [])
+                 if str(s.get("reject_reason") or "").startswith("no_participation")]
+        pl.blocked = (
+            f"nessun candidato: {len(gated)} sopra soglia ma senza partecipazione "
+            f"(vol_ratio < {config.MIN_VOL_RATIO_ENTRY}x)"
+            if gated else "nessun candidato sopra soglia confidence"
+        )
         pl.save()
         _send_eod(all_trades, daily_pnl, today_str, spy_pct, pl)
         return
@@ -608,7 +618,7 @@ def run() -> None:
     #    AND run the exit checks on whatever is already open.
     def _adopt(position: dict, algo: dict) -> None:
         # Enrich position with signal data needed for EOD Telegram recap
-        for field in ("catalyst_bonus", "vol_boost", "short_float", "short_squeeze_bonus", "post_open_advance", "or_position", "gap_retention", "gap_pct", "news"):
+        for field in ("catalyst_bonus", "vol_boost", "vol_ratio", "short_float", "short_squeeze_bonus", "post_open_advance", "or_position", "gap_retention", "gap_pct", "news"):
             if field in algo:
                 position[field] = algo[field]
         open_positions.append(position)

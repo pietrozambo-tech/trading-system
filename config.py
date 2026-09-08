@@ -32,6 +32,23 @@ VOL_RATIO_HIGH          = 3.0    # boost +0.10
 VOL_RATIO_MID           = 2.0    # boost +0.05
 CONFIDENCE_THRESHOLD    = 0.65
 
+# === GATE DI PARTECIPAZIONE (8 settembre 2026) ===
+# Un candidato entra solo se il volume dell'opening range (9:30–9:34) è almeno
+# MIN_VOL_RATIO_ENTRY × la media a 20 giorni della stessa finestra. Non è un bonus: è un
+# requisito. Nei 3 mesi live (69 trade) i segnali tecnici (gap, ATR%, OR position) non
+# separano vincitori e perdenti; la PARTECIPAZIONE sì: post-29/06 vol_ratio ≥ 2× fa
+# +$12.3k/79% win, sotto −$52/48%; "né news né volume" −$7.2k/39% e 8 hard stop su 11.
+# Validato OUT-OF-SAMPLE sul backtest a 631 trade (gen 2025–giu 2026, slippage reale):
+# baseline PF 1.02 / +$4.7k → a ≥1.5: PF 1.11 / +$18.7k (×4), drawdown −25%, avg win
+# +22% — tiene i vincitori, a differenza del cap ATR. Costo: ~27% di trade in meno.
+# vol_ratio non calcolabile (storico assente) → scartato, come nel backtest che ha
+# validato la soglia. None = gate disattivato (comportamento storico).
+MIN_VOL_RATIO_ENTRY        = 1.5
+# Se True, un catalyst (news) fa passare il gate anche con volume basso. È la metà del
+# gate "partecipazione" NON backtestabile (il backtest non ha news), validata solo
+# in-sample su 9 trade live. Spento finché non c'è conferma sui trade reali.
+CATALYST_BYPASSES_VOL_GATE = False
+
 # === CATALYST BONUSES (additive, not multiplicative) ===
 CATALYST_TIER1 = 0.30   # +0.30 — major catalyst
 CATALYST_TIER2 = 0.20   # +0.20 — real but moderate news
