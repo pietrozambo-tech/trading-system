@@ -452,7 +452,8 @@ function renderKpis(st) {{
 function renderPnlChart(logs) {{
   const el=document.getElementById("chartPnl");
   if(!logs.length){{el.innerHTML='<p style="color:var(--muted);padding:20px 0;font-size:12px">Nessun dato</p>';return;}}
-  const W=560,H=160,pad={{t:10,r:10,b:30,l:52}};
+  // W=1000 (era 560): il pannello è largo ~1100px, il grafico ne usava metà con barre da 6px.
+  const W=1000,H=170,pad={{t:10,r:10,b:30,l:52}};
   const iW=W-pad.l-pad.r,iH=H-pad.t-pad.b;
   const vals=logs.map(r=>r.daily_pnl), dates=logs.map(r=>r.date.slice(5));
   const maxAbs=Math.max(...vals.map(Math.abs),1);
@@ -470,9 +471,16 @@ function renderPnlChart(logs) {{
     const y=v>=0?zero-bH:zero;
     return `<rect x="${{x.toFixed(1)}}" y="${{y.toFixed(1)}}" width="${{barW}}" height="${{Math.max(bH,1).toFixed(1)}}" fill="${{v>0?"#22c55e":v<0?"#ef4444":"#8892a4"}}" rx="3"/>`;
   }}).join("");
+  // Etichette X DIRADATE: con 66 giorni venivano stampate tutte le date, sovrapposte in una
+  // striscia illeggibile. Ne mostriamo al massimo una ogni ~60px (sempre la prima), ciascuna
+  // con un piccolo tick sotto la barra corrispondente.
+  const maxLabels=Math.max(4,Math.floor(iW/60));
+  const step=Math.max(1,Math.ceil(dates.length/maxLabels));
   const xLabels=dates.map((d,i)=>{{
+    if(i%step!==0) return "";
     const x=pad.l+(i+0.5)*iW/vals.length;
-    return `<text x="${{x.toFixed(1)}}" y="${{H-4}}" text-anchor="middle" fill="#8892a4" font-size="10">${{d}}</text>`;
+    return `<line x1="${{x.toFixed(1)}}" y1="${{H-pad.b+2}}" x2="${{x.toFixed(1)}}" y2="${{H-pad.b+7}}" stroke="#4a4d5a" stroke-width="1"/>
+            <text x="${{x.toFixed(1)}}" y="${{H-4}}" text-anchor="middle" fill="#8892a4" font-size="10">${{d}}</text>`;
   }}).join("");
   el.innerHTML=`<svg viewBox="0 0 ${{W}} ${{H}}" style="width:100%;max-width:${{W}}px;display:block">
     ${{yLabels}}
