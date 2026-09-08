@@ -61,8 +61,24 @@ def cancel_all_open_orders() -> list[str]:
 
 
 def calc_stop_prices(ticker: str, entry_price: float) -> dict:
-    """ATR stop and hard blocker stop — use the tighter (higher) one."""
-    atr14 = fetcher.get_atr14(ticker)
+    """ATR stop and hard blocker stop — use the tighter (higher) one.
+
+    MUST NEVER RAISE. It runs right after a confirmed fill and BEFORE the position
+    dict exists (confirm/poll paths + crash recovery): an exception here used to
+    propagate out of run(), leaving shares we already OWN with no position, no stop,
+    no monitoring and no EOD close. A data-API blip degrades to the -2% hard stop.
+    """
+    try:
+        atr14 = fetcher.get_atr14(ticker)
+    except Exception as e:
+        atr14 = 0.0
+        logger.error(f"{ticker}: ATR lookup failed after fill ({e}) — using the -2% hard stop only")
+        try:
+            telegram.send_message(
+                f"⚠️ <b>{ticker}</b>: ATR non disponibile dopo il fill — stop impostato al solo -2%."
+            )
+        except Exception:
+            pass
     stop_atr   = entry_price - atr14 if atr14 > 0 else 0
     stop_pct   = entry_price * (1 - config.HARD_BLOCKER_PCT)
     stop_price = max(stop_atr, stop_pct)
@@ -179,6 +195,109 @@ def place_entry_order(ticker: str, llm_decision: dict) -> Optional[dict]:
     }
 
 
+def _build_position(ctx: dict, entry_price: float, qty: int) -> dict:
+    """Build the position dict for a confirmed fill (calc_stop_prices never raises)."""
+    ticker = ctx["ticker"]
+    stops = calc_stop_prices(ticker, entry_price)
+    llm_decision = ctx["llm_decision"]
+    position = {
+        "ticker": ticker,
+        "qty": qty,
+        "entry_price": entry_price,
+        "entry_time": datetime.now(ET).strftime("%H:%M:%S"),
+        "entry_ts": time.time(),
+        "direction": "long",
+        "confidence": llm_decision.get("confidence"),
+        "reason": llm_decision.get("reason", ""),
+        "order_id": ctx["order_id"],
+        **stops,
+        "peak_price": entry_price,      # highest price seen — drives the step ratchet
+        "breakeven_armed": False,       # True once the stop has been raised to entry or above
+        "stop_label": None,             # label of the active ratchet ("breakeven_stop"/"step_stop"); None = base ATR/hard stop
+        "exit_price": None,
+        "exit_time": None,
+        "exit_reason": None,
+        "pnl_usd": None,
+        "pnl_pct": None,
+    }
+    logger.info(
+        f"Position opened: {ticker} @ ${entry_price:.2f} (limit ${ctx['limit_price']:.2f} | ref ${ctx['ref_price']:.2f})"
+        f" qty={qty} stop=${stops['stop_price']:.2f}"
+    )
+    return position
+
+
+def poll_entry_fill(ctx: dict) -> tuple[str, Optional[dict]]:
+    """ONE non-blocking poll of a pending entry order.
+
+    Returns (state, position):
+      'filled'  + position — fully filled at a known price
+      'pending' + None     — still working (or a transient poll error)
+      'dead'    + None     — canceled/rejected/expired before a full fill. The caller
+                             must still run cancel_entry_on_timeout(): a dead order can
+                             carry a PARTIAL fill that we own.
+    Lets main.py confirm several orders round-robin and keep MONITORING the ones
+    already filled, instead of blocking on each order in turn (which left the first
+    filled position with no stop check for up to FILL_CONFIRM_TIMEOUT_S).
+    """
+    client = _trading_client()
+    ticker, qty = ctx["ticker"], ctx["qty"]
+    try:
+        o = client.get_order_by_id(ctx["order_id"])
+    except Exception as e:
+        logger.warning(f"{ticker}: order poll error: {e}")
+        return "pending", None
+    status = str(getattr(o, "status", "")).lower()
+    if any(s in status for s in ("canceled", "rejected", "expired")):
+        logger.error(f"{ticker}: order {status} before fill")
+        return "dead", None
+    filled_qty = int(float(o.filled_qty or 0))
+    if filled_qty >= qty:
+        entry_price = float(o.filled_avg_price) if o.filled_avg_price else _fill_price_from_position(client, ticker)
+        if entry_price:
+            logger.info(f"{ticker}: fill confirmed @ ${entry_price:.2f} ({filled_qty} shares)")
+            return "filled", _build_position(ctx, entry_price, filled_qty)
+    return "pending", None
+
+
+def cancel_entry_on_timeout(ctx: dict) -> Optional[dict]:
+    """Deadline passed (or the order died): cancel so nothing can fill later unmonitored,
+    then re-check — the cancel can race with a (partial) fill and we NEVER abandon shares
+    we own. Returns a position for whatever filled, else None (sends 'entry saltata')."""
+    client = _trading_client()
+    ticker, order_id = ctx["ticker"], ctx["order_id"]
+    limit_price, ref_price = ctx["limit_price"], ctx["ref_price"]
+    entry_price, qty = None, ctx["qty"]
+    try:
+        client.cancel_order_by_id(order_id)
+        logger.warning(f"{ticker}: limit ${limit_price:.2f} not filled within {config.FILL_CONFIRM_TIMEOUT_S}s — order cancelled")
+    except Exception as e:
+        logger.warning(f"{ticker}: order cancel failed (may already be terminal): {e}")
+    time.sleep(2)
+    try:
+        o = client.get_order_by_id(order_id)
+        filled_qty = int(float(o.filled_qty or 0))
+        if filled_qty > 0:
+            entry_price = float(o.filled_avg_price) if o.filled_avg_price else _fill_price_from_position(client, ticker)
+            if entry_price is None:
+                # We OWN these shares — never abandon them unmonitored. The limit price is
+                # the worst possible fill, so it's a conservative estimate.
+                entry_price = limit_price
+                logger.error(f"{ticker}: {filled_qty} shares filled but no price available — assuming limit ${limit_price:.2f}")
+            qty = filled_qty
+            logger.warning(f"{ticker}: partial fill kept — {qty} shares @ ${entry_price:.2f}")
+    except Exception as e:
+        logger.error(f"{ticker}: final order check failed: {e}")
+    if entry_price is None:
+        logger.warning(f"{ticker}: entry skipped — limit ${limit_price:.2f} never filled (ref ${ref_price:.2f})")
+        telegram.send_message(
+            f"⚠️ <b>{ticker}</b>: entry saltata — limit ${limit_price:.2f} non eseguito entro "
+            f"{config.FILL_CONFIRM_TIMEOUT_S}s (ref ${ref_price:.2f}). Nessuna posizione aperta."
+        )
+        return None
+    return _build_position(ctx, entry_price, qty)
+
+
 def confirm_entry_fill(ctx: dict) -> Optional[dict]:
     """Phase 2 of entry: poll the order until filled, cancel on timeout.
 
@@ -232,63 +351,9 @@ def confirm_entry_fill(ctx: dict) -> Optional[dict]:
                 break
 
     if entry_price is None:
-        # Not (fully) filled in time — cancel so no orphan order can fill later, unmonitored.
-        try:
-            client.cancel_order_by_id(order_id)
-            logger.warning(f"{ticker}: limit ${limit_price:.2f} not filled within {config.FILL_CONFIRM_TIMEOUT_S}s — order cancelled")
-        except Exception as e:
-            logger.warning(f"{ticker}: order cancel failed (may already be terminal): {e}")
-        # Re-check final state: the cancel can race with a (partial) fill.
-        time.sleep(2)
-        try:
-            o = client.get_order_by_id(order_id)
-            filled_qty = int(float(o.filled_qty or 0))
-            if filled_qty > 0:
-                entry_price = float(o.filled_avg_price) if o.filled_avg_price else _fill_price_from_position(client, ticker)
-                if entry_price is None:
-                    # We OWN these shares — never abandon them unmonitored. The limit
-                    # price is the worst possible fill, so it's a conservative estimate.
-                    entry_price = limit_price
-                    logger.error(f"{ticker}: {filled_qty} shares filled but no price available — assuming limit ${limit_price:.2f}")
-                qty = filled_qty
-                logger.warning(f"{ticker}: partial fill kept — {qty} shares @ ${entry_price:.2f}")
-        except Exception as e:
-            logger.error(f"{ticker}: final order check failed: {e}")
-
-    if entry_price is None:
-        logger.warning(f"{ticker}: entry skipped — limit ${limit_price:.2f} never filled (ref ${ref_price:.2f})")
-        telegram.send_message(
-            f"⚠️ <b>{ticker}</b>: entry saltata — limit ${limit_price:.2f} non eseguito entro "
-            f"{config.FILL_CONFIRM_TIMEOUT_S}s (ref ${ref_price:.2f}). Nessuna posizione aperta."
-        )
-        return None
-
-    stops = calc_stop_prices(ticker, entry_price)
-    position = {
-        "ticker": ticker,
-        "qty": qty,
-        "entry_price": entry_price,
-        "entry_time": datetime.now(ET).strftime("%H:%M:%S"),
-        "entry_ts": time.time(),
-        "direction": "long",
-        "confidence": llm_decision.get("confidence"),
-        "reason": llm_decision.get("reason", ""),
-        "order_id": order_id,
-        **stops,
-        "peak_price": entry_price,      # highest price seen — drives the step ratchet
-        "breakeven_armed": False,       # True once the stop has been raised to entry or above
-        "stop_label": None,             # label of the active ratchet ("breakeven_stop"/"step_stop"); None = base ATR/hard stop
-        "exit_price": None,
-        "exit_time": None,
-        "exit_reason": None,
-        "pnl_usd": None,
-        "pnl_pct": None,
-    }
-    logger.info(
-        f"Position opened: {ticker} @ ${entry_price:.2f} (limit ${limit_price:.2f} | ref ${ref_price:.2f})"
-        f" qty={qty} stop=${stops['stop_price']:.2f}"
-    )
-    return position
+        # Deadline passed (or the order died): cancel, re-check for a (partial) fill, keep it.
+        return cancel_entry_on_timeout(ctx)
+    return _build_position(ctx, entry_price, qty)
 
 
 def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
@@ -302,8 +367,11 @@ def open_position(ticker: str, llm_decision: dict) -> Optional[dict]:
 def close_position(ticker: str, qty: int, reason: str, fallback_price: Optional[float] = None) -> Optional[dict]:
     """Close position at market. Returns exit info with the ACTUAL fill price.
 
-    Returns None ONLY if the close order itself failed. Once Alpaca accepts the
-    close, a price-lookup failure must not be reported as a failed close — the
+    Returns None if the close order failed, OR if Alpaca accepted it but we positively
+    observed 0 shares filled (rejected/expired/unfilled) — the caller must RETRY; booking
+    a market print in that case is a phantom close (position marked closed, shares still
+    owned overnight). Once shares DID fill, a price-lookup failure must not be reported
+    as a failed close — the
     caller would mis-book the trade and reconciliation would later drop it with
     no PnL. In that case exit_price falls back to `fallback_price` (typically the
     entry price) flagged with exit_price_estimated.
@@ -333,11 +401,15 @@ def close_position(ticker: str, qty: int, reason: str, fallback_price: Optional[
     # ~$9 of loss hidden; MRVL 307.26 vs 307.24; INTC 133.5715 partial-avg vs 133.5766 final).
     exit_price = None
     last_avg = None  # most recent filled_avg_price seen, even before the fill completes
+    filled_qty = 0
+    terminal = False    # order reached canceled/rejected/expired
+    polled_ok = False   # at least one poll actually read the order state
     for attempt in range(config.CLOSE_FILL_POLL_ATTEMPTS):
         try:
             o = client.get_order_by_id(order_id) if order_id else order
             status = str(getattr(o, "status", "")).lower()
             filled_qty = int(float(getattr(o, "filled_qty", 0) or 0))
+            polled_ok = True
             if o.filled_avg_price:
                 last_avg = float(o.filled_avg_price)
                 if filled_qty >= qty:
@@ -345,6 +417,7 @@ def close_position(ticker: str, qty: int, reason: str, fallback_price: Optional[
                     break
             if any(s in status for s in ("canceled", "rejected", "expired")):
                 logger.error(f"{ticker}: close order {status} (filled {filled_qty}/{qty})")
+                terminal = True
                 break
         except Exception as e:
             logger.warning(f"{ticker}: close order poll error (attempt {attempt + 1}): {e}")
@@ -358,7 +431,18 @@ def close_position(ticker: str, qty: int, reason: str, fallback_price: Optional[
         )
         exit_price = last_avg
 
-    # Market-data fallback ONLY if the order never reported ANY fill price.
+    # NOTHING filled (positively observed): the close did NOT happen. Never book a market
+    # print as the exit — that marks the position closed while the shares are still owned
+    # (phantom close → held overnight, recap says "closed"). Return None so the monitor
+    # retries next cycle and the EOD path uses its retry + manual-action alert.
+    if exit_price is None and polled_ok and filled_qty == 0:
+        logger.error(
+            f"{ticker}: close order {'reached terminal status' if terminal else 'still unfilled'} "
+            f"with 0 shares filled — NOT booking an exit; will retry"
+        )
+        return None
+
+    # Market-data fallback ONLY if shares actually filled but the order never reported a price.
     if exit_price is None:
         logger.warning(
             f"{ticker}: close order reported no filled_avg_price after "
@@ -481,11 +565,6 @@ def check_vwap_exit(ticker: str, position: dict, current_price: float) -> bool:
         return False
 
 
-def check_trading_halt(ticker: str) -> bool:
-    """Return True if ticker is currently halted."""
-    return not fetcher.is_asset_tradable(ticker)
-
-
 def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[list[dict], list[dict], float]:
     """
     Single monitoring cycle. Checks stops and VWAP exits.
@@ -531,12 +610,12 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
     for position in open_positions:
         ticker = position["ticker"]
         try:
-            # Halt check
-            if check_trading_halt(ticker):
-                logger.warning(f"{ticker}: trading halt detected — waiting to reopen")
-                still_open.append(position)
-                continue
-
+            # (Halt pre-check removed. fetcher.is_asset_tradable is a static asset-level flag
+            # that cannot see an intraday LULD halt, and on ANY API error it returned False →
+            # "halt" → every stop/ratchet/VWAP check was SKIPPED for the cycle, repeating each
+            # 15s while the API was flaky: a fail-closed gap on the most important loop, with
+            # zero halt-detection value. A real halt surfaces as a rejected/unfilled close
+            # order, which close_position now reports (returns None → retried).)
             current_price = fetcher.get_current_price(ticker)
 
             # Price sanity gate: a non-positive or non-finite print must never drive a

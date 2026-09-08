@@ -148,27 +148,35 @@ def classify_catalyst_from_news(news: list[dict]) -> float:
     ]
     conflict_seen = False
 
+    # REGEX patterns (re.search), not exact substrings. Verified Sep 8: "IonQ Raises FY2026
+    # Sales Guidance from $280-290M to $450-460M" and "IonQ Raises 2026 Outlook" matched
+    # NOTHING because "FY2026 Sales" / "2026" sit between the key words → a ~60% guidance
+    # raise (the textbook Tier 1) scored 0.0 and IONQ went in as a pure-technical 1.05.
+    # Catalyst is the strongest predictor of winners in 3 months of live data, so the
+    # matcher must tolerate words between the terms (up to ~40 chars).
+    _raise = r"\b(?:rais(?:e|es|ed|ing)|boost(?:s|ed)?|lift(?:s|ed)?|hik(?:e|es|ed))\b"
+    _guid  = r"\b(?:guidance|outlook|forecast)\b"
     tier1_phrases = [
-        "fda approv",                          # fda approval / fda approved
-        "acquisition confirmed", "merger confirmed", "buyout confirmed",
-        "agreed to acquire", "definitive agreement to acquire",
-        "revenue beat", "top-line beat", "record revenue", "record sales",
-        "beats revenue", "topped revenue estimates",
-        "guidance raised", "raises guidance", "raised guidance", "raises its guidance",
-        "raised outlook", "raises outlook", "raised its outlook",
-        "guidance increase", "guidance raised",
-        "earnings beat",                        # confirmed result, not rumour
+        r"fda approv",                                   # fda approval / fda approved
+        r"(?:acquisition|merger|buyout) confirmed",
+        r"agreed to acquire", r"definitive agreement to acquire",
+        r"(?:revenue|top-line|sales) beat", r"record (?:revenue|sales)",
+        r"beats?\b.{0,30}\b(?:revenue|sales) estimates", r"topped\b.{0,20}\brevenue estimates",
+        # "raises … guidance/outlook" — but not "raises doubts/concerns about … outlook"
+        _raise + r"(?!.{0,40}\b(?:doubts?|concerns?|questions?|flags?|alarm)\b).{0,40}" + _guid,
+        _guid + r".{0,20}" + _raise,                     # "guidance raised", "outlook lifted"
+        _guid + r" (?:increase|hike|boost)",
+        r"earnings beat",                                # confirmed result, not rumour
     ]
 
+    _pt = r"\b(?:price target|pt)\b"
     tier2_phrases = [
-        "eps beat", "beats estimates", "beat estimates", "beat earnings estimates",
-        "analyst upgrade", "upgraded to buy", "upgraded to outperform",
-        "upgraded to overweight", "upgraded to strong buy",
-        "price target raised", "price target increased", "raises price target",
-        "boosts price target", "lifts price target",
-        "insider buying", "insider purchase", "insider bought",
-        "partnership", "strategic partnership", "collaboration agreement",
-        "license agreement", "supply agreement",
+        r"eps beat", r"beats? (?:estimates|expectations|consensus)", r"beat earnings estimates",
+        r"analyst upgrade", r"\bupgrad(?:e|es|ed)\b.{0,20}\bto (?:buy|outperform|overweight|strong buy)\b",
+        _pt + r".{0,15}\b(?:raised|increased|hiked|lifted|boosted)\b",
+        r"\b(?:raises|boosts|lifts|hikes|increases)\b.{0,25}" + _pt,
+        r"insider (?:buying|purchase|bought)",
+        r"partnership", r"collaboration agreement", r"license agreement", r"supply agreement",
     ]
 
     tier3_phrases = [
@@ -196,7 +204,7 @@ def classify_catalyst_from_news(news: list[dict]) -> float:
             continue
 
         # Tier 1 — return immediately, can't do better
-        matched_t1 = next((p for p in tier1_phrases if p in text), None)
+        matched_t1 = next((p for p in tier1_phrases if re.search(p, text)), None)
         if matched_t1:
             logger.info(f"Catalyst Tier1 | phrase='{matched_t1}' | headline='{headline}'")
             return config.CATALYST_TIER1
@@ -208,7 +216,7 @@ def classify_catalyst_from_news(news: list[dict]) -> float:
             logger.info(f"Catalyst Tier1 (large EPS) | headline='{headline}'")
             return config.CATALYST_TIER1
 
-        matched_t2 = next((p for p in tier2_phrases if p in text), None)
+        matched_t2 = next((p for p in tier2_phrases if re.search(p, text)), None)
         if matched_t2:
             if best_tier < 2:
                 best_headline = headline

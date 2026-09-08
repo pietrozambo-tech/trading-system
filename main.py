@@ -321,6 +321,19 @@ def run() -> None:
         telegram.send_message(f"📅 {today_str} — mercato chiuso (festività NYSE). Sessione saltata.")
         return
 
+    # Guard 0b: EARLY-CLOSE days (13:00 — day after Thanksgiving, Christmas Eve, Jul 3).
+    # is_market_open_today() only checks that a calendar entry exists, so half-days ran as
+    # full sessions: EOD_CLOSE_TIME (15:45) fired into a closed market, the sell was queued
+    # for the next session and the position was held over the (long) weekend while the
+    # recap said "closed". These sessions are thin anyway — skip them.
+    session_close = fetcher.get_session_close_today()
+    if session_close is not None and (session_close.hour, session_close.minute) < (16, 0):
+        logger.info(f"{today_str} is an early-close day (close {session_close:%H:%M} ET) — skipping session")
+        telegram.send_message(
+            f"📅 {today_str} — chiusura anticipata NYSE alle {session_close:%H:%M} ET. Sessione saltata."
+        )
+        return
+
     # Guard 1: if positions are already open, skip the pipeline and jump straight
     # to the monitoring loop — handles crash-and-restart without leaving positions unmonitored.
     # Run BEFORE the late-start guard: a post-crash restart with open positions must always
@@ -536,22 +549,37 @@ def run() -> None:
         all_trades.append({"reason": llm_result["no_trade_reason"]})
 
     valid_tickers = {c["ticker"] for c in candidates_with_signals}
-    pending_entries: list[dict] = []
+
+    # 1) Validate EVERY pick before placing ANY order. Previously each pick was validated and
+    #    ordered in the same loop iteration, so a malformed trade_2 (non-dict / bad ticker)
+    #    raised AFTER trade_1's DAY limit order was already live → run() aborted and that
+    #    order could fill later with no stop. Also dedups: the same ticker twice would have
+    #    been bought twice, each sized at (equity-cushion)/MAX_POSITIONS = 2x exposure.
+    picks: list[tuple[dict, dict]] = []
+    seen: set[str] = set()
+    slots = config.MAX_POSITIONS - len(open_positions)
     for key in ("trade_1", "trade_2"):
+        if len(picks) >= slots:
+            break
         decision = llm_result.get(key)
         if not decision:
             continue
-        if len(open_positions) + len(pending_entries) >= config.MAX_POSITIONS:
-            break
-        if decision.get("ticker") not in valid_tickers:
-            logger.error(f"LLM returned unrecognised ticker '{decision.get('ticker')}' — skipping")
+        if not isinstance(decision, dict):
+            logger.error(f"LLM {key} is not an object ({decision!r}) — skipping")
             continue
-        algo = next((c for c in candidates_with_signals if c["ticker"] == decision["ticker"]), {})
+        ticker = decision.get("ticker")
+        if not isinstance(ticker, str) or ticker not in valid_tickers:
+            logger.error(f"LLM returned unrecognised ticker {ticker!r} — skipping")
+            continue
+        if ticker in seen:
+            logger.error(f"LLM returned {ticker} twice — skipping duplicate")
+            continue
+        algo = next((c for c in candidates_with_signals if c["ticker"] == ticker), {})
         # Hard guard: algo confidence must be above threshold (defensive — valid_tickers already ensures this)
         algo_conf = algo.get("confidence") or 0
         if algo_conf < config.CONFIDENCE_THRESHOLD:
             logger.error(
-                f"LLM picked {decision['ticker']} with algo confidence {algo_conf:.2f} "
+                f"LLM picked {ticker} with algo confidence {algo_conf:.2f} "
                 f"< threshold {config.CONFIDENCE_THRESHOLD} — skipping"
             )
             continue
@@ -561,24 +589,62 @@ def run() -> None:
         # Pass price_935 so the limit order references the actual bar-close price
         # (real trades) rather than the stale IEX pre-market ask.
         decision["price_935"] = algo.get("price_935")
+        seen.add(ticker)
+        picks.append((decision, algo))
+
+    # 2) Place the orders — all picks are validated at this point.
+    pending_entries: list[dict] = []
+    for decision, algo in picks:
         ctx = trader.place_entry_order(decision["ticker"], decision)
         if ctx:
             ctx["algo"] = algo
             pending_entries.append(ctx)
 
-    # Confirm fills only after every order is placed: the FILL_CONFIRM_TIMEOUT_S
-    # deadlines are anchored to each order's placed_ts, so on a two-trade day the
-    # waits overlap instead of delaying the second entry by up to 4 minutes.
-    for ctx in pending_entries:
-        algo = ctx.pop("algo")
-        position = trader.confirm_entry_fill(ctx)
+    # 3) Confirm fills ROUND-ROBIN and MONITOR filled positions while others still wait.
+    #    Fills used to be confirmed one order at a time, with monitoring starting only after
+    #    all of them: on a 2-pick day the first filled position had NO stop/ratchet/VWAP
+    #    check for up to FILL_CONFIRM_TIMEOUT_S (Sep 8: IONQ sat unmonitored ~3.7 min while
+    #    RGTI's order never filled). Now every FILL_POLL_INTERVAL_S we poll each pending order
+    #    AND run the exit checks on whatever is already open.
+    def _adopt(position: dict, algo: dict) -> None:
+        # Enrich position with signal data needed for EOD Telegram recap
+        for field in ("catalyst_bonus", "vol_boost", "short_float", "short_squeeze_bonus", "post_open_advance", "or_position", "gap_retention", "gap_pct", "news"):
+            if field in algo:
+                position[field] = algo[field]
+        open_positions.append(position)
+        all_trades.append(position)
+
+    pending = list(pending_entries)
+    while pending and not _shutdown:
+        _shutdown_event.wait(timeout=config.FILL_POLL_INTERVAL_S)
+        _shutdown_event.clear()
+        if _shutdown:
+            break
+        still_pending: list[dict] = []
+        for ctx in pending:
+            state, position = trader.poll_entry_fill(ctx)
+            if state == "filled":
+                _adopt(position, ctx["algo"])
+            elif state == "dead" or time.time() >= ctx["placed_ts"] + config.FILL_CONFIRM_TIMEOUT_S:
+                # Dead or timed out: cancel + re-check (a dead/cancelled order can still carry
+                # a partial fill we own) — keeps whatever filled, else 'entry saltata'.
+                position = trader.cancel_entry_on_timeout(ctx)
+                if position:
+                    _adopt(position, ctx["algo"])
+            else:
+                still_pending.append(ctx)
+        pending = still_pending
+        if open_positions:
+            open_positions, just_closed, daily_pnl = trader.monitor_positions(open_positions, daily_pnl)
+            for pos in just_closed:
+                logger.info(f"Closed: {pos['ticker']} {pos['exit_reason']} P&L=${pos['pnl_usd']:.2f}")
+                pl.log_trade(pos)
+    # Left the loop with orders still pending (shutdown): cancel them — never leave a live
+    # order that could fill unmonitored after we're gone.
+    for ctx in pending:
+        position = trader.cancel_entry_on_timeout(ctx)
         if position:
-            # Enrich position with signal data needed for EOD Telegram recap
-            for field in ("catalyst_bonus", "vol_boost", "short_float", "short_squeeze_bonus", "post_open_advance", "or_position", "gap_retention", "gap_pct", "news"):
-                if field in algo:
-                    position[field] = algo[field]
-            open_positions.append(position)
-            all_trades.append(position)
+            _adopt(position, ctx["algo"])
 
     # ------------------------------------------------------------------
     # Intraday monitoring loop

@@ -223,14 +223,23 @@ def get_premarket_data(ticker: str, session_date: Optional[date] = None) -> dict
     if session_date is None:
         session_date = datetime.now(ET).date()
 
-    # Primary: yfinance — aggregates pre-market prints from all exchanges
+    # Primary: yfinance — aggregates pre-market prints from all exchanges.
+    # NOTE: the field is `.info["preMarketPrice"]`. The previous code read
+    # `fast_info.pre_market_price`, an attribute FastInfo does not have, so it was ALWAYS
+    # None: this "primary" source silently never fired and every pre-market gap came from
+    # the IEX print (~15-20% of volume) — exactly the weakness it was added to fix.
     try:
         import yfinance as yf
-        info = yf.Ticker(ticker).fast_info
-        pm_price = getattr(info, "pre_market_price", None)
-        if pm_price is not None:
-            logger.debug(f"{ticker}: pre-market price from yfinance ${pm_price:.2f}")
-            return {"premarket_price": float(pm_price)}
+        info = yf.Ticker(ticker).info or {}
+        pm_price = info.get("preMarketPrice")
+        prev_close = info.get("regularMarketPreviousClose") or info.get("previousClose")
+        if pm_price and float(pm_price) > 0:
+            pm_price = float(pm_price)
+            # A pre-market price identical to the previous close means no pre-market trade
+            # has printed yet — fall through to IEX rather than log a 0% gap.
+            if not prev_close or abs(pm_price - float(prev_close)) > 1e-9:
+                logger.debug(f"{ticker}: pre-market price from yfinance ${pm_price:.2f}")
+                return {"premarket_price": pm_price}
     except Exception as e:
         logger.debug(f"{ticker}: yfinance pre-market failed ({e}) — trying Alpaca")
 
@@ -356,8 +365,11 @@ def is_asset_tradable(ticker: str) -> bool:
         client = get_trading_client()
         asset = client.get_asset(ticker)
         return asset.tradable and asset.status == AssetStatus.ACTIVE
-    except Exception:
-        return False
+    except Exception as e:
+        # Fail OPEN: an API blip must never reject a valid candidate. An asset that truly
+        # isn't tradable simply gets its order rejected downstream, which is handled.
+        logger.warning(f"{ticker}: is_asset_tradable check failed ({e}) — assuming tradable")
+        return True
 
 
 def get_short_float(ticker: str) -> Optional[float]:
@@ -400,6 +412,33 @@ def is_market_open_today(session_date: Optional[date] = None) -> bool:
     except Exception as e:
         logger.warning(f"Market calendar check failed: {e} — assuming market is open")
         return True
+
+
+def get_session_close_today(session_date: Optional[date] = None):
+    """Today's NYSE session close (a datetime.time, ET) from the Alpaca calendar, or None
+    if it's not a trading day / the lookup failed.
+
+    is_market_open_today() only checks that a calendar entry EXISTS — it never read the
+    entry's close time, so EARLY-CLOSE days (13:00: day after Thanksgiving, Christmas Eve,
+    Jul 3) were treated as full sessions: the 15:45 EOD close fired into a closed market,
+    the sell got queued for the next session and the position was held over the (long)
+    weekend while the recap said "closed". The caller uses this to skip half-days.
+    """
+    from alpaca.trading.requests import GetCalendarRequest
+    if session_date is None:
+        session_date = datetime.now(ET).date()
+    try:
+        cal = get_trading_client().get_calendar(GetCalendarRequest(start=session_date, end=session_date))
+        if not cal:
+            return None
+        close = getattr(cal[0], "close", None)
+        if isinstance(close, str):                      # defensive: "13:00"
+            h, m = close.split(":")[:2]
+            return datetime.strptime(f"{int(h):02d}:{int(m):02d}", "%H:%M").time()
+        return close
+    except Exception as e:
+        logger.warning(f"Session close lookup failed: {e}")
+        return None
 
 
 def get_historical_or_volume(ticker: str, lookback_days: int = 20, session_date: Optional[date] = None) -> float:
