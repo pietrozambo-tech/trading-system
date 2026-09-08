@@ -338,8 +338,27 @@ SPY −0.58%, only RDW (+3.0%) and SMR (+2.2%) in pre-market. Both failed L2 —
 
 Ideas discussed and parked — revisit when there's time.
 
-### ⭐ L'entrata: compriamo il top dell'opening range — priorità (29 giugno 2026)
-Il backtest slippage-aware ha mostrato che, ai costi di frizione reali, **nessuna variante di uscita produce un edge robusto** (tutte sotto PF 1.0 a slippage k=0.10). Le uscite sono il sintomo, non la causa. Il problema strutturale: i criteri L2 (`or_position > 0.66` + `post_open_advance`) per costruzione **comprano forza vicino a un massimo locale intraday**, poi il titolo mean-reverta e *qualsiasi* stop su un titolo volatile slitta. Sui trade reali, 7/12 posizioni che avevano armato il break-even erano uscite in perdita dopo un picco medio +1.25% (SOFI +3.16%→−0.12%, AMD +1.63%→−0.15%). **Leve da testare nel backtest slippage-aware:** (1) non comprare il top dell'OR — entrare con `or_position` più basso o su un pullback; (2) filtro volatilità — cap su ATR%/gap (i nomi tipo RKLB a 10% ATR sono quelli che slittano di più); (3) restringere l'universo a nomi meno volatili. Collegato alla sezione "ADV + OR: segnali troppo correlati" più sotto.
+### ⭐ Qualità dell'entrata = partecipazione, non tecnica — priorità (8 settembre 2026)
+**Testato e refutato:** l'ipotesi del 29/06 ("compriamo il top dell'OR" → cap su gap / ATR% / OR) è morta. Su 69 trade live gap size, ATR% e OR position **non separano** vincitori e perdenti, e i cap su gap e ATR sono refutati out-of-sample sul backtest a 631 trade (changelog 5/08): la stessa volatilità produce i perdenti *e* i grandi vincitori (SMCI 4/4 a 8.6% ATR).
+
+**Cosa separa davvero (post-29/06, n=51):** la *partecipazione* — news catalyst e volume dell'opening range.
+
+| bucket | n | P&L | win |
+|---|---|---|---|
+| catalyst + vol_ratio ≥ 2× | 16 | **+$11.242** | **81%** |
+| catalyst (qualsiasi volume) | 25 | +$18.357 | 76% |
+| nessun catalyst | 26 | −$6.060 | 50% |
+| **né catalyst né volume ≥ 2×** | **18** | **−$7.167** | **39%** — 8 degli 11 hard stop |
+
+Il bucket confidence 1.0–1.2 (3/3 segnali tecnici, nessuna news) è il perdente (−$6.1k, 20/23 senza catalyst): è il *bonus* catalyst/volume a fare la differenza, non il conteggio dei segnali. Gli hard stop hanno metà volume ratio (1.23× vs 2.66×) e metà catalyst dei vincitori. Meccanismo: news + volume = partecipazione reale dietro al gap; senza, è un pop tecnico che mean-reverta. *Caveat:* n=16–26 per bucket, in-sample; e fino al fix #7 il classificatore mancava catalyst veri (IONQ 8/09), quindi il bucket "senza catalyst" era contaminato — la separazione reale è probabilmente più netta.
+
+**Due leve, complementari:**
+1. **Gate di partecipazione all'entrata** — tradare solo se `catalyst_bonus > 0` **oppure** `vol_ratio ≥ 2`. In-sample toglie il bucket −$7.2k e 8/11 hard stop al costo di ~35% trade in meno. **In validazione**: la metà `vol_ratio` è backtestabile (`--entry-cap`, sweep `min_vol_ratio` 1.5/2/2.5/3); la metà catalyst **non** lo è (il backtest non ha news, usa un proxy piatto 0.10) → va validata sui trade live ora che il classificatore la rileva. Stessa disciplina dei cap gap/ATR: non deployare sul solo numero in-sample.
+2. **Stop scalato sulla volatilità + sizing sul rischio** (lato uscita) — lo stop ATR è codice morto: `max(entry − ATR14, entry × 0.98)` sceglie sempre −2% su questo universo (tutti i nomi hanno ATR% > 2), quindi un −2% fisso vale 0.2–0.5× il range *giornaliero* sui nomi a 7–10% ATR. Risultato: 8 hard stop su 16 scattati in < 30 min (mediana 31 min, contro 138 dei vincitori) — noise-out, non inversioni. Idea: `stop = clamp(c · ATR14/entry, 2%, cap)` e `qty = risk_budget / (entry − stop)`: tiene i nomi volatili che vincono rendendo i noise-out più economici. Da backtestare con il modello di slippage prima di toccare la produzione.
+
+**Da NON rifare:** cap su gap / ATR / volatilità pura (refutati); allargare il buffer limit +0.5% (slippage medio 0.05%, 25/64 fill *meglio* del riferimento, e chi paga il cap perde di più: hard stop 0.079% vs vincitori 0.018%); togliere la 2ª posizione (2° slot +$5.073/61%, n=23).
+
+**Nota regime (da testare senza lookahead):** i giorni con SPY > +0.5% fanno +$14.5k/71%, i piatti −$3.1k, i negativi −$399/29% — ma `spy_pct` nei log è la chiusura ufficiale backfillata, **non nota alle 9:35**. Per testarlo serve loggare la lettura SPY del momento della decisione.
 
 ### 2 vs 3 max positions
 The capital deployed is the same regardless: 2 × $49.5k or 3 × $33k both put $99k to work. The question is whether the 3rd-best setup on a given day is genuinely good or just marginal. The daily log now records `passes_threshold` per ticker — after a few weeks of data, count how many days had 3+ viable candidates above the confidence threshold and decide from there.
@@ -524,6 +543,18 @@ Alpaca's built-in reporting is too limited for meaningful analysis. The plan is 
 ## Changelog — timeline dei cambiamenti
 
 Riassunti **high level** dei cambi per giorno (più recente in alto). Solo titoli — i dettagli sono nelle sezioni sopra e nei commit. Tag: `[feat]` nuova implementazione · `[fix]` bug fix · `[exp]` esperimento/decisione.
+
+### 8 settembre 2026
+- `[fix]` **8 correzioni da code review completa** (verificate contro il codice, harness mock 41/41 check): (1) `calc_stop_prices` non alza più eccezioni dopo un fill — un errore data-API lasciava azioni possedute senza position/stop/monitoring/EOD; (2) niente più *phantom close* — un ordine di chiusura rifiutato o non eseguito veniva registrato con un prezzo da snapshot mentre le azioni restavano in mano overnight, ora ritorna `None` e viene ritentato; (3) rimosso il pre-check "halt" dal loop di monitoring — su ogni errore API tornava "halt" e saltava TUTTI i check stop/ratchet/VWAP, e non vedeva comunque gli halt LULD; (4) le scelte LLM vengono validate e deduplicate PRIMA di piazzare qualsiasi ordine (un `trade_2` malformato lasciava vivo e orfano l'ordine di `trade_1`; lo stesso ticker due volte raddoppiava l'esposizione); (5) conferma fill **round-robin** con monitoring delle posizioni già aperte mentre gli altri ordini attendono — l'8/09 IONQ è rimasta ~3.7 min senza alcun check mentre l'ordine RGTI non si eseguiva; (6) giornate a chiusura anticipata (13:00) saltate — l'EOD 15:45 sparava a mercato chiuso; (7) classificatore catalyst a **regex**: "IonQ Raises FY2026 Sales Guidance $280–290M → $450–460M" valeva 0.0 perché "FY2026 Sales" stava tra le parole chiave; (8) pre-market Yahoo: `fast_info` non ha `pre_market_price`, la sorgente "primaria" non era mai scattata e ogni gap veniva dal print IEX.
+- `[exp]` **Analisi 3 mesi (66 giorni, 69 trade, 4 giu – 8 set)**: +$11.019, win 57%, max DD −$9.081. Pre 29/06: −$1.278 (39% win) → post: +$12.297 (63%); agosto +$9.667 (83%). Il profit-lock è provato (21 uscite step_stop, +$11.7k). **Il predittore più forte è la partecipazione**: post-29/06 con catalyst +$18.357/76% vs senza −$6.060/50%; news + volume ≥2×: +$11.242/81%; né news né volume: −$7.167/39% e 8 degli 11 hard stop. Gap size, ATR% e OR position **non** separano. Entry miss 4/73 (5%) e slippage d'ingresso medio 0.05% (25/64 fill meglio del riferimento): il limit +0.5% funziona, non allargarlo. I top-5 trade valgono $12.7k > totale: edge fat-tailed, proteggere i grandi vincitori conta più di limare le piccole perdite. Dettagli e leve nei Next steps.
+- `[feat]` Backtest: `min_vol_ratio` (gate di partecipazione) aggiunto allo sweep `--entry-cap`.
+
+### 17 agosto 2026
+- `[fix]` **Retry + alert Telegram sul push del log su GitHub**: un 503 transitorio a fine sessione perdeva il log del giorno con un solo WARNING → dashboard con un buco silenzioso su una giornata in cui il bot aveva tradato. Ora 4 tentativi con backoff (1/2/4s) e alert se falliscono tutti. Il log del 17/08 (MRVL +$476.87, difesa anti-rimbalzo che scarta CBRS a −5.2% prev-day) è stato ricostruito dai log applicativi Railway.
+
+### 5 agosto 2026
+- `[exp]` **Universo: rimossi INTC e RKLB** (70 → 68) — record multi-trade tutto negativo (INTC 0/3, −$2.495; RKLB 0/2, −$1.509). Confermato a 3 mesi: restano i due peggiori nomi multi-trade.
+- `[exp]` **Cap d'ingresso su gap size e ATR% REFUTATI out-of-sample** (backtest 631 trade, slippage reale, `run_backtest.py --entry-cap`): ogni cap riduce il P&L; il cap ATR ≤ 7% taglia l'86% del profitto amputando i grandi vincitori. La stessa volatilità produce perdenti e vincitori — non ri-litigare.
 
 ### 29 giugno 2026
 - `[exp]` **Break-even precoce RIMOSSO → profit-lock only** (`STEP_STOPS=[(0.015,0.010),(0.030,0.020)]`). Post-mortem RKLB/PLTR (entrati in profitto, usciti −0.99%/−0.42% sul break-even) + backtest slippage-aware: il gradino +0.5%→−0.2% usciva sul primo pullback e slittava. Sui trade reali 7/12 posizioni armate uscivano in perdita dopo picco medio +1.25%. Tenuti i due profit-lock (al k centrale: +8pp win rate, −$6k drawdown vs no-step, a costo di ~$3k PnL).

@@ -48,6 +48,11 @@ class BacktestParams:
     # sta dentro il rumore giornaliero. Sui trade reali i losers hanno ATR% più alto dei
     # winners (6.6 vs 5.3). None = nessun cap (storico).
     max_atr_pct:             Optional[float] = None
+    # Gate di PARTECIPAZIONE: volume dell'opening range vs media 20gg. Nei 3 mesi live
+    # (post 29/06) i trade con vol_ratio ≥ 2 fanno +$12.3k/79% win, quelli sotto −$52/48%;
+    # "né news né volume" −$7.2k/39% e 8 degli 11 hard stop. È la metà backtestabile del
+    # gate "catalyst > 0 OR vol_ratio ≥ 2" (il backtest non ha news). None = nessun gate.
+    min_vol_ratio:           Optional[float] = None
     min_adv:                 float = 5_000_000  # 5M shares/day (SIP consolidated)
     vol_ratio_high:          float = 3.0
     vol_ratio_mid:           float = 2.0
@@ -342,6 +347,10 @@ def _simulate_day(
     vol_avg   = _calc_hist_or_vol(intraday_cache, session_date, lookback=20)
     vol_ratio = vol_today / vol_avg if vol_avg > 0 else 0
     vol_boost = 0.10 if vol_ratio > params.vol_ratio_high else (0.05 if vol_ratio > params.vol_ratio_mid else 0.0)
+    # Gate di partecipazione (8 set): richiedi un minimo di volume relativo per entrare.
+    # None = disattivato (comportamento storico).
+    if params.min_vol_ratio is not None and vol_ratio < params.min_vol_ratio:
+        return None
 
     # Catalyst proxy (no real news in backtest — use conservative Tier 3 bonus)
     direction_score = sum([
@@ -719,6 +728,9 @@ def entry_cap_analysis(
     configs = [("baseline (nessun cap)", {})]
     configs += [(f"gap ≤ {c:.0%}", {"max_gap_pct": c}) for c in (0.12, 0.10, 0.08, 0.06)]
     configs += [(f"ATR% ≤ {c:.0%}", {"max_atr_pct": c}) for c in (0.09, 0.08, 0.07, 0.06)]
+    # Gate di partecipazione (8 set): l'unico segnale d'ingresso che separa vincitori e
+    # perdenti nei 3 mesi live. Sweep sul minimo di vol_ratio richiesto per entrare.
+    configs += [(f"vol_ratio ≥ {c:.1f}", {"min_vol_ratio": c}) for c in (1.5, 2.0, 2.5, 3.0)]
 
     rows = []
     baseline_pnl = None

@@ -285,7 +285,7 @@ def main():
 
     elif args.entry_cap:
         print(f"Entry-cap sweep (out-of-sample): {START_DATE} → {END_DATE} | {len(BACKTEST_UNIVERSE)} ticker")
-        print("Stesse uscite (profit-lock only) + slippage reale — varia solo il cap d'ingresso (gap, ATR%).\n")
+        print("Stesse uscite (profit-lock only) + slippage reale — varia solo il gate d'ingresso (gap, ATR%, vol_ratio).\n")
         cap_df = entry_cap_analysis(BACKTEST_UNIVERSE, START_DATE, END_DATE)
 
         print("\n" + "=" * 110)
