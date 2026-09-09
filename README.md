@@ -344,6 +344,30 @@ SPY −0.58%, only RDW (+3.0%) and SMR (+2.2%) in pre-market. Both failed L2 —
 
 Ideas discussed and parked — revisit when there's time.
 
+### 🔍 Affidabilità del prezzo che fa scattare gli stop — DA FARE (9 settembre 2026)
+
+**Come è emerso.** Il 9/09 AMD è uscita in step_stop a $519,54 poco dopo l'entrata a $514,70. Guardando il grafico sembrava non ci fosse stato alcun ritracciamento in quel range. Verifica: il calo tra le **10:14 e le 10:18 ET è reale**, lo stop è scattato su un prezzo vero — **nessun problema di dati**. Ma per stabilirlo è servito aprire un grafico al minuto a mano: **dal log non era ricostruibile**, e questo è il problema.
+
+**La vulnerabilità (reale, indipendente dal caso AMD).** Operiamo sul feed **IEX**, che vede il **15–20% del volume**. `get_current_price()` restituisce l'ultimo trade IEX se ha meno di `PRICE_MAX_AGE_S` (120s), senza alcun controllo di plausibilità; il "price sanity gate" in `monitor_positions` verifica solo che il numero sia positivo e finito. Quindi **un singolo tick non rappresentativo fa scattare lo stop**, senza conferma e senza lasciare traccia. Test a supporto: su 46 uscite con stop, 44 riempiono sotto il livello (mediana −0,11%) — coerente con slippage normale, ma **non conclusivo**, perché su paper trading trigger e fill vengono dalla stessa sorgente IEX e sbaglierebbero insieme.
+
+**Da fare, in ordine:**
+1. **Logging diagnostico al trigger** (rischio zero, priorità): quando uno stop scatta, registrare prezzo scatenante, timestamp del tick, **età in secondi**, sorgente (`latest_trade` vs fallback barra 1-min) e gli ultimi N campioni. Oggi logghiamo solo il fill: la domanda "il prezzo era giusto?" deve avere risposta nel log.
+2. **Guardia anti-outlier**: prima di agire su un trigger, confrontare il tick col contesto recente (minimo dell'ultima barra 1-min, campioni precedenti); se è fuori scala, ri-verificare invece di vendere. **Da tarare con cura**: ritardare uno stop vero costa soldi.
+3. **Valutare il passaggio a SIP** (Alpaca Algo Trader Plus, ~$99/mese): elimina il problema alla radice. Il codice è già pronto — basta `ALPACA_DATA_FEED=sip`. Con posizioni da ~$55k il rapporto costo/beneficio inizia ad avere senso.
+
+### Step-stop: la "zona morta" tra i gradini (9 settembre 2026)
+
+Analisi sui 69 trade (`peak_price` vs uscita realizzata). I due gradini (+1.5%→blocca +1.0%, +3.0%→blocca +2.0%) lasciano il pavimento **congelato tra l'uno e l'altro e sopra il secondo**:
+
+| uscita | picco medio | uscita media | restituito |
+|---|---|---|---|
+| step_stop (21) | +2,36% | +1,13% | **1,23 pp** |
+| eod_close (12) | +3,03% | +2,40% | 0,63 pp |
+
+**21 trade su 64 (33%)** hanno il picco nella zona morta +1,5%…+3,0% (picco medio +1,91% → uscita +0,97%). Sopra +3,0% la zona è **illimitata**: DELL 2/09 picco **+5,08% → uscita +1,87%** (3,2 punti restituiti); AMD 9/09 picco +2,35% → +0,94%. Il resto della catena è corretto: MARA/MRNA/HOOD/OXY escono tutte a ~+2,0% meno slippage, cioè esattamente sul secondo gradino.
+
+**Da testare (`--exit`, 631 trade, slippage reale), non da cambiare a mano:** (a) scala più fitta (+2,0%→1,4%, +2,5%→1,8%); (b) ibrido: gradini fino a +3%, poi **trailing a picco−X%** sopra (risolve la zona illimitata); (c) trailing puro dopo l'arming. **Rischio simmetrico da misurare:** una scala più fitta riduce la restituzione ma esce prima, e i vincitori grandi (PLTR +8,19%, GOOGL +3,85%) arrivano proprio perché non vengono stoppati. Nota: il trailing fu bocciato il 14/06, ma **a slippage zero e con la vecchia config** — il ri-test è legittimo.
+
 ### ⭐ Qualità dell'entrata = partecipazione, non tecnica — priorità (8 settembre 2026)
 **Testato e refutato:** l'ipotesi del 29/06 ("compriamo il top dell'OR" → cap su gap / ATR% / OR) è morta. Su 69 trade live gap size, ATR% e OR position **non separano** vincitori e perdenti, e i cap su gap e ATR sono refutati out-of-sample sul backtest a 631 trade (changelog 5/08): la stessa volatilità produce i perdenti *e* i grandi vincitori (SMCI 4/4 a 8.6% ATR).
 
