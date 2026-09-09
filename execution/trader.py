@@ -28,6 +28,11 @@ _shutdown_event = None
 # monitor cycles without polluting the position dicts that end up in the log).
 _reconcile_misses: dict[str, int] = {}
 
+# How many recent price samples to keep per position for the exit-trigger log.
+# 5 × MONITORING_INTERVAL (15s) ≈ the minute before the trigger: enough to see whether
+# the price walked down into the stop or a single print jumped there on its own.
+PRICE_SAMPLE_WINDOW = 5
+
 
 def register_shutdown_event(event) -> None:
     global _shutdown_event
@@ -478,6 +483,35 @@ def close_position(ticker: str, qty: int, reason: str, fallback_price: Optional[
     return info
 
 
+def _log_exit_trigger(position: dict, reason: str, trigger_price: float, detail: dict) -> None:
+    """Log WHY a price-driven exit fired, and record it on the position.
+
+    Before this, a triggered stop logged only the resulting FILL: there was no way to
+    tell from the log whether the price that fired it was a real market move or an
+    unrepresentative IEX print (we see ~15-20% of volume). Answering that for AMD on
+    9 Sept required opening a minute chart by hand. Now the log carries the trigger
+    price, the age and ET time of the underlying print, its source, and the preceding
+    samples — so the question is answerable from the log alone, and the same fields
+    land in the daily JSON for offline analysis across many trades.
+    """
+    ticker = position["ticker"]
+    entry, stop = position["entry_price"], position["stop_price"]
+    age_s = detail.get("age_s")
+    samples = position.get("recent_prices", [])
+    trail = " → ".join(f"{p}" for p, _ in samples) or "n/d"
+    logger.info(
+        f"{ticker}: EXIT TRIGGER {reason} @ ${trigger_price:.4f} "
+        f"(stop ${stop:.4f}, entry ${entry:.4f}, {(trigger_price / entry - 1) * 100:+.2f}%, "
+        f"peak ${position.get('peak_price', entry):.4f}) | "
+        f"tick source={detail.get('source')} age={'n/d' if age_s is None else f'{age_s:.1f}s'} "
+        f"time={detail.get('tick_time') or 'n/d'} | ultimi campioni: {trail}"
+    )
+    position["trigger_price"]   = round(trigger_price, 4)
+    position["trigger_source"]  = detail.get("source")
+    position["trigger_age_s"]   = round(age_s, 2) if age_s is not None else None
+    position["trigger_tick_time"] = detail.get("tick_time")
+
+
 def check_stop_triggered(position: dict, current_price: float) -> Optional[str]:
     """Return exit reason if any stop is triggered, else None.
 
@@ -616,7 +650,8 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
             # 15s while the API was flaky: a fail-closed gap on the most important loop, with
             # zero halt-detection value. A real halt surfaces as a rejected/unfilled close
             # order, which close_position now reports (returns None → retried).)
-            current_price = fetcher.get_current_price(ticker)
+            detail = fetcher.get_price_detail(ticker)
+            current_price = detail["price"]
 
             # Price sanity gate: a non-positive or non-finite print must never drive a
             # stop, a VWAP exit, or the break-even ratchet. We had real incidents where
@@ -626,6 +661,13 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
                 still_open.append(position)
                 continue
 
+            # Rolling window of the last samples (price + ET time of the print). Gives the
+            # trigger log its "what did we see just before?" context — the single thing
+            # missing when we had to reconstruct the AMD 9 Sept exit by hand.
+            recent = position.setdefault("recent_prices", [])
+            recent.append([round(current_price, 4), detail.get("tick_time")])
+            del recent[:-PRICE_SAMPLE_WINDOW]
+
             # Ratchet the stop up through the step gradini before evaluating it, so a
             # price that both arms a step and then dips this same cycle is handled correctly.
             update_dynamic_stop(position, current_price)
@@ -633,6 +675,7 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
             # Stop check
             stop_reason = check_stop_triggered(position, current_price)
             if stop_reason:
+                _log_exit_trigger(position, stop_reason, current_price, detail)
                 exit_info = close_position(ticker, position["qty"], stop_reason, fallback_price=position["entry_price"])
                 if exit_info:
                     pnl = (exit_info["exit_price"] - position["entry_price"]) * position["qty"]
@@ -647,6 +690,7 @@ def monitor_positions(open_positions: list[dict], daily_pnl: float) -> tuple[lis
 
             # VWAP trailing exit
             if check_vwap_exit(ticker, position, current_price):
+                _log_exit_trigger(position, "vwap_exit", current_price, detail)
                 exit_info = close_position(ticker, position["qty"], "vwap_exit", fallback_price=position["entry_price"])
                 if exit_info:
                     pnl = (exit_info["exit_price"] - position["entry_price"]) * position["qty"]

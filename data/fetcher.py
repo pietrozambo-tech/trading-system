@@ -132,33 +132,52 @@ def get_opening_range_bars(ticker: str, session_date: Optional[date] = None) -> 
     return bars[bars.index < cutoff]
 
 
-def get_current_price(ticker: str) -> float:
-    """Latest trade price, validated for staleness.
+def get_price_detail(ticker: str) -> dict:
+    """Latest trade price WITH its provenance — the same logic as get_current_price(),
+    but it also returns where the number came from and how old it is.
 
-    On thin-IEX tickers the last print can be minutes old while the consolidated
-    tape has moved — a stop checked against a stale price is silently missed.
-    If the trade is older than PRICE_MAX_AGE_S, fall back to the close of the
-    latest 1-minute bar (bounded ~1 min of delay).
+    Returns {price, source, age_s, tick_time}:
+      source 'latest_trade'  — fresh IEX print (age ≤ PRICE_MAX_AGE_S)
+      source 'bar_fallback'  — print too old, using the last 1-min bar close
+      source 'stale_trade'   — print too old AND no bar available (worst case)
+      age_s / tick_time      — age in seconds and ET time of the underlying print
+
+    Exists because the stop decision used to be a bare float: when a stop fired we
+    logged only the FILL, so "was that price real?" could not be answered from the
+    log at all (AMD 9 Sept took a hand-checked minute chart to resolve). The caller
+    logs these fields at the moment of the trigger.
     """
     client = get_data_client()
     req = StockLatestTradeRequest(symbol_or_symbols=ticker, feed=_feed())
     trade = _with_retry(client.get_stock_latest_trade, req)[ticker]
     ts = trade.timestamp
     age_s = None
+    tick_time = None
     if ts is not None:
         ts_utc = ts if ts.tzinfo else pytz.UTC.localize(ts)
         age_s = (datetime.now(pytz.UTC) - ts_utc).total_seconds()
+        try:
+            tick_time = ts_utc.astimezone(ET).strftime("%H:%M:%S")
+        except Exception:
+            tick_time = None
     if age_s is None or age_s <= config.PRICE_MAX_AGE_S:
-        return float(trade.price)
+        return {"price": float(trade.price), "source": "latest_trade", "age_s": age_s, "tick_time": tick_time}
     try:
         bars = get_intraday_bars(ticker, minutes=1)
         if not bars.empty:
             logger.warning(f"{ticker}: latest trade {age_s:.0f}s old — using last 1-min bar close")
-            return float(bars["close"].iloc[-1])
+            return {"price": float(bars["close"].iloc[-1]), "source": "bar_fallback",
+                    "age_s": age_s, "tick_time": tick_time}
     except Exception:
         pass
     logger.warning(f"{ticker}: latest trade {age_s:.0f}s old and no bar fallback — using stale price")
-    return float(trade.price)
+    return {"price": float(trade.price), "source": "stale_trade", "age_s": age_s, "tick_time": tick_time}
+
+
+def get_current_price(ticker: str) -> float:
+    """Latest trade price, validated for staleness. Thin wrapper over get_price_detail()
+    for callers that only need the number (entry reference price, tests)."""
+    return get_price_detail(ticker)["price"]
 
 
 def get_latest_quote(ticker: str) -> dict:
