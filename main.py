@@ -107,6 +107,10 @@ class PipelineLog:
         self.l1_rejects: list[dict] = []
         self.llm_input: list[str] = []
         self.llm_output: dict = {}
+        # Valorizzato solo quando l'LLM ESCLUDE il candidato col punteggio più alto
+        # (non quando lo mette semplicemente secondo, né sui pari merito): sono le
+        # uniche deviazioni con un effetto economico reale.
+        self.llm_excluded_top: dict | None = None
         self.trades: list[dict] = []
         self.spy_pct: float = 0.0
         # "open_935" = valore di apertura salvato live; sovrascritto da backfill_spy con
@@ -170,6 +174,7 @@ class PipelineLog:
             "signals":              self.signals,
             "llm_input":            self.llm_input,
             "llm_output":           self.llm_output,
+            "llm_excluded_top":     self.llm_excluded_top,
             "trades":               self.trades,
         }
         with open(path, "w") as f:
@@ -532,17 +537,33 @@ def run() -> None:
     pl.log_llm(candidates_with_signals, llm_result)
     logger.info(f"LLM decision: {llm_result}")
 
-    # Observability: log when LLM deviates from algo top pick
+    # Observability: segnala SOLO le deviazioni che contano davvero, cioè quando il
+    # candidato col punteggio più alto NON viene comprato affatto.
+    #
+    # Prima il confronto era `trade_1 != top_algo`: scattava anche quando il top-scored
+    # era semplicemente il SECONDO nome scelto — ma le due slot ricevono capitale
+    # identico ((equity − cushion)/MAX_POSITIONS), quindi l'ordine non ha alcun effetto
+    # economico. E scattava sui PARI MERITO, dove "il più alto" è solo l'ordine di
+    # tie-break. Su 49 giorni: 3 warning per solo-ordine (effetto zero) e 6 esclusioni
+    # vere, di cui 3 a pari merito → il segnale era annegato nel rumore, al punto da
+    # falsare l'analisi "l'LLM aggiunge valore?" (9/09: AMD e QCOM entrambe a 1.000,
+    # entrambe comprate, warning scattato lo stesso).
     _sorted_by_algo = sorted(candidates_with_signals, key=lambda x: -(x.get("confidence") or 0))
-    if _sorted_by_algo:
-        _top_algo_ticker = _sorted_by_algo[0]["ticker"]
-        _llm_pick_1 = (llm_result.get("trade_1") or {}).get("ticker")
-        if _llm_pick_1 and _llm_pick_1 != _top_algo_ticker:
+    _picked = [t for t in ((llm_result.get(k) or {}).get("ticker") for k in ("trade_1", "trade_2")) if t]
+    if _sorted_by_algo and _picked:
+        _top_conf = _sorted_by_algo[0].get("confidence") or 0
+        # Tutti i nomi a pari punteggio col migliore: sceglierne uno non è una deviazione.
+        _tied_top = {c["ticker"] for c in _sorted_by_algo if abs((c.get("confidence") or 0) - _top_conf) < 1e-9}
+        if not (_tied_top & set(_picked)):
+            _excluded = _sorted_by_algo[0]["ticker"]
             logger.warning(
-                f"LLM deviated from algo ranking: picked {_llm_pick_1} "
-                f"instead of top-scored {_top_algo_ticker} "
-                f"(conf={_sorted_by_algo[0].get('confidence', 0):.2f})"
+                f"LLM excluded the top-scored candidate: {_excluded} (conf={_top_conf:.2f}"
+                f"{f', a pari merito con {len(_tied_top) - 1} altri' if len(_tied_top) > 1 else ''}) "
+                f"— scelti {_picked}. Motivo LLM: {str(llm_result.get('no_trade_reason') or 'n/d')[:200]}"
             )
+            # Nel log giornaliero, così l'analisi offline si basa sulle esclusioni vere.
+            pl.llm_excluded_top = {"ticker": _excluded, "confidence": round(_top_conf, 4),
+                                   "tied": sorted(_tied_top), "picked": _picked}
 
     # ------------------------------------------------------------------
     # Place orders immediately after LLM decision (skip if past EOD cut-off)
