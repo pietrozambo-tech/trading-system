@@ -1,0 +1,448 @@
+{
+  "date": "2026-09-10",
+  "spy_pct": -0.00607928648719545,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 72,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "ANET",
+        "LITE",
+        "CRDO",
+        "COHR",
+        "CIEN",
+        "JPM",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "CELH",
+        "CAVA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "TEM",
+        "HIMS",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "RDW",
+        "LUNR",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "GEV",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 3,
+      "tickers": [
+        "META",
+        "OXY",
+        "ABBV"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 3,
+      "tickers": [
+        "META",
+        "OXY",
+        "ABBV"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 1,
+      "tickers": [
+        "META"
+      ],
+      "note": "confidence>=0.65 & vol_ratio>=1.5x"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "META",
+      "gap_pct": 6.36,
+      "adv_m": 18.2,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -4.9,
+      "prev_day_return_pct": 6.55
+    },
+    {
+      "ticker": "OXY",
+      "gap_pct": 2.8,
+      "adv_m": 8.7,
+      "short_float_pct": 0.0,
+      "dist_from_3m_high_pct": 0.7,
+      "prev_day_return_pct": 1.08
+    },
+    {
+      "ticker": "ABBV",
+      "gap_pct": 1.33,
+      "adv_m": 6.3,
+      "short_float_pct": 1.1,
+      "dist_from_3m_high_pct": -5.8,
+      "prev_day_return_pct": 0.86
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "META",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.7828,
+      "gap_retention": 0.8397,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.931,
+      "vol_today": 53876,
+      "vol_avg": 27897,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0127,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.06360435548021122,
+      "price_935": 658.14,
+      "open_930": 654.005,
+      "prev_close": 613.48
+    },
+    {
+      "ticker": "OXY",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": true,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.1429,
+      "gap_retention": 0.5514,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.956,
+      "vol_today": 15504,
+      "vol_avg": 7928,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0280296784830998,
+      "price_935": 61.56,
+      "open_930": 62.11,
+      "prev_close": 60.65
+    },
+    {
+      "ticker": "ABBV",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.74x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.745,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.737,
+      "vol_today": 2005,
+      "vol_avg": 3400,
+      "or_bar_count": 4,
+      "or_last_bar": "09:33",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0115,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.013304928048878535,
+      "price_935": 252.645,
+      "open_930": 250.525,
+      "prev_close": 248.78
+    }
+  ],
+  "llm_input": [
+    "META"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "META",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e tre i segnali tecnici confermati (post_open_advance, or_position 0.78, gap_retention 0.84) con gap del 6.4% sostenuto dalla narrativa positiva su Muse/AI agentivo (Tier 3, gi\u00e0 incluso nell'algo). La sessione precedente a +6.6% esclude la regola rimbalzo da selloff e il titolo \u00e8 solo al -4.9% dal massimo trimestrale, con resistenza limitata sopra.",
+      "price_935": 658.14
+    },
+    "trade_2": null,
+    "no_trade_reason": null
+  },
+  "llm_excluded_top": null,
+  "trades": [
+    {
+      "ticker": "META",
+      "qty": 82,
+      "entry_price": 658.45,
+      "entry_time": "09:35:21",
+      "entry_ts": 1789047321.8243937,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e tre i segnali tecnici confermati (post_open_advance, or_position 0.78, gap_retention 0.84) con gap del 6.4% sostenuto dalla narrativa positiva su Muse/AI agentivo (Tier 3, gi\u00e0 incluso nell'algo). La sessione precedente a +6.6% esclude la regola rimbalzo da selloff e il titolo \u00e8 solo al -4.9% dal massimo trimestrale, con resistenza limitata sopra.",
+      "order_id": "7a97a3c2-501c-46c9-b5d2-8c78d301b2ca",
+      "stop_atr": 638.5466,
+      "stop_pct": 645.281,
+      "stop_price": 645.281,
+      "atr14": 19.9034,
+      "peak_price": 662.05,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 644.61,
+      "exit_time": "09:49:16",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1134.88,
+      "pnl_pct": -0.021,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.931,
+      "short_float": 0.0127,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.7828,
+      "gap_retention": 0.8397,
+      "gap_pct": 0.06360435548021122,
+      "news": [
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-09-10T12:50:04Z",
+          "headline": "Apple To $370? Here Are 10 Top Analyst Forecasts For Thursday",
+          "id": 61711273,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/Cupertino--California--September-25--202.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/Cupertino--California--September-25--202.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/Cupertino--California--September-25--202.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Analysts cut targets for AAPL, CHWY, COO, TYRA and CNM; raised DLR, DPZ, SIG, while ratings stayed unchanged.",
+          "symbols": [
+            "AAPL",
+            "ABM",
+            "CHWY",
+            "CNM",
+            "COO",
+            "DLR",
+            "DPZ",
+            "INNV",
+            "META",
+            "NAVN",
+            "SIG",
+            "TYRA"
+          ],
+          "updated_at": "2026-09-10T12:50:04Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/price-target/26/09/61711273/apple-to-370-here-are-10-top-analyst-forecasts-for-thursday"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-09-10T11:00:21Z",
+          "headline": "Meta Enters the \u2018Battle of the Agents\u2019 With an Advantage Rivals Can\u2019t Easily Copy",
+          "id": 61708160,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/Meta-And-Other-Social-Media-Giants-Ask-F.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/Meta-And-Other-Social-Media-Giants-Ask-F.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/Meta-And-Other-Social-Media-Giants-Ask-F.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Meta Platforms could lead the AI race with its new agentic AI app, Muse, according to T. Rowe Price manager Tony Wang.",
+          "symbols": [
+            "FDN",
+            "IGPT",
+            "META",
+            "SOCL"
+          ],
+          "updated_at": "2026-09-10T11:00:21Z",
+          "url": "https://www.benzinga.com/markets/tech/26/09/61708160/meta-enters-the-battle-of-the-agents-with-an-advantage-rivals-cant-easily-copy"
+        },
+        {
+          "author": "Snigdha Gairola",
+          "content": "",
+          "created_at": "2026-09-10T10:37:00Z",
+          "headline": "Senator Chris Murphy Sounds Alarm on AI Race, Backs Anthropic Researcher's Warning: 'AI Companies In a Blind Race to Build a Death Machine First'",
+          "id": 61707725,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/United-States-Senator-Chris-Murphy--demo.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/United-States-Senator-Chris-Murphy--demo.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/United-States-Senator-Chris-Murphy--demo.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Murphy backs Anthropic researcher\u2019s warning on AI\u2019s dangerous race toward superintelligence and calls for government oversight.",
+          "symbols": [
+            "META"
+          ],
+          "updated_at": "2026-09-10T10:37:00Z",
+          "url": "https://www.benzinga.com/markets/tech/26/09/61707725/senator-chris-murphy-sounds-alarm-on-ai-race-backs-anthropic-researchers-warning-ai-companies-in-a-blind-race-to-build-a-death-machine-first"
+        },
+        {
+          "author": "Mohd Haider",
+          "content": "",
+          "created_at": "2026-09-10T10:01:11Z",
+          "headline": "Anthropic Pulls $450,000 Meta Sales Role as AI Rivalry With Facebook Parent Intensifies: Report",
+          "id": 61706760,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/Anthropic-Logo-Is-Displayed-On-A-Smartph.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/Anthropic-Logo-Is-Displayed-On-A-Smartph.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/Anthropic-Logo-Is-Displayed-On-A-Smartph.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Meta reportedly drew Anthropic\u2019s attention with a $380,000-plus sales role aimed at winning business from the AI giant\u2019s strategic accounts.",
+          "symbols": [
+            "META",
+            "MSFT"
+          ],
+          "updated_at": "2026-09-10T10:01:11Z",
+          "url": "https://www.benzinga.com/markets/tech/26/09/61706760/anthropic-meta-sales-role-ai-rival-customer"
+        },
+        {
+          "author": "Radhika Anilkumar Nadig",
+          "content": "",
+          "created_at": "2026-09-10T05:28:54Z",
+          "headline": "Ray Dalio Warns 'We Are Now in a Bubble': Here's Why the Billionaire Investor Says AI Boom Mirrors 1920s Crash",
+          "id": 61704630,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/Ai-Technology-Bubble-Concept-Chip-Stock-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/Ai-Technology-Bubble-Concept-Chip-Stock-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/10/Ai-Technology-Bubble-Concept-Chip-Stock-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Ray Dalio warned that the AI boom is in a bubble and that investors are failing to distinguish between the transformative technology and its inflated stock prices.",
+          "symbols": [
+            "AMZN",
+            "GOOG",
+            "GOOGL",
+            "META",
+            "MSFT",
+            "NVDA"
+          ],
+          "updated_at": "2026-09-10T05:28:54Z",
+          "url": "https://www.benzinga.com/markets/tech/26/09/61704630/ray-dalio-ai-bubble-warning-miracle-versus-investment-big-tech-capex"
+        }
+      ],
+      "recent_prices": [
+        [
+          646.47,
+          "09:48:14"
+        ],
+        [
+          646.21,
+          "09:48:26"
+        ],
+        [
+          645.88,
+          "09:48:42"
+        ],
+        [
+          646.19,
+          "09:48:59"
+        ],
+        [
+          644.64,
+          "09:49:14"
+        ]
+      ],
+      "trigger_price": 644.64,
+      "trigger_source": "latest_trade",
+      "trigger_age_s": 0.46,
+      "trigger_tick_time": "09:49:14"
+    }
+  ]
+}
