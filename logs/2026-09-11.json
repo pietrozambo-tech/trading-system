@@ -1,0 +1,950 @@
+{
+  "date": "2026-09-11",
+  "spy_pct": 0.01043054877485581,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 72,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "ANET",
+        "LITE",
+        "CRDO",
+        "COHR",
+        "CIEN",
+        "JPM",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "CELH",
+        "CAVA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "TEM",
+        "HIMS",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "RDW",
+        "LUNR",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "GEV",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 22,
+      "tickers": [
+        "APP",
+        "AAPL",
+        "SHOP",
+        "ABBV",
+        "RDW",
+        "CCL",
+        "ENPH",
+        "ORCL",
+        "DAL",
+        "RIVN",
+        "QCOM",
+        "GOOGL",
+        "CIEN",
+        "MRNA",
+        "MSFT",
+        "AFRM",
+        "DKNG",
+        "JPM",
+        "SOFI",
+        "RGTI",
+        "AMZN",
+        "GS"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 19,
+      "tickers": [
+        "APP",
+        "AAPL",
+        "SHOP",
+        "ABBV",
+        "RDW",
+        "CCL",
+        "ENPH",
+        "ORCL",
+        "DAL",
+        "RIVN",
+        "QCOM",
+        "GOOGL",
+        "MRNA",
+        "MSFT",
+        "DKNG",
+        "JPM",
+        "SOFI",
+        "RGTI",
+        "AMZN"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 4,
+      "tickers": [
+        "AAPL",
+        "RIVN",
+        "DKNG",
+        "JPM"
+      ],
+      "note": "confidence>=0.65 & vol_ratio>=1.5x"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "APP",
+      "gap_pct": 3.7,
+      "adv_m": 5.9,
+      "short_float_pct": 3.6,
+      "dist_from_3m_high_pct": -45.1,
+      "prev_day_return_pct": 3.09
+    },
+    {
+      "ticker": "AAPL",
+      "gap_pct": 3.38,
+      "adv_m": 54.1,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -5.3,
+      "prev_day_return_pct": 3.56
+    },
+    {
+      "ticker": "SHOP",
+      "gap_pct": 3.08,
+      "adv_m": 9.1,
+      "short_float_pct": 1.5,
+      "dist_from_3m_high_pct": -17.7,
+      "prev_day_return_pct": -0.15
+    },
+    {
+      "ticker": "ABBV",
+      "gap_pct": 2.71,
+      "adv_m": 6.3,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -3.6,
+      "prev_day_return_pct": 1.63
+    },
+    {
+      "ticker": "RDW",
+      "gap_pct": 2.56,
+      "adv_m": 21.3,
+      "short_float_pct": 18.7,
+      "dist_from_3m_high_pct": -39.1,
+      "prev_day_return_pct": 1.59
+    },
+    {
+      "ticker": "CCL",
+      "gap_pct": 2.03,
+      "adv_m": 20.9,
+      "short_float_pct": 3.4,
+      "dist_from_3m_high_pct": -26.3,
+      "prev_day_return_pct": -1.01
+    },
+    {
+      "ticker": "ENPH",
+      "gap_pct": 1.82,
+      "adv_m": 5.2,
+      "short_float_pct": 21.3,
+      "dist_from_3m_high_pct": -35.4,
+      "prev_day_return_pct": 0.38
+    },
+    {
+      "ticker": "ORCL",
+      "gap_pct": 1.8,
+      "adv_m": 32.2,
+      "short_float_pct": 2.6,
+      "dist_from_3m_high_pct": -25.1,
+      "prev_day_return_pct": -5.38
+    },
+    {
+      "ticker": "DAL",
+      "gap_pct": 1.75,
+      "adv_m": 6.5,
+      "short_float_pct": 3.9,
+      "dist_from_3m_high_pct": -16.0,
+      "prev_day_return_pct": -0.65
+    },
+    {
+      "ticker": "RIVN",
+      "gap_pct": 1.53,
+      "adv_m": 29.5,
+      "short_float_pct": 14.1,
+      "dist_from_3m_high_pct": -19.6,
+      "prev_day_return_pct": 0.28
+    },
+    {
+      "ticker": "QCOM",
+      "gap_pct": 1.51,
+      "adv_m": 14.8,
+      "short_float_pct": 3.5,
+      "dist_from_3m_high_pct": -22.9,
+      "prev_day_return_pct": 0.27
+    },
+    {
+      "ticker": "GOOGL",
+      "gap_pct": 1.23,
+      "adv_m": 30.2,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -12.9,
+      "prev_day_return_pct": 0.59
+    },
+    {
+      "ticker": "CIEN",
+      "gap_pct": 1.18,
+      "adv_m": 2.6,
+      "short_float_pct": 3.7,
+      "dist_from_3m_high_pct": -30.8,
+      "prev_day_return_pct": -1.02
+    },
+    {
+      "ticker": "MRNA",
+      "gap_pct": 1.02,
+      "adv_m": 15.6,
+      "short_float_pct": 12.0,
+      "dist_from_3m_high_pct": -22.4,
+      "prev_day_return_pct": 0.74
+    },
+    {
+      "ticker": "MSFT",
+      "gap_pct": 0.96,
+      "adv_m": 36.0,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -4.1,
+      "prev_day_return_pct": 0.16
+    },
+    {
+      "ticker": "AFRM",
+      "gap_pct": 0.87,
+      "adv_m": 4.4,
+      "short_float_pct": 5.3,
+      "dist_from_3m_high_pct": -24.0,
+      "prev_day_return_pct": -0.23
+    },
+    {
+      "ticker": "DKNG",
+      "gap_pct": 0.85,
+      "adv_m": 12.1,
+      "short_float_pct": 7.9,
+      "dist_from_3m_high_pct": -20.8,
+      "prev_day_return_pct": 0.21
+    },
+    {
+      "ticker": "JPM",
+      "gap_pct": 0.81,
+      "adv_m": 8.1,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -2.4,
+      "prev_day_return_pct": -0.32
+    },
+    {
+      "ticker": "SOFI",
+      "gap_pct": 0.75,
+      "adv_m": 68.3,
+      "short_float_pct": 13.9,
+      "dist_from_3m_high_pct": -11.6,
+      "prev_day_return_pct": -0.69
+    },
+    {
+      "ticker": "RGTI",
+      "gap_pct": 0.74,
+      "adv_m": 23.4,
+      "short_float_pct": 17.7,
+      "dist_from_3m_high_pct": -34.8,
+      "prev_day_return_pct": -0.52
+    },
+    {
+      "ticker": "AMZN",
+      "gap_pct": 0.63,
+      "adv_m": 47.2,
+      "short_float_pct": 0.9,
+      "dist_from_3m_high_pct": -11.6,
+      "prev_day_return_pct": -0.2
+    },
+    {
+      "ticker": "GS",
+      "gap_pct": 0.63,
+      "adv_m": 2.0,
+      "short_float_pct": 2.4,
+      "dist_from_3m_high_pct": -9.8,
+      "prev_day_return_pct": -0.88
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "CIEN",
+      "reason": "adv_2,614,377<min_5,000,000"
+    },
+    {
+      "ticker": "AFRM",
+      "reason": "adv_4,388,112<min_5,000,000"
+    },
+    {
+      "ticker": "GS",
+      "reason": "adv_2,027,371<min_5,000,000"
+    },
+    {
+      "ticker": "ENPH",
+      "reason": "pm_gap_eaten_at_open_43%"
+    },
+    {
+      "ticker": "QCOM",
+      "reason": "pm_gap_eaten_at_open_49%"
+    },
+    {
+      "ticker": "SOFI",
+      "reason": "pm_gap_eaten_at_open_12%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "APP",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.33 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.9195,
+      "gap_retention": 0.6693,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.242,
+      "vol_today": 1408,
+      "vol_avg": 5812,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0363,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03700911296138471,
+      "price_935": 316.15,
+      "open_930": 316.34,
+      "prev_close": 305.06
+    },
+    {
+      "ticker": "AAPL",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.949,
+      "gap_retention": 0.9273,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.542,
+      "vol_today": 76640,
+      "vol_avg": 49691,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0095999995,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03377529016299876,
+      "price_935": 331.97,
+      "open_930": 327.45,
+      "prev_close": 315.34
+    },
+    {
+      "ticker": "SHOP",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 1.31x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.9125,
+      "gap_retention": 0.8571,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.311,
+      "vol_today": 10685,
+      "vol_avg": 8152,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0153,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.030838394195125657,
+      "price_935": 130.46,
+      "open_930": 130.22,
+      "prev_close": 126.79
+    },
+    {
+      "ticker": "ABBV",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 1.20x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.9252,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.2,
+      "vol_today": 2423,
+      "vol_avg": 3364,
+      "or_bar_count": 3,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0123000005,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02706149615399941,
+      "price_935": 257.66,
+      "open_930": 256.3,
+      "prev_close": 250.91
+    },
+    {
+      "ticker": "RDW",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.33 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.0476,
+      "gap_retention": 0.9032,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.169,
+      "vol_today": 15289,
+      "vol_avg": 13077,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1866,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.025607476635514104,
+      "price_935": 10.85,
+      "open_930": 10.855,
+      "prev_close": 10.7
+    },
+    {
+      "ticker": "CCL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.3333,
+      "gap_retention": 0.325,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.794,
+      "vol_today": 18918,
+      "vol_avg": 23833,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.033800002,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02026872246696038,
+      "price_935": 22.92,
+      "open_930": 23.1,
+      "prev_close": 22.7
+    },
+    {
+      "ticker": "ORCL",
+      "confidence": 0.4,
+      "passes_threshold": false,
+      "participation": true,
+      "reject_reason": "confidence 0.40 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.1046,
+      "gap_retention": -3.0,
+      "vol_boost": 0.1,
+      "vol_ratio": 5.994,
+      "vol_today": 134467,
+      "vol_avg": 22433,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.025999999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.018004083400358823,
+      "price_935": 155.71,
+      "open_930": 164.0,
+      "prev_close": 161.63
+    },
+    {
+      "ticker": "DAL",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.55x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.7722,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.554,
+      "vol_today": 1232,
+      "vol_avg": 3709,
+      "or_bar_count": 3,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.038599998,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.017523809523809466,
+      "price_935": 79.655,
+      "open_930": 79.54,
+      "prev_close": 78.75
+    },
+    {
+      "ticker": "RIVN",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.4839,
+      "gap_retention": 0.9,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.569,
+      "vol_today": 22876,
+      "vol_avg": 14576,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1409,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015307716338644237,
+      "price_935": 16.38,
+      "open_930": 16.255,
+      "prev_close": 16.005
+    },
+    {
+      "ticker": "GOOGL",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.84x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.845,
+      "vol_today": 24300,
+      "vol_avg": 28760,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.013200001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.012254649931952279,
+      "price_935": 340.06,
+      "open_930": 335.05,
+      "prev_close": 330.65
+    },
+    {
+      "ticker": "MRNA",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.33 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.7793,
+      "gap_retention": -0.2832,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.164,
+      "vol_today": 4148,
+      "vol_avg": 31546,
+      "or_bar_count": 4,
+      "or_last_bar": "09:33",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.119799994,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010249981564781257,
+      "price_935": 136.42,
+      "open_930": 136.74,
+      "prev_close": 135.61
+    },
+    {
+      "ticker": "MSFT",
+      "confidence": 0.6667,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.89x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.454,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.893,
+      "vol_today": 17965,
+      "vol_avg": 20110,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.01,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.00962066510729181,
+      "price_935": 496.615,
+      "open_930": 495.67,
+      "prev_close": 491.65
+    },
+    {
+      "ticker": "DKNG",
+      "confidence": 0.7167,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.9,
+      "gap_retention": -0.4,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.074,
+      "vol_today": 14272,
+      "vol_avg": 6881,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0789,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.00848267117497892,
+      "price_935": 23.79,
+      "open_930": 23.785,
+      "prev_close": 23.66
+    },
+    {
+      "ticker": "JPM",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.6414,
+      "gap_retention": 0.9252,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.631,
+      "vol_today": 5020,
+      "vol_avg": 3078,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.01,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.008079839869189035,
+      "price_935": 358.965,
+      "open_930": 358.255,
+      "prev_close": 354.71
+    },
+    {
+      "ticker": "RGTI",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.4118,
+      "gap_retention": -0.4545,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.446,
+      "vol_today": 9990,
+      "vol_avg": 22378,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.17719999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0074212598425196395,
+      "price_935": 15.26,
+      "open_930": 15.35,
+      "prev_close": 15.24
+    },
+    {
+      "ticker": "AMZN",
+      "confidence": 0.9667,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.62x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.9281,
+      "gap_retention": 0.5471,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.616,
+      "vol_today": 32367,
+      "vol_avg": 52581,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.0094,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.006339144215530881,
+      "price_935": 256.14,
+      "open_930": 254.045,
+      "prev_close": 252.4
+    }
+  ],
+  "llm_input": [
+    "AAPL",
+    "RIVN",
+    "DKNG",
+    "JPM"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "AAPL",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e tre i segnali tecnici sono attivi (post_open_advance, or_position 0.949, gap_retention 0.927) con confidence algoritmica massima pari a 1.0. Nonostante l'assenza di catalyst classificabile, il setup tecnico \u00e8 eccezionalmente forte e il titolo ha chiuso positivo il giorno precedente (+3.6%), escludendo il rischio rimbalzo da selloff.",
+      "price_935": 331.97
+    },
+    "trade_2": null,
+    "no_trade_reason": "RIVN ha or_position sotto soglia (0.484) e nessun catalyst, con il titolo lontano dai massimi di 3 mesi (-19.6%); confidence insufficiente. DKNG presenta gap_retention negativa (-0.4), segnale tecnico critico di debolezza nella tenuta del gap, e post_open_advance quasi nullo (+0.02%), con assenza totale di catalyst. JPM ha confidence algoritmica pari a 0.667 senza catalyst, or_position appena sopra soglia (0.641) e settore bancario non correlato a AAPL ma il profilo tecnico \u00e8 debole rispetto ad AAPL; si preferisce non forzare un secondo trade con setup marginale."
+  },
+  "llm_excluded_top": null,
+  "trades": [
+    {
+      "ticker": "AAPL",
+      "qty": 162,
+      "entry_price": 333.257099,
+      "entry_time": "09:36:17",
+      "entry_ts": 1789133777.7927196,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Tutti e tre i segnali tecnici sono attivi (post_open_advance, or_position 0.949, gap_retention 0.927) con confidence algoritmica massima pari a 1.0. Nonostante l'assenza di catalyst classificabile, il setup tecnico \u00e8 eccezionalmente forte e il titolo ha chiuso positivo il giorno precedente (+3.6%), escludendo il rischio rimbalzo da selloff.",
+      "order_id": "310a8b98-56fe-45b6-b6ba-973363ec88f1",
+      "stop_atr": 325.7375,
+      "stop_pct": 326.592,
+      "stop_price": 326.592,
+      "atr14": 7.5196,
+      "peak_price": 336.11,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 332.627901,
+      "exit_time": "15:45:16",
+      "exit_reason": "eod_close",
+      "pnl_usd": -101.93,
+      "pnl_pct": -0.0019,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.542,
+      "short_float": 0.0095999995,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.949,
+      "gap_retention": 0.9273,
+      "gap_pct": 0.03377529016299876,
+      "news": [
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-09-11T11:26:46Z",
+          "headline": "Apple\u2019s Customers Can Take a Price Hike, Analyst Says Retention Hardly Moves",
+          "id": 61734994,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Mexico-City--Mexico--09-09-2026--Screen-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Mexico-City--Mexico--09-09-2026--Screen-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Mexico-City--Mexico--09-09-2026--Screen-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Dan Ives and Gene Munster weigh in on Apple&#39;s (AAPL) AI strategy, potential foldable iPhone, and room for pricing growth.",
+          "symbols": [
+            "AAPL"
+          ],
+          "updated_at": "2026-09-11T11:26:46Z",
+          "url": "https://www.benzinga.com/markets/tech/26/09/61734994/apples-customers-can-take-a-price-hike-analyst-says-retention-hardly-moves"
+        },
+        {
+          "author": "Shomik Sen Bhattacharjee",
+          "content": "",
+          "created_at": "2026-09-11T10:13:15Z",
+          "headline": "Kalshi Eyes 24/7 Leveraged Bets on TSLA, NVDA and AAPL With New Perpetual Futures Push: Report",
+          "id": 61733955,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Kalshi-Hosts-Free-Groceries.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Kalshi-Hosts-Free-Groceries.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Kalshi-Hosts-Free-Groceries.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Prediction market platform Kalshi reportedly seeks U.S. approval for 60 stock and ETF perpetual futures, including Tesla, Apple and Nvidia.",
+          "symbols": [
+            "AAPL",
+            "CME",
+            "COIN",
+            "NVDA",
+            "TSLA"
+          ],
+          "updated_at": "2026-09-11T10:13:15Z",
+          "url": "https://www.benzinga.com/markets/prediction-markets/26/09/61733955/kalshi-eyes-24-7-leveraged-bets-on-tsla-nvda-and-aapl-with-new-perpetual-futures-push-report"
+        },
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-09-11T09:58:24Z",
+          "headline": "In-Depth Analysis: Apple Versus Competitors In Technology Hardware, Storage &amp; Peripherals Industry",
+          "id": 61733485,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_10.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_10.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/earnings_preview_10.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "In the dynamic and cutthroat world of business, conducting thorough company analysis is essential for investors and industry experts. In this article, we will undertake a comprehensive industry comparison, evaluating",
+          "symbols": [
+            "AAPL"
+          ],
+          "updated_at": "2026-09-11T09:58:24Z",
+          "url": "https://www.benzinga.com/news/26/09/61733485/depth-analysis-apple-versus-competitors-technology-hardware-storage-amp-peripherals-industry"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-09-11T09:28:09Z",
+          "headline": "Apple Watch Is Winning in a Shrinking Market",
+          "id": 61733003,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Apple-Expands-XR-Lineup.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Apple-Expands-XR-Lineup.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Apple-Expands-XR-Lineup.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Counterpoint expects an Apple Watch upgrade cycle as Series 12 &amp; Ultra 4 launch with new health features and unchanged prices.",
+          "symbols": [
+            "AAPL",
+            "GRMN"
+          ],
+          "updated_at": "2026-09-11T09:28:09Z",
+          "url": "https://www.benzinga.com/markets/tech/26/09/61733003/apple-watch-is-winning-in-a-shrinking-market"
+        },
+        {
+          "author": "Ravikash Bakolia",
+          "content": "",
+          "created_at": "2026-09-11T09:08:52Z",
+          "headline": "Gavin Newsom Takes the Fight to Big Tech With New Curbs on Social Media, AI Use to Protect Kids: \u2018Unregulated Technology Puts Our Children at Risk\u2019",
+          "id": 61732855,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Governor-Gavin-Newsom-Speaking.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Governor-Gavin-Newsom-Speaking.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Governor-Gavin-Newsom-Speaking.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "California Governor Gavin Newsom signed laws limiting addictive social media features, strengthening AI chatbot safeguards.",
+          "symbols": [
+            "AAPL",
+            "GOOG",
+            "GOOGL",
+            "META",
+            "MSFT"
+          ],
+          "updated_at": "2026-09-11T09:08:52Z",
+          "url": "https://www.benzinga.com/markets/tech/26/09/61732855/gavin-newsom-takes-the-fight-to-big-tech-with-new-curbs-on-social-media-ai-use-to-protect-kids-unregulated-technology-puts-our-children-at-risk"
+        }
+      ],
+      "recent_prices": [
+        [
+          332.61,
+          "15:44:05"
+        ],
+        [
+          332.59,
+          "15:44:22"
+        ],
+        [
+          332.56,
+          "15:44:37"
+        ],
+        [
+          332.56,
+          "15:44:53"
+        ],
+        [
+          332.575,
+          "15:45:05"
+        ]
+      ]
+    }
+  ]
+}
