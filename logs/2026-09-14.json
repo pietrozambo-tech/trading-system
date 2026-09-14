@@ -1,0 +1,1228 @@
+{
+  "date": "2026-09-14",
+  "spy_pct": -0.007138744209176383,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 72,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "ANET",
+        "LITE",
+        "CRDO",
+        "COHR",
+        "CIEN",
+        "JPM",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "CELH",
+        "CAVA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "TEM",
+        "HIMS",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "RDW",
+        "LUNR",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "GEV",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 22,
+      "tickers": [
+        "AFRM",
+        "DELL",
+        "MRNA",
+        "CRM",
+        "DKNG",
+        "NIO",
+        "ADBE",
+        "COIN",
+        "CELH",
+        "NFLX",
+        "GOOGL",
+        "APP",
+        "CAVA",
+        "OXY",
+        "SHOP",
+        "AAPL",
+        "ABBV",
+        "MSTR",
+        "META",
+        "PLTR",
+        "MSFT",
+        "SMCI"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 20,
+      "tickers": [
+        "DELL",
+        "MRNA",
+        "CRM",
+        "DKNG",
+        "NIO",
+        "ADBE",
+        "COIN",
+        "CELH",
+        "NFLX",
+        "GOOGL",
+        "APP",
+        "OXY",
+        "SHOP",
+        "AAPL",
+        "ABBV",
+        "MSTR",
+        "META",
+        "PLTR",
+        "MSFT",
+        "SMCI"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 6,
+      "tickers": [
+        "NIO",
+        "ADBE",
+        "COIN",
+        "NFLX",
+        "GOOGL",
+        "OXY"
+      ],
+      "note": "confidence>=0.65 & vol_ratio>=1.5x"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "AFRM",
+      "gap_pct": 7.52,
+      "adv_m": 4.4,
+      "short_float_pct": 5.3,
+      "dist_from_3m_high_pct": -19.2,
+      "prev_day_return_pct": 5.07
+    },
+    {
+      "ticker": "DELL",
+      "gap_pct": 6.19,
+      "adv_m": 7.7,
+      "short_float_pct": 4.9,
+      "dist_from_3m_high_pct": -5.2,
+      "prev_day_return_pct": 11.98
+    },
+    {
+      "ticker": "MRNA",
+      "gap_pct": 5.6,
+      "adv_m": 15.8,
+      "short_float_pct": 12.0,
+      "dist_from_3m_high_pct": -18.3,
+      "prev_day_return_pct": 5.38
+    },
+    {
+      "ticker": "CRM",
+      "gap_pct": 5.14,
+      "adv_m": 15.0,
+      "short_float_pct": 4.1,
+      "dist_from_3m_high_pct": -4.8,
+      "prev_day_return_pct": 1.94
+    },
+    {
+      "ticker": "DKNG",
+      "gap_pct": 4.51,
+      "adv_m": 11.9,
+      "short_float_pct": 7.9,
+      "dist_from_3m_high_pct": -17.8,
+      "prev_day_return_pct": 4.34
+    },
+    {
+      "ticker": "NIO",
+      "gap_pct": 4.19,
+      "adv_m": 30.0,
+      "short_float_pct": 6.8,
+      "dist_from_3m_high_pct": -29.9,
+      "prev_day_return_pct": 3.07
+    },
+    {
+      "ticker": "ADBE",
+      "gap_pct": 4.11,
+      "adv_m": 6.3,
+      "short_float_pct": 4.9,
+      "dist_from_3m_high_pct": -12.0,
+      "prev_day_return_pct": 1.37
+    },
+    {
+      "ticker": "COIN",
+      "gap_pct": 3.62,
+      "adv_m": 8.3,
+      "short_float_pct": 12.4,
+      "dist_from_3m_high_pct": -8.8,
+      "prev_day_return_pct": 1.73
+    },
+    {
+      "ticker": "CELH",
+      "gap_pct": 3.27,
+      "adv_m": 9.7,
+      "short_float_pct": 11.6,
+      "dist_from_3m_high_pct": -23.9,
+      "prev_day_return_pct": 2.22
+    },
+    {
+      "ticker": "NFLX",
+      "gap_pct": 3.16,
+      "adv_m": 40.6,
+      "short_float_pct": 2.2,
+      "dist_from_3m_high_pct": -6.2,
+      "prev_day_return_pct": 1.83
+    },
+    {
+      "ticker": "GOOGL",
+      "gap_pct": 3.12,
+      "adv_m": 30.1,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -10.7,
+      "prev_day_return_pct": 1.77
+    },
+    {
+      "ticker": "APP",
+      "gap_pct": 2.95,
+      "adv_m": 5.9,
+      "short_float_pct": 3.6,
+      "dist_from_3m_high_pct": -43.8,
+      "prev_day_return_pct": 3.01
+    },
+    {
+      "ticker": "CAVA",
+      "gap_pct": 2.9,
+      "adv_m": 3.2,
+      "short_float_pct": 11.9,
+      "dist_from_3m_high_pct": -39.8,
+      "prev_day_return_pct": 3.48
+    },
+    {
+      "ticker": "OXY",
+      "gap_pct": 2.71,
+      "adv_m": 8.7,
+      "short_float_pct": 0.0,
+      "dist_from_3m_high_pct": 0.9,
+      "prev_day_return_pct": 0.49
+    },
+    {
+      "ticker": "SHOP",
+      "gap_pct": 2.49,
+      "adv_m": 9.2,
+      "short_float_pct": 1.5,
+      "dist_from_3m_high_pct": -18.3,
+      "prev_day_return_pct": 1.73
+    },
+    {
+      "ticker": "AAPL",
+      "gap_pct": 2.43,
+      "adv_m": 53.8,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -2.8,
+      "prev_day_return_pct": 1.75
+    },
+    {
+      "ticker": "ABBV",
+      "gap_pct": 2.29,
+      "adv_m": 6.3,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -2.5,
+      "prev_day_return_pct": 0.83
+    },
+    {
+      "ticker": "MSTR",
+      "gap_pct": 1.67,
+      "adv_m": 23.1,
+      "short_float_pct": 8.6,
+      "dist_from_3m_high_pct": -9.8,
+      "prev_day_return_pct": 1.87
+    },
+    {
+      "ticker": "META",
+      "gap_pct": 1.44,
+      "adv_m": 18.2,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -4.7,
+      "prev_day_return_pct": 0.57
+    },
+    {
+      "ticker": "PLTR",
+      "gap_pct": 1.41,
+      "adv_m": 39.9,
+      "short_float_pct": 3.0,
+      "dist_from_3m_high_pct": -10.7,
+      "prev_day_return_pct": 0.83
+    },
+    {
+      "ticker": "MSFT",
+      "gap_pct": 1.1,
+      "adv_m": 35.7,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -3.9,
+      "prev_day_return_pct": 0.65
+    },
+    {
+      "ticker": "SMCI",
+      "gap_pct": 0.51,
+      "adv_m": 55.8,
+      "short_float_pct": 18.5,
+      "dist_from_3m_high_pct": -11.2,
+      "prev_day_return_pct": 7.28
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "AFRM",
+      "reason": "adv_4,410,298<min_5,000,000"
+    },
+    {
+      "ticker": "CAVA",
+      "reason": "adv_3,249,712<min_5,000,000"
+    },
+    {
+      "ticker": "SMCI",
+      "reason": "pm_gap_eaten_at_open_34%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "DELL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.1032,
+      "gap_retention": 0.6743,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.261,
+      "vol_today": 12775,
+      "vol_avg": 10130,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.048800003,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.061939915518534595,
+      "price_935": 529.87,
+      "open_930": 538.43,
+      "prev_close": 506.62
+    },
+    {
+      "ticker": "MRNA",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.4219,
+      "gap_retention": 0.6491,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.28,
+      "vol_today": 8838,
+      "vol_avg": 31614,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.119799994,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.055994729907773426,
+      "price_935": 143.63,
+      "open_930": 145.07,
+      "prev_close": 136.62
+    },
+    {
+      "ticker": "CRM",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.33 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.5693,
+      "gap_retention": 0.7075,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.544,
+      "vol_today": 12333,
+      "vol_avg": 22674,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.040999997,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.051440329218107,
+      "price_935": 254.855,
+      "open_930": 255.75,
+      "prev_close": 243.0
+    },
+    {
+      "ticker": "DKNG",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.0,
+      "gap_retention": 0.5795,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.999,
+      "vol_today": 7372,
+      "vol_avg": 7377,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0789,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04512863770560946,
+      "price_935": 24.475,
+      "open_930": 25.03,
+      "prev_close": 23.71
+    },
+    {
+      "ticker": "NIO",
+      "confidence": 1.05,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 1.0,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.893,
+      "vol_today": 119711,
+      "vol_avg": 41379,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0681,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0418994413407821,
+      "price_935": 3.79,
+      "open_930": 3.73,
+      "prev_close": 3.58
+    },
+    {
+      "ticker": "ADBE",
+      "confidence": 0.9667,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.8663,
+      "gap_retention": 0.6222,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.791,
+      "vol_today": 12204,
+      "vol_avg": 6815,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.048899997,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.041112406060362455,
+      "price_935": 261.965,
+      "open_930": 261.56,
+      "prev_close": 248.83
+    },
+    {
+      "ticker": "COIN",
+      "confidence": 1.05,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.8552,
+      "gap_retention": 0.9278,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.391,
+      "vol_today": 28666,
+      "vol_avg": 11990,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1245,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.036162061759925646,
+      "price_935": 188.07,
+      "open_930": 181.15,
+      "prev_close": 172.28
+    },
+    {
+      "ticker": "CELH",
+      "confidence": 0.6667,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.75x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.4545,
+      "gap_retention": 0.9461,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.753,
+      "vol_today": 8545,
+      "vol_avg": 11345,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.1162,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0326699211415697,
+      "price_935": 27.52,
+      "open_930": 27.465,
+      "prev_close": 26.63
+    },
+    {
+      "ticker": "NFLX",
+      "confidence": 1.05,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.9192,
+      "gap_retention": 0.8822,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.143,
+      "vol_today": 80440,
+      "vol_avg": 37531,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0221,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0315747927904222,
+      "price_935": 79.43,
+      "open_930": 78.855,
+      "prev_close": 76.01
+    },
+    {
+      "ticker": "GOOGL",
+      "confidence": 1.05,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.8252,
+      "gap_retention": 0.938,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.49,
+      "vol_today": 73394,
+      "vol_avg": 29471,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.013200001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03117859290438967,
+      "price_935": 344.38,
+      "open_930": 342.995,
+      "prev_close": 332.6
+    },
+    {
+      "ticker": "APP",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.33 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.2092,
+      "gap_retention": 0.8305,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.864,
+      "vol_today": 4824,
+      "vol_avg": 5585,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0363,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02951699577093074,
+      "price_935": 323.78,
+      "open_930": 324.52,
+      "prev_close": 314.49
+    },
+    {
+      "ticker": "OXY",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.475,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.742,
+      "vol_today": 15059,
+      "vol_avg": 8642,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.027141922825376124,
+      "price_935": 62.64,
+      "open_930": 62.45,
+      "prev_close": 61.16
+    },
+    {
+      "ticker": "SHOP",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.61x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.8252,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.61,
+      "vol_today": 5192,
+      "vol_avg": 8507,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0153,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02488151658767777,
+      "price_935": 130.63,
+      "open_930": 129.025,
+      "prev_close": 126.6
+    },
+    {
+      "ticker": "AAPL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.3132,
+      "gap_retention": 0.6544,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.171,
+      "vol_today": 59793,
+      "vol_avg": 51080,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0095999995,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.024282695899807107,
+      "price_935": 332.77,
+      "open_930": 334.7,
+      "prev_close": 326.57
+    },
+    {
+      "ticker": "ABBV",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.33 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.1004,
+      "gap_retention": 0.8799,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.389,
+      "vol_today": 4542,
+      "vol_avg": 3270,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0123000005,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02285215686274502,
+      "price_935": 263.145,
+      "open_930": 264.115,
+      "prev_close": 255.0
+    },
+    {
+      "ticker": "MSTR",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 1.06x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.9632,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.065,
+      "vol_today": 30385,
+      "vol_avg": 28536,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0865,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.016723708774113298,
+      "price_935": 134.23,
+      "open_930": 130.83,
+      "prev_close": 128.56
+    },
+    {
+      "ticker": "META",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.2163,
+      "gap_retention": 0.3866,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.411,
+      "vol_today": 43636,
+      "vol_avg": 30924,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.013099999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01440144014401436,
+      "price_935": 651.575,
+      "open_930": 657.21,
+      "prev_close": 644.38
+    },
+    {
+      "ticker": "PLTR",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.0507,
+      "gap_retention": 0.5231,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.644,
+      "vol_today": 20722,
+      "vol_avg": 32180,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.030299999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.014108284095019744,
+      "price_935": 168.015,
+      "open_930": 169.76,
+      "prev_close": 165.86
+    },
+    {
+      "ticker": "MSFT",
+      "confidence": 0.05,
+      "passes_threshold": false,
+      "participation": true,
+      "reject_reason": "confidence 0.05 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.312,
+      "gap_retention": 0.5925,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.77,
+      "vol_today": 54093,
+      "vol_avg": 19525,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.01,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01100641702542445,
+      "price_935": 496.72,
+      "open_930": 497.52,
+      "prev_close": 492.44
+    }
+  ],
+  "llm_input": [
+    "NIO",
+    "ADBE",
+    "COIN",
+    "NFLX",
+    "GOOGL",
+    "OXY"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "ADBE",
+      "direction": "long",
+      "confidence": 0.9667,
+      "reason": "Adobe ha battuto le stime Q3, alzato la guidance FY2026 su EPS e ricavi (catalyst Tier 1), con analisti che hanno alzato i price target. Tutti e tre i segnali tecnici sono positivi (post_open_advance, or_position 0.87, gap_retention 0.62), con il titolo a -12% dai massimi 3 mesi \u2014 meno resistenza rispetto ad altri candidati.",
+      "price_935": 261.965
+    },
+    "trade_2": {
+      "ticker": "COIN",
+      "direction": "long",
+      "confidence": 1.05,
+      "reason": "Doppio upgrade da analisti con price target rialzati (catalyst Tier 2), con il forte post_open_advance_pct di +3.82% che conferma momentum reale. I tre segnali tecnici sono tutti positivi e il titolo \u00e8 a soli -8.8% dai massimi trimestrali con short float al 12.4% che amplifica il movimento.",
+      "price_935": 188.07
+    },
+    "no_trade_reason": null
+  },
+  "llm_excluded_top": null,
+  "trades": [
+    {
+      "ticker": "COIN",
+      "qty": 286,
+      "entry_price": 184.407483,
+      "entry_time": "09:36:36",
+      "entry_ts": 1789392996.0009167,
+      "direction": "long",
+      "confidence": 1.05,
+      "reason": "Doppio upgrade da analisti con price target rialzati (catalyst Tier 2), con il forte post_open_advance_pct di +3.82% che conferma momentum reale. I tre segnali tecnici sono tutti positivi e il titolo \u00e8 a soli -8.8% dai massimi trimestrali con short float al 12.4% che amplifica il movimento.",
+      "order_id": "831e5855-4643-4b48-8741-99828c20bbdf",
+      "stop_atr": 173.088,
+      "stop_pct": 180.7193,
+      "stop_price": 186.2516,
+      "atr14": 11.3195,
+      "peak_price": 187.27,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 185.66549,
+      "exit_time": "09:39:40",
+      "exit_reason": "step_stop",
+      "pnl_usd": 359.79,
+      "pnl_pct": 0.0068,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.391,
+      "short_float": 0.1245,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.8552,
+      "gap_retention": 0.9278,
+      "gap_pct": 0.036162061759925646,
+      "news": [
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-09-14T13:01:12Z",
+          "headline": "Meta Platforms To $650? Here Are 10 Top Analyst Forecasts For Monday",
+          "id": 61763133,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/14/New-York--Usa---14-December-2024-Meta-Pl.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/14/New-York--Usa---14-December-2024-Meta-Pl.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/14/New-York--Usa---14-December-2024-Meta-Pl.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Analysts raised price targets for Meta, IREN, Coinbase, Roblox and others; IREN and Coinbase were upgraded, while other ratings held steady.",
+          "symbols": [
+            "BLSH",
+            "COIN",
+            "DUOT",
+            "IREN",
+            "META",
+            "RBLX",
+            "SGI",
+            "SGRY",
+            "SPRO"
+          ],
+          "updated_at": "2026-09-14T13:01:12Z",
+          "url": "https://www.benzinga.com/news/26/09/61763133/meta-platforms-to-650-here-are-10-top-analyst-forecasts-for-monday"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-09-14T12:31:31Z",
+          "headline": "This Coinbase Analyst Is No Longer Bearish; Here Are Top 5 Upgrades For Monday",
+          "id": 61762021,
+          "images": [],
+          "source": "benzinga",
+          "summary": "Analysts upgraded Coinbase, 4D Molecular Therapeutics, Affirm, Chime Financial and Bullish, raising ratings and price targets.",
+          "symbols": [
+            "AFRM",
+            "BLSH",
+            "CHYM",
+            "COIN",
+            "FDMT"
+          ],
+          "updated_at": "2026-09-14T12:31:31Z",
+          "url": "https://www.benzinga.com/news/26/09/61762021/this-coinbase-analyst-is-no-longer-bearish-here-are-top-5-upgrades-for-monday"
+        },
+        {
+          "author": "Parshwa Turakhiya",
+          "content": "",
+          "created_at": "2026-09-12T16:00:30Z",
+          "headline": "Bitcoin's iPhone Ratio Crashed 99.99% Since 2011: Here's How Much 1 iPhone Cost Back Then",
+          "id": 61754277,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/12/iPhone-18-Pro-Colours.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/12/iPhone-18-Pro-Colours.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/12/iPhone-18-Pro-Colours.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Bitcoin can now buy 60 iPhones as Apple unveils its $2,000 foldable iPhone Duo, highlighting BTC\u2019s rise since 2016.",
+          "symbols": [
+            "AAPL",
+            "BTCUSD",
+            "COIN"
+          ],
+          "updated_at": "2026-09-12T16:00:30Z",
+          "url": "https://www.benzinga.com/crypto/cryptocurrency/26/09/61754277/bitcoins-iphone-ratio-crashed-99-99-since-2011-heres-how-much-1-iphone-cost-back-then"
+        },
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-09-11T17:35:12Z",
+          "headline": "9 Financials Stocks Whale Activity In Today\u2019s Session",
+          "id": 61746897,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_3.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_3.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2025/11/06/aggregated_options_3.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "This whale alert can help traders discover the next big trading opportunities.\nWhales are entities with large sums of money and we track their transactions here at Benzinga on our options activity scanner.\nTraders often",
+          "symbols": [
+            "COIN",
+            "DAVE",
+            "HOOD",
+            "JPM",
+            "MET",
+            "MS",
+            "NU",
+            "OSCR",
+            "WFC"
+          ],
+          "updated_at": "2026-09-11T17:35:12Z",
+          "url": "https://www.benzinga.com/markets/options/26/09/61746897/9-financials-stocks-whale-activity-today-s-session"
+        }
+      ],
+      "recent_prices": [
+        [
+          187.27,
+          "09:38:28"
+        ],
+        [
+          187.2,
+          "09:38:51"
+        ],
+        [
+          186.47,
+          "09:39:01"
+        ],
+        [
+          186.26,
+          "09:39:12"
+        ],
+        [
+          186.2,
+          "09:39:31"
+        ]
+      ],
+      "trigger_price": 186.2,
+      "trigger_source": "latest_trade",
+      "trigger_age_s": 6.93,
+      "trigger_tick_time": "09:39:31"
+    },
+    {
+      "ticker": "ADBE",
+      "qty": 205,
+      "entry_price": 261.99,
+      "entry_time": "09:36:35",
+      "entry_ts": 1789392995.8374515,
+      "direction": "long",
+      "confidence": 0.9667,
+      "reason": "Adobe ha battuto le stime Q3, alzato la guidance FY2026 su EPS e ricavi (catalyst Tier 1), con analisti che hanno alzato i price target. Tutti e tre i segnali tecnici sono positivi (post_open_advance, or_position 0.87, gap_retention 0.62), con il titolo a -12% dai massimi 3 mesi \u2014 meno resistenza rispetto ad altri candidati.",
+      "order_id": "3ab6b115-8074-4589-8869-ced936667982",
+      "stop_atr": 251.5353,
+      "stop_pct": 256.7502,
+      "stop_price": 256.7502,
+      "atr14": 10.4547,
+      "peak_price": 265.185,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 263.818244,
+      "exit_time": "15:45:12",
+      "exit_reason": "eod_close",
+      "pnl_usd": 374.79,
+      "pnl_pct": 0.007,
+      "catalyst_bonus": 0.3,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.791,
+      "short_float": 0.048899997,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.8663,
+      "gap_retention": 0.6222,
+      "gap_pct": 0.041112406060362455,
+      "news": [
+        {
+          "author": "Lekha Gupta",
+          "content": "",
+          "created_at": "2026-09-12T21:07:02Z",
+          "headline": "Consumer Tech (Sep 7-11): Apple Launches First Foldable iPhone, XPeng Commissioned IRON Humanoid Robot Production & More",
+          "id": 61754574,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/12/Financial-Technology--Artificial-Intelli.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/12/Financial-Technology--Artificial-Intelli.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/12/Financial-Technology--Artificial-Intelli.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Apple unveiled its iPhone Duo foldable smartphone alongside new iPhone models and Apple Watch products, expanding its hardware lineup with AI capabilities.",
+          "symbols": [
+            "AAPL",
+            "ADBE",
+            "AMD",
+            "CPRT",
+            "GOOG",
+            "GOOGL",
+            "JOBY",
+            "NOK",
+            "NVDA",
+            "ORCL",
+            "PM",
+            "SPCX",
+            "TSLA",
+            "XPEV"
+          ],
+          "updated_at": "2026-09-12T21:07:02Z",
+          "url": "https://www.benzinga.com/markets/tech/26/09/61754574/consumer-tech-sep-7-11-apple-launches-first-foldable-iphone-xpeng-commissioned-iron-humanoid-robot-production-more"
+        },
+        {
+          "author": "Rishabh Mishra",
+          "content": "",
+          "created_at": "2026-09-12T12:50:59Z",
+          "headline": "GameStop, Oracle, Apple and More: Five Stocks Investors Couldn't Stop Buzzing About This Week",
+          "id": 61754055,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/12/Crypto-Trader-Investor-Analyst-Looking-A.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/12/Crypto-Trader-Investor-Analyst-Looking-A.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/12/Crypto-Trader-Investor-Analyst-Looking-A.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Retail investors talked up 5 hot stocks during week (Sept. 7 to Sept. 11) on X and Reddit&#39;s r/WallStreetBets: GME, AAPL, ADBE, ORCL, CASY.",
+          "symbols": [
+            "AAPL",
+            "ADBE",
+            "CASY",
+            "GME",
+            "ORCL"
+          ],
+          "updated_at": "2026-09-12T12:51:05Z",
+          "url": "https://www.benzinga.com/markets/equities/26/09/61754055/gamestop-oracle-apple-and-more-5-stocks-investors-couldnt-stop-buzzing-about-this-week"
+        },
+        {
+          "author": "Piero Cingari",
+          "content": "",
+          "created_at": "2026-09-11T16:53:39Z",
+          "headline": "S&P 500 Snaps 4-Day Decline as Oil Cools, Dell Jumps 11%: Stock Market Today",
+          "id": 61745848,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Wall-street-shutter3.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Wall-street-shutter3.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Wall-street-shutter3.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Equities rebounded Friday as crude retreated from $100, though hot CPI pushed Fed hike odds to 90%. Dell jumped 11%on Oracle&#39;s capex plan.",
+          "symbols": [
+            "ADBE",
+            "AVAV",
+            "CHWY",
+            "DELL",
+            "DIA",
+            "HPE",
+            "IWM",
+            "KR",
+            "OKLO",
+            "ORCL",
+            "QQQ",
+            "QRVO",
+            "SAIL",
+            "SMCI",
+            "SMH",
+            "SWKS",
+            "VICR",
+            "VOO",
+            "XLC",
+            "XLI",
+            "XLK",
+            "XLV"
+          ],
+          "updated_at": "2026-09-11T16:53:39Z",
+          "url": "https://www.benzinga.com/markets/market-summary/26/09/61745848/stocks-snap-four-day-slide-oil-cools-fed-hike-odds-90-percent-markets-friday"
+        },
+        {
+          "author": "Priya Nigam",
+          "content": "",
+          "created_at": "2026-09-11T16:09:11Z",
+          "headline": "Adobe Stock Faces Mixed Analyst Takeaways as AI ARR Soars, Overall Growth Slows",
+          "id": 61744610,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/London--Uk---April-3rd-2025-The-Adobe-Lo.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/London--Uk---April-3rd-2025-The-Adobe-Lo.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/London--Uk---April-3rd-2025-The-Adobe-Lo.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Adobe beats Q3 estimates and raises guidance; ARR and AI-first growth remain strong \u2014 why analysts are staying on the sidelines.",
+          "symbols": [
+            "ADBE"
+          ],
+          "updated_at": "2026-09-11T16:09:11Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/analyst-color/26/09/61744610/adobe-stock-faces-mixed-analyst-takeaways-as-ai-arr-soars-overall-growth-slows"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-09-11T14:00:52Z",
+          "headline": "These Analysts Revise Their Forecasts On Adobe Following Q3 Results",
+          "id": 61739763,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Morgan-Stanley-strategist-Denny-Galindo-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Morgan-Stanley-strategist-Denny-Galindo-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/11/Morgan-Stanley-strategist-Denny-Galindo-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Adobe beats Q3 estimates, raises FY2026 EPS and revenue guidance; Q4 outlook aligns with forecasts. Analysts lift price targets, shares dip 0.3%.",
+          "symbols": [
+            "ADBE"
+          ],
+          "updated_at": "2026-09-11T14:00:52Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/price-target/26/09/61739763/these-analysts-revise-their-forecasts-on-adobe-following-q3-results"
+        }
+      ],
+      "recent_prices": [
+        [
+          263.8,
+          "15:44:06"
+        ],
+        [
+          263.82,
+          "15:44:20"
+        ],
+        [
+          263.73,
+          "15:44:33"
+        ],
+        [
+          263.73,
+          "15:44:33"
+        ],
+        [
+          263.7,
+          "15:45:01"
+        ]
+      ]
+    }
+  ]
+}
