@@ -105,6 +105,13 @@ EOD_CLOSE_TIME       = "15:45"
 
 # === DATA QUALITY / ROBUSTEZZA ===
 PRICE_MAX_AGE_S      = 120   # età massima dell'ultimo trade IEX per i check degli stop
+# Spread massimo (ask-bid)/ask perché una quotazione sia considerata affidabile e il BID
+# usato come prezzo di uscita. Su una posizione long il bid è il prezzo davvero eseguibile,
+# e le quotazioni si aggiornano molto più spesso dei print: il 16/09 il feed IEX non ha
+# pubblicato un solo print su DELL per oltre 5 minuti e lo stop è stato rilevato con 0,655
+# punti di ritardo (−2,71% invece di −2,00%, ~$370). Uno spread largo però segnala una
+# quotazione stub/stantia: in quel caso si torna all'ultimo scambio.
+MAX_QUOTE_SPREAD_PCT = 0.01  # 1%
 EOD_CLOSE_ATTEMPTS   = 3     # tentativi di chiusura per posizione alle 15:45
 RECONCILE_MISS_LIMIT = 2     # cicli consecutivi di assenza prima di rimuovere una posizione
 

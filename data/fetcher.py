@@ -132,34 +132,83 @@ def get_opening_range_bars(ticker: str, session_date: Optional[date] = None) -> 
     return bars[bars.index < cutoff]
 
 
+def _age_and_et(ts) -> tuple[Optional[float], Optional[str]]:
+    """(età in secondi, ora ET 'HH:MM:SS') di un timestamp Alpaca. (None, None) se assente."""
+    if ts is None:
+        return None, None
+    ts_utc = ts if ts.tzinfo else pytz.UTC.localize(ts)
+    age_s = (datetime.now(pytz.UTC) - ts_utc).total_seconds()
+    try:
+        return age_s, ts_utc.astimezone(ET).strftime("%H:%M:%S")
+    except Exception:
+        return age_s, None
+
+
+def _bid_for_exit(ticker: str) -> Optional[dict]:
+    """Bid corrente, solo se la quotazione è affidabile. None altrimenti.
+
+    Deliberatamente NON riusa get_latest_quote(): quella, se la quotazione non arriva,
+    ripiega sul close dell'ultima barra restituendo bid=ask e spread 0 — che qui
+    sembrerebbe una quotazione perfetta e ci farebbe decidere su un prezzo di barra
+    spacciato per denaro. Qui un fallimento deve restare un fallimento.
+
+    Scarta le quotazioni con spread largo: sono stub o stantie, e un bid stub farebbe
+    scattare uno stop che il mercato non ha toccato.
+    """
+    try:
+        client = get_data_client()
+        req = StockLatestQuoteRequest(symbol_or_symbols=ticker, feed=_feed())
+        q = _with_retry(client.get_stock_latest_quote, req)[ticker]
+        bid = float(q.bid_price) if q.bid_price else 0.0
+        ask = float(q.ask_price) if q.ask_price else 0.0
+        if bid <= 0 or ask <= 0 or ask < bid:
+            return None
+        spread = (ask - bid) / ask
+        if spread > config.MAX_QUOTE_SPREAD_PCT:
+            return None
+        age_s, tick_time = _age_and_et(getattr(q, "timestamp", None))
+        if age_s is not None and age_s > config.PRICE_MAX_AGE_S:
+            return None
+        return {"price": bid, "age_s": age_s, "tick_time": tick_time, "spread_pct": spread}
+    except Exception as e:
+        logger.debug(f"{ticker}: quotazione non disponibile ({e})")
+        return None
+
+
 def get_price_detail(ticker: str) -> dict:
-    """Latest trade price WITH its provenance — the same logic as get_current_price(),
-    but it also returns where the number came from and how old it is.
+    """Prezzo per le decisioni di uscita, CON la sua provenienza.
 
     Returns {price, source, age_s, tick_time}:
-      source 'latest_trade'  — fresh IEX print (age ≤ PRICE_MAX_AGE_S)
-      source 'bar_fallback'  — print too old, using the last 1-min bar close
-      source 'stale_trade'   — print too old AND no bar available (worst case)
-      age_s / tick_time      — age in seconds and ET time of the underlying print
+      source 'quote_bid'     — bid corrente (spread sano, quotazione fresca) ← preferito
+      source 'latest_trade'  — ultimo print IEX (età ≤ PRICE_MAX_AGE_S)
+      source 'bar_fallback'  — print troppo vecchio, close dell'ultima barra 1-min
+      source 'stale_trade'   — print vecchio E nessuna barra disponibile (caso peggiore)
 
-    Exists because the stop decision used to be a bare float: when a stop fired we
-    logged only the FILL, so "was that price real?" could not be answered from the
-    log at all (AMD 9 Sept took a hand-checked minute chart to resolve). The caller
-    logs these fields at the moment of the trigger.
+    Perché il BID per primo: su una posizione long è il prezzo a cui possiamo davvero
+    uscire, e soprattutto le quotazioni si aggiornano molto più spesso dei print. Il
+    16/09 il feed IEX non ha pubblicato un solo print su DELL per oltre 5 minuti: il
+    monitor ha continuato a leggere lo stesso prezzo vecchio mentre il titolo scendeva,
+    e lo stop è stato rilevato 0,655 punti sotto il livello (−2,71% invece di −2,00%,
+    ~$370). Il fallback sulla barra 1-min non aiutava: legge lo stesso feed, quindi era
+    congelato anch'esso. Pollare più spesso non avrebbe cambiato nulla — il dato era fermo.
+
+    Nota: il bid è tipicamente ≤ ultimo scambio, quindi gli stop scattano marginalmente
+    prima (di uno spread). Sui nomi liquidi sono pochi centesimi; in cambio si vede il
+    mercato muoversi quando i print mancano.
+
+    Esiste con la provenienza perché prima la decisione di stop era un float nudo: al
+    trigger si registrava solo il FILL, e "quel prezzo era reale?" non era rispondibile
+    dal log (AMD 9/09 richiese un grafico al minuto a mano).
     """
+    bid = _bid_for_exit(ticker)
+    if bid is not None:
+        return {"price": bid["price"], "source": "quote_bid",
+                "age_s": bid["age_s"], "tick_time": bid["tick_time"]}
+
     client = get_data_client()
     req = StockLatestTradeRequest(symbol_or_symbols=ticker, feed=_feed())
     trade = _with_retry(client.get_stock_latest_trade, req)[ticker]
-    ts = trade.timestamp
-    age_s = None
-    tick_time = None
-    if ts is not None:
-        ts_utc = ts if ts.tzinfo else pytz.UTC.localize(ts)
-        age_s = (datetime.now(pytz.UTC) - ts_utc).total_seconds()
-        try:
-            tick_time = ts_utc.astimezone(ET).strftime("%H:%M:%S")
-        except Exception:
-            tick_time = None
+    age_s, tick_time = _age_and_et(trade.timestamp)
     if age_s is None or age_s <= config.PRICE_MAX_AGE_S:
         return {"price": float(trade.price), "source": "latest_trade", "age_s": age_s, "tick_time": tick_time}
     try:
@@ -467,6 +516,86 @@ def get_session_close_today(session_date: Optional[date] = None):
         return None
 
 
+# Media del volume dell'opening range, precalcolata alle 9:25. Chiave (ticker, giorno).
+# È il DENOMINATORE del vol_ratio: dato storico puro (i 20 giorni precedenti), nessuna
+# dipendenza da oggi. Il numeratore (volume 9:30–9:34 di OGGI) resta misurato alle 9:35
+# da bars_or, che scarichiamo comunque per gli altri segnali.
+_or_vol_cache: dict[tuple[str, date], float] = {}
+
+
+def prefetch_historical_or_volumes(tickers: list[str], lookback_days: int = 20,
+                                   session_date: Optional[date] = None) -> int:
+    """Precalcola la media del volume dell'opening range per TUTTI i ticker in una volta.
+
+    Perché esiste: get_historical_or_volume() fa UNA richiesta per ogni giorno di storico,
+    quindi 20 chiamate per ticker. Nel percorso critico delle 9:35, con 46 candidati, sono
+    920 chiamate sequenziali — 243 secondi misurati il 17/09, l'83% del traffico totale e
+    il motivo per cui l'ordine partiva 4,6 minuti dopo le 9:35 (LUNR: riempita a +0,41%
+    dal prezzo di riferimento, sul tetto del limit).
+
+    Qui si sfrutta il fatto che Alpaca accetta PIÙ SIMBOLI in una sola richiesta: una
+    chiamata per giorno copre tutti i ticker insieme → 20 chiamate totali invece di 920,
+    con payload minuscoli (5 barre × N ticker). Chiamata alle 9:25, durante l'attesa
+    morta prima dell'apertura, esce del tutto dal percorso critico.
+
+    Stessa finestra e stessa semantica del loop per-ticker: 9:30 → ENTRY_TIME con estremo
+    finale ESCLUSIVO, weekend saltati, giorni vuoti che non consumano uno slot.
+    Ritorna il numero di ticker per cui è stata popolata una media.
+    """
+    if not tickers:
+        return 0
+    if session_date is None:
+        session_date = datetime.now(ET).date()
+    client = get_data_client()
+    entry_time = datetime.strptime(config.ENTRY_TIME, "%H:%M").time()
+    per_ticker: dict[str, list[float]] = {t: [] for t in tickers}
+
+    check_date = session_date - timedelta(days=1)
+    attempts = days_used = 0
+    while attempts < lookback_days * 2 and days_used < lookback_days:
+        if check_date.weekday() >= 5:
+            check_date -= timedelta(days=1)
+            continue
+        attempts += 1
+        start = ET.localize(datetime.combine(check_date, datetime.strptime("09:30", "%H:%M").time()))
+        end   = ET.localize(datetime.combine(check_date, entry_time))
+        req = StockBarsRequest(
+            symbol_or_symbols=list(tickers),
+            timeframe=TimeFrame.Minute,
+            start=start,
+            end=end,
+            feed=_feed(),
+        )
+        try:
+            df = _with_retry(client.get_stock_bars, req).df
+            if not df.empty:
+                df = df.reset_index()
+                if "timestamp" in df.columns and "symbol" in df.columns:
+                    df["timestamp"] = df["timestamp"].dt.tz_convert(ET)
+                    df = df[df["timestamp"] < end]          # estremo finale esclusivo
+                    if not df.empty:
+                        for sym, vol in df.groupby("symbol")["volume"].sum().items():
+                            if sym in per_ticker:
+                                per_ticker[sym].append(float(vol))
+                        days_used += 1
+        except Exception as e:
+            logger.warning(f"Prefetch OR volume {check_date}: {e}")
+        check_date -= timedelta(days=1)
+
+    filled = 0
+    for tk, totals in per_ticker.items():
+        if totals:
+            _or_vol_cache[(tk, session_date)] = sum(totals) / len(totals)
+            filled += 1
+    short = [tk for tk, v in per_ticker.items() if 0 < len(v) < lookback_days]
+    logger.info(
+        f"[PREFETCH] media volume opening range: {filled}/{len(tickers)} ticker su {days_used} giorni "
+        f"({attempts} richieste multi-simbolo invece di ~{len(tickers) * lookback_days})"
+        + (f" | storico parziale per {len(short)} ticker" if short else "")
+    )
+    return filled
+
+
 def get_historical_or_volume(ticker: str, lookback_days: int = 20, session_date: Optional[date] = None) -> float:
     """Average volume in the 9:30–ENTRY_TIME opening-range window over past N trading days (for S4).
 
@@ -475,7 +604,18 @@ def get_historical_or_volume(ticker: str, lookback_days: int = 20, session_date:
     minute (the ENTRY_TIME bar) vs today's window — inflating vol_avg ~15-25% and
     systematically deflating the vol_ratio.
     Holidays/empty days don't consume a sample slot (bounded at 2x lookback attempts).
+
+    Legge prima la cache popolata da prefetch_historical_or_volumes() alle 9:25: in quel
+    caso costa ZERO chiamate. Il loop per-giorno qui sotto resta come fallback per i
+    ticker non coperti dal prefetch (o se il prefetch è fallito) — corretto ma lento,
+    20 chiamate per ticker.
     """
+    if session_date is None:
+        session_date = datetime.now(ET).date()
+    cached = _or_vol_cache.get((ticker, session_date))
+    if cached is not None:
+        return cached
+    logger.debug(f"{ticker}: media volume OR non in cache — fallback al fetch per-giorno")
     client = get_data_client()
     if session_date is None:
         session_date = datetime.now(ET).date()

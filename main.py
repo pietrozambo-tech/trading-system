@@ -447,6 +447,19 @@ def run() -> None:
     watchlist = eligibility.build_premarket_watchlist(UNIVERSE)
     pl.log_stage("premarket_scan", [c["ticker"] for c in watchlist],
                  f"gap>+{config.MIN_PREMARKET_GAP:.1%}")
+
+    # Precalcolo della media storica del volume dell'opening range, QUI e non alle 9:35.
+    # È il denominatore del vol_ratio: dato dei 20 giorni precedenti, non dipende da oggi.
+    # Calcolarlo nel percorso critico costava 20 chiamate × N candidati (17/09: 920
+    # chiamate = 243s, l'83% del traffico, ordine partito 4,6 minuti dopo le 9:35).
+    # Qui siamo dentro l'attesa morta 9:25→9:35, quindi è tempo gratis. Il numeratore
+    # (volume 9:30–9:34 di OGGI) resta misurato alle 9:35 da bars_or: invariato.
+    if watchlist:
+        try:
+            fetcher.prefetch_historical_or_volumes([c["ticker"] for c in watchlist])
+        except Exception as e:
+            # Non fatale: get_historical_or_volume ricade sul fetch per-giorno.
+            logger.warning(f"Prefetch media volume OR fallito ({e}) — L2 userà il fallback lento")
     pl.premarket_candidates = [
         {
             "ticker":              c["ticker"],

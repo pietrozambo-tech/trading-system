@@ -344,6 +344,38 @@ SPY −0.58%, only RDW (+3.0%) and SMR (+2.2%) in pre-market. Both failed L2 —
 
 Ideas discussed and parked — revisit when there's time.
 
+### ⚡ Velocità d'ingresso: 4,6 minuti → ~25 secondi (17 settembre 2026)
+
+**Il problema, misurato.** Il 17/09 l'ordine è partito **275 secondi dopo le 9:35**. Scomposizione: L1 6s, news 17s, **L2 243s**, LLM 7s, ordini 0,5s. Dentro L2 il colpevole era uno solo: `get_historical_or_volume` faceva **una chiamata API per ogni giorno** dei 20 di storico → **20 chiamate per ticker × 46 = 920 chiamate sequenziali**, l'83% del traffico. Costo reale: LUNR era valutata dopo 122s ma l'ordine è partito a 275s, e il fill è arrivato a **+0,41% dal prezzo di riferimento**, sul tetto del limit.
+
+**La correzione.** Quella media è **dato storico puro** (i 20 giorni precedenti): non dipende da oggi, quindi non ha senso calcolarla mentre il prezzo scappa. Due cambi:
+1. **Precalcolo alle 9:25**, dentro l'attesa morta prima dell'apertura — tempo gratis.
+2. **Una richiesta multi-simbolo per giorno** invece di una per ticker: Alpaca accetta più simboli in una sola chiamata, quindi **20 richieste totali invece di 920**, con payload minuscoli.
+
+Il risultato numerico è identico: cambia solo *quando* scarichiamo lo storico. Cache letta da `get_historical_or_volume`, che mantiene il vecchio loop come fallback per i ticker non coperti.
+
+**Da non confondere** (è il denominatore, non il numeratore): `vol_ratio = vol_today / vol_avg`. Il **numeratore** `vol_today` è il volume 9:30–9:34 **di oggi**, resta misurato alle 9:35 da `bars_or` che scarichiamo comunque per gli altri segnali — costo zero. Il **denominatore** `vol_avg` è la media storica: è solo questo che precalcoliamo. Il volume **pre-market non è usato**, per scelta esplicita (rumoroso e inaffidabile): nel pre-market filtriamo solo il gap di prezzo.
+
+### 🔍 Affidabilità del prezzo che fa scattare gli stop — parzialmente RISOLTO (17 settembre 2026)
+
+**Il logging del 9/09 ha ripagato al primo caso vero.** DELL il 16/09 è uscita a **−2,71%** con stop a −2,00%. La diagnostica ha scomposto la perdita extra:
+
+| | valore | |
+|---|---|---|
+| stop teorico | $558,84 | −2,00% |
+| **prezzo al rilevamento** | **$555,11** | **−2,65%** |
+| fill reale | $554,81 | −2,71% |
+| **ritardo di rilevamento** | | **−0,655 pp** |
+| slippage di esecuzione | | −0,053 pp |
+
+**Non era slippage: era cecità.** La scia dei campioni mostrava **quattro letture consecutive con lo stesso timestamp (15:03:19)** — il feed IEX non ha pubblicato un solo print su DELL per oltre 5 minuti, mentre il titolo scendeva. E il guard anti-stantio (`PRICE_MAX_AGE_S`=120s) non ha salvato nulla, perché il fallback sulla barra 1-min **legge lo stesso feed**: era congelato anch'esso. **Pollare più spesso non avrebbe cambiato niente** — il dato era fermo, non raro.
+
+**Correzione applicata: usare il BID.** Su una posizione long il bid è il prezzo a cui possiamo davvero uscire, e le quotazioni si aggiornano molto più spesso dei print anche su IEX. `get_price_detail` ora preferisce il bid quando la quotazione è fresca **e lo spread è sano** (`MAX_QUOTE_SPREAD_PCT`=1%: uno spread largo segnala una quotazione stub/stantia, e un bid stub farebbe scattare uno stop che il mercato non ha toccato). Fallback: ultimo scambio → barra 1-min → print stantio, con la sorgente sempre registrata nel log del trigger. Sullo scenario DELL ricostruito in test, col bid il calo si vedeva a $555,05 e lo stop scattava; senza, si restava ciechi a $560,38. *Effetto collaterale accettato:* il bid è tipicamente ≤ ultimo scambio, quindi gli stop scattano marginalmente prima (di uno spread — pochi centesimi sui nomi liquidi).
+
+**Restano aperti:**
+1. **Stop nativo presso il broker** (il rimedio strutturale): invece di sorvegliare noi e mandare un market order, lasciare uno *stop order* depositato su Alpaca. Decisivo perché **l'esecuzione di Alpaca usa il mercato consolidato, non la nostra sottoscrizione dati IEX**: scatterebbe correttamente anche a feed cieco. Costo zero; complessità nel cancellare/ricreare a ogni gradino del ratchet e nell'evitare doppie vendite col monitor. **Da affrontare come lavoro dedicato**, tocca il percorso più critico.
+2. **SIP (~$99/mese)** — *giudizio corretto rispetto al 9/09.* Allora l'avevo declassato perché su AMD il nostro picco era a 0,05% dal massimo vero; ma AMD era un mega-cap in una finestra frenetica. DELL in un pomeriggio tranquillo mostra il fallimento vero, ora con un costo misurato: **~$370 su un singolo trade**.
+
 ### 🔍 Affidabilità del prezzo che fa scattare gli stop — DA FARE (9 settembre 2026)
 
 **Come è emerso.** Il 9/09 AMD è uscita in step_stop a $519,54 poco dopo l'entrata a $514,70. Guardando il grafico sembrava non ci fosse stato alcun ritracciamento in quel range. Verifica: il calo tra le **10:14 e le 10:18 ET è reale**, lo stop è scattato su un prezzo vero — **nessun problema di dati**. Ma per stabilirlo è servito aprire un grafico al minuto a mano: **dal log non era ricostruibile**, e questo è il problema.
@@ -573,6 +605,10 @@ Alpaca's built-in reporting is too limited for meaningful analysis. The plan is 
 ## Changelog — timeline dei cambiamenti
 
 Riassunti **high level** dei cambi per giorno (più recente in alto). Solo titoli — i dettagli sono nelle sezioni sopra e nei commit. Tag: `[feat]` nuova implementazione · `[fix]` bug fix · `[exp]` esperimento/decisione.
+
+### 17 settembre 2026
+- `[feat]` **Velocità d'ingresso: 275s → ~25s.** `get_historical_or_volume` faceva una chiamata API per giorno (20 per ticker = 920 sequenziali con 46 candidati, 243s, l'83% del traffico): l'ordine partiva 4,6 minuti dopo le 9:35 e LUNR è stata riempita a +0,41% dal riferimento, sul tetto del limit. Nuova `prefetch_historical_or_volumes()`: **una richiesta multi-simbolo per giorno** (20 totali invece di 920), invocata **alle 9:25** nell'attesa morta. Cache letta da `get_historical_or_volume`, vecchio loop mantenuto come fallback. Il numeratore del `vol_ratio` (volume 9:30–9:34 di oggi) resta misurato alle 9:35: invariato.
+- `[fix]` **BID invece dell'ultimo scambio per le decisioni di uscita.** Diagnosi su DELL 16/09 (uscita a −2,71% con stop a −2,00%): la perdita extra era **ritardo di rilevamento (−0,655 pp)**, non slippage di esecuzione (−0,053 pp). Il feed IEX era congelato da oltre 5 minuti (quattro campioni con lo stesso timestamp) e il fallback sulla barra 1-min, leggendo lo stesso feed, era cieco allo stesso modo. Ora `get_price_detail` preferisce il bid quando la quotazione è fresca e lo spread è sano (`MAX_QUOTE_SPREAD_PCT`=1%, per scartare quotazioni stub che farebbero scattare stop inesistenti). Ricostruito in test: col bid lo stop scattava a $555,05, senza si restava ciechi a $560,38.
 
 ### 8 settembre 2026
 - `[exp]` **Universo 68 → 72**: rimossi AAL, BKSY, UUUU, BAC, SLB, HAL; aggiunti ANET, LITE, CRDO, COHR, CIEN (networking/fotonica AI), GEV (power), TEM, HIMS (healthcare tech), CELH, CAVA (consumer growth). Liste `main.UNIVERSE` e `BACKTEST_UNIVERSE` allineate.
