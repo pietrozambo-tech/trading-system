@@ -1,0 +1,557 @@
+{
+  "date": "2026-09-24",
+  "spy_pct": -0.004101936374409096,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 72,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "ANET",
+        "LITE",
+        "CRDO",
+        "COHR",
+        "CIEN",
+        "JPM",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "CELH",
+        "CAVA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "TEM",
+        "HIMS",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "RDW",
+        "LUNR",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "GEV",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 6,
+      "tickers": [
+        "OXY",
+        "IONQ",
+        "PLTR",
+        "CRM",
+        "CRWV",
+        "ADBE"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 6,
+      "tickers": [
+        "OXY",
+        "IONQ",
+        "PLTR",
+        "CRM",
+        "CRWV",
+        "ADBE"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 2,
+      "tickers": [
+        "IONQ",
+        "PLTR"
+      ],
+      "note": "confidence>=0.65 & vol_ratio>=1.5x"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "OXY",
+      "gap_pct": 3.65,
+      "adv_m": 8.6,
+      "short_float_pct": 0.0,
+      "dist_from_3m_high_pct": -8.5,
+      "prev_day_return_pct": 1.86
+    },
+    {
+      "ticker": "IONQ",
+      "gap_pct": 2.37,
+      "adv_m": 21.1,
+      "short_float_pct": 10.2,
+      "dist_from_3m_high_pct": -32.1,
+      "prev_day_return_pct": 4.42
+    },
+    {
+      "ticker": "PLTR",
+      "gap_pct": 2.15,
+      "adv_m": 38.5,
+      "short_float_pct": 3.0,
+      "dist_from_3m_high_pct": -2.5,
+      "prev_day_return_pct": 3.68
+    },
+    {
+      "ticker": "CRM",
+      "gap_pct": 2.14,
+      "adv_m": 14.1,
+      "short_float_pct": 4.1,
+      "dist_from_3m_high_pct": -11.0,
+      "prev_day_return_pct": 1.84
+    },
+    {
+      "ticker": "CRWV",
+      "gap_pct": 1.69,
+      "adv_m": 28.6,
+      "short_float_pct": 17.8,
+      "dist_from_3m_high_pct": -24.9,
+      "prev_day_return_pct": 0.16
+    },
+    {
+      "ticker": "ADBE",
+      "gap_pct": 1.49,
+      "adv_m": 5.5,
+      "short_float_pct": 4.9,
+      "dist_from_3m_high_pct": -17.9,
+      "prev_day_return_pct": 1.02
+    }
+  ],
+  "l1_rejects": [],
+  "signals": [
+    {
+      "ticker": "OXY",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.33 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.25,
+      "gap_retention": 0.8107,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.521,
+      "vol_today": 7163,
+      "vol_avg": 13739,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03650506126798079,
+      "price_935": 57.785,
+      "open_930": 58.0,
+      "prev_close": 56.31
+    },
+    {
+      "ticker": "IONQ",
+      "confidence": 0.7667,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.6683,
+      "gap_retention": 0.6914,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.971,
+      "vol_today": 55517,
+      "vol_avg": 28164,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.1,
+      "short_float": 0.1018,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.023735886107020095,
+      "price_935": 42.65,
+      "open_930": 41.55,
+      "prev_close": 40.74
+    },
+    {
+      "ticker": "PLTR",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.9877,
+      "gap_retention": 0.9897,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.956,
+      "vol_today": 49139,
+      "vol_avg": 25126,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.030299999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.021465484620790315,
+      "price_935": 191.725,
+      "open_930": 189.365,
+      "prev_close": 184.99
+    },
+    {
+      "ticker": "CRM",
+      "confidence": 1.2,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.44x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.6707,
+      "gap_retention": 0.9953,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.435,
+      "vol_today": 9527,
+      "vol_avg": 21882,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.040999997,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.021390603566529533,
+      "price_935": 241.56,
+      "open_930": 240.76,
+      "prev_close": 233.28
+    },
+    {
+      "ticker": "CRWV",
+      "confidence": 0.3,
+      "passes_threshold": false,
+      "participation": true,
+      "reject_reason": "confidence 0.30 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.3582,
+      "gap_retention": 0.1407,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.517,
+      "vol_today": 62332,
+      "vol_avg": 41087,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.1784,
+      "short_squeeze_bonus": 0.1,
+      "gap_pct": 0.016943291839557385,
+      "price_935": 88.1,
+      "open_930": 89.105,
+      "prev_close": 86.76
+    },
+    {
+      "ticker": "ADBE",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.47x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.7388,
+      "gap_retention": 0.8829,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.474,
+      "vol_today": 3371,
+      "vol_avg": 7117,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.048899997,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.014942287513116484,
+      "price_935": 243.79,
+      "open_930": 243.5,
+      "prev_close": 238.25
+    }
+  ],
+  "llm_input": [
+    "IONQ",
+    "PLTR"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "IONQ",
+      "direction": "long",
+      "confidence": 0.7667,
+      "reason": "Catalyst Tier 3 confermato: breakthrough nell'error-correction quantistico e deployment on-premise presso NVIDIA Research Center generano momentum narrativo. Tutti e 3 i segnali tecnici positivi (post_open_advance, or_position 0.668, gap_retention 0.691) con prev_day_return +4.4% non attiva la regola selloff.",
+      "price_935": 42.65
+    },
+    "trade_2": null,
+    "no_trade_reason": "PLTR ha confidence_algo massima (1.0) ma catalyst_bonus 0.00: le news mostrano una perdita di un contratto FAA da $875M, con il rialzo del titolo supportato solo da un analyst upgrade di Rosenblatt \u2014 catalyst Tier 2 ma parzialmente neutralizzato dalla news negativa del contratto perso. In assenza di catalyst netto e con vol_ratio <2x, si preferisce non forzare il secondo trade."
+  },
+  "llm_excluded_top": {
+    "ticker": "PLTR",
+    "confidence": 1.0,
+    "tied": [
+      "PLTR"
+    ],
+    "picked": [
+      "IONQ"
+    ]
+  },
+  "trades": [
+    {
+      "ticker": "IONQ",
+      "qty": 1277,
+      "entry_price": 42.815255,
+      "entry_time": "09:35:26",
+      "entry_ts": 1790256926.4257839,
+      "direction": "long",
+      "confidence": 0.7667,
+      "reason": "Catalyst Tier 3 confermato: breakthrough nell'error-correction quantistico e deployment on-premise presso NVIDIA Research Center generano momentum narrativo. Tutti e 3 i segnali tecnici positivi (post_open_advance, or_position 0.668, gap_retention 0.691) con prev_day_return +4.4% non attiva la regola selloff.",
+      "order_id": "fea74a55-51e0-421f-9f9e-da5a1b9799e2",
+      "stop_atr": 40.2608,
+      "stop_pct": 41.9589,
+      "stop_price": 41.9589,
+      "atr14": 2.5544,
+      "peak_price": 43.39,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 41.862537,
+      "exit_time": "09:45:34",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1216.62,
+      "pnl_pct": -0.0223,
+      "catalyst_bonus": 0.1,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.971,
+      "short_float": 0.1018,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.6683,
+      "gap_retention": 0.6914,
+      "gap_pct": 0.023735886107020095,
+      "news": [
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-09-24T10:45:46Z",
+          "headline": "IonQ Removes Major Quantum Barrier, Driving Investor Debate Over Commercial Timelines",
+          "id": 61966117,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/24/Munich--Bavaria--Germany---March-31-2023.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/24/Munich--Bavaria--Germany---March-31-2023.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/24/Munich--Bavaria--Germany---March-31-2023.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "IonQ stock sees heightened volatility following its real-time error-correction breakthrough as analysts debate speculative pure-play potential versus mega-cap stability.",
+          "symbols": [
+            "GOOGL",
+            "IBM",
+            "IONQ",
+            "QBTS"
+          ],
+          "updated_at": "2026-09-24T10:45:46Z",
+          "url": "https://www.benzinga.com/markets/tech/26/09/61966117/ionq-removes-major-quantum-barrier-driving-investor-debate-over-commercial-timelines"
+        },
+        {
+          "author": "Piero Cingari",
+          "content": "",
+          "created_at": "2026-09-23T17:08:51Z",
+          "headline": "Nasdaq 100 Slips, 10-Year Yields Hit 19-Year Highs: Stock Market Today",
+          "id": 61953506,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/23/Washington-Dc---April-2--2020-United-Sta.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/23/Washington-Dc---April-2--2020-United-Sta.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/23/Washington-Dc---April-2--2020-United-Sta.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Stocks slid as the 10-year Treasury yield hit a 19-year high on blowout PMI data; cybersecurity stocks bucked the selloff.",
+          "symbols": [
+            "AMLP",
+            "AMZN",
+            "AR",
+            "ARWR",
+            "AUGO",
+            "AUR",
+            "BKNG",
+            "BTCUSD",
+            "CRWD",
+            "CTAS",
+            "DIA",
+            "EXPE",
+            "GDX",
+            "GIS",
+            "GOOGL",
+            "HUBS",
+            "IONQ",
+            "IWM",
+            "KVYO",
+            "MCD",
+            "NVDA",
+            "OKTA",
+            "PANW",
+            "PAYX",
+            "PLTR",
+            "QQQ",
+            "VOO",
+            "W",
+            "XLE",
+            "XLU",
+            "XOP"
+          ],
+          "updated_at": "2026-09-23T17:08:51Z",
+          "url": "https://www.benzinga.com/news/26/09/61953506/nasdaq-slips-10-year-yield-19-year-high-gold-sinks-markets-wednesday"
+        },
+        {
+          "author": "The Arora Report",
+          "content": "",
+          "created_at": "2026-09-23T16:31:16Z",
+          "headline": "IONQ\u2019s Breakthrough Ignites Quantum Computing Stocks",
+          "id": 61952084,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/23/Quantum-Computing.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/23/Quantum-Computing.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/23/Quantum-Computing.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "\n\n\n\nQuantum Computing Breakthrough\n\n\n\nPlease click here for an enlarged chart of IONQ Inc (NYSE:IONQ).\n\n\n\nNote the following:\n\n\n\n\nThis article is about the big picture, not an individual stock. The chart of IONQ is",
+          "symbols": [
+            "AAPL",
+            "AMZN",
+            "GOOG",
+            "IONQ",
+            "META",
+            "MSFT",
+            "NVDA",
+            "QQQ",
+            "SPY",
+            "TSLA",
+            "USO"
+          ],
+          "updated_at": "2026-09-23T16:34:40Z",
+          "url": "https://www.benzinga.com/Opinion/26/09/61952084/ionqs-breakthrough-ignites-quantum-computing-stocks"
+        },
+        {
+          "author": "Lekha Gupta",
+          "content": "",
+          "created_at": "2026-09-23T14:16:47Z",
+          "headline": "IonQ Makes First On-Premise Quantum Deployment At NVIDIA Research Center",
+          "id": 61947635,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/23/IonQ.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/23/IonQ.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/23/IonQ.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "IonQ shares trade higher after the company deployed an on-premise quantum computing system at NVIDIA\u2019s Accelerated Quantum Research Center.",
+          "symbols": [
+            "IONQ",
+            "NVDA",
+            "WQTM",
+            "XITK",
+            "XQTM"
+          ],
+          "updated_at": "2026-09-23T14:16:47Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/09/61947635/ionq-makes-first-on-premise-quantum-deployment-at-nvidia-research-center"
+        }
+      ],
+      "recent_prices": [
+        [
+          42.36,
+          "09:44:31"
+        ],
+        [
+          42.41,
+          "09:44:46"
+        ],
+        [
+          42.3,
+          "09:45:01"
+        ],
+        [
+          42.05,
+          "09:45:16"
+        ],
+        [
+          41.87,
+          "09:45:32"
+        ]
+      ],
+      "trigger_price": 41.87,
+      "trigger_source": "quote_bid",
+      "trigger_age_s": 0.05,
+      "trigger_tick_time": "09:45:32"
+    }
+  ]
+}
