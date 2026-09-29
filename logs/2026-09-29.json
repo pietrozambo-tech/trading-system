@@ -1,0 +1,715 @@
+{
+  "date": "2026-09-29",
+  "spy_pct": -0.00017635762714077375,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 72,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "ANET",
+        "LITE",
+        "CRDO",
+        "COHR",
+        "CIEN",
+        "JPM",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "CELH",
+        "CAVA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "TEM",
+        "HIMS",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "RDW",
+        "LUNR",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "GEV",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 15,
+      "tickers": [
+        "CCL",
+        "ASTS",
+        "NCLH",
+        "AMAT",
+        "NVDA",
+        "MSTR",
+        "VST",
+        "COIN",
+        "SHOP",
+        "ABBV",
+        "AVGO",
+        "CAVA",
+        "DAL",
+        "GEV",
+        "ANET"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 12,
+      "tickers": [
+        "CCL",
+        "ASTS",
+        "NCLH",
+        "AMAT",
+        "NVDA",
+        "MSTR",
+        "COIN",
+        "SHOP",
+        "ABBV",
+        "AVGO",
+        "DAL",
+        "ANET"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 3,
+      "tickers": [
+        "CCL",
+        "AMAT",
+        "AVGO"
+      ],
+      "note": "confidence>=0.65 & vol_ratio>=1.5x"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "CCL",
+      "gap_pct": 10.43,
+      "adv_m": 19.8,
+      "short_float_pct": 3.8,
+      "dist_from_3m_high_pct": -18.3,
+      "prev_day_return_pct": -0.49
+    },
+    {
+      "ticker": "ASTS",
+      "gap_pct": 4.37,
+      "adv_m": 12.8,
+      "short_float_pct": 21.8,
+      "dist_from_3m_high_pct": -29.7,
+      "prev_day_return_pct": -1.31
+    },
+    {
+      "ticker": "NCLH",
+      "gap_pct": 4.24,
+      "adv_m": 15.8,
+      "short_float_pct": 23.4,
+      "dist_from_3m_high_pct": -30.6,
+      "prev_day_return_pct": -2.05
+    },
+    {
+      "ticker": "AMAT",
+      "gap_pct": 2.71,
+      "adv_m": 8.2,
+      "short_float_pct": 1.8,
+      "dist_from_3m_high_pct": -32.6,
+      "prev_day_return_pct": 0.36
+    },
+    {
+      "ticker": "NVDA",
+      "gap_pct": 2.46,
+      "adv_m": 126.7,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -1.7,
+      "prev_day_return_pct": 1.68
+    },
+    {
+      "ticker": "MSTR",
+      "gap_pct": 1.57,
+      "adv_m": 23.1,
+      "short_float_pct": 8.1,
+      "dist_from_3m_high_pct": -5.9,
+      "prev_day_return_pct": -0.93
+    },
+    {
+      "ticker": "VST",
+      "gap_pct": 1.03,
+      "adv_m": 4.4,
+      "short_float_pct": 3.4,
+      "dist_from_3m_high_pct": -17.5,
+      "prev_day_return_pct": -0.32
+    },
+    {
+      "ticker": "COIN",
+      "gap_pct": 0.97,
+      "adv_m": 8.9,
+      "short_float_pct": 11.5,
+      "dist_from_3m_high_pct": -5.4,
+      "prev_day_return_pct": -1.7
+    },
+    {
+      "ticker": "SHOP",
+      "gap_pct": 0.87,
+      "adv_m": 9.5,
+      "short_float_pct": 1.4,
+      "dist_from_3m_high_pct": -9.7,
+      "prev_day_return_pct": 1.24
+    },
+    {
+      "ticker": "ABBV",
+      "gap_pct": 0.85,
+      "adv_m": 5.9,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -1.0,
+      "prev_day_return_pct": 0.73
+    },
+    {
+      "ticker": "AVGO",
+      "gap_pct": 0.76,
+      "adv_m": 23.0,
+      "short_float_pct": 1.1,
+      "dist_from_3m_high_pct": -17.7,
+      "prev_day_return_pct": -0.92
+    },
+    {
+      "ticker": "CAVA",
+      "gap_pct": 0.72,
+      "adv_m": 3.4,
+      "short_float_pct": 13.4,
+      "dist_from_3m_high_pct": -39.4,
+      "prev_day_return_pct": 0.0
+    },
+    {
+      "ticker": "DAL",
+      "gap_pct": 0.66,
+      "adv_m": 6.3,
+      "short_float_pct": 4.0,
+      "dist_from_3m_high_pct": -10.4,
+      "prev_day_return_pct": -1.07
+    },
+    {
+      "ticker": "GEV",
+      "gap_pct": 0.56,
+      "adv_m": 2.5,
+      "short_float_pct": 3.3,
+      "dist_from_3m_high_pct": -19.5,
+      "prev_day_return_pct": -0.82
+    },
+    {
+      "ticker": "ANET",
+      "gap_pct": 0.51,
+      "adv_m": 6.8,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -3.4,
+      "prev_day_return_pct": -0.79
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "VST",
+      "reason": "adv_4,405,953<min_5,000,000"
+    },
+    {
+      "ticker": "CAVA",
+      "reason": "adv_3,415,295<min_5,000,000"
+    },
+    {
+      "ticker": "GEV",
+      "reason": "adv_2,458,324<min_5,000,000"
+    },
+    {
+      "ticker": "ANET",
+      "reason": "gap_reversed_at_open"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "CCL",
+      "confidence": 1.4,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.8475,
+      "vol_boost": 0.1,
+      "vol_ratio": 10.476,
+      "vol_today": 383641,
+      "vol_avg": 36622,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.0379,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.1042966292134831,
+      "price_935": 24.9,
+      "open_930": 24.315,
+      "prev_close": 22.25
+    },
+    {
+      "ticker": "ASTS",
+      "confidence": 0.05,
+      "passes_threshold": false,
+      "participation": true,
+      "reject_reason": "confidence 0.05 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.0164,
+      "gap_retention": 0.4371,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.335,
+      "vol_today": 13817,
+      "vol_avg": 7396,
+      "or_bar_count": 4,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2184,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.043682252062773055,
+      "price_935": 63.27,
+      "open_930": 65.07,
+      "prev_close": 61.81
+    },
+    {
+      "ticker": "NCLH",
+      "confidence": 0.1,
+      "passes_threshold": false,
+      "participation": true,
+      "reject_reason": "confidence 0.10 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.1324,
+      "gap_retention": 0.5378,
+      "vol_boost": 0.1,
+      "vol_ratio": 6.909,
+      "vol_today": 129710,
+      "vol_avg": 18773,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.2343,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.04243668720054764,
+      "price_935": 14.975,
+      "open_930": 15.205,
+      "prev_close": 14.61
+    },
+    {
+      "ticker": "AMAT",
+      "confidence": 0.7167,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.651,
+      "gap_retention": 0.9188,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.057,
+      "vol_today": 20019,
+      "vol_avg": 9732,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0178,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02709278350515461,
+      "price_935": 507.89,
+      "open_930": 504.34,
+      "prev_close": 485.0
+    },
+    {
+      "ticker": "NVDA",
+      "confidence": 0.6667,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 1.21x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.4409,
+      "gap_retention": 0.9304,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.21,
+      "vol_today": 157950,
+      "vol_avg": 130507,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0127,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02456657928644423,
+      "price_935": 231.51,
+      "open_930": 230.89,
+      "prev_close": 225.07
+    },
+    {
+      "ticker": "MSTR",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.0067,
+      "gap_retention": -0.5546,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.607,
+      "vol_today": 15588,
+      "vol_avg": 25691,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.081499994,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.015698884055229685,
+      "price_935": 157.04,
+      "open_930": 161.495,
+      "prev_close": 158.61
+    },
+    {
+      "ticker": "COIN",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.2481,
+      "gap_retention": -1.313,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.971,
+      "vol_today": 10202,
+      "vol_avg": 10511,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.114700004,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.009686843319153227,
+      "price_935": 193.41,
+      "open_930": 197.41,
+      "prev_close": 195.11
+    },
+    {
+      "ticker": "SHOP",
+      "confidence": 0.6667,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.50x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.2034,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.505,
+      "vol_today": 9540,
+      "vol_avg": 18902,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0136,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.00871704745166966,
+      "price_935": 145.13,
+      "open_930": 143.135,
+      "prev_close": 142.25
+    },
+    {
+      "ticker": "ABBV",
+      "confidence": 0.9667,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 1.01x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.6282,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.011,
+      "vol_today": 1990,
+      "vol_avg": 3280,
+      "or_bar_count": 3,
+      "or_last_bar": "09:33",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.0123000005,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.00851933116440951,
+      "price_935": 266.52,
+      "open_930": 266.465,
+      "prev_close": 264.34
+    },
+    {
+      "ticker": "AVGO",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.3064,
+      "gap_retention": 0.784,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.61,
+      "vol_today": 58945,
+      "vol_avg": 36603,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0111,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.007624783878007915,
+      "price_935": 357.65,
+      "open_930": 357.0,
+      "prev_close": 352.81
+    },
+    {
+      "ticker": "DAL",
+      "confidence": 0.1,
+      "passes_threshold": false,
+      "participation": true,
+      "reject_reason": "confidence 0.10 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.3333,
+      "gap_retention": -1.8714,
+      "vol_boost": 0.1,
+      "vol_ratio": 3.737,
+      "vol_today": 16124,
+      "vol_avg": 4315,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0401,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.006592889098186982,
+      "price_935": 84.62,
+      "open_930": 85.29,
+      "prev_close": 84.94
+    }
+  ],
+  "llm_input": [
+    "CCL",
+    "AMAT",
+    "AVGO"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "CCL",
+      "direction": "long",
+      "confidence": 1.4,
+      "reason": "Catalyst Tier 1 confermato: earnings beat su EPS ($1.43 vs $1.36 stima) e revenue beat ($8.435B vs $8.300B), con guidance FY2026 alzata. Segnali tecnici eccellenti: or_position 1.0, gap_retention 0.8475, post_open_advance positivo, vol_ratio elevato \u2014 setup pulito senza controindicazioni rilevanti nelle news.",
+      "price_935": 24.9
+    },
+    "trade_2": null,
+    "no_trade_reason": "AMAT escluso: confidence_algo 0.7167 ma catalyst_bonus zero (nessuna news), or_position appena sotto soglia (0.651 < 0.66) e si trova -32.6% dai massimi 3 mesi con solo vol_boost minore \u2014 setup puramente tecnico senza catalizzatore identificabile, insufficiente per un secondo trade. AVGO escluso: or_position 0.3064 insufficiente (solo 1/3 segnali tecnici positivi), nessun catalyst, news prevalentemente neutre o negative (causa legale ITC da Netlist), confidence base troppo bassa."
+  },
+  "llm_excluded_top": null,
+  "trades": [
+    {
+      "ticker": "CCL",
+      "qty": 2127,
+      "entry_price": 24.901415,
+      "entry_time": "09:36:17",
+      "entry_ts": 1790688977.5892274,
+      "direction": "long",
+      "confidence": 1.4,
+      "reason": "Catalyst Tier 1 confermato: earnings beat su EPS ($1.43 vs $1.36 stima) e revenue beat ($8.435B vs $8.300B), con guidance FY2026 alzata. Segnali tecnici eccellenti: or_position 1.0, gap_retention 0.8475, post_open_advance positivo, vol_ratio elevato \u2014 setup pulito senza controindicazioni rilevanti nelle news.",
+      "order_id": "31c048f0-2818-47b5-ae68-82e297077db7",
+      "stop_atr": 24.1668,
+      "stop_pct": 24.4034,
+      "stop_price": 25.1504,
+      "atr14": 0.7346,
+      "peak_price": 25.28,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 25.14,
+      "exit_time": "14:44:03",
+      "exit_reason": "step_stop",
+      "pnl_usd": 507.47,
+      "pnl_pct": 0.0096,
+      "catalyst_bonus": 0.3,
+      "vol_boost": 0.1,
+      "vol_ratio": 10.476,
+      "short_float": 0.0379,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 1.0,
+      "gap_retention": 0.8475,
+      "gap_pct": 0.1042966292134831,
+      "news": [
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-09-29T13:18:11Z",
+          "headline": "Carnival Sees Q4 Adj EPS $0.20 vs $0.26 Est",
+          "id": 62048741,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "CCL"
+          ],
+          "updated_at": "2026-09-29T13:18:11Z",
+          "url": "https://www.benzinga.com/news/26/09/62048741/carnival-sees-q4-adj-eps-0-20-vs-0-26-est"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-09-29T13:17:50Z",
+          "headline": "Carnival Raises FY2026 Adj EPS Guidance from $2.22 to $2.24 vs $2.22 Est",
+          "id": 62048719,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "CCL"
+          ],
+          "updated_at": "2026-09-29T13:17:50Z",
+          "url": "https://www.benzinga.com/news/26/09/62048719/carnival-raises-fy2026-adj-eps-guidance-2-22-2-24-vs-2-22-est"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-09-29T13:16:01Z",
+          "headline": "Carnival Q3 Adj. EPS $1.43 Beats $1.36 Estimate, Sales $8.435B Beat $8.300B Estimate",
+          "id": 62048650,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "CCL"
+          ],
+          "updated_at": "2026-09-29T13:16:01Z",
+          "url": "https://www.benzinga.com/news/earnings/26/09/62048650/carnival-q3-adj-eps-1-43-beats-1-36-estimate-sales-8-435b-beat-8-300b-estimate"
+        },
+        {
+          "author": "Daragh Thomas",
+          "content": "",
+          "created_at": "2026-09-29T12:55:44Z",
+          "headline": "Carnival Earnings Prediction Market Preview: What Will Josh Weinstein Say?",
+          "id": 62047686,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/29/Half-Moon-Cay--Bahamas--July-23--2013-Ca.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/29/Half-Moon-Cay--Bahamas--July-23--2013-Ca.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/29/Half-Moon-Cay--Bahamas--July-23--2013-Ca.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Kalshi traders expect Carnival to discuss Holland America, dividends and fleet upgrades as investors await Tuesday\u2019s earnings.",
+          "symbols": [
+            "CCL"
+          ],
+          "updated_at": "2026-09-29T12:55:44Z",
+          "url": "https://www.benzinga.com/markets/prediction-markets/26/09/62047686/carnival-earnings-josh-weinstein-prediction-market"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-09-29T07:38:49Z",
+          "headline": "Carnival, AAR And 3 Stocks To Watch Heading Into Tuesday",
+          "id": 62041319,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/29/New-York--Usa---17-February-2021-Carniva.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/29/New-York--Usa---17-February-2021-Carniva.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/09/29/New-York--Usa---17-February-2021-Carniva.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Investors eye Carnival, CarMax and Concentrix earnings; AAR beat Q1 estimates and raised guidance, while Vail posted mixed results.",
+          "symbols": [
+            "AIR",
+            "CCL",
+            "CNXC",
+            "KMX",
+            "MTN"
+          ],
+          "updated_at": "2026-09-29T07:39:38Z",
+          "url": "https://www.benzinga.com/trading-ideas/long-ideas/26/09/62041319/carnival-aar-and-3-stocks-to-watch-heading-into-tuesday"
+        }
+      ],
+      "recent_prices": [
+        [
+          25.24,
+          "14:42:59"
+        ],
+        [
+          25.2,
+          "14:43:14"
+        ],
+        [
+          25.19,
+          "14:43:29"
+        ],
+        [
+          25.16,
+          "14:43:45"
+        ],
+        [
+          25.14,
+          "14:44:00"
+        ]
+      ],
+      "trigger_price": 25.14,
+      "trigger_source": "quote_bid",
+      "trigger_age_s": 0.11,
+      "trigger_tick_time": "14:44:00"
+    }
+  ]
+}
