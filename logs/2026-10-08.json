@@ -1,0 +1,706 @@
+{
+  "date": "2026-10-08",
+  "spy_pct": -0.002444830470308148,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 72,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "ANET",
+        "LITE",
+        "CRDO",
+        "COHR",
+        "CIEN",
+        "JPM",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "CELH",
+        "CAVA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "TEM",
+        "HIMS",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "RDW",
+        "LUNR",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "GEV",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 13,
+      "tickers": [
+        "MRNA",
+        "VST",
+        "PLTR",
+        "MU",
+        "NFLX",
+        "OXY",
+        "ABBV",
+        "SMCI",
+        "AMZN",
+        "GOOGL",
+        "AAPL",
+        "CAVA",
+        "SHOP"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 11,
+      "tickers": [
+        "MRNA",
+        "VST",
+        "PLTR",
+        "MU",
+        "NFLX",
+        "OXY",
+        "SMCI",
+        "AMZN",
+        "GOOGL",
+        "AAPL",
+        "SHOP"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 1,
+      "tickers": [
+        "PLTR"
+      ],
+      "note": "confidence>=0.65 & vol_ratio>=1.5x"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "MRNA",
+      "gap_pct": 4.93,
+      "adv_m": 17.3,
+      "short_float_pct": 10.1,
+      "dist_from_3m_high_pct": -7.3,
+      "prev_day_return_pct": 4.81
+    },
+    {
+      "ticker": "VST",
+      "gap_pct": 3.42,
+      "adv_m": 5.1,
+      "short_float_pct": 3.4,
+      "dist_from_3m_high_pct": -2.1,
+      "prev_day_return_pct": 3.88
+    },
+    {
+      "ticker": "PLTR",
+      "gap_pct": 3.32,
+      "adv_m": 33.5,
+      "short_float_pct": 2.8,
+      "dist_from_3m_high_pct": 1.9,
+      "prev_day_return_pct": 1.07
+    },
+    {
+      "ticker": "MU",
+      "gap_pct": 2.77,
+      "adv_m": 33.0,
+      "short_float_pct": 2.5,
+      "dist_from_3m_high_pct": -3.1,
+      "prev_day_return_pct": 4.06
+    },
+    {
+      "ticker": "NFLX",
+      "gap_pct": 1.98,
+      "adv_m": 36.9,
+      "short_float_pct": 2.3,
+      "dist_from_3m_high_pct": -16.2,
+      "prev_day_return_pct": 1.47
+    },
+    {
+      "ticker": "OXY",
+      "gap_pct": 1.94,
+      "adv_m": 8.6,
+      "short_float_pct": 3.0,
+      "dist_from_3m_high_pct": -6.8,
+      "prev_day_return_pct": -0.21
+    },
+    {
+      "ticker": "ABBV",
+      "gap_pct": 1.8,
+      "adv_m": 4.9,
+      "short_float_pct": 1.2,
+      "dist_from_3m_high_pct": -1.2,
+      "prev_day_return_pct": 1.75
+    },
+    {
+      "ticker": "SMCI",
+      "gap_pct": 1.7,
+      "adv_m": 44.2,
+      "short_float_pct": 16.1,
+      "dist_from_3m_high_pct": -3.4,
+      "prev_day_return_pct": 3.41
+    },
+    {
+      "ticker": "AMZN",
+      "gap_pct": 1.17,
+      "adv_m": 39.0,
+      "short_float_pct": 0.8,
+      "dist_from_3m_high_pct": -9.7,
+      "prev_day_return_pct": 1.42
+    },
+    {
+      "ticker": "GOOGL",
+      "gap_pct": 1.08,
+      "adv_m": 27.1,
+      "short_float_pct": 1.5,
+      "dist_from_3m_high_pct": -8.5,
+      "prev_day_return_pct": 0.81
+    },
+    {
+      "ticker": "AAPL",
+      "gap_pct": 0.95,
+      "adv_m": 45.5,
+      "short_float_pct": 0.9,
+      "dist_from_3m_high_pct": -2.5,
+      "prev_day_return_pct": 0.91
+    },
+    {
+      "ticker": "CAVA",
+      "gap_pct": 0.68,
+      "adv_m": 3.5,
+      "short_float_pct": 13.4,
+      "dist_from_3m_high_pct": -29.9,
+      "prev_day_return_pct": -1.08
+    },
+    {
+      "ticker": "SHOP",
+      "gap_pct": 0.58,
+      "adv_m": 9.4,
+      "short_float_pct": 1.4,
+      "dist_from_3m_high_pct": -0.9,
+      "prev_day_return_pct": 0.97
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "ABBV",
+      "reason": "adv_4,882,730<min_5,000,000"
+    },
+    {
+      "ticker": "CAVA",
+      "reason": "adv_3,480,169<min_5,000,000"
+    },
+    {
+      "ticker": "SHOP",
+      "reason": "pm_gap_eaten_at_open_48%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "MRNA",
+      "confidence": 0.5333,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.53 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.1712,
+      "gap_retention": 0.7791,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.234,
+      "vol_today": 18977,
+      "vol_avg": 15375,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.100600004,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.049290515309932684,
+      "price_935": 195.47,
+      "open_930": 196.58,
+      "prev_close": 187.46
+    },
+    {
+      "ticker": "VST",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.4845,
+      "gap_retention": 0.6583,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.159,
+      "vol_today": 7635,
+      "vol_avg": 6587,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0335,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03420560747663557,
+      "price_935": 164.78,
+      "open_930": 165.695,
+      "prev_close": 160.5
+    },
+    {
+      "ticker": "PLTR",
+      "confidence": 1.25,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.906,
+      "gap_retention": 0.8266,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.987,
+      "vol_today": 51047,
+      "vol_avg": 17089,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.027999999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03321705628156399,
+      "price_935": 202.85,
+      "open_930": 198.99,
+      "prev_close": 192.07
+    },
+    {
+      "ticker": "MU",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 1.18x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.7392,
+      "gap_retention": 0.8578,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.184,
+      "vol_today": 46086,
+      "vol_avg": 38923,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.024500001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02767894716706842,
+      "price_935": 1084.02,
+      "open_930": 1077.38,
+      "prev_close": 1045.56
+    },
+    {
+      "ticker": "NFLX",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.58x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.8876,
+      "gap_retention": 0.7836,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.58,
+      "vol_today": 31389,
+      "vol_avg": 54090,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0228,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01979909739408938,
+      "price_935": 70.135,
+      "open_930": 70.03,
+      "prev_close": 68.69
+    },
+    {
+      "ticker": "OXY",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.42x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.6957,
+      "gap_retention": 0.9394,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.417,
+      "vol_today": 6308,
+      "vol_avg": 15113,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0296,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.019372535573461386,
+      "price_935": 59.73,
+      "open_930": 59.65,
+      "prev_close": 58.33
+    },
+    {
+      "ticker": "SMCI",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.0061,
+      "gap_retention": 0.0614,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.874,
+      "vol_today": 43793,
+      "vol_avg": 50106,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.16139999,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01702715140358955,
+      "price_935": 43.5,
+      "open_930": 44.03,
+      "prev_close": 43.46
+    },
+    {
+      "ticker": "AMZN",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.4357,
+      "gap_retention": 0.6257,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.664,
+      "vol_today": 35207,
+      "vol_avg": 53030,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0083,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.011666471575168567,
+      "price_935": 258.99,
+      "open_930": 259.63,
+      "prev_close": 256.29
+    },
+    {
+      "ticker": "GOOGL",
+      "confidence": 0.8667,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 1.26x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.4691,
+      "gap_retention": 0.7757,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.259,
+      "vol_today": 43087,
+      "vol_avg": 34209,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0149,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010787793373216736,
+      "price_935": 354.565,
+      "open_930": 354.01,
+      "prev_close": 347.68
+    },
+    {
+      "ticker": "AAPL",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.3134,
+      "gap_retention": 0.6974,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.608,
+      "vol_today": 31432,
+      "vol_avg": 51666,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0088,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.009531516949914597,
+      "price_935": 336.46,
+      "open_930": 336.935,
+      "prev_close": 333.63
+    }
+  ],
+  "llm_input": [
+    "PLTR"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "PLTR",
+      "direction": "long",
+      "confidence": 1.25,
+      "reason": "Goldman Sachs upgrade a Buy con target $230 (catalyst Tier 2 confermato) supportato da narrativa sovereign AI e endorsement di Dan Ives come top pick 2027. Tutti e tre i segnali tecnici sono positivi (post_open_advance, or_position 0.91, gap_retention 0.83) con il titolo vicino ai massimi degli ultimi 3 mesi (-1.9%).",
+      "price_935": 202.85
+    },
+    "trade_2": null,
+    "no_trade_reason": null
+  },
+  "llm_excluded_top": null,
+  "trades": [
+    {
+      "ticker": "PLTR",
+      "qty": 251,
+      "entry_price": 203.627809,
+      "entry_time": "09:35:31",
+      "entry_ts": 1791466531.7256415,
+      "direction": "long",
+      "confidence": 1.25,
+      "reason": "Goldman Sachs upgrade a Buy con target $230 (catalyst Tier 2 confermato) supportato da narrativa sovereign AI e endorsement di Dan Ives come top pick 2027. Tutti e tre i segnali tecnici sono positivi (post_open_advance, or_position 0.91, gap_retention 0.83) con il titolo vicino ai massimi degli ultimi 3 mesi (-1.9%).",
+      "order_id": "5070f509-880a-4191-8693-80ce7db6afaf",
+      "stop_atr": 198.1255,
+      "stop_pct": 199.5553,
+      "stop_price": 199.5553,
+      "atr14": 5.5023,
+      "peak_price": 203.71,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 198.652789,
+      "exit_time": "09:39:51",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1248.73,
+      "pnl_pct": -0.0244,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.987,
+      "short_float": 0.027999999,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.906,
+      "gap_retention": 0.8266,
+      "gap_pct": 0.03321705628156399,
+      "news": [
+        {
+          "author": "Erica Kollmann",
+          "content": "",
+          "created_at": "2026-10-08T13:18:07Z",
+          "headline": "Palantir Gets Goldman Sachs Upgrade as Sovereign AI Opens New Market",
+          "id": 62245215,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/08/Palantir-Technologies.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/08/Palantir-Technologies.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/08/Palantir-Technologies.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Goldman Sachs upgraded Palantir to Buy, citing sovereign AI and custom applications as growth drivers.",
+          "symbols": [
+            "CRWD",
+            "DDOG",
+            "GOOGL",
+            "META",
+            "PLTR"
+          ],
+          "updated_at": "2026-10-08T13:18:07Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/upgrades/26/10/62245215/palantir-gets-goldman-sachs-upgrade-as-sovereign-ai-opens-new-market"
+        },
+        {
+          "author": "Chandrima Sanyal",
+          "content": "",
+          "created_at": "2026-10-08T13:10:56Z",
+          "headline": "Nvidia Vs. CrowdStrike: How ETFs Are Positioned for Dan Ives\u2019 $4T Tech Spending Wave",
+          "id": 62245057,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/08/Los-Angeles--California---July-6-2025-Nv.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/08/Los-Angeles--California---July-6-2025-Nv.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/08/Los-Angeles--California---July-6-2025-Nv.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Dan Ives sees a $4 trillion tech spending wave ahead. NVDA dominates major ETFs. Here\u2019s how XLK, QQQ, and AIQ stack up against his top tech picks.",
+          "symbols": [
+            "AAPL",
+            "AIQ",
+            "CRWD",
+            "MSFT",
+            "NVDA",
+            "PLTR",
+            "QQQ",
+            "XLK"
+          ],
+          "updated_at": "2026-10-08T13:10:56Z",
+          "url": "https://www.benzinga.com/etfs/sector-etfs/26/10/62245057/nvidia-crowdstrike-dan-ives-4-trillion-tech-spending-wave-etf"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-10-08T12:29:13Z",
+          "headline": "This Palantir Analyst Turns Bullish; Here Are Top 5 Upgrades For Thursday",
+          "id": 62243452,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/08/Palantir-Technologies-Big-Data-Company.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/08/Palantir-Technologies-Big-Data-Company.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/08/Palantir-Technologies-Big-Data-Company.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Analysts upgraded Rocket Pharma, Generac, Palantir, Global Payments and Unity Software, with new or raised price targets.",
+          "symbols": [
+            "GNRC",
+            "GPN",
+            "PLTR",
+            "RCKT",
+            "U"
+          ],
+          "updated_at": "2026-10-08T12:29:13Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/upgrades/26/10/62243452/this-palantir-analyst-turns-bullish-here-are-top-5-upgrades-for-thursday"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-10-08T11:48:37Z",
+          "headline": "What Is Going on With Palantir Tech Stock on Thursday?",
+          "id": 62241998,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/08/Palantir-Technologies-Japan-Logo--Tokyo-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/08/Palantir-Technologies-Japan-Logo--Tokyo-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/08/Palantir-Technologies-Japan-Logo--Tokyo-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Palantir stock gains in premarket trading as Dan Ives names it a top 2027 tech pick and Peter Thiel highlights surging U.S. enterprise AI demand.",
+          "symbols": [
+            "AAPL",
+            "CRWD",
+            "MSFT",
+            "NVDA",
+            "PLTR"
+          ],
+          "updated_at": "2026-10-08T11:48:37Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/10/62241998/what-is-going-on-with-palantir-tech-stock-on-thursday"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-10-08T10:23:06Z",
+          "headline": "Goldman Sachs Upgrades Palantir Technologies to Buy, Announces $230 Price Target",
+          "id": 62239993,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "PLTR"
+          ],
+          "updated_at": "2026-10-08T10:23:06Z",
+          "url": "https://www.benzinga.com/news/26/10/62239993/goldman-sachs-upgrades-palantir-technologies-buy-announces-230-price-target"
+        }
+      ],
+      "recent_prices": [
+        [
+          200.0,
+          "09:38:48"
+        ],
+        [
+          200.0,
+          "09:39:03"
+        ],
+        [
+          200.96,
+          "09:39:17"
+        ],
+        [
+          200.18,
+          "09:39:33"
+        ],
+        [
+          198.66,
+          "09:39:47"
+        ]
+      ],
+      "trigger_price": 198.66,
+      "trigger_source": "latest_trade",
+      "trigger_age_s": 1.68,
+      "trigger_tick_time": "09:39:47"
+    }
+  ]
+}
