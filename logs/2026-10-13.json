@@ -1,0 +1,920 @@
+{
+  "date": "2026-10-13",
+  "spy_pct": -0.0003855892446306113,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 72,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "ANET",
+        "LITE",
+        "CRDO",
+        "COHR",
+        "CIEN",
+        "JPM",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "CELH",
+        "CAVA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "TEM",
+        "HIMS",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "RDW",
+        "LUNR",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "GEV",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 15,
+      "tickers": [
+        "UNH",
+        "SHOP",
+        "GS",
+        "CRM",
+        "OXY",
+        "ABBV",
+        "META",
+        "AAPL",
+        "JPM",
+        "CCL",
+        "NFLX",
+        "MSFT",
+        "DKNG",
+        "GOOGL",
+        "COIN"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 13,
+      "tickers": [
+        "UNH",
+        "SHOP",
+        "CRM",
+        "OXY",
+        "META",
+        "AAPL",
+        "JPM",
+        "CCL",
+        "NFLX",
+        "MSFT",
+        "DKNG",
+        "GOOGL",
+        "COIN"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 4,
+      "tickers": [
+        "META",
+        "AAPL",
+        "JPM",
+        "MSFT"
+      ],
+      "note": "confidence>=0.65 & vol_ratio>=1.5x"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "UNH",
+      "gap_pct": 4.17,
+      "adv_m": 5.0,
+      "short_float_pct": 2.0,
+      "dist_from_3m_high_pct": -13.9,
+      "prev_day_return_pct": -0.21
+    },
+    {
+      "ticker": "SHOP",
+      "gap_pct": 3.14,
+      "adv_m": 9.5,
+      "short_float_pct": 1.7,
+      "dist_from_3m_high_pct": -2.6,
+      "prev_day_return_pct": 4.9
+    },
+    {
+      "ticker": "GS",
+      "gap_pct": 2.87,
+      "adv_m": 2.0,
+      "short_float_pct": 2.3,
+      "dist_from_3m_high_pct": -19.8,
+      "prev_day_return_pct": -0.15
+    },
+    {
+      "ticker": "CRM",
+      "gap_pct": 2.61,
+      "adv_m": 13.2,
+      "short_float_pct": 4.6,
+      "dist_from_3m_high_pct": -12.2,
+      "prev_day_return_pct": 2.09
+    },
+    {
+      "ticker": "OXY",
+      "gap_pct": 2.51,
+      "adv_m": 8.5,
+      "short_float_pct": 3.0,
+      "dist_from_3m_high_pct": -3.4,
+      "prev_day_return_pct": 1.7
+    },
+    {
+      "ticker": "ABBV",
+      "gap_pct": 2.38,
+      "adv_m": 4.8,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": 0.6,
+      "prev_day_return_pct": 1.68
+    },
+    {
+      "ticker": "META",
+      "gap_pct": 2.33,
+      "adv_m": 18.8,
+      "short_float_pct": 1.5,
+      "dist_from_3m_high_pct": -5.7,
+      "prev_day_return_pct": 3.38
+    },
+    {
+      "ticker": "AAPL",
+      "gap_pct": 2.09,
+      "adv_m": 45.2,
+      "short_float_pct": 0.8,
+      "dist_from_3m_high_pct": -0.5,
+      "prev_day_return_pct": 1.29
+    },
+    {
+      "ticker": "JPM",
+      "gap_pct": 1.8,
+      "adv_m": 7.3,
+      "short_float_pct": 0.9,
+      "dist_from_3m_high_pct": -7.0,
+      "prev_day_return_pct": 0.39
+    },
+    {
+      "ticker": "CCL",
+      "gap_pct": 1.63,
+      "adv_m": 21.1,
+      "short_float_pct": 3.3,
+      "dist_from_3m_high_pct": -10.9,
+      "prev_day_return_pct": 0.49
+    },
+    {
+      "ticker": "NFLX",
+      "gap_pct": 1.38,
+      "adv_m": 36.7,
+      "short_float_pct": 2.0,
+      "dist_from_3m_high_pct": -14.8,
+      "prev_day_return_pct": 0.44
+    },
+    {
+      "ticker": "MSFT",
+      "gap_pct": 1.24,
+      "adv_m": 27.5,
+      "short_float_pct": 0.8,
+      "dist_from_3m_high_pct": -0.2,
+      "prev_day_return_pct": 1.14
+    },
+    {
+      "ticker": "DKNG",
+      "gap_pct": 1.23,
+      "adv_m": 12.9,
+      "short_float_pct": 7.9,
+      "dist_from_3m_high_pct": -28.0,
+      "prev_day_return_pct": 0.41
+    },
+    {
+      "ticker": "GOOGL",
+      "gap_pct": 0.94,
+      "adv_m": 27.0,
+      "short_float_pct": 1.4,
+      "dist_from_3m_high_pct": -7.6,
+      "prev_day_return_pct": 0.3
+    },
+    {
+      "ticker": "COIN",
+      "gap_pct": 0.54,
+      "adv_m": 9.1,
+      "short_float_pct": 11.1,
+      "dist_from_3m_high_pct": -13.4,
+      "prev_day_return_pct": 0.56
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "GS",
+      "reason": "adv_2,034,216<min_5,000,000"
+    },
+    {
+      "ticker": "ABBV",
+      "reason": "adv_4,833,911<min_5,000,000"
+    },
+    {
+      "ticker": "COIN",
+      "reason": "pm_gap_eaten_at_open_11%"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "UNH",
+      "confidence": 0.4,
+      "passes_threshold": false,
+      "participation": true,
+      "reject_reason": "confidence 0.40 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.2106,
+      "gap_retention": 0.4038,
+      "vol_boost": 0.1,
+      "vol_ratio": 5.062,
+      "vol_today": 29619,
+      "vol_avg": 5851,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.0198,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0416556815185869,
+      "price_935": 389.415,
+      "open_930": 397.625,
+      "prev_close": 379.3
+    },
+    {
+      "ticker": "SHOP",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.5187,
+      "gap_retention": 0.598,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.762,
+      "vol_today": 14196,
+      "vol_avg": 18618,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0167,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03143107989464445,
+      "price_935": 174.99,
+      "open_930": 175.8,
+      "prev_close": 170.85
+    },
+    {
+      "ticker": "CRM",
+      "confidence": 1.2,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.64x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.7081,
+      "gap_retention": 0.977,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.637,
+      "vol_today": 7260,
+      "vol_avg": 11393,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0462,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.026148038231571576,
+      "price_935": 237.91,
+      "open_930": 235.0,
+      "prev_close": 229.13
+    },
+    {
+      "ticker": "OXY",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.33 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.5455,
+      "gap_retention": 0.8615,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.625,
+      "vol_today": 8708,
+      "vol_avg": 13928,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0304,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.025120612210946566,
+      "price_935": 61.35,
+      "open_930": 61.41,
+      "prev_close": 60.11
+    },
+    {
+      "ticker": "META",
+      "confidence": 0.8667,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.6367,
+      "gap_retention": 0.951,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.557,
+      "vol_today": 63974,
+      "vol_avg": 41090,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0152,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.023348685766763726,
+      "price_935": 739.58,
+      "open_930": 735.81,
+      "prev_close": 718.67
+    },
+    {
+      "ticker": "AAPL",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.9287,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.679,
+      "vol_today": 97892,
+      "vol_avg": 58303,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0083,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02094225285171106,
+      "price_935": 347.865,
+      "open_930": 344.675,
+      "prev_close": 336.64
+    },
+    {
+      "ticker": "JPM",
+      "confidence": 0.7667,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.3113,
+      "gap_retention": 0.8521,
+      "vol_boost": 0.1,
+      "vol_ratio": 4.914,
+      "vol_today": 30574,
+      "vol_avg": 6221,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0091,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.018018559115889364,
+      "price_935": 340.47,
+      "open_930": 339.75,
+      "prev_close": 332.99
+    },
+    {
+      "ticker": "CCL",
+      "confidence": 0.6667,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.27x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.6,
+      "gap_retention": 0.7857,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.266,
+      "vol_today": 16684,
+      "vol_avg": 62610,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0328,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.016318785578747618,
+      "price_935": 26.715,
+      "open_930": 26.7,
+      "prev_close": 26.35
+    },
+    {
+      "ticker": "NFLX",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.33 < 0.65",
+      "post_open_advance": true,
+      "or_position": 0.4179,
+      "gap_retention": 0.6792,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.453,
+      "vol_today": 78981,
+      "vol_avg": 54351,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0199,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.013798008534850624,
+      "price_935": 71.12,
+      "open_930": 71.095,
+      "prev_close": 70.3
+    },
+    {
+      "ticker": "MSFT",
+      "confidence": 0.8167,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.607,
+      "gap_retention": 0.9691,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.253,
+      "vol_today": 64815,
+      "vol_avg": 28772,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.1,
+      "short_float": 0.0082,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.012390902124955604,
+      "price_935": 548.385,
+      "open_930": 544.625,
+      "prev_close": 535.07
+    },
+    {
+      "ticker": "DKNG",
+      "confidence": 0.3333,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.33 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.1111,
+      "gap_retention": 0.7222,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.406,
+      "vol_today": 8906,
+      "vol_avg": 21936,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0789,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.012257405515832584,
+      "price_935": 19.79,
+      "open_930": 19.85,
+      "prev_close": 19.58
+    },
+    {
+      "ticker": "GOOGL",
+      "confidence": 0.1,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.10 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.0542,
+      "gap_retention": 0.4126,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.212,
+      "vol_today": 39468,
+      "vol_avg": 32554,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.1,
+      "short_float": 0.0137,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.009355627594835818,
+      "price_935": 353.75,
+      "open_930": 356.18,
+      "prev_close": 351.66
+    }
+  ],
+  "llm_input": [
+    "META",
+    "AAPL",
+    "JPM",
+    "MSFT"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "AAPL",
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Segnali tecnici perfetti: tutti e tre i criteri soddisfatti (post_open_advance, or_position 0.93, gap_retention 1.0), momentum reale di +0.93% nei primi 5 minuti e vicinissimo ai massimi degli ultimi 3 mesi (-0.5%). Nonostante il catalyst_bonus sia 0, la confidence algoritmica massima (1.0) con prev_day_return positivo e lancio di nuovi prodotti hardware (Apple HomeView, Apple TV 4K) supportano il trade.",
+      "price_935": 347.865
+    },
+    "trade_2": {
+      "ticker": "META",
+      "direction": "long",
+      "confidence": 0.8667,
+      "reason": "Catalyst Tier 2 confermato (price target raise Truist a $1000, reiteration Keybanc Overweight) con segnali tecnici solidi (gap_retention 0.95, post_open_advance positivo); da notare una news con taglio di target da parte di analisti non identificati, ma le altre due raccomandazioni positive bilanciano il quadro e prev_day_return di +3.4% esclude il setup rimbalzo da selloff.",
+      "price_935": 739.58
+    },
+    "no_trade_reason": "JPM escluso per earnings miss Q3 e avvertimenti macro di Dimon nonostante vol_boost; MSFT ha catalyst solo Tier 3 (rumor successione CEO non confermato) e confidence algoritmica inferiore a META. I due trade selezionati appartengono a settori GICS diversi (Technology vs Communication Services), penalit\u00e0 settoriale non applicata."
+  },
+  "llm_excluded_top": null,
+  "trades": [
+    {
+      "ticker": "AAPL",
+      "qty": 145,
+      "entry_price": 347.436138,
+      "entry_time": "09:35:40",
+      "entry_ts": 1791898540.0025375,
+      "direction": "long",
+      "confidence": 1.0,
+      "reason": "Segnali tecnici perfetti: tutti e tre i criteri soddisfatti (post_open_advance, or_position 0.93, gap_retention 1.0), momentum reale di +0.93% nei primi 5 minuti e vicinissimo ai massimi degli ultimi 3 mesi (-0.5%). Nonostante il catalyst_bonus sia 0, la confidence algoritmica massima (1.0) con prev_day_return positivo e lancio di nuovi prodotti hardware (Apple HomeView, Apple TV 4K) supportano il trade.",
+      "order_id": "6f0cd0f2-afcb-4eca-8a8f-cf43ed5aabd4",
+      "stop_atr": 341.0206,
+      "stop_pct": 340.4874,
+      "stop_price": 341.0206,
+      "atr14": 6.4156,
+      "peak_price": 347.436138,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 341.378483,
+      "exit_time": "09:46:09",
+      "exit_reason": "atr_stop",
+      "pnl_usd": -878.36,
+      "pnl_pct": -0.0174,
+      "catalyst_bonus": 0.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.679,
+      "short_float": 0.0083,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.9287,
+      "gap_retention": 1.0,
+      "gap_pct": 0.02094225285171106,
+      "news": [
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-10-13T13:07:20Z",
+          "headline": "Apple Home Collection Available Starting December, Select Accessories Early 2027; LG Video Doorbell Wired Starts At $249.95, Floodlight Cam At $399.95, Outdoor Cam At $299.95; LG Indoor Cam Plug-In Starts At $199.95 In U.S., Canada, And UK; Retail Offers Third-Party Installation From ADT In U.S. Starting This Fall; LG Smart Thermostat Starts At $199.95, Temperature Sensor At $39.95 In U.S. And Canada; LG Smart Deadbolt Lock Starts At $349.95 In U.S. And Canada",
+          "id": 62323005,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "AAPL"
+          ],
+          "updated_at": "2026-10-13T13:07:20Z",
+          "url": "https://www.benzinga.com/quote/AAPL"
+        },
+        {
+          "author": "Anusuya Lahiri",
+          "content": "",
+          "created_at": "2026-10-13T13:00:24Z",
+          "headline": "SpaceX's Wireless Push Sparks Wall Street Skepticism: Is the Stock Getting Ahead of Itself?",
+          "id": 62322575,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/13/Elon-Musk-Speech-Before-The-Start-Of-Nas.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/13/Elon-Musk-Speech-Before-The-Start-Of-Nas.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/13/Elon-Musk-Speech-Before-The-Start-Of-Nas.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Analysts debate SpaceX&#39;s $8B spectrum deal as $SPCX stock climbs. Will Starlink&#39;s telecom push pay off? Read the analysis.",
+          "symbols": [
+            "AAPL",
+            "AMZN",
+            "GOOG",
+            "GOOGL",
+            "MSFT",
+            "NVDA",
+            "SPCX",
+            "TMUS",
+            "VZ"
+          ],
+          "updated_at": "2026-10-13T13:00:24Z",
+          "url": "https://www.benzinga.com/markets/tech/26/10/62322575/spacexs-wireless-push-sparks-wall-street-skepticism-is-the-stock-getting-ahead-of-itself"
+        },
+        {
+          "author": "Benzinga News-desk",
+          "content": "",
+          "created_at": "2026-10-13T12:58:05Z",
+          "headline": "Apple Unveils The New Apple TV 4K, Supercharged By Siri Apple Intelligence; Available For $299; Pre-Orders Start Today; Available In Stores November 13",
+          "id": 62322348,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "AAPL"
+          ],
+          "updated_at": "2026-10-13T12:59:47Z",
+          "url": "https://www.benzinga.com/news/26/10/62322348/apple-unveils-the-new-apple-tv-4k-supercharged-by-siri-apple-intelligence-available-for-299-pre-orders-start-today-available-in-stores-november-13"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-10-13T12:59:15Z",
+          "headline": "Apple Introduces Apple HomeView For Entertainment And Smart Home Management; Pre-Orders For Apple HomeView Start Today, Available November 13; HomeView Not Available For Sale In European Union; Wall Mounted Model Available For Pre-Order At $299",
+          "id": 62322391,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "AAPL"
+          ],
+          "updated_at": "2026-10-13T12:59:15Z",
+          "url": "https://www.benzinga.com/news/26/10/62322391/apple-introduces-apple-homeview-entertainment-and-smart-home-management-pre-orders-apple-homeview-st"
+        },
+        {
+          "author": "Daragh Thomas",
+          "content": "",
+          "created_at": "2026-10-13T10:51:54Z",
+          "headline": "JPMorgan Earnings Prediction Market Preview: What Will Jamie Dimon Say?",
+          "id": 62317830,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/13/Closeup-Of-Jamie-Dimon--Ceo-Of-Jpmorgan-.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/13/Closeup-Of-Jamie-Dimon--Ceo-Of-Jpmorgan-.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/13/Closeup-Of-Jamie-Dimon--Ceo-Of-Jpmorgan-.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "JPMorgan heads into earnings with traders focused on trading revenue, inflation, buybacks and Jamie Dimon\u2019s outlook.",
+          "symbols": [
+            "AAPL",
+            "JPM"
+          ],
+          "updated_at": "2026-10-13T10:51:54Z",
+          "url": "https://www.benzinga.com/markets/prediction-markets/26/10/62317830/jpmorgan-earnings-jamie-dimon-prediction-market"
+        }
+      ],
+      "recent_prices": [
+        [
+          342.29,
+          "09:45:02"
+        ],
+        [
+          341.52,
+          "09:45:18"
+        ],
+        [
+          341.62,
+          "09:45:33"
+        ],
+        [
+          341.64,
+          "09:45:48"
+        ],
+        [
+          340.99,
+          "09:46:04"
+        ]
+      ],
+      "trigger_price": 340.99,
+      "trigger_source": "quote_bid",
+      "trigger_age_s": 0.06,
+      "trigger_tick_time": "09:46:04"
+    },
+    {
+      "ticker": "META",
+      "qty": 68,
+      "entry_price": 739.61,
+      "entry_time": "09:35:34",
+      "entry_ts": 1791898534.7706013,
+      "direction": "long",
+      "confidence": 0.8667,
+      "reason": "Catalyst Tier 2 confermato (price target raise Truist a $1000, reiteration Keybanc Overweight) con segnali tecnici solidi (gap_retention 0.95, post_open_advance positivo); da notare una news con taglio di target da parte di analisti non identificati, ma le altre due raccomandazioni positive bilanciano il quadro e prev_day_return di +3.4% esclude il setup rimbalzo da selloff.",
+      "order_id": "24967559-5631-4b7e-b2c8-da597571a8c7",
+      "stop_atr": 717.1511,
+      "stop_pct": 724.8178,
+      "stop_price": 754.4022,
+      "atr14": 22.4589,
+      "peak_price": 770.68,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 761.59,
+      "exit_time": "12:09:13",
+      "exit_reason": "vwap_exit",
+      "pnl_usd": 1494.64,
+      "pnl_pct": 0.0297,
+      "catalyst_bonus": 0.2,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.557,
+      "short_float": 0.0152,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.6367,
+      "gap_retention": 0.951,
+      "gap_pct": 0.023348685766763726,
+      "news": [
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-10-13T13:25:09Z",
+          "headline": "Virtuix Become Official Reseller Of Meta Products; Launches New Consumer Bundles Combining Omni One For Quest With Meta Quest 3 And Quest 3S Headsets And Accessories",
+          "id": 62323597,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "META",
+            "VTIX"
+          ],
+          "updated_at": "2026-10-13T13:25:09Z",
+          "url": "https://www.benzinga.com/news/26/10/62323597/virtuix-become-official-reseller-meta-products-launches-new-consumer-bundles-combining-omni-one-ques"
+        },
+        {
+          "author": "Dylan Berman",
+          "content": "",
+          "created_at": "2026-10-13T13:24:13Z",
+          "headline": "Meta\u2019s Costs Surged in the Second Quarter. Here\u2019s the Bar for Oct. 21 Earnings",
+          "id": 62323568,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/13/New-York--Usa---14-December-2024-Meta-Pl.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/13/New-York--Usa---14-December-2024-Meta-Pl.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/13/New-York--Usa---14-December-2024-Meta-Pl.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Meta is in focus ahead of earnings, with AI spending, capex and the Muse AI agent in the spotlight as the stock remains in a bullish trend.",
+          "symbols": [
+            "META"
+          ],
+          "updated_at": "2026-10-13T13:24:13Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/10/62323568/metas-costs-surged-in-the-second-quarter-heres-the-bar-for-oct-21-earnings"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-10-13T12:42:25Z",
+          "headline": "Truist Securities Maintains Buy on Meta Platforms, Raises Price Target to $1000",
+          "id": 62321811,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "META"
+          ],
+          "updated_at": "2026-10-13T12:42:25Z",
+          "url": "https://www.benzinga.com/news/26/10/62321811/truist-securities-maintains-buy-meta-platforms-raises-price-target-1000"
+        },
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-10-13T12:30:57Z",
+          "headline": "Keybanc Reiterates Overweight on Meta Platforms, Maintains $900 Price Target",
+          "id": 62321266,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "META"
+          ],
+          "updated_at": "2026-10-13T12:30:57Z",
+          "url": "https://www.benzinga.com/news/26/10/62321266/keybanc-reiterates-overweight-meta-platforms-maintains-900-price-target"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-10-13T12:30:15Z",
+          "headline": "Humana To Rally Over 14%? Here Are 10 Top Analyst Forecasts For Tuesday",
+          "id": 62321241,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/13/Crypto-Trader-Investor-Broker-Using-Smar.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/13/Crypto-Trader-Investor-Broker-Using-Smar.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/13/Crypto-Trader-Investor-Broker-Using-Smar.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Analysts cut targets for Duke, Hyatt, Pershing Square, Carlisle, Upstart, Arch Capital and Meta; raised VF, Rexford and SentinelOne.",
+          "symbols": [
+            "ACGL",
+            "CSL",
+            "DUK",
+            "H",
+            "HUM",
+            "META",
+            "PS",
+            "REXR",
+            "S",
+            "UPST",
+            "VFC"
+          ],
+          "updated_at": "2026-10-13T12:30:15Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/price-target/26/10/62321241/humana-to-rally-over-14-here-are-10-top-analyst-forecasts-for-tuesday"
+        }
+      ],
+      "recent_prices": [
+        [
+          762.59,
+          "12:08:10"
+        ],
+        [
+          759.99,
+          "12:08:24"
+        ],
+        [
+          759.99,
+          "12:08:28"
+        ],
+        [
+          759.99,
+          "12:08:52"
+        ],
+        [
+          759.99,
+          "12:09:03"
+        ]
+      ],
+      "trigger_price": 759.99,
+      "trigger_source": "quote_bid",
+      "trigger_age_s": 7.9,
+      "trigger_tick_time": "12:09:03"
+    }
+  ]
+}
