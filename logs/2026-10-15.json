@@ -1,0 +1,622 @@
+{
+  "date": "2026-10-15",
+  "spy_pct": -0.004859351653348937,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 72,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "ANET",
+        "LITE",
+        "CRDO",
+        "COHR",
+        "CIEN",
+        "JPM",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "CELH",
+        "CAVA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "TEM",
+        "HIMS",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "RDW",
+        "LUNR",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "GEV",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 7,
+      "tickers": [
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "ADBE",
+        "NFLX",
+        "JPM",
+        "AAPL"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 6,
+      "tickers": [
+        "UNH",
+        "MRNA",
+        "ADBE",
+        "NFLX",
+        "JPM",
+        "AAPL"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 4,
+      "tickers": [
+        "UNH",
+        "ADBE",
+        "NFLX",
+        "AAPL"
+      ],
+      "note": "confidence>=0.65 & vol_ratio>=1.5x"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "UNH",
+      "gap_pct": 5.7,
+      "adv_m": 5.2,
+      "short_float_pct": 2.0,
+      "dist_from_3m_high_pct": -13.0,
+      "prev_day_return_pct": 4.73
+    },
+    {
+      "ticker": "ABBV",
+      "gap_pct": 4.42,
+      "adv_m": 4.9,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": 1.0,
+      "prev_day_return_pct": 3.32
+    },
+    {
+      "ticker": "MRNA",
+      "gap_pct": 3.67,
+      "adv_m": 18.4,
+      "short_float_pct": 9.4,
+      "dist_from_3m_high_pct": -1.4,
+      "prev_day_return_pct": 4.65
+    },
+    {
+      "ticker": "ADBE",
+      "gap_pct": 2.39,
+      "adv_m": 5.0,
+      "short_float_pct": 5.1,
+      "dist_from_3m_high_pct": -17.9,
+      "prev_day_return_pct": 1.86
+    },
+    {
+      "ticker": "NFLX",
+      "gap_pct": 1.45,
+      "adv_m": 36.7,
+      "short_float_pct": 2.0,
+      "dist_from_3m_high_pct": -14.5,
+      "prev_day_return_pct": 0.16
+    },
+    {
+      "ticker": "JPM",
+      "gap_pct": 1.23,
+      "adv_m": 7.3,
+      "short_float_pct": 0.9,
+      "dist_from_3m_high_pct": -8.0,
+      "prev_day_return_pct": 1.16
+    },
+    {
+      "ticker": "AAPL",
+      "gap_pct": 0.97,
+      "adv_m": 45.3,
+      "short_float_pct": 0.8,
+      "dist_from_3m_high_pct": -1.0,
+      "prev_day_return_pct": 0.5
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "ABBV",
+      "reason": "adv_4,874,514<min_5,000,000"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "UNH",
+      "confidence": 1.0167,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.6373,
+      "gap_retention": 0.967,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.691,
+      "vol_today": 22255,
+      "vol_avg": 8271,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.0198,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.05699915290131296,
+      "price_935": 403.47,
+      "open_930": 401.06,
+      "prev_close": 377.76
+    },
+    {
+      "ticker": "MRNA",
+      "confidence": 0.2,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.20 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.4027,
+      "gap_retention": 0.1299,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.958,
+      "vol_today": 17283,
+      "vol_avg": 18032,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.094399996,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.03667052023121391,
+      "price_935": 220.945,
+      "open_930": 226.025,
+      "prev_close": 216.25
+    },
+    {
+      "ticker": "ADBE",
+      "confidence": 1.0,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.968,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.811,
+      "vol_today": 6487,
+      "vol_avg": 3582,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.051,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.023869984763839454,
+      "price_935": 248.33,
+      "open_930": 244.1,
+      "prev_close": 236.28
+    },
+    {
+      "ticker": "NFLX",
+      "confidence": 1.1,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.9012,
+      "gap_retention": 0.8942,
+      "vol_boost": 0.1,
+      "vol_ratio": 5.061,
+      "vol_today": 286684,
+      "vol_avg": 56640,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0199,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.014476298609140084,
+      "price_935": 72.12,
+      "open_930": 71.5,
+      "prev_close": 70.46
+    },
+    {
+      "ticker": "JPM",
+      "confidence": 0.2,
+      "passes_threshold": false,
+      "participation": true,
+      "reject_reason": "confidence 0.20 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.0986,
+      "gap_retention": 0.5558,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.921,
+      "vol_today": 15260,
+      "vol_avg": 7943,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0091,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.012340464049723847,
+      "price_935": 334.92,
+      "open_930": 337.25,
+      "prev_close": 331.43
+    },
+    {
+      "ticker": "AAPL",
+      "confidence": 0.6667,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": false,
+      "or_position": 0.6776,
+      "gap_retention": 0.7246,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.617,
+      "vol_today": 102300,
+      "vol_avg": 63278,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0083,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.009728367568201111,
+      "price_935": 346.985,
+      "open_930": 347.025,
+      "prev_close": 341.27
+    }
+  ],
+  "llm_input": [
+    "UNH",
+    "ADBE",
+    "NFLX",
+    "AAPL"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "UNH",
+      "direction": "long",
+      "confidence": 1.0167,
+      "reason": "Catalyst Tier 1 confermato: earnings beat Q3 con rialzo della guidance 2026, Bernstein reitera il rating e Piper Sandler alza il price target a $504. Segnali tecnici forti: gap_retention al 96.7%, post_open_advance positivo e or_position solida.",
+      "price_935": 403.47
+    },
+    "trade_2": null,
+    "no_trade_reason": "NFLX ha la confidence_algo pi\u00f9 alta (1.10) ma il catalyst_bonus \u00e8 zero e le news sono negative (taglio di ~1000 posti di lavoro, vendita pubblica da parte di un gestore CNBC) \u2014 nessun catalyst tecnico o fondamentale positivo a supporto del gap. ADBE ha confidence_algo pari a 1.0 ma nessun catalyst identificabile (solo articolo di analisi generica, Tier 0) e vol_boost nullo: segnale puramente tecnico senza conferma fondamentale, non sufficiente per un secondo trade. AAPL \u00e8 esclusa per confidence_algo sotto soglia (0.667), post_open_advance negativo e assenza di catalyst."
+  },
+  "llm_excluded_top": {
+    "ticker": "NFLX",
+    "confidence": 1.1,
+    "tied": [
+      "NFLX"
+    ],
+    "picked": [
+      "UNH"
+    ]
+  },
+  "trades": [
+    {
+      "ticker": "UNH",
+      "qty": 126,
+      "entry_price": 402.645238,
+      "entry_time": "09:36:52",
+      "entry_ts": 1792071412.8009653,
+      "direction": "long",
+      "confidence": 1.0167,
+      "reason": "Catalyst Tier 1 confermato: earnings beat Q3 con rialzo della guidance 2026, Bernstein reitera il rating e Piper Sandler alza il price target a $504. Segnali tecnici forti: gap_retention al 96.7%, post_open_advance positivo e or_position solida.",
+      "order_id": "59fed51e-4df4-422a-9256-26c3058f2ae1",
+      "stop_atr": 391.4688,
+      "stop_pct": 394.5923,
+      "stop_price": 406.6717,
+      "atr14": 11.1764,
+      "peak_price": 409.11,
+      "breakeven_armed": true,
+      "stop_label": "step_stop",
+      "exit_price": 406.85,
+      "exit_time": "10:04:16",
+      "exit_reason": "step_stop",
+      "pnl_usd": 529.8,
+      "pnl_pct": 0.0104,
+      "catalyst_bonus": 0.3,
+      "vol_boost": 0.05,
+      "vol_ratio": 2.691,
+      "short_float": 0.0198,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.6373,
+      "gap_retention": 0.967,
+      "gap_pct": 0.05699915290131296,
+      "news": [
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-10-14T16:40:56Z",
+          "headline": "Piper Sandler Maintains Overweight on UnitedHealth Group, Raises Price Target to $504",
+          "id": 62362488,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "UNH"
+          ],
+          "updated_at": "2026-10-14T16:40:56Z",
+          "url": "https://www.benzinga.com/news/26/10/62362488/piper-sandler-maintains-overweight-unitedhealth-group-raises-price-target-504"
+        },
+        {
+          "author": "Piero Cingari",
+          "content": "",
+          "created_at": "2026-10-14T15:39:54Z",
+          "headline": "Nasdaq 100 Drops 1% on Hot CPI, SOXX Falls 7th Day: Stock Market Today",
+          "id": 62360140,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/14/Nasdaq-100-way-down.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/14/Nasdaq-100-way-down.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/14/Nasdaq-100-way-down.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "The Nasdaq 100 fell 1% by midday Wednesday after September CPI topped forecasts, pushing Treasury yields and rate-hike bets higher.",
+          "symbols": [
+            "AAPL",
+            "ABBV",
+            "AFRM",
+            "AMD",
+            "AMGN",
+            "AVGO",
+            "BAC",
+            "CAI",
+            "CAT",
+            "CRWV",
+            "DELL",
+            "DIA",
+            "DOCN",
+            "FRMI",
+            "GDX",
+            "GFS",
+            "GLD",
+            "HALO",
+            "HOOD",
+            "IBB",
+            "IREN",
+            "ITB",
+            "IWM",
+            "LLY",
+            "META",
+            "MRK",
+            "MU",
+            "NVDA",
+            "ORCL",
+            "QQQ",
+            "SMH",
+            "SOFI",
+            "SOXX",
+            "TSLA",
+            "UNH",
+            "VOO",
+            "WULF",
+            "XLB",
+            "XLC",
+            "XLE",
+            "XLF",
+            "XLI",
+            "XLK",
+            "XLP",
+            "XLRE",
+            "XLU",
+            "XLV",
+            "XLY"
+          ],
+          "updated_at": "2026-10-14T15:39:54Z",
+          "url": "https://www.benzinga.com/markets/equities/26/10/62360140/nasdaq-100-drops-1-on-hot-cpi-soxx-falls-7th-day-stock-market-today"
+        },
+        {
+          "author": "Evette Mitkov",
+          "content": "",
+          "created_at": "2026-10-14T15:24:25Z",
+          "headline": "UnitedHealth Stock Moves Higher: What's Happening?",
+          "id": 62359518,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/14/UnitedHealth-Slumps-As-Investors-Pivot-T.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/14/UnitedHealth-Slumps-As-Investors-Pivot-T.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/14/UnitedHealth-Slumps-As-Investors-Pivot-T.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "UnitedHealth Group shares are climbing Wednesday. Bernstein reiterated their rating and price target following a third-quarter earnings beat.",
+          "symbols": [
+            "UNH"
+          ],
+          "updated_at": "2026-10-14T15:24:25Z",
+          "url": "https://www.benzinga.com/trading-ideas/movers/26/10/62359518/unitedhealth-stock-moves-higher-whats-happening"
+        },
+        {
+          "author": "Benzinga Insights",
+          "content": "",
+          "created_at": "2026-10-14T15:14:53Z",
+          "headline": "8 Of 11 Sectors Fall Wednesday As Defensives Lead",
+          "id": 62359155,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/14/Stock-Market-Trading-Chart-And-Analyzing.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/14/Stock-Market-Trading-Chart-And-Analyzing.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/14/Stock-Market-Trading-Chart-And-Analyzing.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Three sectors are higher and eight are lower in Wednesday&#39;s regular session, with defensive sectors holding the top three positions. The leaders are separated rather than clustered, with no single sector pulling away from the group.",
+          "symbols": [
+            "ABBV",
+            "AVGO",
+            "BAC",
+            "COP",
+            "COST",
+            "CVX",
+            "D",
+            "DIA",
+            "DUK",
+            "IWM",
+            "LLY",
+            "MA",
+            "NEE",
+            "NVDA",
+            "ORCL",
+            "PG",
+            "QQQ",
+            "SPY",
+            "UNH",
+            "V",
+            "WMT",
+            "XLB",
+            "XLC",
+            "XLE",
+            "XLF",
+            "XLI",
+            "XLK",
+            "XLP",
+            "XLRE",
+            "XLU",
+            "XLV",
+            "XLY",
+            "XOM"
+          ],
+          "updated_at": "2026-10-14T15:14:53Z",
+          "url": "https://www.benzinga.com/etfs/sector-etfs/26/10/62359155/8-of-11-sectors-fall-wednesday-as-defensives-lead"
+        },
+        {
+          "author": "Avi Kapoor",
+          "content": "",
+          "created_at": "2026-10-14T14:24:07Z",
+          "headline": "UnitedHealth Analysts Slash Their Forecasts Following Q3 Results",
+          "id": 62356817,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/14/UnitedHealth-Group-Inc--Leads-Plan-Disru.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/14/UnitedHealth-Group-Inc--Leads-Plan-Disru.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/14/UnitedHealth-Group-Inc--Leads-Plan-Disru.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "UnitedHealth beats Q3 estimates and raises 2026 earnings guidance; shares rise 3%, while analysts trim price targets.",
+          "symbols": [
+            "UNH"
+          ],
+          "updated_at": "2026-10-14T14:24:07Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/price-target/26/10/62356817/unitedhealth-analysts-slash-their-forecasts-following-q3-results"
+        }
+      ],
+      "recent_prices": [
+        [
+          407.25,
+          "10:03:12"
+        ],
+        [
+          406.93,
+          "10:03:27"
+        ],
+        [
+          407.25,
+          "10:03:41"
+        ],
+        [
+          407.25,
+          "10:03:57"
+        ],
+        [
+          406.35,
+          "10:04:12"
+        ]
+      ],
+      "trigger_price": 406.35,
+      "trigger_source": "quote_bid",
+      "trigger_age_s": 1.62,
+      "trigger_tick_time": "10:04:12"
+    }
+  ]
+}
