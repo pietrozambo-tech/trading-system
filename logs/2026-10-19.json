@@ -1,0 +1,253 @@
+{
+  "date": "2026-10-19",
+  "spy_pct": 0.005220512618968098,
+  "spy_source": "open_935",
+  "blocked": "nessun candidato: 1 sopra soglia ma senza partecipazione (vol_ratio < 1.5x)",
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 72,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "ANET",
+        "LITE",
+        "CRDO",
+        "COHR",
+        "CIEN",
+        "JPM",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "CELH",
+        "CAVA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "TEM",
+        "HIMS",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "RDW",
+        "LUNR",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "GEV",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 6,
+      "tickers": [
+        "CAVA",
+        "OXY",
+        "GEV",
+        "JPM",
+        "ENPH",
+        "NVDA"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 3,
+      "tickers": [
+        "OXY",
+        "JPM",
+        "NVDA"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 0,
+      "tickers": [],
+      "note": "confidence>=0.65 & vol_ratio>=1.5x"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "CAVA",
+      "gap_pct": 2.17,
+      "adv_m": 3.5,
+      "short_float_pct": 14.4,
+      "dist_from_3m_high_pct": -25.2,
+      "prev_day_return_pct": 3.34
+    },
+    {
+      "ticker": "OXY",
+      "gap_pct": 1.83,
+      "adv_m": 8.4,
+      "short_float_pct": 3.0,
+      "dist_from_3m_high_pct": -3.1,
+      "prev_day_return_pct": 2.82
+    },
+    {
+      "ticker": "GEV",
+      "gap_pct": 1.37,
+      "adv_m": 2.3,
+      "short_float_pct": 2.8,
+      "dist_from_3m_high_pct": -17.7,
+      "prev_day_return_pct": -0.57
+    },
+    {
+      "ticker": "JPM",
+      "gap_pct": 0.84,
+      "adv_m": 7.2,
+      "short_float_pct": 0.9,
+      "dist_from_3m_high_pct": -7.2,
+      "prev_day_return_pct": 1.25
+    },
+    {
+      "ticker": "ENPH",
+      "gap_pct": 0.75,
+      "adv_m": 4.6,
+      "short_float_pct": 25.6,
+      "dist_from_3m_high_pct": -28.3,
+      "prev_day_return_pct": -0.65
+    },
+    {
+      "ticker": "NVDA",
+      "gap_pct": 0.65,
+      "adv_m": 119.9,
+      "short_float_pct": 1.3,
+      "dist_from_3m_high_pct": -10.2,
+      "prev_day_return_pct": -1.43
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "CAVA",
+      "reason": "adv_3,469,279<min_5,000,000"
+    },
+    {
+      "ticker": "GEV",
+      "reason": "adv_2,341,576<min_5,000,000"
+    },
+    {
+      "ticker": "ENPH",
+      "reason": "adv_4,621,428<min_5,000,000"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "OXY",
+      "confidence": 1.2,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 1.12x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.75,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.124,
+      "vol_today": 13169,
+      "vol_avg": 11718,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.0304,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0182956980385693,
+      "price_935": 62.375,
+      "open_930": 62.0,
+      "prev_close": 60.67
+    },
+    {
+      "ticker": "JPM",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.2926,
+      "gap_retention": 0.3009,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.447,
+      "vol_today": 3702,
+      "vol_avg": 8278,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0091,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.00837481000208626,
+      "price_935": 338.085,
+      "open_930": 340.0,
+      "prev_close": 335.53
+    },
+    {
+      "ticker": "NVDA",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.1292,
+      "gap_retention": -1.8239,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.693,
+      "vol_today": 107441,
+      "vol_avg": 155103,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0134000005,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.006536850342954546,
+      "price_935": 216.07,
+      "open_930": 218.025,
+      "prev_close": 217.23
+    }
+  ],
+  "llm_input": [],
+  "llm_output": {},
+  "llm_excluded_top": null,
+  "trades": []
+}
