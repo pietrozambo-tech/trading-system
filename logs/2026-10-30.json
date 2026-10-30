@@ -1,0 +1,695 @@
+{
+  "date": "2026-10-30",
+  "spy_pct": -0.01218989200639384,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 72,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "ANET",
+        "LITE",
+        "CRDO",
+        "COHR",
+        "CIEN",
+        "JPM",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "CELH",
+        "CAVA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "TEM",
+        "HIMS",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "RDW",
+        "LUNR",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "GEV",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 15,
+      "tickers": [
+        "CVNA",
+        "NCLH",
+        "CAVA",
+        "MRNA",
+        "UNH",
+        "RIVN",
+        "CCL",
+        "OXY",
+        "JPM",
+        "DKNG",
+        "ABBV",
+        "CELH",
+        "NFLX",
+        "ADBE",
+        "CEG"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 11,
+      "tickers": [
+        "CVNA",
+        "NCLH",
+        "MRNA",
+        "UNH",
+        "RIVN",
+        "CCL",
+        "OXY",
+        "JPM",
+        "DKNG",
+        "CELH",
+        "NFLX"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 2,
+      "tickers": [
+        "CVNA",
+        "NCLH"
+      ],
+      "note": "confidence>=0.65 & vol_ratio>=1.5x"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "CVNA",
+      "gap_pct": 14.48,
+      "adv_m": 8.9,
+      "short_float_pct": 12.5,
+      "dist_from_3m_high_pct": -12.0,
+      "prev_day_return_pct": 15.68
+    },
+    {
+      "ticker": "NCLH",
+      "gap_pct": 11.77,
+      "adv_m": 18.6,
+      "short_float_pct": 22.0,
+      "dist_from_3m_high_pct": -12.9,
+      "prev_day_return_pct": 13.45
+    },
+    {
+      "ticker": "CAVA",
+      "gap_pct": 6.91,
+      "adv_m": 3.3,
+      "short_float_pct": 14.7,
+      "dist_from_3m_high_pct": -23.3,
+      "prev_day_return_pct": 9.14
+    },
+    {
+      "ticker": "MRNA",
+      "gap_pct": 3.7,
+      "adv_m": 21.0,
+      "short_float_pct": 10.0,
+      "dist_from_3m_high_pct": -12.7,
+      "prev_day_return_pct": 4.01
+    },
+    {
+      "ticker": "UNH",
+      "gap_pct": 2.37,
+      "adv_m": 5.0,
+      "short_float_pct": 1.7,
+      "dist_from_3m_high_pct": -2.3,
+      "prev_day_return_pct": 0.94
+    },
+    {
+      "ticker": "RIVN",
+      "gap_pct": 2.14,
+      "adv_m": 23.6,
+      "short_float_pct": 14.5,
+      "dist_from_3m_high_pct": -30.6,
+      "prev_day_return_pct": -1.89
+    },
+    {
+      "ticker": "CCL",
+      "gap_pct": 1.76,
+      "adv_m": 21.2,
+      "short_float_pct": 3.3,
+      "dist_from_3m_high_pct": -5.0,
+      "prev_day_return_pct": 2.78
+    },
+    {
+      "ticker": "OXY",
+      "gap_pct": 1.65,
+      "adv_m": 8.4,
+      "short_float_pct": 0.0,
+      "dist_from_3m_high_pct": -1.6,
+      "prev_day_return_pct": 0.24
+    },
+    {
+      "ticker": "JPM",
+      "gap_pct": 1.62,
+      "adv_m": 6.9,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -5.5,
+      "prev_day_return_pct": 1.26
+    },
+    {
+      "ticker": "DKNG",
+      "gap_pct": 1.5,
+      "adv_m": 13.1,
+      "short_float_pct": 8.2,
+      "dist_from_3m_high_pct": -22.6,
+      "prev_day_return_pct": 2.07
+    },
+    {
+      "ticker": "ABBV",
+      "gap_pct": 1.4,
+      "adv_m": 4.8,
+      "short_float_pct": 1.0,
+      "dist_from_3m_high_pct": -0.9,
+      "prev_day_return_pct": 1.68
+    },
+    {
+      "ticker": "CELH",
+      "gap_pct": 1.04,
+      "adv_m": 8.4,
+      "short_float_pct": 12.1,
+      "dist_from_3m_high_pct": -21.8,
+      "prev_day_return_pct": 0.64
+    },
+    {
+      "ticker": "NFLX",
+      "gap_pct": 0.98,
+      "adv_m": 35.9,
+      "short_float_pct": 2.1,
+      "dist_from_3m_high_pct": -25.1,
+      "prev_day_return_pct": 0.1
+    },
+    {
+      "ticker": "ADBE",
+      "gap_pct": 0.96,
+      "adv_m": 4.7,
+      "short_float_pct": 5.2,
+      "dist_from_3m_high_pct": -14.4,
+      "prev_day_return_pct": -0.66
+    },
+    {
+      "ticker": "CEG",
+      "gap_pct": 0.73,
+      "adv_m": 3.2,
+      "short_float_pct": 3.8,
+      "dist_from_3m_high_pct": -16.1,
+      "prev_day_return_pct": 2.52
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "CAVA",
+      "reason": "adv_3,332,540<min_5,000,000"
+    },
+    {
+      "ticker": "ABBV",
+      "reason": "adv_4,757,728<min_5,000,000"
+    },
+    {
+      "ticker": "ADBE",
+      "reason": "adv_4,727,995<min_5,000,000"
+    },
+    {
+      "ticker": "CEG",
+      "reason": "adv_3,222,725<min_5,000,000"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "CVNA",
+      "confidence": 1.0667,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.4203,
+      "gap_retention": 0.9763,
+      "vol_boost": 0.1,
+      "vol_ratio": 3.692,
+      "vol_today": 42996,
+      "vol_avg": 11646,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.1246,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.14479254868755287,
+      "price_935": 68.135,
+      "open_930": 67.91,
+      "prev_close": 59.05
+    },
+    {
+      "ticker": "NCLH",
+      "confidence": 0.8333,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": false,
+      "or_position": 0.2273,
+      "gap_retention": 0.9282,
+      "vol_boost": 0.1,
+      "vol_ratio": 3.488,
+      "vol_today": 117525,
+      "vol_avg": 33698,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.2201,
+      "short_squeeze_bonus": 0.1,
+      "gap_pct": 0.1176836861768369,
+      "price_935": 17.79,
+      "open_930": 17.87,
+      "prev_close": 16.06
+    },
+    {
+      "ticker": "MRNA",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.46x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.8576,
+      "gap_retention": 0.8612,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.458,
+      "vol_today": 7797,
+      "vol_avg": 17006,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0998,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.0369574860504752,
+      "price_935": 224.0,
+      "open_930": 220.83,
+      "prev_close": 214.165
+    },
+    {
+      "ticker": "UNH",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.1299,
+      "gap_retention": 0.5485,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.279,
+      "vol_today": 3067,
+      "vol_avg": 11002,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0174,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.02370424957013013,
+      "price_935": 411.56,
+      "open_930": 414.21,
+      "prev_close": 407.1
+    },
+    {
+      "ticker": "RIVN",
+      "confidence": 0.4,
+      "passes_threshold": false,
+      "participation": true,
+      "reject_reason": "confidence 0.40 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.2875,
+      "gap_retention": 0.3333,
+      "vol_boost": 0.1,
+      "vol_ratio": 6.937,
+      "vol_today": 122902,
+      "vol_avg": 17718,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.3,
+      "short_float": 0.1446,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.021422450728363324,
+      "price_935": 11.925,
+      "open_930": 12.09,
+      "prev_close": 11.67
+    },
+    {
+      "ticker": "CCL",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.75x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.8298,
+      "gap_retention": 0.7333,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.751,
+      "vol_today": 23063,
+      "vol_avg": 30694,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0334,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01758731290092662,
+      "price_935": 28.64,
+      "open_930": 28.585,
+      "prev_close": 28.06
+    },
+    {
+      "ticker": "OXY",
+      "confidence": 0.6667,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.69x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.6705,
+      "gap_retention": 0.6486,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.689,
+      "vol_today": 7466,
+      "vol_avg": 10833,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0002,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.016544702513522098,
+      "price_935": 63.635,
+      "open_930": 63.6,
+      "prev_close": 62.86
+    },
+    {
+      "ticker": "JPM",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.1559,
+      "gap_retention": 0.4034,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.7,
+      "vol_today": 5011,
+      "vol_avg": 7154,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0097,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.016209843796050692,
+      "price_935": 341.355,
+      "open_930": 343.44,
+      "prev_close": 339.3
+    },
+    {
+      "ticker": "DKNG",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.5758,
+      "gap_retention": -0.1186,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.925,
+      "vol_today": 16284,
+      "vol_avg": 17605,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.08180001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.01504926108374377,
+      "price_935": 20.455,
+      "open_930": 20.595,
+      "prev_close": 20.3
+    },
+    {
+      "ticker": "CELH",
+      "confidence": 1.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "no_participation: vol 0.90x < 1.5x",
+      "post_open_advance": true,
+      "or_position": 0.8387,
+      "gap_retention": 1.0,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.899,
+      "vol_today": 2396,
+      "vol_avg": 4440,
+      "or_bar_count": 3,
+      "or_last_bar": "09:33",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.12100001,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.010364546104360226,
+      "price_935": 28.6,
+      "open_930": 28.34,
+      "prev_close": 27.98
+    },
+    {
+      "ticker": "NFLX",
+      "confidence": 0.0,
+      "passes_threshold": false,
+      "participation": false,
+      "reject_reason": "confidence 0.00 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.2121,
+      "gap_retention": 0.1974,
+      "vol_boost": 0.0,
+      "vol_ratio": 0.66,
+      "vol_today": 53264,
+      "vol_avg": 80647,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.0,
+      "short_float": 0.0208,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.009840296822068067,
+      "price_935": 62.315,
+      "open_930": 62.75,
+      "prev_close": 61.99
+    }
+  ],
+  "llm_input": [
+    "CVNA",
+    "NCLH"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "CVNA",
+      "direction": "long",
+      "confidence": 1.0667,
+      "reason": "Earnings beat confermato con rialzo guidance (Tier 1) supportato da multipli upgrade e target raise da Deutsche Bank e UBS; gap_retention 97.6% e post_open_advance positivi confermano momentum reale, con prev_day gi\u00e0 +15.7% che non attiva regola selloff.",
+      "price_935": 68.135
+    },
+    "trade_2": null,
+    "no_trade_reason": "NCLH escluso: nonostante catalyst Tier 1 (earnings beat + guidance raised) e short_float_pct 22% con squeeze potential, i segnali tecnici sono deboli \u2014 post_open_advance negativo (-0.45%), or_position bassa (0.23) indicano ritracciamento attivo al momento dell'entry; solo 1/3 segnali tecnici positivi (gap_retention) portano la confidence a ~0.73 ma la debolezza post-apertura in contesto SPY -1.22% sconsiglia il secondo trade."
+  },
+  "llm_excluded_top": null,
+  "trades": [
+    {
+      "ticker": "CVNA",
+      "qty": 759,
+      "entry_price": 68.12,
+      "entry_time": "09:35:40",
+      "entry_ts": 1793367340.5250273,
+      "direction": "long",
+      "confidence": 1.0667,
+      "reason": "Earnings beat confermato con rialzo guidance (Tier 1) supportato da multipli upgrade e target raise da Deutsche Bank e UBS; gap_retention 97.6% e post_open_advance positivi confermano momentum reale, con prev_day gi\u00e0 +15.7% che non attiva regola selloff.",
+      "order_id": "1604253d-8f98-4199-8fab-0f1d5dce8674",
+      "stop_atr": 64.5105,
+      "stop_pct": 66.7576,
+      "stop_price": 66.7576,
+      "atr14": 3.6095,
+      "peak_price": 68.46,
+      "breakeven_armed": false,
+      "stop_label": null,
+      "exit_price": 66.74,
+      "exit_time": "10:06:31",
+      "exit_reason": "hard_blocker",
+      "pnl_usd": -1047.42,
+      "pnl_pct": -0.0203,
+      "catalyst_bonus": 0.3,
+      "vol_boost": 0.1,
+      "vol_ratio": 3.692,
+      "short_float": 0.1246,
+      "short_squeeze_bonus": 0.0,
+      "post_open_advance": true,
+      "or_position": 0.4203,
+      "gap_retention": 0.9763,
+      "gap_pct": 0.14479254868755287,
+      "news": [
+        {
+          "author": "Benzinga Newsdesk",
+          "content": "",
+          "created_at": "2026-10-30T12:53:40Z",
+          "headline": "Citizens Maintains Market Outperform on Carvana, Raises Price Target to $85",
+          "id": 62736617,
+          "images": [],
+          "source": "benzinga",
+          "summary": "",
+          "symbols": [
+            "CVNA"
+          ],
+          "updated_at": "2026-10-30T12:53:40Z",
+          "url": "https://www.benzinga.com/news/26/10/62736617/citizens-maintains-market-outperform-carvana-raises-price-target-85"
+        },
+        {
+          "author": "Priya Nigam",
+          "content": "",
+          "created_at": "2026-10-29T18:44:15Z",
+          "headline": "Carvana Analysts Cut Price Targets \u2014 Even After Q3 Beat Across All Major KPIs",
+          "id": 62712756,
+          "images": [
+            {
+              "size": "large",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/29/Carvna-CourtesyCavana-InsideVM-vending-m.jpg?width=2048&height=1536"
+            },
+            {
+              "size": "small",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/29/Carvna-CourtesyCavana-InsideVM-vending-m.jpg?width=1024&height=768"
+            },
+            {
+              "size": "thumb",
+              "url": "https://cdn.benzinga.com/files/images/story/2026/10/29/Carvna-CourtesyCavana-InsideVM-vending-m.jpg?width=250&height=187"
+            }
+          ],
+          "source": "benzinga",
+          "summary": "Carvana shares rally after strong Q3 results, market-share gains and raised outlook; analysts maintain Buy ratings but trim targets.",
+          "symbols": [
+            "CVNA"
+          ],
+          "updated_at": "2026-10-29T18:44:15Z",
+          "url": "https://www.benzinga.com/analyst-stock-ratings/price-target/26/10/62712756/carvana-analysts-cut-price-targets-even-after-q3-beat-across-all-major-kpis"
+        },
+        {
+          "author": "",
+          "content": "",
+          "created_at": "2026-10-29T18:02:21Z",
+          "headline": "BNP Paribas Adjusts Carvana Price Target to $67",
+          "id": 107576583,
+          "images": [],
+          "source": "fiscal.ai",
+          "summary": "BNP Paribas lowered its price target for Carvana to $67 from $69.",
+          "symbols": [
+            "CVNA"
+          ],
+          "updated_at": "2026-10-29T18:02:21Z",
+          "url": "https://www.marketscreener.com/news/bnp-paribas-adjusts-carvana-price-target-to-67-from-69-ce785fdad88df624"
+        },
+        {
+          "author": "",
+          "content": "",
+          "created_at": "2026-10-29T18:02:21Z",
+          "headline": "UBS Adjusts Carvana Price Target to $84",
+          "id": 107576581,
+          "images": [],
+          "source": "fiscal.ai",
+          "summary": "UBS increased its price target for Carvana to $84 from $83 and maintained a Buy rating.",
+          "symbols": [
+            "CVNA"
+          ],
+          "updated_at": "2026-10-29T18:02:21Z",
+          "url": "https://www.marketscreener.com/news/ubs-adjusts-price-target-on-carvana-to-84-from-83-keeps-buy-rating-ce785fdad880f523"
+        },
+        {
+          "author": "",
+          "content": "",
+          "created_at": "2026-10-29T18:02:21Z",
+          "headline": "Deutsche Bank Adjusts Carvana Price Target to $85",
+          "id": 107576580,
+          "images": [],
+          "source": "fiscal.ai",
+          "summary": "Deutsche Bank raised its price target for Carvana to $85 from $80 while maintaining a Buy rating.",
+          "symbols": [
+            "CVNA"
+          ],
+          "updated_at": "2026-10-29T18:02:21Z",
+          "url": "https://www.marketscreener.com/news/deutsche-bank-adjusts-carvana-price-target-to-85-from-80-maintains-buy-rating-ce785fdad98fff2c"
+        }
+      ],
+      "recent_prices": [
+        [
+          66.93,
+          "10:05:29"
+        ],
+        [
+          66.81,
+          "10:05:44"
+        ],
+        [
+          66.895,
+          "10:05:57"
+        ],
+        [
+          66.77,
+          "10:06:14"
+        ],
+        [
+          66.73,
+          "10:06:30"
+        ]
+      ],
+      "trigger_price": 66.73,
+      "trigger_source": "quote_bid",
+      "trigger_age_s": 0.07,
+      "trigger_tick_time": "10:06:30"
+    }
+  ]
+}
