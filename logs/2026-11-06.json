@@ -1,0 +1,208 @@
+{
+  "date": "2026-11-06",
+  "spy_pct": 0.0029996045975758364,
+  "spy_source": "open_935",
+  "blocked": null,
+  "pipeline": [
+    {
+      "stage": "universe",
+      "count": 72,
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "NVDA",
+        "AMZN",
+        "META",
+        "GOOGL",
+        "TSLA",
+        "AMD",
+        "NFLX",
+        "CRM",
+        "ORCL",
+        "ADBE",
+        "QCOM",
+        "MU",
+        "AVGO",
+        "AMAT",
+        "MRVL",
+        "PLTR",
+        "SMCI",
+        "ARM",
+        "VRT",
+        "APP",
+        "CRWV",
+        "CBRS",
+        "DELL",
+        "ANET",
+        "LITE",
+        "CRDO",
+        "COHR",
+        "CIEN",
+        "JPM",
+        "GS",
+        "SOFI",
+        "AFRM",
+        "DKNG",
+        "SHOP",
+        "CVNA",
+        "CELH",
+        "CAVA",
+        "UNH",
+        "ABBV",
+        "MRNA",
+        "TEM",
+        "HIMS",
+        "OXY",
+        "ENPH",
+        "MSTR",
+        "COIN",
+        "HOOD",
+        "MARA",
+        "RIOT",
+        "CIFR",
+        "DAL",
+        "NCLH",
+        "CCL",
+        "RIVN",
+        "NIO",
+        "ASTS",
+        "RDW",
+        "LUNR",
+        "CCJ",
+        "NNE",
+        "SMR",
+        "OKLO",
+        "CEG",
+        "VST",
+        "LEU",
+        "GEV",
+        "IONQ",
+        "QBTS",
+        "QUBT",
+        "RGTI"
+      ]
+    },
+    {
+      "stage": "premarket_scan",
+      "count": 3,
+      "tickers": [
+        "APP",
+        "RIOT",
+        "LEU"
+      ],
+      "note": "gap>+0.5%"
+    },
+    {
+      "stage": "binary_filters_L1",
+      "count": 2,
+      "tickers": [
+        "APP",
+        "RIOT"
+      ]
+    },
+    {
+      "stage": "L2_signals_passed",
+      "count": 1,
+      "tickers": [
+        "APP"
+      ],
+      "note": "confidence>=0.65 & vol_ratio>=1.5x"
+    }
+  ],
+  "premarket_candidates": [
+    {
+      "ticker": "APP",
+      "gap_pct": 30.08,
+      "adv_m": 5.5,
+      "short_float_pct": 3.9,
+      "dist_from_3m_high_pct": -3.2,
+      "prev_day_return_pct": 31.04
+    },
+    {
+      "ticker": "RIOT",
+      "gap_pct": 3.9,
+      "adv_m": 20.3,
+      "short_float_pct": 15.5,
+      "dist_from_3m_high_pct": -37.1,
+      "prev_day_return_pct": -3.97
+    },
+    {
+      "ticker": "LEU",
+      "gap_pct": 2.07,
+      "adv_m": 0.8,
+      "short_float_pct": 30.3,
+      "dist_from_3m_high_pct": -54.7,
+      "prev_day_return_pct": -3.83
+    }
+  ],
+  "l1_rejects": [
+    {
+      "ticker": "LEU",
+      "reason": "adv_768,136<min_5,000,000"
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "APP",
+      "confidence": 0.7667,
+      "passes_threshold": true,
+      "participation": true,
+      "reject_reason": null,
+      "post_open_advance": true,
+      "or_position": 0.3118,
+      "gap_retention": 0.9677,
+      "vol_boost": 0.0,
+      "vol_ratio": 1.546,
+      "vol_today": 9618,
+      "vol_avg": 6221,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.1,
+      "short_float": 0.0388,
+      "short_squeeze_bonus": 0.0,
+      "gap_pct": 0.30082759889604427,
+      "price_935": 354.125,
+      "open_930": 354.06,
+      "prev_close": 271.75
+    },
+    {
+      "ticker": "RIOT",
+      "confidence": 0.4,
+      "passes_threshold": false,
+      "participation": true,
+      "reject_reason": "confidence 0.40 < 0.65",
+      "post_open_advance": false,
+      "or_position": 0.0526,
+      "gap_retention": 0.119,
+      "vol_boost": 0.1,
+      "vol_ratio": 4.168,
+      "vol_today": 133280,
+      "vol_avg": 31976,
+      "or_bar_count": 5,
+      "or_last_bar": "09:34",
+      "catalyst_bonus": 0.2,
+      "short_float": 0.1551,
+      "short_squeeze_bonus": 0.1,
+      "gap_pct": 0.039037085230969513,
+      "price_935": 15.47,
+      "open_930": 15.79,
+      "prev_close": 15.37
+    }
+  ],
+  "llm_input": [
+    "APP"
+  ],
+  "llm_output": {
+    "trade_1": {
+      "ticker": "APP",
+      "direction": "long",
+      "confidence": 0.7667,
+      "reason": "Q3 beat confermato con forte crescita >50% e rollout del modello AI ibrido costituisce un catalyst Tier 1 (earnings beat + guidance alzata), con analisti che alzano i target. Gap retention al 97% e post_open_advance positivo confermano momentum reale; il titolo \u00e8 a soli -3.2% dai massimi di 3 mesi con bassa resistenza sopra.",
+      "price_935": 354.125
+    },
+    "trade_2": null,
+    "no_trade_reason": null
+  },
+  "llm_excluded_top": null,
+  "trades": []
+}
