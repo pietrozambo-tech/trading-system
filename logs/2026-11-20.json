@@ -1,7 +1,7 @@
 {
   "date": "2026-11-20",
-  "spy_pct": -0.005280509611086397,
-  "spy_source": "open_935",
+  "spy_pct": -0.036403,
+  "spy_source": "official_close",
   "blocked": "nessun candidato: 1 sopra soglia ma senza partecipazione (vol_ratio < 1.5x)",
   "pipeline": [
     {
